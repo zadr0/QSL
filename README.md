@@ -36,10 +36,4 @@ QSL — ориентированный на Rust DSL для **бинарной �
 
 **Benchmark generation / Версия тестов:** Historical WebSocket smoke tests used the previous QSL string implementation. Later borrowed `&[u8]` and `Utf8Guard` optimizations are measured separately in Criterion; the old WebSocket RPS/RTT do not measure their effect. / WebSocket-тесты проводились со старой реализацией строк; новые срезы и `Utf8Guard` проверялись отдельно в Criterion. См. [EN](docs/performance.en.md) · [RU](docs/performance.ru.md).
 
-## GitHub Pages
-
-Place `README.md`, language READMEs and `docs/` in the repository root. In **Settings → Pages** use **Deploy from a branch → main → /docs**. No npm, framework, CDN, or external libraries are required. For local viewing open `docs/index.html`; styles/scripts and benchmark/API data are local or embedded. The full markdown references also work on GitHub without Pages.
-
 > **Safety note / Безопасность:** Generated trusted/unchecked deserializers require complete, schema-valid data. `RawSocket` frame bounds and the parser flag `[safety]` do not, by themselves, validate arbitrary QSL payloads. Validate untrusted input before calling unsafe decode.
-
-**Provenance:** documentation was prepared from the provided QSL, demo and bench source archives plus benchmark exports. No compilation or new benchmark run is claimed for this documentation build; the supplied core `QSL.rar` did not include a `Cargo.toml` for reproducible standalone compilation here.
