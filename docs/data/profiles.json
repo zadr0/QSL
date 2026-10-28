@@ -1,0 +1,9 @@
+{
+  "criterion": 60,
+  "criterion-utf8-complete": 64,
+  "criterion-utf8-final": 15,
+  "criterion-utf8-v1": 13,
+  "criterion-utf8-v2-gate": 4,
+  "criterion-utf8-v3-gate": 6,
+  "criterion-utf8-v5-gate": 8
+}

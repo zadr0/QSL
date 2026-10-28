@@ -1,0 +1,1934 @@
+[
+  {
+    "module": "compat",
+    "line": 10,
+    "signature": "pub enum ParserQslType",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "compat",
+    "line": 25,
+    "signature": "pub struct ParserQslField",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "compat",
+    "line": 34,
+    "signature": "pub struct ParserQslSchema",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "compat",
+    "line": 42,
+    "signature": "pub fn new(flags: usize) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "compat",
+    "line": 48,
+    "signature": "pub fn optional_count(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "compat",
+    "line": 51,
+    "signature": "pub fn validate(&self) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "deq",
+    "line": 14,
+    "signature": "pub struct DeqConstant",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "deq",
+    "line": 20,
+    "signature": "pub struct DeqConfig",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "deq",
+    "line": 27,
+    "signature": "pub fn integer_values(&self) -> HashMap<String, i128>",
+    "doc": "QSL currently interprets numeric constant values at build time, while the DEQ AST retains the source type for validation and diagnostics.",
+    "kind": "function"
+  },
+  {
+    "module": "deq",
+    "line": 35,
+    "signature": "pub fn parse_deq(source: &str) -> Result<DeqConfig, ParseError>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "deq",
+    "line": 89,
+    "signature": "pub fn build_qsl_files( qsl_files: &[&str], deq_files: &[&str], out_dir: impl AsRef<Path>, ) -> Result<PathBuf, Box<dyn std::error::Error>>",
+    "doc": "Explicit build inputs belong in build.rs; DEQ itself only provides values. Lists are traversed in caller order, preserving deterministic schema order.",
+    "kind": "function"
+  },
+  {
+    "module": "interpreter",
+    "line": 107,
+    "signature": "pub trait TypeInterpreter",
+    "doc": "The code generator does all stable arithmetic before emitting Rust source. The same type-specific routines are used by the schema writer and reader.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "interpreter",
+    "line": 1748,
+    "signature": "pub struct QslInterpreter",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "interpreter",
+    "line": 1775,
+    "signature": "pub fn new() -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "interpreter",
+    "line": 1779,
+    "signature": "pub fn generate(&mut self, schemas: &[QslSchema]) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "interpreter",
+    "line": 1797,
+    "signature": "pub fn generate_parsed(&mut self, schemas: &[crate::compat::ParserQslSchema]) -> QslResult<()>",
+    "doc": "Parser-compatible front end. QSL parser AST stays untouched; only the internal wire-generation descriptors are normalized here.",
+    "kind": "function"
+  },
+  {
+    "module": "interpreter",
+    "line": 1805,
+    "signature": "pub fn generate_field(&mut self, field: &QslField, borrowed: bool) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "interpreter",
+    "line": 2028,
+    "signature": "pub fn generate_default(&mut self, schema: &QslSchema) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "interpreter",
+    "line": 2039,
+    "signature": "pub fn generate_lifetime(&mut self, schema: &QslSchema) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "interpreter",
+    "line": 2053,
+    "signature": "pub fn push(&self) -> std::io::Result<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 9,
+    "signature": "pub type QslResult<T> = Result<T, QslError>;",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io",
+    "line": 12,
+    "signature": "pub enum QslError",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io",
+    "line": 33,
+    "signature": "pub struct QslRawWriter",
+    "doc": "Minimal raw-pointer writer used by trusted, compile-time-validated schemas. No bounds checks, dynamic allocation, loops, or error values exist here. The caller is responsible for the complete writable allocation.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io",
+    "line": 41,
+    "signature": "pub unsafe fn new(ptr: *mut u8) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 48,
+    "signature": "pub fn from(out: &mut [u8]) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 58,
+    "signature": "pub unsafe fn write_u8(&mut self, value: u8)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 66,
+    "signature": "pub unsafe fn write_u16(&mut self, value: u16)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 74,
+    "signature": "pub unsafe fn write_u32(&mut self, value: u32)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 82,
+    "signature": "pub unsafe fn write_u64(&mut self, value: u64)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 90,
+    "signature": "pub unsafe fn write(&mut self, source: *const u8, len: usize)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 98,
+    "signature": "pub struct QslRawReader",
+    "doc": "Minimal raw-pointer reader. Never checks the input length or its contents. Any use with a truncated or invalid allocation is the caller's fault.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io",
+    "line": 106,
+    "signature": "pub unsafe fn new(ptr: *const u8) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 112,
+    "signature": "pub fn from(input: &[u8]) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 121,
+    "signature": "pub unsafe fn read_u8(&mut self) -> u8",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 130,
+    "signature": "pub unsafe fn read_u16(&mut self) -> u16",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 139,
+    "signature": "pub unsafe fn read_u32(&mut self) -> u32",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 148,
+    "signature": "pub unsafe fn read_u64(&mut self) -> u64",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 156,
+    "signature": "pub unsafe fn take(&mut self, len: usize) -> *const u8",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 166,
+    "signature": "pub struct QslFastBitsReader",
+    "doc": "Unchecked LSB-first bit reader for trusted records. It deliberately has no length, Result, UTF-8, or padding checks. A u128 register moves exactly 0..=8 bytes per operation without bit-by-bit loops or branches.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io",
+    "line": 175,
+    "signature": "pub fn as_ptr(&self) -> *const u8",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 183,
+    "signature": "pub unsafe fn read_raw_inline_string_into<const MAX: usize>( &mut self, output: *mut crate::InlineString<MAX>, )",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 195,
+    "signature": "pub unsafe fn read_inline_string_into<const MAX: usize>( &mut self, output: *mut crate::InlineString<MAX>, )",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 207,
+    "signature": "pub unsafe fn read_inline_string<const MAX: usize>(&mut self) -> crate::InlineString<MAX>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 218,
+    "signature": "pub unsafe fn new(ptr: *const u8) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 229,
+    "signature": "pub fn from(input: &[u8]) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 243,
+    "signature": "pub unsafe fn read_bits(&mut self, width: u32) -> u64",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 262,
+    "signature": "pub unsafe fn align(&mut self)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 271,
+    "signature": "pub unsafe fn read_exact(&mut self, len: usize) -> *const u8",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 283,
+    "signature": "pub unsafe fn read_u8(&mut self) -> u8",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 294,
+    "signature": "pub unsafe fn read_u16(&mut self) -> u16",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 305,
+    "signature": "pub unsafe fn read_u32(&mut self) -> u32",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 316,
+    "signature": "pub unsafe fn read_u64(&mut self) -> u64",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 326,
+    "signature": "pub unsafe fn read_i8(&mut self) -> i8",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 333,
+    "signature": "pub unsafe fn read_i16(&mut self) -> i16",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 340,
+    "signature": "pub unsafe fn read_i32(&mut self) -> i32",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 347,
+    "signature": "pub unsafe fn read_i64(&mut self) -> i64",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 359,
+    "signature": "pub struct QslUncheckedWriter",
+    "doc": "Unchecked hot-path writer used after static schema analysis and exact buffer allocation. Values are trusted; no runtime rank preflight is performed. No capacity checks or value checks occur during the write pass.  The caller must provide a writable allocation large enough for the entire encoded record, and all values must satisfy the declared schem",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io",
+    "line": 368,
+    "signature": "pub fn as_mut_ptr(&self) -> *mut u8",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 375,
+    "signature": "pub unsafe fn write_inline_string<const MAX: usize>( &mut self, value: &crate::InlineString<MAX>, )",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 386,
+    "signature": "pub unsafe fn from_raw(ptr: *mut u8) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 397,
+    "signature": "pub fn from(out: &mut [u8]) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 409,
+    "signature": "pub unsafe fn write_bytes_unchecked(&mut self, bytes: &[u8])",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 419,
+    "signature": "pub unsafe fn write_ptr_unchecked(&mut self, source: *const u8, len: usize)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 429,
+    "signature": "pub unsafe fn write_zeros_unchecked(&mut self, count: usize)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 439,
+    "signature": "pub unsafe fn write_bits_unchecked(&mut self, value: u64, width: u32)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 456,
+    "signature": "pub unsafe fn flush_unchecked(&mut self)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 471,
+    "signature": "pub unsafe fn claim_bytes(&mut self, n: usize) -> *mut u8",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 482,
+    "signature": "pub unsafe fn write_bytes(&mut self, bytes: &[u8])",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 490,
+    "signature": "pub unsafe fn write_zeros(&mut self, n: usize)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 498,
+    "signature": "pub unsafe fn write_bits(&mut self, v: u64, width: u32)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 507,
+    "signature": "pub unsafe fn flush(&mut self)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 514,
+    "signature": "pub unsafe fn write_u8(&mut self, value: u8)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 524,
+    "signature": "pub unsafe fn write_u16(&mut self, value: u16)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 534,
+    "signature": "pub unsafe fn write_u32(&mut self, value: u32)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 544,
+    "signature": "pub unsafe fn write_u64(&mut self, value: u64)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 553,
+    "signature": "pub unsafe fn write_i8(&mut self, v: i8)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 560,
+    "signature": "pub unsafe fn write_i16(&mut self, v: i16)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 567,
+    "signature": "pub unsafe fn write_i32(&mut self, v: i32)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 574,
+    "signature": "pub unsafe fn write_i64(&mut self, v: i64)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 581,
+    "signature": "pub type QslWriter = QslRawWriter;",
+    "doc": "Primary QSL I/O names intentionally resolve to the minimal unchecked cursors. The `QslChecked*` variants are for diagnostics and input validation.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io",
+    "line": 582,
+    "signature": "pub type QslReader = QslRawReader;",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io",
+    "line": 583,
+    "signature": "pub type QslBitsWriter = QslUncheckedWriter;",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io",
+    "line": 584,
+    "signature": "pub type QslBitsReader = QslFastBitsReader;",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io",
+    "line": 588,
+    "signature": "pub struct QslSizer",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io",
+    "line": 595,
+    "signature": "pub fn bits(&mut self, n: usize) -> QslResult<()>",
+    "doc": "Add `n` bits with checked overflow arithmetic, folding completed bytes. This utility is for code generation, not serialized object I/O.",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 605,
+    "signature": "pub fn align(&mut self) -> QslResult<()>",
+    "doc": "Round the pending bits up to the next byte boundary, rejecting overflow.",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 613,
+    "signature": "pub fn bytes(&mut self, n: usize) -> QslResult<()>",
+    "doc": "Append `n` whole bytes after byte alignment, rejecting overflow.",
+    "kind": "function"
+  },
+  {
+    "module": "io",
+    "line": 619,
+    "signature": "pub fn finish(mut self) -> QslResult<usize>",
+    "doc": "Return the final whole-byte size, including the last partial byte.",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 9,
+    "signature": "pub struct QslCheckedWriter<'a>",
+    "doc": "All writes use raw pointer copies. Safe constructors still bound-check them.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io_checked",
+    "line": 17,
+    "signature": "pub fn from(out: &'a mut [u8]) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 22,
+    "signature": "pub unsafe fn from_raw_parts(ptr: *mut u8, len: usize) -> Self",
+    "doc": "`ptr` must be writable for `len` bytes, exclusively, throughout `'a`.",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 31,
+    "signature": "pub fn from_raw(out: &'a mut crate::serialize::SerOut) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 34,
+    "signature": "pub fn position(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 37,
+    "signature": "pub fn write(&mut self, bytes: &[u8]) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 53,
+    "signature": "pub fn write_zeros(&mut self, len: usize) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 66,
+    "signature": "pub fn write_u8(&mut self, v: u8) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 69,
+    "signature": "pub fn write_u16(&mut self, v: u16) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 72,
+    "signature": "pub fn write_u32(&mut self, v: u32) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 75,
+    "signature": "pub fn write_u64(&mut self, v: u64) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 78,
+    "signature": "pub fn write_i8(&mut self, v: i8) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 81,
+    "signature": "pub fn write_i16(&mut self, v: i16) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 84,
+    "signature": "pub fn write_i32(&mut self, v: i32) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 87,
+    "signature": "pub fn write_i64(&mut self, v: i64) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 92,
+    "signature": "pub struct QslCheckedReader<'a>",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io_checked",
+    "line": 99,
+    "signature": "pub fn new(bytes: &'a [u8]) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 104,
+    "signature": "pub unsafe fn from_raw_parts(ptr: *const u8, len: usize) -> Self",
+    "doc": "`ptr` must be readable for `len` bytes throughout `'a`.",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 112,
+    "signature": "pub fn position(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 115,
+    "signature": "pub fn read_bytes(&mut self, n: usize) -> QslResult<&'a [u8]>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 124,
+    "signature": "pub fn read_u8(&mut self) -> QslResult<u8>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 127,
+    "signature": "pub fn read_u16(&mut self) -> QslResult<u16>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 130,
+    "signature": "pub fn read_u32(&mut self) -> QslResult<u32>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 133,
+    "signature": "pub fn read_u64(&mut self) -> QslResult<u64>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 136,
+    "signature": "pub fn read_i8(&mut self) -> QslResult<i8>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 139,
+    "signature": "pub fn read_i16(&mut self) -> QslResult<i16>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 142,
+    "signature": "pub fn read_i32(&mut self) -> QslResult<i32>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 145,
+    "signature": "pub fn read_i64(&mut self) -> QslResult<i64>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 152,
+    "signature": "pub struct QslCheckedBitsWriter<'a>",
+    "doc": "LSB-first bit stream. A value always occupies exactly `width` bits, independently of how many leading zeroes it contains.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io_checked",
+    "line": 161,
+    "signature": "pub fn from(out: &'a mut [u8]) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 166,
+    "signature": "pub unsafe fn from_raw_parts(ptr: *mut u8, len: usize) -> Self",
+    "doc": "`ptr` must be exclusively writable for `len` bytes throughout `'a`.",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 177,
+    "signature": "pub fn from_raw(out: &'a mut crate::serialize::SerOut) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 180,
+    "signature": "pub fn position(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 193,
+    "signature": "pub fn write_bits(&mut self, mut value: u64, mut width: u32) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 215,
+    "signature": "pub fn flush(&mut self) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 223,
+    "signature": "pub fn write_bytes(&mut self, bytes: &[u8]) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 240,
+    "signature": "pub fn write_zeros(&mut self, n: usize) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 254,
+    "signature": "pub fn write_u8(&mut self, v: u8) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 257,
+    "signature": "pub fn write_u16(&mut self, v: u16) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 260,
+    "signature": "pub fn write_u32(&mut self, v: u32) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 263,
+    "signature": "pub fn write_u64(&mut self, v: u64) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 266,
+    "signature": "pub fn write_i8(&mut self, v: i8) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 269,
+    "signature": "pub fn write_i16(&mut self, v: i16) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 272,
+    "signature": "pub fn write_i32(&mut self, v: i32) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 275,
+    "signature": "pub fn write_i64(&mut self, v: i64) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 280,
+    "signature": "pub struct QslCheckedBitsReader<'a>",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "io_checked",
+    "line": 289,
+    "signature": "pub fn new(input: &'a [u8]) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 294,
+    "signature": "pub unsafe fn from_raw_parts(ptr: *const u8, len: usize) -> Self",
+    "doc": "`ptr` must be valid for `len` readable bytes for `'a`.",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 304,
+    "signature": "pub fn position(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 307,
+    "signature": "pub fn read_bits(&mut self, width: u32) -> QslResult<u64>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 332,
+    "signature": "pub fn align(&mut self) -> QslResult<()>",
+    "doc": "Ignore only zero-filled alignment bits.",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 340,
+    "signature": "pub fn read_bytes(&mut self, n: usize) -> QslResult<&'a [u8]>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 350,
+    "signature": "pub fn read_u8(&mut self) -> QslResult<u8>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 353,
+    "signature": "pub fn read_u16(&mut self) -> QslResult<u16>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 356,
+    "signature": "pub fn read_u32(&mut self) -> QslResult<u32>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 359,
+    "signature": "pub fn read_u64(&mut self) -> QslResult<u64>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 362,
+    "signature": "pub fn read_i8(&mut self) -> QslResult<i8>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 365,
+    "signature": "pub fn read_i16(&mut self) -> QslResult<i16>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 368,
+    "signature": "pub fn read_i32(&mut self) -> QslResult<i32>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "io_checked",
+    "line": 371,
+    "signature": "pub fn read_i64(&mut self) -> QslResult<i64>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "optional",
+    "line": 8,
+    "signature": "pub struct OptionalOffsets<'a>",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "optional",
+    "line": 14,
+    "signature": "pub fn parse(table_and_payload: &'a [u8]) -> QslResult<Self>",
+    "doc": "Check metadata once. This does not validate individual field codecs/UTF-8.",
+    "kind": "function"
+  },
+  {
+    "module": "optional",
+    "line": 45,
+    "signature": "pub fn len(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "optional",
+    "line": 49,
+    "signature": "pub fn is_empty(&self) -> bool",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "optional",
+    "line": 54,
+    "signature": "pub fn offset(&self, index: usize) -> Option<usize>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "optional",
+    "line": 68,
+    "signature": "pub fn field_tail(&self, index: usize) -> Option<&'a [u8]>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "parser",
+    "line": 12,
+    "signature": "pub struct ParseError",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "parser",
+    "line": 26,
+    "signature": "pub fn span(&self) -> (usize, usize)",
+    "doc": "Byte offsets are suitable for the existing `qsl_error` source highlighter.",
+    "kind": "function"
+  },
+  {
+    "module": "parser",
+    "line": 222,
+    "signature": "pub fn parse_qsl(source: &str) -> Result<Vec<QslSchema>, ParseError>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "parser",
+    "line": 226,
+    "signature": "pub fn parse_qsl_with_constants( source: &str, globals: &HashMap<String, i128>, ) -> Result<Vec<QslSchema>, ParseError>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "parser_util",
+    "line": 4,
+    "signature": "pub struct ParseNum(pub usize, pub bool);",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "parser_util",
+    "line": 7,
+    "signature": "pub fn rank_bits(min: ParseNum, max: ParseNum) -> Option<usize>",
+    "doc": "Inclusive range width: ceil(log2(MAX-MIN+1)), including singleton = 0.",
+    "kind": "function"
+  },
+  {
+    "module": "parser_util",
+    "line": 19,
+    "signature": "pub fn parse_bytes(bytes: &[u8]) -> Option<usize>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "parser_util",
+    "line": 33,
+    "signature": "pub fn parse_hex_bytes(bytes: &[u8]) -> Result<usize, &'static str>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "parser_util",
+    "line": 55,
+    "signature": "pub fn scan_schema_blocks(source: &[u8]) -> Result<Vec<&[u8]>, &'static str>",
+    "doc": "Linear scanner for `&Name{...}` blocks. Cursor and ranges are always absolute indexes into the same source (unlike the original offset mixup).",
+    "kind": "function"
+  },
+  {
+    "module": "parser_util",
+    "line": 74,
+    "signature": "pub fn parse_schema_flags(source: &[u8]) -> Result<usize, &'static str>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "parser_util",
+    "line": 96,
+    "signature": "pub fn parse_primitive_type(token: &[u8]) -> Option<crate::compat::ParserQslType>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "parser_util",
+    "line": 112,
+    "signature": "pub fn encode_signed_minimum(value: ParseNum) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 3,
+    "signature": "pub trait Serializable: Sized",
+    "doc": "Flat, trusted record serialization. No dynamic dispatch, runtime validation or `Result` is part of this API. The caller supplies schema-valid data.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "serialize",
+    "line": 10,
+    "signature": "fn get_size() -> usize;",
+    "doc": "Smallest possible encoded size determined at build time.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 15,
+    "signature": "fn serialized_size(&self) -> usize;",
+    "doc": "Required writable capacity. Exact for ordinary fields; records with compressed strings return the raw-size upper bound. Use the count from `serialize_into_unsafe`/`serialize_to` as the initialized wire length.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 21,
+    "signature": "fn serialize(&self) -> SerOut",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 35,
+    "signature": "fn serialize(&self) -> Vec<u8>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 48,
+    "signature": "unsafe fn serialize_unsafe(&self, to: *mut u8);",
+    "doc": "`to` must address `serialized_size()` writable, nonoverlapping bytes. Every field must obey the QSL bounds and fixed byte lengths.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 54,
+    "signature": "unsafe fn serialize_into_unsafe(&self, to: *mut u8) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 63,
+    "signature": "unsafe fn serialize_to(&self, to: &mut SerOut) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 73,
+    "signature": "unsafe fn serialize_to(&self, to: &mut [u8]) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 80,
+    "signature": "unsafe fn deserialize(input: &[u8]) -> Self",
+    "doc": "Convenience pointer-based decoder with a borrowed-slice argument. `input` must contain a complete, valid record matching the schema.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 89,
+    "signature": "unsafe fn deserialize_into(bytes: *const u8, len: usize, out: *mut Self)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 95,
+    "signature": "unsafe fn deserialize_unsafe(bytes: *const u8) -> Self;",
+    "doc": "`bytes` must point to a complete, valid schema-encoded record.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 100,
+    "signature": "unsafe fn deserialize_from_raw_parts(bytes: *const u8, _len: usize) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 107,
+    "signature": "pub trait BorrowSerializable<'a>: Sized",
+    "doc": "Zero-copy records borrow their string/byte payloads from the input memory. The backing allocation must remain alive for the complete `'a` lifetime.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "serialize",
+    "line": 113,
+    "signature": "fn get_size() -> usize;",
+    "doc": "Minimum encoded size including required fields and header bytes.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 115,
+    "signature": "fn serialized_size(&self) -> usize;",
+    "doc": "Required output capacity; compressed strings use their raw-size bound.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 121,
+    "signature": "fn serialize(&self) -> SerOut",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 133,
+    "signature": "fn serialize(&self) -> Vec<u8>",
+    "doc": "Allocate once and encode into bytes initialized by the generated writer. Values must satisfy all QSL bounds and exact byte lengths.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 145,
+    "signature": "unsafe fn serialize_unsafe(&self, to: *mut u8);",
+    "doc": "`to` must address `self.serialized_size()` exclusively writable bytes. Every field must obey the QSL bounds and fixed byte lengths.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 151,
+    "signature": "unsafe fn serialize_into_unsafe(&self, to: *mut u8) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 159,
+    "signature": "unsafe fn serialize_to(&self, to: &mut SerOut) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 168,
+    "signature": "unsafe fn serialize_to(&self, to: &mut [u8]) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 174,
+    "signature": "unsafe fn deserialize_borrowed(input: &'a [u8]) -> Self",
+    "doc": "`input` must be a complete, valid QSL record for the lifetime `'a`.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 183,
+    "signature": "unsafe fn deserialize_borrowed_into(bytes: *const u8, len: usize, out: *mut Self)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 190,
+    "signature": "unsafe fn deserialize_borrowed_unsafe(bytes: *const u8) -> Self;",
+    "doc": "Caller must guarantee that `bytes` points to a complete valid record and remains alive for `'a`.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 195,
+    "signature": "unsafe fn deserialize_borrowed_from_raw_parts(bytes: *const u8, _len: usize) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 201,
+    "signature": "pub struct SerOut",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "serialize",
+    "line": 210,
+    "signature": "pub fn new(len: usize) -> Self",
+    "doc": "Allocate initialized zero-filled bytes using the global Rust allocator.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 229,
+    "signature": "pub fn with_capacity_aligned(capacity: usize, alignment: usize) -> Self",
+    "doc": "Allocate reusable storage with architecture-selected power-of-two alignment. The initialized slice is initially empty; capacity is retained after reuse.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 242,
+    "signature": "pub fn capacity(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 246,
+    "signature": "pub fn alignment(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 250,
+    "signature": "pub fn clear(&mut self)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 257,
+    "signature": "pub unsafe fn set_len(&mut self, len: usize)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 263,
+    "signature": "pub unsafe fn from_raw(ptr: *mut u8, layout: std::alloc::Layout, len: usize) -> Self",
+    "doc": "Takes ownership of a caller allocation with the exact given layout. Must point to an allocation obtained with the same layout and allocator.",
+    "kind": "function"
+  },
+  {
+    "module": "serialize",
+    "line": 272,
+    "signature": "pub fn as_mut_ptr(&mut self) -> *mut u8",
+    "doc": "Return the stable output allocation pointer; does not advance a cursor.",
+    "kind": "function"
+  },
+  {
+    "module": "socket",
+    "line": 10,
+    "signature": "pub struct RawSocket",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "socket",
+    "line": 15,
+    "signature": "pub fn new(stream: TcpStream, max_frame: usize) -> io::Result<Self>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "socket",
+    "line": 34,
+    "signature": "pub fn receive<'a>(&mut self, storage: &'a mut [u8]) -> io::Result<&'a [u8]>",
+    "doc": "Read exactly one bounded frame into caller-owned storage. An oversized frame terminates this stream to avoid losing framing state.",
+    "kind": "function"
+  },
+  {
+    "module": "socket",
+    "line": 74,
+    "signature": "pub unsafe fn send_record<T: Serializable>( &mut self, value: &T, storage: &mut [u8], ) -> io::Result<usize>",
+    "doc": "Serialize directly after the transport prefix and send the initialized bytes. Every record field must satisfy its schema's range and UTF-8 contracts.",
+    "kind": "function"
+  },
+  {
+    "module": "socket",
+    "line": 85,
+    "signature": "pub unsafe fn send_borrowed_record<'a, T: BorrowSerializable<'a>>( &mut self, value: &T, storage: &mut [u8], ) -> io::Result<usize>",
+    "doc": "Every record field must satisfy its schema's range and UTF-8 contracts.",
+    "kind": "function"
+  },
+  {
+    "module": "socket",
+    "line": 94,
+    "signature": "pub fn stream(&self) -> &TcpStream",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 12,
+    "signature": "pub const STRING_COMPRESSION_MIN_BYTES: usize = 32;",
+    "doc": "Strings shorter than this are copied raw, without a compression probe.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "strings",
+    "line": 22,
+    "signature": "pub struct InlineString<const MAX: usize>",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "strings",
+    "line": 29,
+    "signature": "pub const MAX_BYTES: usize = MAX;",
+    "doc": "Maximum decoded UTF-8 byte count, fixed by the schema.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "strings",
+    "line": 31,
+    "signature": "pub const HEADER_BYTES: usize = if MAX <= 127",
+    "doc": "Length and mode share a word: 1 byte through MAX=127, then 2 or 4.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "strings",
+    "line": 39,
+    "signature": "pub const OFFSET_BYTES: usize = if MAX <= 255",
+    "doc": "Width of each backward distance; match lengths use the control byte.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "strings",
+    "line": 44,
+    "signature": "pub const fn new() -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 56,
+    "signature": "pub unsafe fn from_str_unchecked(value: &str) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 70,
+    "signature": "pub const fn spaces<const LEN: usize>() -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 84,
+    "signature": "pub fn len(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 90,
+    "signature": "pub fn is_empty(&self) -> bool",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 96,
+    "signature": "pub fn as_str(&self) -> &str",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 108,
+    "signature": "pub fn wire_capacity(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 117,
+    "signature": "pub unsafe fn encode_to(&self, output: *mut u8) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 125,
+    "signature": "pub unsafe fn encode_raw_to(&self, output: *mut u8) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 140,
+    "signature": "pub unsafe fn decode_into(input: *const u8, output: *mut Self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 150,
+    "signature": "pub unsafe fn decode_raw_into(input: *const u8, output: *mut Self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 167,
+    "signature": "pub unsafe fn decode_from(input: *const u8) -> (Self, usize)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 319,
+    "signature": "pub unsafe fn encode_bounded<const MAX: usize>( input: *const u8, len: usize, output: *mut u8, ) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 577,
+    "signature": "pub unsafe fn decode_bounded<const MAX: usize>( input: *const u8, output: *mut u8, ) -> (usize, usize)",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 662,
+    "signature": "pub const FIXED_UTF8_CODEC_VERSION: u8 = 2;",
+    "doc": "Fixed UTF-8 framing revision; peers must use the same revision.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "strings",
+    "line": 670,
+    "signature": "pub unsafe fn encode_fixed_utf8<const MAX: usize>(input: *const u8, output: *mut u8) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 692,
+    "signature": "pub unsafe fn decode_fixed_utf8<const MAX: usize>(input: *const u8, output: *mut u8) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 714,
+    "signature": "pub struct Utf8Guard<'a>",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "strings",
+    "line": 719,
+    "signature": "pub const fn from_str(value: &'a str) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 725,
+    "signature": "pub fn try_from_bytes(bytes: &'a [u8]) -> Result<Self, str::Utf8Error>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 732,
+    "signature": "pub const unsafe fn from_bytes_unchecked(bytes: &'a [u8]) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 736,
+    "signature": "pub const fn as_bytes(self) -> &'a [u8]",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "strings",
+    "line": 740,
+    "signature": "pub const fn as_str(self) -> &'a str",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 4,
+    "signature": "pub const FLAG_COMPACT: usize = 0b0000_0001;",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "types",
+    "line": 5,
+    "signature": "pub const FLAG_SAFETY: usize = 0b0000_0010;",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "types",
+    "line": 6,
+    "signature": "pub const FLAG_ALIGNMENT: usize = 0b0000_0100;",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "types",
+    "line": 7,
+    "signature": "pub const FLAG_OPTIONAL_BITMAP: usize = 0b0001_0000;",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "types",
+    "line": 8,
+    "signature": "pub const FLAG_OPT_TABLE: usize = 0b0010_0000;",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "types",
+    "line": 9,
+    "signature": "pub const FLAG_PREDICT_SEQ: usize = 0b0100_0000;",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "types",
+    "line": 11,
+    "signature": "pub const FLAG_FIELD_BORROW: usize = 0b1000_0000;",
+    "doc": "Internal lifetime marker for per-field byte/guard borrows.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "types",
+    "line": 12,
+    "signature": "pub const FLAG_LIFETIME: usize = 0b0000_1000;",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "types",
+    "line": 19,
+    "signature": "pub trait QslCustom: Sized",
+    "doc": "Compile-time-sized custom codec used by generated, unchecked QSL I/O.  All methods are inlined into generated serializers. No `Result` or buffer-length bookkeeping is required at runtime. Implementors must obey the exact wire-size contract under both normal and compact encodings.",
+    "kind": "type/constant"
+  },
+  {
+    "module": "types",
+    "line": 29,
+    "signature": "unsafe fn qsl_write_unchecked(&self, to: *mut u8);",
+    "doc": "Constant-size normal codec. Use a raw pointer store only. `to` must point to `Self::SIZE` exclusively writable bytes.",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 34,
+    "signature": "unsafe fn qsl_read_unchecked(from: *const u8) -> Self;",
+    "doc": "Read an owned value without checking its input buffer. `from` must point to `Self::SIZE` readable, schema-valid bytes.",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 38,
+    "signature": "fn qsl_size(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 44,
+    "signature": "fn qsl_comp_size(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 51,
+    "signature": "unsafe fn qsl_comp_write_unchecked(&self, to: *mut u8)",
+    "doc": "Compact raw-pointer encoder (defaults to the normal encoder). `to` must have `Self::COMP_SIZE` valid writable bytes.",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 58,
+    "signature": "unsafe fn qsl_comp_read_unchecked(from: *const u8) -> Self",
+    "doc": "Compact raw-pointer decoder (defaults to the normal decoder). `from` must have `Self::COMP_SIZE` valid readable bytes.",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 64,
+    "signature": "pub enum QslType",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "types",
+    "line": 128,
+    "signature": "pub fn rank_bits(min: i128, max: i128) -> QslResult<usize>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 138,
+    "signature": "pub fn rank_width(&self, fallback: usize) -> QslResult<usize>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 148,
+    "signature": "pub fn rank_base(&self) -> i128",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 159,
+    "signature": "pub fn number16(signed: bool, min: usize) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 166,
+    "signature": "pub fn number32(signed: bool, min: usize) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 173,
+    "signature": "pub fn number64(signed: bool, min: usize) -> Self",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 180,
+    "signature": "pub fn primitive(&self) -> QslResult<Option<&'static str>>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 208,
+    "signature": "pub fn rust_type(&self, borrowed: bool) -> QslResult<String>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 239,
+    "signature": "pub fn fixed_wire_size(&self) -> QslResult<Option<usize>>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 277,
+    "signature": "pub fn default_compact_bits(&self) -> QslResult<usize>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 295,
+    "signature": "pub fn validate(&self, borrowed: bool) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 347,
+    "signature": "pub struct QslField",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "types",
+    "line": 361,
+    "signature": "pub struct QslSchema",
+    "doc": "",
+    "kind": "type/constant"
+  },
+  {
+    "module": "types",
+    "line": 369,
+    "signature": "pub fn compact(&self) -> bool",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 372,
+    "signature": "pub fn bitmap(&self) -> bool",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 375,
+    "signature": "pub fn opt_table(&self) -> bool",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 378,
+    "signature": "pub fn predict_seq(&self) -> bool",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 382,
+    "signature": "pub fn sequential(&self) -> bool",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 385,
+    "signature": "pub fn lifetime(&self) -> bool",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 388,
+    "signature": "pub fn borrow_strings(&self) -> bool",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 391,
+    "signature": "pub fn optional_count(&self) -> usize",
+    "doc": "",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 395,
+    "signature": "pub fn tag_bits(&self) -> usize",
+    "doc": "Example: max_tag=8 => exactly 3 bits, storing tag-1.",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 403,
+    "signature": "pub fn count_bits(&self) -> usize",
+    "doc": "Number of bits needed to represent 0..=optional_count.",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 412,
+    "signature": "pub fn bitmap_words(&self) -> usize",
+    "doc": "One presence bit for every declared field, including required fields.",
+    "kind": "function"
+  },
+  {
+    "module": "types",
+    "line": 415,
+    "signature": "pub fn validate(&self) -> QslResult<()>",
+    "doc": "",
+    "kind": "function"
+  }
+]
