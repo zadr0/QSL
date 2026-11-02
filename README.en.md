@@ -1,33 +1,57 @@
-# QSL — specialized binary exchange
+# QSL — exchange of data described in advance
 
-[Русский](README.ru.md) · [Complete guide](docs/guide.en.md) · [Interactive documentation](docs/index.html) · [API](docs/API.en.md)
+[Русский](README.ru.md) · [Complete guide](docs/guide.en.md) · [Interactive documentation](docs/index.html)
 
-QSL generates Rust for exchanging data described in advance. Types, domains, field order and ownership define the representation before execution. Additional mechanisms are explicit; [required][optional] ordering is mandatory.
+**QSL is a data-description language and Rust code generator for binary exchange.** Its original task is to transfer data whose structure both sides know in advance: field types, valid values, lengths and serialization order.
 
-**QPS is exact operand compression. opt_table performs length prediction.**
+The developer describes these conditions in a schema. During the build, QSL analyzes it and generates Rust structures, serialization and deserialization methods, validation and the required tables. The application exchanges messages using generated code with a known data layout.
+
+This approach moves part of the work from execution to code generation. The tradeoff is that the developer must define the format explicitly, prepare storage and uphold the schema's constraints. Performance depends on these choices, message sizes and machine architecture.
+
+## A small example
 
 ```qsl
-&Message[safety,opt_table] {
-    u32 id;
-    str(0..4096) text|binary_opt=guard|;
-    u16? code;
+&User[safety] {
+    u64 id;
+    str(1..100) name;
+    u8? status;
 }
 ```
 
-The guide covers the complete system: QSL/DEQ, default/compact representations, optional/bitmap/predict_seq/opt_table, String and UTF-8 wrappers, string LZ, both QPS paths, validation, inline, Rust templates, custom types, SerOut, RT, native memory, IPC and sockets. Limits accompany each API choice.
+This schema describes a user record: a required identifier, a name of 1 to 100 **UTF-8 bytes**, and an optional status. By default, the fields map to Rust `u64`, `String` and `Option<u8>`. The `safety` attribute adds APIs for checked decoding of input data.
 
-## General QPS
+**Required fields must always precede optional fields.** Additional attributes and mechanisms are selected independently; this schema does not require compression, offset tables or forced inlining.
 
-ByteQps<Q2/Q4/Q8/Q16> accepts arbitrary serialized bytes, including UTF-8 and arrays, and restores them losslessly. Its 16 B QPB3 header stores original length without quantization. Packed is selected only when the complete frame saves space; otherwise explicit raw is used. A separate static scalar specialization remains available.
+## Using QSL
 
-The general path is explicit through ByteQps or serialize_qps_to / deserialize_qps_into. Existing Serializable formats do not change implicitly. Numeric QUANT_ACTIVE describes the specialization, not absence of the general codec. Four u8 values provide a u32 operand but do not guarantee compression of every 32-bit pattern.
+1. A `.qsl` file defines fields and their constraints. An optional `.deq` file supplies constants and generation settings.
+2. The generator runs from `build.rs`; the application includes its generated Rust code.
+3. The application writes and reads binary messages. Buffer APIs, including `serialize_to` and `deserialize_into`, support storage reuse.
 
-## Measurements and limits
+Both sides agree on the schema and encoding settings. Changing field order, domains or representation can change the binary format. Low-level methods require correct sizes, alignment and lifetimes for the supplied memory regions.
 
-The [full report](docs/features.en.md) and [interactive charts](docs/index.html#measurements) show useful P=M/T, time, wire sizes, 99% CI and waveforms of actual Criterion samples. M is original useful bytes. New ownership, reuse and borrowing are labelled separately.
+## Available choices
 
-The main pass covers 95 cases; focused UTF-8/whole-record checks add 8. Only the 22 general-QPS cases were repeated after local optimization: 103 distinct cases, 125 observations in total. Earlier N=1/2/3/5/10 snapshots remain separate. Smaller frames do not guarantee faster operations; the general codec is not automatically promoted into a hot path.
+| Task | QSL facilities |
+|---|---|
+| Reduce representation size | Value domains, `compact`, string LZ and QPS |
+| Access optional fields efficiently | `opt_table` and `predict_seq`, using known sizes and data length |
+| Choose string ownership | `String`, borrowed UTF-8, a copying wrapper or inline capacity; fixed strings use `[u8; N]` |
+| Control storage | Reusable buffers, static RT pools, native regions and IPC |
+| Extend a schema | Rust field templates and custom codecs |
 
-Related material: [mathematics and CPU/memory](docs/mathematics.en.md), [architecture](docs/architecture.en.md), [checks](SOURCE_AUDIT.md), [RU/EN Zed extension](https://github.com/zadr0/QSL-Extension).
+**QPS performs reversible compression with exact data restoration. Length-based prediction belongs to `opt_table` and `predict_seq`.** These mechanisms have separate responsibilities and limits.
 
-This repository distributes documentation and reproducible harnesses, not the complete Cargo workspace. Measurements describe captured local dev-qsl sources; hashes, raw data and commands are provided. QBProto handshake/R remains planned.
+Each option must be assessed on a concrete schema. A smaller frame can take longer to restore; borrowing and constructing a new string produce different result forms. The report includes measurement conditions, baseline comparisons and limitations.
+
+## Where to start
+
+- [Guide](docs/guide.en.md) — integration, schema language, formats, memory and API contracts.
+- [Interactive documentation](docs/index.html) — examples, charts and measurement waveforms.
+- [Measurements and commands](docs/features.en.md) — Criterion, source data and `P=M/T`, where `M` is original useful bytes and `T` is nanoseconds.
+- [Architecture](docs/architecture.en.md) and [mathematical introduction](docs/mathematics.en.md) — generator design and the reasoning behind optimizations.
+- [Zed extension](https://github.com/zadr0/QSL-Extension) — diagnostics, field layout and schema analysis in English and Russian.
+
+## Repository contents
+
+This repository publishes QSL documentation, measurement results and reproduction harnesses. Building the harnesses requires the corresponding `dev-qsl` sources; the complete Cargo workspace is not published here. [Implementation and validation status](SOURCE_AUDIT.md) distinguishes implemented mechanisms from plans. QBProto schema negotiation and the R identifier remain planned.
