@@ -62,4 +62,4 @@ Each option must be assessed on a concrete schema. A smaller frame can take long
 
 ## Repository contents
 
-This repository publishes QSL documentation, measurement results and reproduction harnesses. Building the harnesses requires the corresponding `dev-qsl` sources; the complete Cargo workspace is not published here. [Implementation and validation status](SOURCE_AUDIT.md) distinguishes implemented mechanisms from plans. QBProto schema negotiation and the R identifier remain planned.
+The `qsl/src` directory contains the shortened beta sources. The repository also publishes QSL documentation, measurement results and reproduction harnesses. Building the harnesses requires the corresponding `dev-qsl` sources; the complete Cargo workspace is not published here. [Implementation and validation status](SOURCE_AUDIT.md) distinguishes implemented mechanisms from plans. QBProto schema negotiation and the R identifier remain planned.

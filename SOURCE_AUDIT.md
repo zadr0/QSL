@@ -2,6 +2,12 @@
 
 Date / Дата: 2026-11-03. Scalar QPS revision 2, general byte envelope QPB3 revision 3. QPS is exact operand compression; opt_table predicts presence from ordinary-payload length. Both are optional; required fields must precede optional fields.
 
+## Restoration / Восстановление
+
+Documentation was restored from snapshot `7724abc` alongside the shortened beta uploaded in `2e72ba3`. The beta files are preserved unchanged. Existing measurements describe their recorded source manifests; the uploaded beta has not been rebenchmarked during recovery.
+
+Документация восстановлена из снимка `7724abc` рядом с сокращённой бетой `2e72ba3`. Исходники беты сохранены без изменений. Замеры относятся к указанным в них снимкам исходников.
+
 ## Executed / Выполнено
 
 - Core: 72 unit tests, 10 serial native/IPC/socket tests, 2 wire-vector tests and 2 compile-fail examples passed. Strict core Clippy and formatting passed.
