@@ -1,6 +1,6 @@
 # `lifetime` — attribute specification
 
-**Status:** implemented, except `safety` is only a parsed flag in this revision.
+**Status:** implemented. `[safety]` separately enables checked APIs; trusted methods retain their own preconditions.
 
 ## Syntax
 
@@ -22,7 +22,7 @@ Both peers must use compatible schema and wire revisions. The unsafe path does n
 
 ## What to measure
 
-Compare complete writes and reads on identical inputs, with metadata and payload separated; record wire size, allocations, CPU, benchmark profile and p99. Existing case:
+Compare complete writes and reads on identical inputs, with metadata and payload separated; record wire size, allocations, CPU, benchmark profile and p99. Historical case (not part of the fresh QSL-only run):
 `utf8_1024/ascii/read_bytes` — [all-estimates.csv](../../data/all-estimates.csv).
 
 ## Source implementation

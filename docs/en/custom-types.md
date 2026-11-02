@@ -1,3 +1,5 @@
+> Historical reference. Current contracts: [architecture](../architecture.en.md), [API](../API.en.md), [measurements](../performance.en.md). The snapshot below does not define QPS v2.
+
 # QSL custom types: implementation and performance contract
 
 **Sources:** `qsl/src/types.rs::QslCustom`, `qsl/src/interpreter.rs`, `qsl-demo/src/main.rs`, `qsl-demo/schemas/custom.qsl`. **Status:** manual QslCustom is implemented; a structure macro is planned but its implementation and public syntax are absent from the supplied sources.

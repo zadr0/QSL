@@ -1,0 +1,5 @@
+profile,case,ns,low,high
+qsl-only-qps-v2-2026-11-02,qsl_current/deserialize_into/raw_opt_table,15.566996453740853,15.418849497901965,15.720979113652069
+qsl-only-qps-v2-2026-11-02,qsl_current/deserialize_into/qps_Q16_opt_table,9.55834215216191,9.473488378437418,9.647049498020516
+qsl-only-qps-v2-2026-11-02,qsl_current/serialize_into/raw_opt_table,7.41471936531058,7.328038285840417,7.508171276125705
+qsl-only-qps-v2-2026-11-02,qsl_current/serialize_into/qps_Q16_opt_table,13.698381710109535,13.543391501236995,13.867578601066413

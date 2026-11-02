@@ -1,0 +1,11 @@
+// One required u32, N optional u64; same safety/inline policy in each pair.
+&Default1[safety,inline] {u32 id;u64? f0;}
+&Table1[opt_table,safety,inline] {u32 id;u64? f0;}
+&Default2[safety,inline] {u32 id;u64? f0;u64? f1;}
+&Table2[opt_table,safety,inline] {u32 id;u64? f0;u64? f1;}
+&Default3[safety,inline] {u32 id;u64? f0;u64? f1;u64? f2;}
+&Table3[opt_table,safety,inline] {u32 id;u64? f0;u64? f1;u64? f2;}
+&Default5[safety,inline] {u32 id;u64? f0;u64? f1;u64? f2;u64? f3;u64? f4;}
+&Table5[opt_table,safety,inline] {u32 id;u64? f0;u64? f1;u64? f2;u64? f3;u64? f4;}
+&Default10[safety,inline] {u32 id;u64? f0;u64? f1;u64? f2;u64? f3;u64? f4;u64? f5;u64? f6;u64? f7;u64? f8;u64? f9;}
+&Table10[opt_table,safety,inline] {u32 id;u64? f0;u64? f1;u64? f2;u64? f3;u64? f4;u64? f5;u64? f6;u64? f7;u64? f8;u64? f9;}

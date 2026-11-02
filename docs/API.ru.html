@@ -1,0 +1,1179 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080e17"><title>QSL · API · RU</title><link rel="stylesheet" href="assets/style.css"></head><body><div style="max-width:1120px;margin:auto;padding:28px"><a href="index.html">QSL</a><article class="article"><h1>Индекс публичных объявлений</h1>
+<p><a href="API.en.html">English</a> · <a href="architecture.ru.html">Архитектура</a></p>
+<p>Найдено 574 явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Видимость feature native/Windows и rust-macros сохраняется; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из <a href="../reference/current-source-manifest.json">manifest</a>. Этот репозиторий публикует документацию, а не Cargo workspace.</p>
+<h3>qsl-macros/src/lib.rs</h3>
+<p><code>qsl-macros/src/lib.rs:22</code></p>
+<pre><code>pub fn qsl_macro(args: TokenStream, item: TokenStream) -&gt; TokenStream {</code></pre>
+<p><code>qsl-macros/src/lib.rs:26</code></p>
+<pre><code>pub fn schem_macro(args: TokenStream, item: TokenStream) -&gt; TokenStream {</code></pre>
+<h3>qsl/src/analysis.rs</h3>
+<p><code>qsl/src/analysis.rs:5</code></p>
+<pre><code>pub enum BitRegister {</code></pre>
+<p><code>qsl/src/analysis.rs:14</code></p>
+<pre><code>pub fn for_bits(bits: usize) -&gt; QslResult&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/analysis.rs:25</code></p>
+<pre><code>pub fn bits(self) -&gt; usize {</code></pre>
+<p><code>qsl/src/analysis.rs:35</code></p>
+<pre><code>pub fn reader(self) -&gt; &amp;&#x27;static str {</code></pre>
+<p><code>qsl/src/analysis.rs:45</code></p>
+<pre><code>pub fn writer(self) -&gt; &amp;&#x27;static str {</code></pre>
+<p><code>qsl/src/analysis.rs:57</code></p>
+<pre><code>pub struct BitBlock {</code></pre>
+<p><code>qsl/src/analysis.rs:62</code></p>
+<pre><code>pub struct QslIoPlan {</code></pre>
+<p><code>qsl/src/analysis.rs:111</code></p>
+<pre><code>pub fn analyze(schema: &amp;QslSchema) -&gt; QslResult&lt;Self&gt; {</code></pre>
+<h3>qsl/src/bit_io.rs</h3>
+<p><code>qsl/src/bit_io.rs:70</code></p>
+<pre><code>pub unsafe fn read_inline_string_into_with&lt;const MAX: usize, H: crate::StringHeader&gt;( &amp;mut self, out: *mut crate::InlineString&lt;MAX&gt;, ) {</code></pre>
+<p><code>qsl/src/bit_io.rs:81</code></p>
+<pre><code>pub unsafe fn read_raw_inline_string_into_with&lt;const MAX: usize, H: crate::StringHeader&gt;( &amp;mut self, out: *mut crate::InlineString&lt;MAX&gt;, ) {</code></pre>
+<p><code>qsl/src/bit_io.rs:92</code></p>
+<pre><code>pub unsafe fn read_inline_string_with&lt;const MAX: usize, H: crate::StringHeader&gt;( &amp;mut self, ) -&gt; crate::InlineString&lt;MAX&gt; {</code></pre>
+<p><code>qsl/src/bit_io.rs:103</code></p>
+<pre><code>pub unsafe fn read_raw_inline_string_with&lt;const MAX: usize, H: crate::StringHeader&gt;( &amp;mut self, ) -&gt; crate::InlineString&lt;MAX&gt; {</code></pre>
+<p><code>qsl/src/bit_io.rs:112</code></p>
+<pre><code>pub fn as_ptr(&amp;self) -&gt; *const u8 {</code></pre>
+<p><code>qsl/src/bit_io.rs:118</code></p>
+<pre><code>pub unsafe fn read_exact(&amp;mut self, n: usize) -&gt; *const u8 {</code></pre>
+<p><code>qsl/src/bit_io.rs:127</code></p>
+<pre><code>pub unsafe fn read_u8(&amp;mut self) -&gt; u8 {</code></pre>
+<p><code>qsl/src/bit_io.rs:133</code></p>
+<pre><code>pub unsafe fn read_u16(&amp;mut self) -&gt; u16 {</code></pre>
+<p><code>qsl/src/bit_io.rs:139</code></p>
+<pre><code>pub unsafe fn read_u32(&amp;mut self) -&gt; u32 {</code></pre>
+<p><code>qsl/src/bit_io.rs:145</code></p>
+<pre><code>pub unsafe fn read_u64(&amp;mut self) -&gt; u64 {</code></pre>
+<p><code>qsl/src/bit_io.rs:151</code></p>
+<pre><code>pub unsafe fn read_i8(&amp;mut self) -&gt; i8 {</code></pre>
+<p><code>qsl/src/bit_io.rs:157</code></p>
+<pre><code>pub unsafe fn read_i16(&amp;mut self) -&gt; i16 {</code></pre>
+<p><code>qsl/src/bit_io.rs:163</code></p>
+<pre><code>pub unsafe fn read_i32(&amp;mut self) -&gt; i32 {</code></pre>
+<p><code>qsl/src/bit_io.rs:169</code></p>
+<pre><code>pub unsafe fn read_i64(&amp;mut self) -&gt; i64 {</code></pre>
+<p><code>qsl/src/bit_io.rs:175</code></p>
+<pre><code>pub unsafe fn read_inline_string&lt;const MAX: usize&gt;(&amp;mut self) -&gt; crate::InlineString&lt;MAX&gt; {</code></pre>
+<p><code>qsl/src/bit_io.rs:184</code></p>
+<pre><code>pub unsafe fn read_inline_string_into&lt;const MAX: usize&gt;( &amp;mut self, out: *mut crate::InlineString&lt;MAX&gt;, ) {</code></pre>
+<p><code>qsl/src/bit_io.rs:195</code></p>
+<pre><code>pub unsafe fn read_raw_inline_string_into&lt;const MAX: usize&gt;( &amp;mut self, out: *mut crate::InlineString&lt;MAX&gt;, ) {</code></pre>
+<p><code>qsl/src/bit_io.rs:210</code></p>
+<pre><code>pub unsafe fn write_inline_string_with&lt;const MAX: usize, H: crate::StringHeader&gt;( &amp;mut self, value: &amp;crate::InlineString&lt;MAX&gt;, ) {</code></pre>
+<p><code>qsl/src/bit_io.rs:219</code></p>
+<pre><code>pub fn as_mut_ptr(&amp;self) -&gt; *mut u8 {</code></pre>
+<p><code>qsl/src/bit_io.rs:225</code></p>
+<pre><code>pub unsafe fn claim_bytes(&amp;mut self, n: usize) -&gt; *mut u8 {</code></pre>
+<p><code>qsl/src/bit_io.rs:234</code></p>
+<pre><code>pub unsafe fn write_bytes_unchecked(&amp;mut self, bytes: &amp;[u8]) {</code></pre>
+<p><code>qsl/src/bit_io.rs:240</code></p>
+<pre><code>pub unsafe fn write_ptr_unchecked(&amp;mut self, source: *const u8, n: usize) {</code></pre>
+<p><code>qsl/src/bit_io.rs:247</code></p>
+<pre><code>pub unsafe fn write_zeros_unchecked(&amp;mut self, n: usize) {</code></pre>
+<p><code>qsl/src/bit_io.rs:254</code></p>
+<pre><code>pub unsafe fn write_inline_string&lt;const MAX: usize&gt;( &amp;mut self, value: &amp;crate::InlineString&lt;MAX&gt;, ) {</code></pre>
+<p><code>qsl/src/bit_io.rs:264</code></p>
+<pre><code>pub struct QslByteReader {</code></pre>
+<p><code>qsl/src/bit_io.rs:271</code></p>
+<pre><code>pub unsafe fn new(ptr: *const u8) -&gt; Self {</code></pre>
+<p><code>qsl/src/bit_io.rs:275</code></p>
+<pre><code>pub fn align(&amp;mut self) {</code></pre>
+<p><code>qsl/src/bit_io.rs:279</code></p>
+<pre><code>pub unsafe fn read_bits(&amp;mut self, width: u32) -&gt; u64 {</code></pre>
+<p><code>qsl/src/bit_io.rs:285</code></p>
+<pre><code>pub struct QslByteWriter {</code></pre>
+<p><code>qsl/src/bit_io.rs:292</code></p>
+<pre><code>pub unsafe fn from_raw(ptr: *mut u8) -&gt; Self {</code></pre>
+<p><code>qsl/src/bit_io.rs:296</code></p>
+<pre><code>pub fn flush_unchecked(&amp;mut self) {</code></pre>
+<p><code>qsl/src/bit_io.rs:300</code></p>
+<pre><code>pub unsafe fn write_bits_unchecked(&amp;mut self, _value: u64, width: u32) {</code></pre>
+<p><code>qsl/src/bit_io.rs:307</code></p>
+<pre><code>pub struct $reader {</code></pre>
+<p><code>qsl/src/bit_io.rs:316</code></p>
+<pre><code>pub unsafe fn new(ptr: *const u8) -&gt; Self {</code></pre>
+<p><code>qsl/src/bit_io.rs:326</code></p>
+<pre><code>pub unsafe fn align(&amp;mut self) {</code></pre>
+<p><code>qsl/src/bit_io.rs:333</code></p>
+<pre><code>pub unsafe fn read_bits(&amp;mut self, width: u32) -&gt; u64 {</code></pre>
+<p><code>qsl/src/bit_io.rs:348</code></p>
+<pre><code>pub struct $writer {</code></pre>
+<p><code>qsl/src/bit_io.rs:357</code></p>
+<pre><code>pub unsafe fn from_raw(ptr: *mut u8) -&gt; Self {</code></pre>
+<p><code>qsl/src/bit_io.rs:367</code></p>
+<pre><code>pub unsafe fn write_bits_unchecked(&amp;mut self, value: u64, width: u32) {</code></pre>
+<p><code>qsl/src/bit_io.rs:382</code></p>
+<pre><code>pub unsafe fn flush_unchecked(&amp;mut self) {</code></pre>
+<h3>qsl/src/compat.rs</h3>
+<p><code>qsl/src/compat.rs:10</code></p>
+<pre><code>pub enum ParserQslType {</code></pre>
+<p><code>qsl/src/compat.rs:25</code></p>
+<pre><code>pub struct ParserQslField {</code></pre>
+<p><code>qsl/src/compat.rs:34</code></p>
+<pre><code>pub struct ParserQslSchema {</code></pre>
+<p><code>qsl/src/compat.rs:42</code></p>
+<pre><code>pub fn new(flags: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/compat.rs:48</code></p>
+<pre><code>pub fn optional_count(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/compat.rs:51</code></p>
+<pre><code>pub fn validate(&amp;self) -&gt; QslResult&lt;()&gt; {</code></pre>
+<h3>qsl/src/deq.rs</h3>
+<p><code>qsl/src/deq.rs:13</code></p>
+<pre><code>pub struct DeqConstant {</code></pre>
+<p><code>qsl/src/deq.rs:19</code></p>
+<pre><code>pub struct DeqConfig {</code></pre>
+<p><code>qsl/src/deq.rs:26</code></p>
+<pre><code>pub struct GenerationConfig {</code></pre>
+<p><code>qsl/src/deq.rs:42</code></p>
+<pre><code>pub fn integer_values(&amp;self) -&gt; HashMap&lt;String, i128&gt; {</code></pre>
+<p><code>qsl/src/deq.rs:50</code></p>
+<pre><code>pub fn parse_deq(source: &amp;str) -&gt; Result&lt;DeqConfig, ParseError&gt; {</code></pre>
+<p><code>qsl/src/deq.rs:130</code></p>
+<pre><code>pub fn build_qsl_files( qsl_files: &amp;[&amp;str], deq_files: &amp;[&amp;str], out_dir: impl AsRef&lt;Path&gt;, ) -&gt; Result&lt;PathBuf, Box&lt;dyn std::error::Error&gt;&gt; {</code></pre>
+<p><code>qsl/src/deq.rs:138</code></p>
+<pre><code>pub fn build_qsl_files_with_rust( qsl_files: &amp;[&amp;str], deq_files: &amp;[&amp;str], rust_files: &amp;[&amp;str], out_dir: impl AsRef&lt;Path&gt;, ) -&gt; Result&lt;PathBuf, Box&lt;dyn std::error::Error&gt;&gt; {</code></pre>
+<h3>qsl/src/interpreter.rs</h3>
+<p><code>qsl/src/interpreter.rs:18</code></p>
+<pre><code>pub fn schema_maximum_size(schema: &amp;QslSchema) -&gt; QslResult&lt;Option&lt;usize&gt;&gt; {</code></pre>
+<p><code>qsl/src/interpreter.rs:130</code></p>
+<pre><code>pub trait TypeInterpreter {</code></pre>
+<p><code>qsl/src/interpreter.rs:131</code></p>
+<pre><code>fn type_name(&amp;self, out: &amp;mut Vec&lt;u8&gt;, borrowed: bool) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/interpreter.rs:132</code></p>
+<pre><code>fn size(&amp;self, out: &amp;mut Vec&lt;u8&gt;, expr: &amp;str, width: usize, compact: bool) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/interpreter.rs:133</code></p>
+<pre><code>fn write(&amp;self, out: &amp;mut Vec&lt;u8&gt;, expr: &amp;str) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/interpreter.rs:134</code></p>
+<pre><code>fn read(&amp;self, out: &amp;mut Vec&lt;u8&gt;, name: &amp;str, borrowed: bool) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/interpreter.rs:135</code></p>
+<pre><code>fn comp_write(&amp;self, out: &amp;mut Vec&lt;u8&gt;, expr: &amp;str, bits: usize) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/interpreter.rs:136</code></p>
+<pre><code>fn comp_read( &amp;self, out: &amp;mut Vec&lt;u8&gt;, name: &amp;str, bits: usize, borrowed: bool, ) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/interpreter.rs:2233</code></p>
+<pre><code>pub struct QslInterpreter {</code></pre>
+<p><code>qsl/src/interpreter.rs:2261</code></p>
+<pre><code>pub fn new() -&gt; Self {</code></pre>
+<p><code>qsl/src/interpreter.rs:2265</code></p>
+<pre><code>pub fn generate(&amp;mut self, schemas: &amp;[QslSchema]) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/interpreter.rs:2286</code></p>
+<pre><code>pub fn generate_parsed(&amp;mut self, schemas: &amp;[crate::compat::ParserQslSchema]) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/interpreter.rs:2294</code></p>
+<pre><code>pub fn generate_field(&amp;mut self, field: &amp;QslField, borrowed: bool) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/interpreter.rs:2647</code></p>
+<pre><code>pub fn generate_default(&amp;mut self, schema: &amp;QslSchema) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/interpreter.rs:2658</code></p>
+<pre><code>pub fn generate_lifetime(&amp;mut self, schema: &amp;QslSchema) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/interpreter.rs:2672</code></p>
+<pre><code>pub fn push(&amp;self) -&gt; std::io::Result&lt;()&gt; {</code></pre>
+<h3>qsl/src/io.rs</h3>
+<p><code>qsl/src/io.rs:7</code></p>
+<pre><code>pub use checked::{QslCheckedBitsReader, QslCheckedBitsWriter, QslCheckedReader, QslCheckedWriter};</code></pre>
+<p><code>qsl/src/io.rs:9</code></p>
+<pre><code>pub type QslResult&lt;T&gt; = Result&lt;T, QslError&gt;;</code></pre>
+<p><code>qsl/src/io.rs:12</code></p>
+<pre><code>pub enum QslError {</code></pre>
+<p><code>qsl/src/io.rs:34</code></p>
+<pre><code>pub struct QslRawWriter {</code></pre>
+<p><code>qsl/src/io.rs:42</code></p>
+<pre><code>pub unsafe fn new(ptr: *mut u8) -&gt; Self {</code></pre>
+<p><code>qsl/src/io.rs:49</code></p>
+<pre><code>pub fn from(out: &amp;mut [u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/io.rs:59</code></p>
+<pre><code>pub unsafe fn write_u8(&amp;mut self, value: u8) {</code></pre>
+<p><code>qsl/src/io.rs:67</code></p>
+<pre><code>pub unsafe fn write_u16(&amp;mut self, value: u16) {</code></pre>
+<p><code>qsl/src/io.rs:75</code></p>
+<pre><code>pub unsafe fn write_u32(&amp;mut self, value: u32) {</code></pre>
+<p><code>qsl/src/io.rs:83</code></p>
+<pre><code>pub unsafe fn write_u64(&amp;mut self, value: u64) {</code></pre>
+<p><code>qsl/src/io.rs:91</code></p>
+<pre><code>pub unsafe fn write(&amp;mut self, source: *const u8, len: usize) {</code></pre>
+<p><code>qsl/src/io.rs:99</code></p>
+<pre><code>pub struct QslRawReader {</code></pre>
+<p><code>qsl/src/io.rs:107</code></p>
+<pre><code>pub unsafe fn new(ptr: *const u8) -&gt; Self {</code></pre>
+<p><code>qsl/src/io.rs:113</code></p>
+<pre><code>pub fn from(input: &amp;[u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/io.rs:122</code></p>
+<pre><code>pub unsafe fn read_u8(&amp;mut self) -&gt; u8 {</code></pre>
+<p><code>qsl/src/io.rs:131</code></p>
+<pre><code>pub unsafe fn read_u16(&amp;mut self) -&gt; u16 {</code></pre>
+<p><code>qsl/src/io.rs:140</code></p>
+<pre><code>pub unsafe fn read_u32(&amp;mut self) -&gt; u32 {</code></pre>
+<p><code>qsl/src/io.rs:149</code></p>
+<pre><code>pub unsafe fn read_u64(&amp;mut self) -&gt; u64 {</code></pre>
+<p><code>qsl/src/io.rs:157</code></p>
+<pre><code>pub unsafe fn take(&amp;mut self, len: usize) -&gt; *const u8 {</code></pre>
+<p><code>qsl/src/io.rs:167</code></p>
+<pre><code>pub struct QslFastBitsReader {</code></pre>
+<p><code>qsl/src/io.rs:178</code></p>
+<pre><code>pub unsafe fn read_inline_string_into_with&lt;const MAX: usize, H: crate::StringHeader&gt;( &amp;mut self, out: *mut crate::InlineString&lt;MAX&gt;, ) {</code></pre>
+<p><code>qsl/src/io.rs:189</code></p>
+<pre><code>pub unsafe fn read_raw_inline_string_into_with&lt;const MAX: usize, H: crate::StringHeader&gt;( &amp;mut self, out: *mut crate::InlineString&lt;MAX&gt;, ) {</code></pre>
+<p><code>qsl/src/io.rs:200</code></p>
+<pre><code>pub unsafe fn read_inline_string_with&lt;const MAX: usize, H: crate::StringHeader&gt;( &amp;mut self, ) -&gt; crate::InlineString&lt;MAX&gt; {</code></pre>
+<p><code>qsl/src/io.rs:211</code></p>
+<pre><code>pub unsafe fn read_raw_inline_string_with&lt;const MAX: usize, H: crate::StringHeader&gt;( &amp;mut self, ) -&gt; crate::InlineString&lt;MAX&gt; {</code></pre>
+<p><code>qsl/src/io.rs:222</code></p>
+<pre><code>pub fn as_ptr(&amp;self) -&gt; *const u8 {</code></pre>
+<p><code>qsl/src/io.rs:230</code></p>
+<pre><code>pub unsafe fn read_raw_inline_string_into&lt;const MAX: usize&gt;( &amp;mut self, output: *mut crate::InlineString&lt;MAX&gt;, ) {</code></pre>
+<p><code>qsl/src/io.rs:242</code></p>
+<pre><code>pub unsafe fn read_inline_string_into&lt;const MAX: usize&gt;( &amp;mut self, output: *mut crate::InlineString&lt;MAX&gt;, ) {</code></pre>
+<p><code>qsl/src/io.rs:254</code></p>
+<pre><code>pub unsafe fn read_inline_string&lt;const MAX: usize&gt;(&amp;mut self) -&gt; crate::InlineString&lt;MAX&gt; {</code></pre>
+<p><code>qsl/src/io.rs:265</code></p>
+<pre><code>pub unsafe fn new(ptr: *const u8) -&gt; Self {</code></pre>
+<p><code>qsl/src/io.rs:276</code></p>
+<pre><code>pub fn from(input: &amp;[u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/io.rs:290</code></p>
+<pre><code>pub unsafe fn read_bits(&amp;mut self, width: u32) -&gt; u64 {</code></pre>
+<p><code>qsl/src/io.rs:309</code></p>
+<pre><code>pub unsafe fn align(&amp;mut self) {</code></pre>
+<p><code>qsl/src/io.rs:318</code></p>
+<pre><code>pub unsafe fn read_exact(&amp;mut self, len: usize) -&gt; *const u8 {</code></pre>
+<p><code>qsl/src/io.rs:330</code></p>
+<pre><code>pub unsafe fn read_u8(&amp;mut self) -&gt; u8 {</code></pre>
+<p><code>qsl/src/io.rs:341</code></p>
+<pre><code>pub unsafe fn read_u16(&amp;mut self) -&gt; u16 {</code></pre>
+<p><code>qsl/src/io.rs:352</code></p>
+<pre><code>pub unsafe fn read_u32(&amp;mut self) -&gt; u32 {</code></pre>
+<p><code>qsl/src/io.rs:363</code></p>
+<pre><code>pub unsafe fn read_u64(&amp;mut self) -&gt; u64 {</code></pre>
+<p><code>qsl/src/io.rs:373</code></p>
+<pre><code>pub unsafe fn read_i8(&amp;mut self) -&gt; i8 {</code></pre>
+<p><code>qsl/src/io.rs:380</code></p>
+<pre><code>pub unsafe fn read_i16(&amp;mut self) -&gt; i16 {</code></pre>
+<p><code>qsl/src/io.rs:387</code></p>
+<pre><code>pub unsafe fn read_i32(&amp;mut self) -&gt; i32 {</code></pre>
+<p><code>qsl/src/io.rs:394</code></p>
+<pre><code>pub unsafe fn read_i64(&amp;mut self) -&gt; i64 {</code></pre>
+<p><code>qsl/src/io.rs:406</code></p>
+<pre><code>pub struct QslUncheckedWriter {</code></pre>
+<p><code>qsl/src/io.rs:416</code></p>
+<pre><code>pub unsafe fn write_inline_string_with&lt;const MAX: usize, H: crate::StringHeader&gt;( &amp;mut self, value: &amp;crate::InlineString&lt;MAX&gt;, ) {</code></pre>
+<p><code>qsl/src/io.rs:427</code></p>
+<pre><code>pub fn as_mut_ptr(&amp;self) -&gt; *mut u8 {</code></pre>
+<p><code>qsl/src/io.rs:434</code></p>
+<pre><code>pub unsafe fn write_inline_string&lt;const MAX: usize&gt;( &amp;mut self, value: &amp;crate::InlineString&lt;MAX&gt;, ) {</code></pre>
+<p><code>qsl/src/io.rs:445</code></p>
+<pre><code>pub unsafe fn from_raw(ptr: *mut u8) -&gt; Self {</code></pre>
+<p><code>qsl/src/io.rs:456</code></p>
+<pre><code>pub fn from(out: &amp;mut [u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/io.rs:468</code></p>
+<pre><code>pub unsafe fn write_bytes_unchecked(&amp;mut self, bytes: &amp;[u8]) {</code></pre>
+<p><code>qsl/src/io.rs:478</code></p>
+<pre><code>pub unsafe fn write_ptr_unchecked(&amp;mut self, source: *const u8, len: usize) {</code></pre>
+<p><code>qsl/src/io.rs:488</code></p>
+<pre><code>pub unsafe fn write_zeros_unchecked(&amp;mut self, count: usize) {</code></pre>
+<p><code>qsl/src/io.rs:498</code></p>
+<pre><code>pub unsafe fn write_bits_unchecked(&amp;mut self, value: u64, width: u32) {</code></pre>
+<p><code>qsl/src/io.rs:515</code></p>
+<pre><code>pub unsafe fn flush_unchecked(&amp;mut self) {</code></pre>
+<p><code>qsl/src/io.rs:530</code></p>
+<pre><code>pub unsafe fn claim_bytes(&amp;mut self, n: usize) -&gt; *mut u8 {</code></pre>
+<p><code>qsl/src/io.rs:541</code></p>
+<pre><code>pub unsafe fn write_bytes(&amp;mut self, bytes: &amp;[u8]) {</code></pre>
+<p><code>qsl/src/io.rs:549</code></p>
+<pre><code>pub unsafe fn write_zeros(&amp;mut self, n: usize) {</code></pre>
+<p><code>qsl/src/io.rs:557</code></p>
+<pre><code>pub unsafe fn write_bits(&amp;mut self, v: u64, width: u32) {</code></pre>
+<p><code>qsl/src/io.rs:566</code></p>
+<pre><code>pub unsafe fn flush(&amp;mut self) {</code></pre>
+<p><code>qsl/src/io.rs:573</code></p>
+<pre><code>pub unsafe fn write_u8(&amp;mut self, value: u8) {</code></pre>
+<p><code>qsl/src/io.rs:583</code></p>
+<pre><code>pub unsafe fn write_u16(&amp;mut self, value: u16) {</code></pre>
+<p><code>qsl/src/io.rs:593</code></p>
+<pre><code>pub unsafe fn write_u32(&amp;mut self, value: u32) {</code></pre>
+<p><code>qsl/src/io.rs:603</code></p>
+<pre><code>pub unsafe fn write_u64(&amp;mut self, value: u64) {</code></pre>
+<p><code>qsl/src/io.rs:612</code></p>
+<pre><code>pub unsafe fn write_i8(&amp;mut self, v: i8) {</code></pre>
+<p><code>qsl/src/io.rs:619</code></p>
+<pre><code>pub unsafe fn write_i16(&amp;mut self, v: i16) {</code></pre>
+<p><code>qsl/src/io.rs:626</code></p>
+<pre><code>pub unsafe fn write_i32(&amp;mut self, v: i32) {</code></pre>
+<p><code>qsl/src/io.rs:633</code></p>
+<pre><code>pub unsafe fn write_i64(&amp;mut self, v: i64) {</code></pre>
+<p><code>qsl/src/io.rs:640</code></p>
+<pre><code>pub type QslWriter = QslRawWriter;</code></pre>
+<p><code>qsl/src/io.rs:641</code></p>
+<pre><code>pub type QslReader = QslRawReader;</code></pre>
+<p><code>qsl/src/io.rs:642</code></p>
+<pre><code>pub type QslBitsWriter = QslUncheckedWriter;</code></pre>
+<p><code>qsl/src/io.rs:643</code></p>
+<pre><code>pub type QslBitsReader = QslFastBitsReader;</code></pre>
+<p><code>qsl/src/io.rs:647</code></p>
+<pre><code>pub struct QslSizer {</code></pre>
+<p><code>qsl/src/io.rs:654</code></p>
+<pre><code>pub fn bits(&amp;mut self, n: usize) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io.rs:664</code></p>
+<pre><code>pub fn align(&amp;mut self) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io.rs:672</code></p>
+<pre><code>pub fn bytes(&amp;mut self, n: usize) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io.rs:678</code></p>
+<pre><code>pub fn finish(mut self) -&gt; QslResult&lt;usize&gt; {</code></pre>
+<h3>qsl/src/io_checked.rs</h3>
+<p><code>qsl/src/io_checked.rs:9</code></p>
+<pre><code>pub struct QslCheckedWriter&lt;&#x27;a&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:17</code></p>
+<pre><code>pub fn from(out: &amp;&#x27;a mut [u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/io_checked.rs:22</code></p>
+<pre><code>pub unsafe fn from_raw_parts(ptr: *mut u8, len: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/io_checked.rs:31</code></p>
+<pre><code>pub fn from_raw(out: &amp;&#x27;a mut crate::serialize::SerOut) -&gt; Self {</code></pre>
+<p><code>qsl/src/io_checked.rs:34</code></p>
+<pre><code>pub fn position(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/io_checked.rs:37</code></p>
+<pre><code>pub fn write(&amp;mut self, bytes: &amp;[u8]) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:53</code></p>
+<pre><code>pub fn write_zeros(&amp;mut self, len: usize) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:66</code></p>
+<pre><code>pub fn write_u8(&amp;mut self, v: u8) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:69</code></p>
+<pre><code>pub fn write_u16(&amp;mut self, v: u16) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:72</code></p>
+<pre><code>pub fn write_u32(&amp;mut self, v: u32) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:75</code></p>
+<pre><code>pub fn write_u64(&amp;mut self, v: u64) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:78</code></p>
+<pre><code>pub fn write_i8(&amp;mut self, v: i8) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:81</code></p>
+<pre><code>pub fn write_i16(&amp;mut self, v: i16) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:84</code></p>
+<pre><code>pub fn write_i32(&amp;mut self, v: i32) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:87</code></p>
+<pre><code>pub fn write_i64(&amp;mut self, v: i64) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:92</code></p>
+<pre><code>pub struct QslCheckedReader&lt;&#x27;a&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:99</code></p>
+<pre><code>pub fn new(bytes: &amp;&#x27;a [u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/io_checked.rs:104</code></p>
+<pre><code>pub unsafe fn from_raw_parts(ptr: *const u8, len: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/io_checked.rs:112</code></p>
+<pre><code>pub fn position(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/io_checked.rs:115</code></p>
+<pre><code>pub fn read_bytes(&amp;mut self, n: usize) -&gt; QslResult&lt;&amp;&#x27;a [u8]&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:124</code></p>
+<pre><code>pub fn read_u8(&amp;mut self) -&gt; QslResult&lt;u8&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:127</code></p>
+<pre><code>pub fn read_u16(&amp;mut self) -&gt; QslResult&lt;u16&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:130</code></p>
+<pre><code>pub fn read_u32(&amp;mut self) -&gt; QslResult&lt;u32&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:133</code></p>
+<pre><code>pub fn read_u64(&amp;mut self) -&gt; QslResult&lt;u64&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:136</code></p>
+<pre><code>pub fn read_i8(&amp;mut self) -&gt; QslResult&lt;i8&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:139</code></p>
+<pre><code>pub fn read_i16(&amp;mut self) -&gt; QslResult&lt;i16&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:142</code></p>
+<pre><code>pub fn read_i32(&amp;mut self) -&gt; QslResult&lt;i32&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:145</code></p>
+<pre><code>pub fn read_i64(&amp;mut self) -&gt; QslResult&lt;i64&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:152</code></p>
+<pre><code>pub struct QslCheckedBitsWriter&lt;&#x27;a&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:161</code></p>
+<pre><code>pub fn from(out: &amp;&#x27;a mut [u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/io_checked.rs:166</code></p>
+<pre><code>pub unsafe fn from_raw_parts(ptr: *mut u8, len: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/io_checked.rs:177</code></p>
+<pre><code>pub fn from_raw(out: &amp;&#x27;a mut crate::serialize::SerOut) -&gt; Self {</code></pre>
+<p><code>qsl/src/io_checked.rs:180</code></p>
+<pre><code>pub fn position(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/io_checked.rs:193</code></p>
+<pre><code>pub fn write_bits(&amp;mut self, mut value: u64, mut width: u32) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:215</code></p>
+<pre><code>pub fn flush(&amp;mut self) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:223</code></p>
+<pre><code>pub fn write_bytes(&amp;mut self, bytes: &amp;[u8]) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:240</code></p>
+<pre><code>pub fn write_zeros(&amp;mut self, n: usize) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:254</code></p>
+<pre><code>pub fn write_u8(&amp;mut self, v: u8) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:257</code></p>
+<pre><code>pub fn write_u16(&amp;mut self, v: u16) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:260</code></p>
+<pre><code>pub fn write_u32(&amp;mut self, v: u32) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:263</code></p>
+<pre><code>pub fn write_u64(&amp;mut self, v: u64) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:266</code></p>
+<pre><code>pub fn write_i8(&amp;mut self, v: i8) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:269</code></p>
+<pre><code>pub fn write_i16(&amp;mut self, v: i16) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:272</code></p>
+<pre><code>pub fn write_i32(&amp;mut self, v: i32) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:275</code></p>
+<pre><code>pub fn write_i64(&amp;mut self, v: i64) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:280</code></p>
+<pre><code>pub struct QslCheckedBitsReader&lt;&#x27;a&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:289</code></p>
+<pre><code>pub fn new(input: &amp;&#x27;a [u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/io_checked.rs:294</code></p>
+<pre><code>pub unsafe fn from_raw_parts(ptr: *const u8, len: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/io_checked.rs:304</code></p>
+<pre><code>pub fn position(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/io_checked.rs:307</code></p>
+<pre><code>pub fn read_bits(&amp;mut self, width: u32) -&gt; QslResult&lt;u64&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:332</code></p>
+<pre><code>pub fn align(&amp;mut self) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:340</code></p>
+<pre><code>pub fn read_bytes(&amp;mut self, n: usize) -&gt; QslResult&lt;&amp;&#x27;a [u8]&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:350</code></p>
+<pre><code>pub fn read_u8(&amp;mut self) -&gt; QslResult&lt;u8&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:353</code></p>
+<pre><code>pub fn read_u16(&amp;mut self) -&gt; QslResult&lt;u16&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:356</code></p>
+<pre><code>pub fn read_u32(&amp;mut self) -&gt; QslResult&lt;u32&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:359</code></p>
+<pre><code>pub fn read_u64(&amp;mut self) -&gt; QslResult&lt;u64&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:362</code></p>
+<pre><code>pub fn read_i8(&amp;mut self) -&gt; QslResult&lt;i8&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:365</code></p>
+<pre><code>pub fn read_i16(&amp;mut self) -&gt; QslResult&lt;i16&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:368</code></p>
+<pre><code>pub fn read_i32(&amp;mut self) -&gt; QslResult&lt;i32&gt; {</code></pre>
+<p><code>qsl/src/io_checked.rs:371</code></p>
+<pre><code>pub fn read_i64(&amp;mut self) -&gt; QslResult&lt;i64&gt; {</code></pre>
+<h3>qsl/src/length_graph.rs</h3>
+<p><code>qsl/src/length_graph.rs:6</code></p>
+<pre><code>pub struct Domain {</code></pre>
+<p><code>qsl/src/length_graph.rs:13</code></p>
+<pre><code>pub struct LengthNode {</code></pre>
+<p><code>qsl/src/length_graph.rs:22</code></p>
+<pre><code>pub struct OffsetRecipe {</code></pre>
+<p><code>qsl/src/length_graph.rs:29</code></p>
+<pre><code>pub struct LengthGraph {</code></pre>
+<p><code>qsl/src/length_graph.rs:37</code></p>
+<pre><code>pub fn analyze(s: &amp;QslSchema) -&gt; QslResult&lt;Option&lt;Self&gt;&gt; {</code></pre>
+<p><code>qsl/src/length_graph.rs:219</code></p>
+<pre><code>pub fn event_index(&amp;self, len: usize) -&gt; Option&lt;usize&gt; {</code></pre>
+<h3>qsl/src/lib.rs</h3>
+<p><code>qsl/src/lib.rs:2</code></p>
+<pre><code>pub mod compat;</code></pre>
+<p><code>qsl/src/lib.rs:3</code></p>
+<pre><code>pub mod deq;</code></pre>
+<p><code>qsl/src/lib.rs:4</code></p>
+<pre><code>pub mod interpreter;</code></pre>
+<p><code>qsl/src/lib.rs:5</code></p>
+<pre><code>pub mod io;</code></pre>
+<p><code>qsl/src/lib.rs:6</code></p>
+<pre><code>pub mod parser;</code></pre>
+<p><code>qsl/src/lib.rs:7</code></p>
+<pre><code>pub mod parser_util;</code></pre>
+<p><code>qsl/src/lib.rs:8</code></p>
+<pre><code>pub mod serialize;</code></pre>
+<p><code>qsl/src/lib.rs:9</code></p>
+<pre><code>pub mod strings;</code></pre>
+<p><code>qsl/src/lib.rs:10</code></p>
+<pre><code>pub mod types;</code></pre>
+<p><code>qsl/src/lib.rs:12</code></p>
+<pre><code>pub use compat::*;</code></pre>
+<p><code>qsl/src/lib.rs:13</code></p>
+<pre><code>pub use deq::{build_qsl_files, parse_deq, DeqConfig, DeqConstant};</code></pre>
+<p><code>qsl/src/lib.rs:14</code></p>
+<pre><code>pub use interpreter::*;</code></pre>
+<p><code>qsl/src/lib.rs:15</code></p>
+<pre><code>pub use io::*;</code></pre>
+<p><code>qsl/src/lib.rs:16</code></p>
+<pre><code>pub use parser::{parse_qsl, parse_qsl_with_constants, ParseError};</code></pre>
+<p><code>qsl/src/lib.rs:17</code></p>
+<pre><code>pub use serialize::*;</code></pre>
+<p><code>qsl/src/lib.rs:18</code></p>
+<pre><code>pub use strings::*;</code></pre>
+<p><code>qsl/src/lib.rs:19</code></p>
+<pre><code>pub use types::*;</code></pre>
+<p><code>qsl/src/lib.rs:21</code></p>
+<pre><code>pub mod optional;</code></pre>
+<p><code>qsl/src/lib.rs:22</code></p>
+<pre><code>pub use optional::OptionalOffsets;</code></pre>
+<p><code>qsl/src/lib.rs:24</code></p>
+<pre><code>pub mod socket;</code></pre>
+<p><code>qsl/src/lib.rs:25</code></p>
+<pre><code>pub use socket::RawSocket;</code></pre>
+<p><code>qsl/src/lib.rs:27</code></p>
+<pre><code>pub mod analysis;</code></pre>
+<p><code>qsl/src/lib.rs:28</code></p>
+<pre><code>pub mod bit_io;</code></pre>
+<p><code>qsl/src/lib.rs:29</code></p>
+<pre><code>pub mod payload_quant;</code></pre>
+<p><code>qsl/src/lib.rs:30</code></p>
+<pre><code>pub mod qps;</code></pre>
+<p><code>qsl/src/lib.rs:31</code></p>
+<pre><code>pub mod static_index;</code></pre>
+<p><code>qsl/src/lib.rs:32</code></p>
+<pre><code>pub use payload_quant::{QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRegions};</code></pre>
+<p><code>qsl/src/lib.rs:33</code></p>
+<pre><code>pub mod rt;</code></pre>
+<p><code>qsl/src/lib.rs:35</code></p>
+<pre><code>pub mod rust_macro;</code></pre>
+<p><code>qsl/src/lib.rs:36</code></p>
+<pre><code>pub mod schema_macro;</code></pre>
+<p><code>qsl/src/lib.rs:38</code></p>
+<pre><code>pub use deq::build_qsl_files_with_rust;</code></pre>
+<p><code>qsl/src/lib.rs:40</code></p>
+<pre><code>pub use qsl_macros::{qsl_macro, schem_macro};</code></pre>
+<p><code>qsl/src/lib.rs:41</code></p>
+<pre><code>pub mod length_graph;</code></pre>
+<p><code>qsl/src/lib.rs:42</code></p>
+<pre><code>pub mod static_optional;</code></pre>
+<p><code>qsl/src/lib.rs:43</code></p>
+<pre><code>pub mod validation;</code></pre>
+<p><code>qsl/src/lib.rs:44</code></p>
+<pre><code>pub use analysis::*;</code></pre>
+<p><code>qsl/src/lib.rs:45</code></p>
+<pre><code>pub use bit_io::*;</code></pre>
+<p><code>qsl/src/lib.rs:49</code></p>
+<pre><code>pub mod native;</code></pre>
+<h3>qsl/src/native/memory.rs</h3>
+<p><code>qsl/src/native/memory.rs:56</code></p>
+<pre><code>pub struct NativeRegion {</code></pre>
+<p><code>qsl/src/native/memory.rs:63</code></p>
+<pre><code>pub fn new(capacity: usize) -&gt; io::Result&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:83</code></p>
+<pre><code>pub fn capacity(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/native/memory.rs:86</code></p>
+<pre><code>pub fn used(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/native/memory.rs:90</code></p>
+<pre><code>pub fn reset(&amp;mut self) {</code></pre>
+<p><code>qsl/src/native/memory.rs:95</code></p>
+<pre><code>pub fn prefault(&amp;mut self) {</code></pre>
+<p><code>qsl/src/native/memory.rs:120</code></p>
+<pre><code>pub fn buffer(&amp;self, capacity: usize, alignment: usize) -&gt; io::Result&lt;RegionBuffer&lt;&#x27;_&gt;&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:131</code></p>
+<pre><code>pub fn slot&lt;T&gt;(&amp;self) -&gt; io::Result&lt;RegionSlot&lt;&#x27;_, T&gt;&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:146</code></p>
+<pre><code>pub struct RegionBuffer&lt;&#x27;r&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:154</code></p>
+<pre><code>pub fn capacity(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/native/memory.rs:158</code></p>
+<pre><code>pub fn clear(&amp;mut self) {</code></pre>
+<p><code>qsl/src/native/memory.rs:162</code></p>
+<pre><code>pub fn as_mut_ptr(&amp;mut self) -&gt; *mut u8 {</code></pre>
+<p><code>qsl/src/native/memory.rs:165</code></p>
+<pre><code>pub fn spare_capacity_mut(&amp;mut self) -&gt; &amp;mut [MaybeUninit&lt;u8&gt;] {</code></pre>
+<p><code>qsl/src/native/memory.rs:176</code></p>
+<pre><code>pub unsafe fn set_len(&amp;mut self, len: usize) {</code></pre>
+<p><code>qsl/src/native/memory.rs:180</code></p>
+<pre><code>pub fn write_from_slice(&amp;mut self, bytes: &amp;[u8]) -&gt; io::Result&lt;()&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:205</code></p>
+<pre><code>pub struct RegionSlot&lt;&#x27;r, T&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:211</code></p>
+<pre><code>pub fn as_mut_ptr(&amp;mut self) -&gt; *mut T {</code></pre>
+<p><code>qsl/src/native/memory.rs:214</code></p>
+<pre><code>pub fn write(self, value: T) -&gt; RegionValue&lt;&#x27;r, T&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:223</code></p>
+<pre><code>pub unsafe fn assume_init(self) -&gt; RegionValue&lt;&#x27;r, T&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:230</code></p>
+<pre><code>pub struct RegionValue&lt;&#x27;r, T&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:341</code></p>
+<pre><code>pub struct SharedRegion {</code></pre>
+<p><code>qsl/src/native/memory.rs:345</code></p>
+<pre><code>pub fn create(name: &amp;str, capacity: usize) -&gt; io::Result&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:394</code></p>
+<pre><code>pub unsafe fn open(name: &amp;str) -&gt; io::Result&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:425</code></p>
+<pre><code>pub fn capacity(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/native/memory.rs:428</code></p>
+<pre><code>pub fn used(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/native/memory.rs:433</code></p>
+<pre><code>pub fn reserve(&amp;self, capacity: usize, alignment: usize) -&gt; io::Result&lt;SharedWrite&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:477</code></p>
+<pre><code>pub unsafe fn read_published(&amp;self, offset: u64) -&gt; io::Result&lt;Option&lt;SharedBytes&gt;&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:521</code></p>
+<pre><code>pub struct SharedWrite {</code></pre>
+<p><code>qsl/src/native/memory.rs:531</code></p>
+<pre><code>pub fn offset(&amp;self) -&gt; u64 {</code></pre>
+<p><code>qsl/src/native/memory.rs:535</code></p>
+<pre><code>pub fn capacity(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/native/memory.rs:539</code></p>
+<pre><code>pub fn as_mut_ptr(&amp;mut self) -&gt; *mut u8 {</code></pre>
+<p><code>qsl/src/native/memory.rs:542</code></p>
+<pre><code>pub fn spare_capacity_mut(&amp;mut self) -&gt; &amp;mut [MaybeUninit&lt;u8&gt;] {</code></pre>
+<p><code>qsl/src/native/memory.rs:552</code></p>
+<pre><code>pub unsafe fn set_len(&amp;mut self, len: usize) {</code></pre>
+<p><code>qsl/src/native/memory.rs:556</code></p>
+<pre><code>pub fn write_from_slice(&amp;mut self, bytes: &amp;[u8]) -&gt; io::Result&lt;()&gt; {</code></pre>
+<p><code>qsl/src/native/memory.rs:566</code></p>
+<pre><code>pub fn publish(mut self) -&gt; SharedBytes {</code></pre>
+<p><code>qsl/src/native/memory.rs:609</code></p>
+<pre><code>pub struct SharedBytes {</code></pre>
+<p><code>qsl/src/native/memory.rs:617</code></p>
+<pre><code>pub fn offset(&amp;self) -&gt; u64 {</code></pre>
+<h3>qsl/src/native/mod.rs</h3>
+<p><code>qsl/src/native/mod.rs:6</code></p>
+<pre><code>pub use memory::{ NativeRegion, RegionBuffer, RegionSlot, RegionValue, SharedBytes, SharedRegion, SharedWrite, };</code></pre>
+<p><code>qsl/src/native/mod.rs:9</code></p>
+<pre><code>pub use socket::{NativeListener, NativeSocket};</code></pre>
+<h3>qsl/src/native/socket.rs</h3>
+<p><code>qsl/src/native/socket.rs:134</code></p>
+<pre><code>pub struct NativeSocket {</code></pre>
+<p><code>qsl/src/native/socket.rs:140</code></p>
+<pre><code>pub fn connect(address: SocketAddr, max_frame: usize) -&gt; io::Result&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:169</code></p>
+<pre><code>pub fn set_read_timeout(&amp;self, timeout: Option&lt;std::time::Duration&gt;) -&gt; io::Result&lt;()&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:173</code></p>
+<pre><code>pub fn set_write_timeout(&amp;self, timeout: Option&lt;std::time::Duration&gt;) -&gt; io::Result&lt;()&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:198</code></p>
+<pre><code>pub fn local_addr(&amp;self) -&gt; io::Result&lt;SocketAddr&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:220</code></p>
+<pre><code>pub unsafe fn receive_raw(&amp;mut self, ptr: *mut u8, capacity: usize) -&gt; io::Result&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:241</code></p>
+<pre><code>pub fn send_raw(&amp;mut self, bytes: &amp;[u8]) -&gt; io::Result&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:304</code></p>
+<pre><code>pub fn receive_into(&amp;mut self, buffer: &amp;mut RegionBuffer&lt;&#x27;_&gt;) -&gt; io::Result&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:313</code></p>
+<pre><code>pub fn receive_shared(&amp;mut self, buffer: &amp;mut SharedWrite) -&gt; io::Result&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:325</code></p>
+<pre><code>pub fn send_frame(&amp;mut self, payload: &amp;[u8]) -&gt; io::Result&lt;()&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:390</code></p>
+<pre><code>pub unsafe fn send_record&lt;T: Serializable&gt;( &amp;mut self, value: &amp;T, buffer: &amp;mut RegionBuffer&lt;&#x27;_&gt;, ) -&gt; io::Result&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:409</code></p>
+<pre><code>pub unsafe fn send_borrowed_record&lt;&#x27;a, T: BorrowSerializable&lt;&#x27;a&gt;&gt;( &amp;mut self, value: &amp;T, buffer: &amp;mut RegionBuffer&lt;&#x27;_&gt;, ) -&gt; io::Result&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:427</code></p>
+<pre><code>pub struct NativeListener {</code></pre>
+<p><code>qsl/src/native/socket.rs:432</code></p>
+<pre><code>pub fn bind(address: SocketAddr, max_frame: usize, backlog: i32) -&gt; io::Result&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:460</code></p>
+<pre><code>pub fn local_addr(&amp;self) -&gt; io::Result&lt;SocketAddr&gt; {</code></pre>
+<p><code>qsl/src/native/socket.rs:463</code></p>
+<pre><code>pub fn accept(&amp;self) -&gt; io::Result&lt;NativeSocket&gt; {</code></pre>
+<h3>qsl/src/optional.rs</h3>
+<p><code>qsl/src/optional.rs:8</code></p>
+<pre><code>pub struct OptionalOffsets&lt;&#x27;a&gt; {</code></pre>
+<p><code>qsl/src/optional.rs:14</code></p>
+<pre><code>pub fn parse(table_and_payload: &amp;&#x27;a [u8]) -&gt; QslResult&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/optional.rs:45</code></p>
+<pre><code>pub fn len(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/optional.rs:49</code></p>
+<pre><code>pub fn is_empty(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/optional.rs:54</code></p>
+<pre><code>pub fn offset(&amp;self, index: usize) -&gt; Option&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/optional.rs:68</code></p>
+<pre><code>pub fn field_tail(&amp;self, index: usize) -&gt; Option&lt;&amp;&#x27;a [u8]&gt; {</code></pre>
+<h3>qsl/src/parser.rs</h3>
+<p><code>qsl/src/parser.rs:13</code></p>
+<pre><code>pub struct ParseError {</code></pre>
+<p><code>qsl/src/parser.rs:27</code></p>
+<pre><code>pub fn span(&amp;self) -&gt; (usize, usize) {</code></pre>
+<p><code>qsl/src/parser.rs:244</code></p>
+<pre><code>pub fn parse_qsl(source: &amp;str) -&gt; Result&lt;Vec&lt;QslSchema&gt;, ParseError&gt; {</code></pre>
+<p><code>qsl/src/parser.rs:248</code></p>
+<pre><code>pub fn parse_qsl_with_constants( source: &amp;str, globals: &amp;HashMap&lt;String, i128&gt;, ) -&gt; Result&lt;Vec&lt;QslSchema&gt;, ParseError&gt; {</code></pre>
+<h3>qsl/src/parser_util.rs</h3>
+<p><code>qsl/src/parser_util.rs:4</code></p>
+<pre><code>pub struct ParseNum(pub usize, pub bool);</code></pre>
+<p><code>qsl/src/parser_util.rs:7</code></p>
+<pre><code>pub fn rank_bits(min: ParseNum, max: ParseNum) -&gt; Option&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/parser_util.rs:19</code></p>
+<pre><code>pub fn parse_bytes(bytes: &amp;[u8]) -&gt; Option&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/parser_util.rs:33</code></p>
+<pre><code>pub fn parse_hex_bytes(bytes: &amp;[u8]) -&gt; Result&lt;usize, &amp;&#x27;static str&gt; {</code></pre>
+<p><code>qsl/src/parser_util.rs:55</code></p>
+<pre><code>pub fn scan_schema_blocks(source: &amp;[u8]) -&gt; Result&lt;Vec&lt;&amp;[u8]&gt;, &amp;&#x27;static str&gt; {</code></pre>
+<p><code>qsl/src/parser_util.rs:74</code></p>
+<pre><code>pub fn parse_schema_flags(source: &amp;[u8]) -&gt; Result&lt;usize, &amp;&#x27;static str&gt; {</code></pre>
+<p><code>qsl/src/parser_util.rs:96</code></p>
+<pre><code>pub fn parse_primitive_type(token: &amp;[u8]) -&gt; Option&lt;crate::compat::ParserQslType&gt; {</code></pre>
+<p><code>qsl/src/parser_util.rs:112</code></p>
+<pre><code>pub fn encode_signed_minimum(value: ParseNum) -&gt; usize {</code></pre>
+<h3>qsl/src/payload_quant.rs</h3>
+<p><code>qsl/src/payload_quant.rs:11</code></p>
+<pre><code>pub fn selected_address&lt;T&gt;(mut value: *const T) -&gt; *const T {</code></pre>
+<p><code>qsl/src/payload_quant.rs:26</code></p>
+<pre><code>pub fn scalar_operand(mut value: u64) -&gt; u64 {</code></pre>
+<p><code>qsl/src/payload_quant.rs:39</code></p>
+<pre><code>pub struct QuantField {</code></pre>
+<p><code>qsl/src/payload_quant.rs:51</code></p>
+<pre><code>pub struct PayloadQuantPlan {</code></pre>
+<p><code>qsl/src/payload_quant.rs:63</code></p>
+<pre><code>pub fn analyze(s: &amp;QslSchema) -&gt; QslResult&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:177</code></p>
+<pre><code>pub unsafe trait QuantizedRecord: Serializable {</code></pre>
+<p><code>qsl/src/payload_quant.rs:181</code></p>
+<pre><code>fn quant_validate_values(&amp;self) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/payload_quant.rs:185</code></p>
+<pre><code>unsafe fn quant_write_prepared(&amp;self, out: *mut u8) -&gt; usize;</code></pre>
+<p><code>qsl/src/payload_quant.rs:189</code></p>
+<pre><code>unsafe fn quant_read_padded(bytes: *const u8, len: usize, out: *mut Self);</code></pre>
+<p><code>qsl/src/payload_quant.rs:191</code></p>
+<pre><code>pub trait CheckedQuantizedRecord: QuantizedRecord {</code></pre>
+<p><code>qsl/src/payload_quant.rs:192</code></p>
+<pre><code>fn quant_validate(input: &amp;[u8]) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/payload_quant.rs:195</code></p>
+<pre><code>pub struct QuantizedFrame&lt;&#x27;a, T: QuantizedRecord&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:201</code></p>
+<pre><code>pub fn try_new(storage: &amp;&#x27;a [u8], len: usize) -&gt; QslResult&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:218</code></p>
+<pre><code>pub unsafe fn from_validated(storage: &amp;[u8], len: usize) -&gt; QuantizedFrame&lt;&#x27;_, T&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:225</code></p>
+<pre><code>pub fn as_slice(&amp;self) -&gt; &amp;[u8] {</code></pre>
+<p><code>qsl/src/payload_quant.rs:228</code></p>
+<pre><code>pub fn decode_into&lt;&#x27;out&gt;(&amp;self, out: &amp;&#x27;out mut std::mem::MaybeUninit&lt;T&gt;) -&gt; &amp;&#x27;out mut T {</code></pre>
+<p><code>qsl/src/payload_quant.rs:234</code></p>
+<pre><code>pub fn decode_boxed(&amp;self) -&gt; Box&lt;T&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:243</code></p>
+<pre><code>pub struct QuantizedOut&lt;T: QuantizedRecord&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:249</code></p>
+<pre><code>pub fn encode(value: &amp;T) -&gt; QslResult&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:264</code></p>
+<pre><code>pub fn as_slice(&amp;self) -&gt; &amp;[u8] {</code></pre>
+<p><code>qsl/src/payload_quant.rs:267</code></p>
+<pre><code>pub fn frame(&amp;self) -&gt; QuantizedFrame&lt;&#x27;_, T&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:287</code></p>
+<pre><code>pub struct QuantizedRegions&lt;T: QuantizedRecord, const CAP: usize, const N: usize&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:297</code></p>
+<pre><code>pub const fn new() -&gt; Self {</code></pre>
+<p><code>qsl/src/payload_quant.rs:303</code></p>
+<pre><code>pub fn try_encode(&amp;&#x27;static self, value: &amp;T) -&gt; QslResult&lt;QuantizedLease&lt;T, CAP, N&gt;&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:324</code></p>
+<pre><code>pub struct QuantizedLease&lt;T: QuantizedRecord, const CAP: usize, const N: usize&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:330</code></p>
+<pre><code>pub fn as_slice(&amp;self) -&gt; &amp;[u8] {</code></pre>
+<p><code>qsl/src/payload_quant.rs:333</code></p>
+<pre><code>pub fn frame(&amp;self) -&gt; QuantizedFrame&lt;&#x27;_, T&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:357</code></p>
+<pre><code>pub trait QuantizedDestination&lt;T: QuantizedRecord&gt; {</code></pre>
+<p><code>qsl/src/payload_quant.rs:361</code></p>
+<pre><code>unsafe fn decode_padded(self, bytes: *const u8, len: usize);</code></pre>
+<h3>qsl/src/qps.rs</h3>
+<p><code>qsl/src/qps.rs:8</code></p>
+<pre><code>pub use crate::payload_quant::{ PayloadQuantPlan as QpsPlan, QuantField as QpsField, QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRecord, QuantizedRegions, };</code></pre>
+<p><code>qsl/src/qps.rs:14</code></p>
+<pre><code>pub const QPS_CODEC_REVISION: u32 = 2;</code></pre>
+<h3>qsl/src/rt.rs</h3>
+<p><code>qsl/src/rt.rs:12</code></p>
+<pre><code>pub struct StaticRegions&lt;const CAP: usize, const N: usize&gt; {</code></pre>
+<p><code>qsl/src/rt.rs:25</code></p>
+<pre><code>pub const fn new() -&gt; Self {</code></pre>
+<p><code>qsl/src/rt.rs:32</code></p>
+<pre><code>pub fn try_acquire(&amp;&#x27;static self) -&gt; QslResult&lt;RegionLease&lt;CAP, N&gt;&gt; {</code></pre>
+<p><code>qsl/src/rt.rs:58</code></p>
+<pre><code>pub const fn new_zeroed() -&gt; Self {</code></pre>
+<p><code>qsl/src/rt.rs:66</code></p>
+<pre><code>pub struct RegionLease&lt;const CAP: usize, const N: usize&gt; {</code></pre>
+<p><code>qsl/src/rt.rs:72</code></p>
+<pre><code>pub fn capacity(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/rt.rs:75</code></p>
+<pre><code>pub fn as_slice(&amp;self) -&gt; &amp;[u8] {</code></pre>
+<p><code>qsl/src/rt.rs:84</code></p>
+<pre><code>pub unsafe fn as_mut_ptr(&amp;mut self) -&gt; *mut u8 {</code></pre>
+<p><code>qsl/src/rt.rs:89</code></p>
+<pre><code>pub unsafe fn set_len(&amp;mut self, len: usize) {</code></pre>
+<h3>qsl/src/rust_macro.rs</h3>
+<p><code>qsl/src/rust_macro.rs:200</code></p>
+<pre><code>pub fn parse_rust_macros(sources: &amp;[&amp;str]) -&gt; Result&lt;Vec&lt;QslSchema&gt;, MacroError&gt; {</code></pre>
+<p><code>qsl/src/rust_macro.rs:312</code></p>
+<pre><code>pub fn expand_with_rust( schemas: &amp;[QslSchema], sources: &amp;[&amp;str], ) -&gt; Result&lt;Vec&lt;QslSchema&gt;, MacroError&gt; {</code></pre>
+<p><code>qsl/src/rust_macro.rs:354</code></p>
+<pre><code>pub fn parse_qsl_with_rust( source: &amp;str, constants: &amp;HashMap&lt;String, i128&gt;, rust_sources: &amp;[&amp;str], ) -&gt; Result&lt;Vec&lt;QslSchema&gt;, MacroError&gt; {</code></pre>
+<h3>qsl/src/schema_macro.rs</h3>
+<p><code>qsl/src/schema_macro.rs:7</code></p>
+<pre><code>pub struct MacroError(pub String);</code></pre>
+<p><code>qsl/src/schema_macro.rs:15</code></p>
+<pre><code>pub fn expand_macros(schemas: &amp;[QslSchema]) -&gt; Result&lt;Vec&lt;QslSchema&gt;, MacroError&gt; {</code></pre>
+<h3>qsl/src/serialize.rs</h3>
+<p><code>qsl/src/serialize.rs:3</code></p>
+<pre><code>pub trait Serializable: Sized {</code></pre>
+<p><code>qsl/src/serialize.rs:10</code></p>
+<pre><code>fn get_size() -&gt; usize;</code></pre>
+<p><code>qsl/src/serialize.rs:15</code></p>
+<pre><code>fn serialized_size(&amp;self) -&gt; usize;</code></pre>
+<p><code>qsl/src/serialize.rs:21</code></p>
+<pre><code>fn serialize(&amp;self) -&gt; SerOut {</code></pre>
+<p><code>qsl/src/serialize.rs:35</code></p>
+<pre><code>fn serialize(&amp;self) -&gt; Vec&lt;u8&gt; {</code></pre>
+<p><code>qsl/src/serialize.rs:48</code></p>
+<pre><code>unsafe fn serialize_unsafe(&amp;self, to: *mut u8);</code></pre>
+<p><code>qsl/src/serialize.rs:54</code></p>
+<pre><code>unsafe fn serialize_into_unsafe(&amp;self, to: *mut u8) -&gt; usize {</code></pre>
+<p><code>qsl/src/serialize.rs:63</code></p>
+<pre><code>unsafe fn serialize_to(&amp;self, to: &amp;mut SerOut) -&gt; usize {</code></pre>
+<p><code>qsl/src/serialize.rs:73</code></p>
+<pre><code>unsafe fn serialize_to(&amp;self, to: &amp;mut [u8]) -&gt; usize {</code></pre>
+<p><code>qsl/src/serialize.rs:80</code></p>
+<pre><code>unsafe fn deserialize(input: &amp;[u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/serialize.rs:89</code></p>
+<pre><code>unsafe fn deserialize_into(bytes: *const u8, len: usize, out: *mut Self) {</code></pre>
+<p><code>qsl/src/serialize.rs:99</code></p>
+<pre><code>unsafe fn deserialize_reuse(input: &amp;[u8], output: &amp;mut Self) {</code></pre>
+<p><code>qsl/src/serialize.rs:107</code></p>
+<pre><code>unsafe fn deserialize_prepared_into(bytes: *const u8, len: usize, output: &amp;mut Self) {</code></pre>
+<p><code>qsl/src/serialize.rs:115</code></p>
+<pre><code>unsafe fn deserialize_unsafe(bytes: *const u8) -&gt; Self;</code></pre>
+<p><code>qsl/src/serialize.rs:120</code></p>
+<pre><code>unsafe fn deserialize_from_raw_parts(bytes: *const u8, _len: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/serialize.rs:127</code></p>
+<pre><code>pub trait BorrowSerializable&lt;&#x27;a&gt;: Sized {</code></pre>
+<p><code>qsl/src/serialize.rs:133</code></p>
+<pre><code>fn get_size() -&gt; usize;</code></pre>
+<p><code>qsl/src/serialize.rs:135</code></p>
+<pre><code>fn serialized_size(&amp;self) -&gt; usize;</code></pre>
+<p><code>qsl/src/serialize.rs:141</code></p>
+<pre><code>fn serialize(&amp;self) -&gt; SerOut {</code></pre>
+<p><code>qsl/src/serialize.rs:153</code></p>
+<pre><code>fn serialize(&amp;self) -&gt; Vec&lt;u8&gt; {</code></pre>
+<p><code>qsl/src/serialize.rs:165</code></p>
+<pre><code>unsafe fn serialize_unsafe(&amp;self, to: *mut u8);</code></pre>
+<p><code>qsl/src/serialize.rs:171</code></p>
+<pre><code>unsafe fn serialize_into_unsafe(&amp;self, to: *mut u8) -&gt; usize {</code></pre>
+<p><code>qsl/src/serialize.rs:179</code></p>
+<pre><code>unsafe fn serialize_to(&amp;self, to: &amp;mut SerOut) -&gt; usize {</code></pre>
+<p><code>qsl/src/serialize.rs:188</code></p>
+<pre><code>unsafe fn serialize_to(&amp;self, to: &amp;mut [u8]) -&gt; usize {</code></pre>
+<p><code>qsl/src/serialize.rs:194</code></p>
+<pre><code>unsafe fn deserialize_borrowed(input: &amp;&#x27;a [u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/serialize.rs:203</code></p>
+<pre><code>unsafe fn deserialize_borrowed_into(bytes: *const u8, len: usize, out: *mut Self) {</code></pre>
+<p><code>qsl/src/serialize.rs:210</code></p>
+<pre><code>unsafe fn deserialize_borrowed_unsafe(bytes: *const u8) -&gt; Self;</code></pre>
+<p><code>qsl/src/serialize.rs:215</code></p>
+<pre><code>unsafe fn deserialize_borrowed_from_raw_parts(bytes: *const u8, _len: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/serialize.rs:220</code></p>
+<pre><code>pub struct SerOut {</code></pre>
+<p><code>qsl/src/serialize.rs:228</code></p>
+<pre><code>pub fn new(len: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/serialize.rs:247</code></p>
+<pre><code>pub fn with_capacity_aligned(capacity: usize, alignment: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/serialize.rs:264</code></p>
+<pre><code>pub fn capacity(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/serialize.rs:268</code></p>
+<pre><code>pub fn alignment(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/serialize.rs:272</code></p>
+<pre><code>pub fn clear(&amp;mut self) {</code></pre>
+<p><code>qsl/src/serialize.rs:279</code></p>
+<pre><code>pub unsafe fn set_len(&amp;mut self, len: usize) {</code></pre>
+<p><code>qsl/src/serialize.rs:287</code></p>
+<pre><code>pub unsafe fn from_raw(ptr: *mut u8, layout: std::alloc::Layout, len: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/serialize.rs:297</code></p>
+<pre><code>pub fn as_mut_ptr(&amp;mut self) -&gt; *mut u8 {</code></pre>
+<p><code>qsl/src/serialize.rs:342</code></p>
+<pre><code>pub fn len(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/serialize.rs:346</code></p>
+<pre><code>pub fn is_empty(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/serialize.rs:351</code></p>
+<pre><code>pub fn copy_from_slice(&amp;mut self, bytes: &amp;[u8]) -&gt; crate::QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/serialize.rs:365</code></p>
+<pre><code>pub unsafe fn copy_from_raw_parts(&amp;mut self, source: *const u8, len: usize) {</code></pre>
+<p><code>qsl/src/serialize.rs:370</code></p>
+<pre><code>pub fn spare_capacity_mut(&amp;mut self) -&gt; &amp;mut [std::mem::MaybeUninit&lt;u8&gt;] {</code></pre>
+<p><code>qsl/src/serialize.rs:380</code></p>
+<pre><code>pub fn into_utf8_guard(self) -&gt; Result&lt;crate::Utf8CopyGuard, (std::str::Utf8Error, Self)&gt; {</code></pre>
+<p><code>qsl/src/serialize.rs:386</code></p>
+<pre><code>pub trait Sealed {</code></pre>
+<p><code>qsl/src/serialize.rs:393</code></p>
+<pre><code>pub trait DeserializeDestination&lt;T: Serializable&gt;: destination_private::Sealed {</code></pre>
+<p><code>qsl/src/serialize.rs:398</code></p>
+<pre><code>unsafe fn decode_into(self, bytes: *const u8, len: usize);</code></pre>
+<h3>qsl/src/socket.rs</h3>
+<p><code>qsl/src/socket.rs:10</code></p>
+<pre><code>pub struct RawSocket {</code></pre>
+<p><code>qsl/src/socket.rs:15</code></p>
+<pre><code>pub fn new(stream: TcpStream, max_frame: usize) -&gt; io::Result&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/socket.rs:34</code></p>
+<pre><code>pub fn receive&lt;&#x27;a&gt;(&amp;mut self, storage: &amp;&#x27;a mut [u8]) -&gt; io::Result&lt;&amp;&#x27;a [u8]&gt; {</code></pre>
+<p><code>qsl/src/socket.rs:74</code></p>
+<pre><code>pub unsafe fn send_record&lt;T: Serializable&gt;( &amp;mut self, value: &amp;T, storage: &amp;mut [u8], ) -&gt; io::Result&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/socket.rs:85</code></p>
+<pre><code>pub unsafe fn send_borrowed_record&lt;&#x27;a, T: BorrowSerializable&lt;&#x27;a&gt;&gt;( &amp;mut self, value: &amp;T, storage: &amp;mut [u8], ) -&gt; io::Result&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/socket.rs:94</code></p>
+<pre><code>pub fn stream(&amp;self) -&gt; &amp;TcpStream {</code></pre>
+<h3>qsl/src/static_index.rs</h3>
+<p><code>qsl/src/static_index.rs:6</code></p>
+<pre><code>pub const ANALYSIS_MAX_STATES: usize = 4096;</code></pre>
+<p><code>qsl/src/static_index.rs:7</code></p>
+<pre><code>pub const ANALYSIS_MAX_BYTES: usize = 65535;</code></pre>
+<p><code>qsl/src/static_index.rs:10</code></p>
+<pre><code>pub struct StateCode {</code></pre>
+<p><code>qsl/src/static_index.rs:18</code></p>
+<pre><code>pub struct OffsetRow {</code></pre>
+<p><code>qsl/src/static_index.rs:24</code></p>
+<pre><code>pub struct PredictPlan {</code></pre>
+<p><code>qsl/src/static_index.rs:34</code></p>
+<pre><code>pub fn analyze(schema: &amp;QslSchema) -&gt; QslResult&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/static_index.rs:149</code></p>
+<pre><code>pub fn packed_index(&amp;self) -&gt; QslResult&lt;Vec&lt;u32&gt;&gt; {</code></pre>
+<p><code>qsl/src/static_index.rs:153</code></p>
+<pre><code>pub fn pack_lengths(&amp;self, lengths: &amp;[Option&lt;usize&gt;]) -&gt; QslResult&lt;u32&gt; {</code></pre>
+<p><code>qsl/src/static_index.rs:169</code></p>
+<pre><code>pub fn unpack_lengths(&amp;self, d: u32) -&gt; QslResult&lt;Vec&lt;Option&lt;usize&gt;&gt;&gt; {</code></pre>
+<p><code>qsl/src/static_index.rs:201</code></p>
+<pre><code>pub fn quantize_index(index: &amp;[u32], quantum: usize) -&gt; QslResult&lt;Vec&lt;u32&gt;&gt; {</code></pre>
+<p><code>qsl/src/static_index.rs:229</code></p>
+<pre><code>pub fn lookup_index(table: &amp;[u32], quantum: usize, index: usize) -&gt; Option&lt;u32&gt; {</code></pre>
+<p><code>qsl/src/static_index.rs:243</code></p>
+<pre><code>pub fn structural_counts(domains: &amp;[Vec&lt;usize&gt;], max_len: usize) -&gt; QslResult&lt;Vec&lt;u64&gt;&gt; {</code></pre>
+<h3>qsl/src/static_optional.rs</h3>
+<p><code>qsl/src/static_optional.rs:4</code></p>
+<pre><code>pub enum StaticPresence {</code></pre>
+<p><code>qsl/src/static_optional.rs:11</code></p>
+<pre><code>pub struct StaticOptionalPlan {</code></pre>
+<p><code>qsl/src/static_optional.rs:16</code></p>
+<pre><code>pub fn analyze(schema: &amp;QslSchema) -&gt; QslResult&lt;Self&gt; {</code></pre>
+<p><code>qsl/src/static_optional.rs:75</code></p>
+<pre><code>pub fn header_bytes(&amp;self) -&gt; usize {</code></pre>
+<h3>qsl/src/strings.rs</h3>
+<p><code>qsl/src/strings.rs:12</code></p>
+<pre><code>pub const STRING_COMPRESSION_MIN_BYTES: usize = 32;</code></pre>
+<p><code>qsl/src/strings.rs:15</code></p>
+<pre><code>pub const STRING_ENCODER_REVISION: u8 = 2;</code></pre>
+<p><code>qsl/src/strings.rs:20</code></p>
+<pre><code>pub trait Sealed {</code></pre>
+<p><code>qsl/src/strings.rs:28</code></p>
+<pre><code>pub trait StringHeader: header_sealed::Sealed {</code></pre>
+<p><code>qsl/src/strings.rs:33</code></p>
+<pre><code>unsafe fn load(input: *const u8) -&gt; u32;</code></pre>
+<p><code>qsl/src/strings.rs:36</code></p>
+<pre><code>unsafe fn store(output: *mut u8, value: u32);</code></pre>
+<p><code>qsl/src/strings.rs:64</code></p>
+<pre><code>pub struct InlineString&lt;const MAX: usize&gt; {</code></pre>
+<p><code>qsl/src/strings.rs:71</code></p>
+<pre><code>pub const MAX_BYTES: usize = MAX;</code></pre>
+<p><code>qsl/src/strings.rs:73</code></p>
+<pre><code>pub const HEADER_BYTES: usize = if MAX &lt;= 127 {</code></pre>
+<p><code>qsl/src/strings.rs:81</code></p>
+<pre><code>pub const OFFSET_BYTES: usize = if MAX &lt;= 255 {</code></pre>
+<p><code>qsl/src/strings.rs:86</code></p>
+<pre><code>pub const fn new() -&gt; Self {</code></pre>
+<p><code>qsl/src/strings.rs:98</code></p>
+<pre><code>pub unsafe fn from_str_unchecked(value: &amp;str) -&gt; Self {</code></pre>
+<p><code>qsl/src/strings.rs:112</code></p>
+<pre><code>pub const fn spaces&lt;const LEN: usize&gt;() -&gt; Self {</code></pre>
+<p><code>qsl/src/strings.rs:126</code></p>
+<pre><code>pub fn len(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:132</code></p>
+<pre><code>pub fn is_empty(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/strings.rs:138</code></p>
+<pre><code>pub fn as_str(&amp;self) -&gt; &amp;str {</code></pre>
+<p><code>qsl/src/strings.rs:150</code></p>
+<pre><code>pub fn wire_capacity(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:159</code></p>
+<pre><code>pub unsafe fn encode_to(&amp;self, output: *mut u8) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:167</code></p>
+<pre><code>pub unsafe fn encode_to_with&lt;H: StringHeader&gt;(&amp;self, output: *mut u8) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:175</code></p>
+<pre><code>pub unsafe fn encode_raw_to(&amp;self, output: *mut u8) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:190</code></p>
+<pre><code>pub unsafe fn decode_into(input: *const u8, output: *mut Self) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:200</code></p>
+<pre><code>pub unsafe fn decode_into_with&lt;H: StringHeader&gt;(input: *const u8, output: *mut Self) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:211</code></p>
+<pre><code>pub unsafe fn decode_raw_into_with&lt;H: StringHeader&gt;( input: *const u8, output: *mut Self, ) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:232</code></p>
+<pre><code>pub unsafe fn decode_from_with&lt;H: StringHeader&gt;(input: *const u8) -&gt; (Self, usize) {</code></pre>
+<p><code>qsl/src/strings.rs:242</code></p>
+<pre><code>pub unsafe fn decode_raw_from_with&lt;H: StringHeader&gt;(input: *const u8) -&gt; (Self, usize) {</code></pre>
+<p><code>qsl/src/strings.rs:252</code></p>
+<pre><code>pub unsafe fn decode_raw_into(input: *const u8, output: *mut Self) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:269</code></p>
+<pre><code>pub unsafe fn decode_from(input: *const u8) -&gt; (Self, usize) {</code></pre>
+<p><code>qsl/src/strings.rs:421</code></p>
+<pre><code>pub unsafe fn encode_bounded&lt;const MAX: usize&gt;( input: *const u8, len: usize, output: *mut u8, ) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:439</code></p>
+<pre><code>pub unsafe fn encode_bounded_with&lt;const MAX: usize, H: StringHeader&gt;( input: *const u8, len: usize, output: *mut u8, ) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:761</code></p>
+<pre><code>pub unsafe fn decode_bounded&lt;const MAX: usize&gt;( input: *const u8, output: *mut u8, ) -&gt; (usize, usize) {</code></pre>
+<p><code>qsl/src/strings.rs:778</code></p>
+<pre><code>pub unsafe fn decode_bounded_with&lt;const MAX: usize, H: StringHeader&gt;( input: *const u8, output: *mut u8, ) -&gt; (usize, usize) {</code></pre>
+<p><code>qsl/src/strings.rs:866</code></p>
+<pre><code>pub const FIXED_UTF8_CODEC_VERSION: u8 = 2;</code></pre>
+<p><code>qsl/src/strings.rs:874</code></p>
+<pre><code>pub unsafe fn encode_fixed_utf8&lt;const MAX: usize&gt;(input: *const u8, output: *mut u8) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:896</code></p>
+<pre><code>pub unsafe fn decode_fixed_utf8&lt;const MAX: usize&gt;(input: *const u8, output: *mut u8) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:918</code></p>
+<pre><code>pub struct Utf8Guard&lt;&#x27;a&gt; {</code></pre>
+<p><code>qsl/src/strings.rs:923</code></p>
+<pre><code>pub const fn from_str(value: &amp;&#x27;a str) -&gt; Self {</code></pre>
+<p><code>qsl/src/strings.rs:929</code></p>
+<pre><code>pub fn try_from_bytes(bytes: &amp;&#x27;a [u8]) -&gt; Result&lt;Self, str::Utf8Error&gt; {</code></pre>
+<p><code>qsl/src/strings.rs:940</code></p>
+<pre><code>pub const unsafe fn from_bytes_unchecked(bytes: &amp;&#x27;a [u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/strings.rs:944</code></p>
+<pre><code>pub const fn as_bytes(self) -&gt; &amp;&#x27;a [u8] {</code></pre>
+<p><code>qsl/src/strings.rs:948</code></p>
+<pre><code>pub const fn as_str(self) -&gt; &amp;&#x27;a str {</code></pre>
+<p><code>qsl/src/strings.rs:1326</code></p>
+<pre><code>pub type Utf8View&lt;&#x27;a&gt; = Utf8Guard&lt;&#x27;a&gt;;</code></pre>
+<p><code>qsl/src/strings.rs:1333</code></p>
+<pre><code>pub struct Utf8CopyGuard {</code></pre>
+<p><code>qsl/src/strings.rs:1337</code></p>
+<pre><code>pub fn with_capacity(capacity: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/strings.rs:1342</code></p>
+<pre><code>pub fn copy_of(value: &amp;str) -&gt; Self {</code></pre>
+<p><code>qsl/src/strings.rs:1349</code></p>
+<pre><code>pub fn try_from_bytes(bytes: &amp;[u8]) -&gt; Result&lt;Self, str::Utf8Error&gt; {</code></pre>
+<p><code>qsl/src/strings.rs:1356</code></p>
+<pre><code>pub unsafe fn from_bytes_unchecked(bytes: &amp;[u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/strings.rs:1362</code></p>
+<pre><code>pub fn capacity(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:1366</code></p>
+<pre><code>pub fn len(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:1370</code></p>
+<pre><code>pub fn is_empty(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/strings.rs:1374</code></p>
+<pre><code>pub fn as_bytes(&amp;self) -&gt; &amp;[u8] {</code></pre>
+<p><code>qsl/src/strings.rs:1378</code></p>
+<pre><code>pub fn as_str(&amp;self) -&gt; &amp;str {</code></pre>
+<p><code>qsl/src/strings.rs:1381</code></p>
+<pre><code>pub fn clear(&amp;mut self) {</code></pre>
+<p><code>qsl/src/strings.rs:1386</code></p>
+<pre><code>pub fn copy_from_str(&amp;mut self, value: &amp;str) -&gt; crate::QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/strings.rs:1390</code></p>
+<pre><code>pub fn try_copy_from_bytes(&amp;mut self, bytes: &amp;[u8]) -&gt; crate::QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/strings.rs:1404</code></p>
+<pre><code>pub unsafe fn copy_from_raw_parts_unchecked(&amp;mut self, source: *const u8, len: usize) {</code></pre>
+<p><code>qsl/src/strings.rs:1412</code></p>
+<pre><code>pub unsafe fn decode_bounded_into&lt;const MAX: usize&gt;(&amp;mut self, input: *const u8) -&gt; usize {</code></pre>
+<p><code>qsl/src/strings.rs:1418</code></p>
+<pre><code>pub fn try_from_ser_out( storage: crate::SerOut, ) -&gt; Result&lt;Self, (str::Utf8Error, crate::SerOut)&gt; {</code></pre>
+<p><code>qsl/src/strings.rs:1428</code></p>
+<pre><code>pub unsafe fn from_ser_out_unchecked(storage: crate::SerOut) -&gt; Self {</code></pre>
+<p><code>qsl/src/strings.rs:1432</code></p>
+<pre><code>pub fn into_ser_out(self) -&gt; crate::SerOut {</code></pre>
+<h3>qsl/src/types.rs</h3>
+<p><code>qsl/src/types.rs:4</code></p>
+<pre><code>pub const FLAG_COMPACT: usize = 0b0000_0001;</code></pre>
+<p><code>qsl/src/types.rs:5</code></p>
+<pre><code>pub const FLAG_SAFETY: usize = 0b0000_0010;</code></pre>
+<p><code>qsl/src/types.rs:6</code></p>
+<pre><code>pub const FLAG_ALIGNMENT: usize = 0b0000_0100;</code></pre>
+<p><code>qsl/src/types.rs:7</code></p>
+<pre><code>pub const FLAG_OPTIONAL_BITMAP: usize = 0b0001_0000;</code></pre>
+<p><code>qsl/src/types.rs:8</code></p>
+<pre><code>pub const FLAG_OPT_TABLE: usize = 0b0010_0000;</code></pre>
+<p><code>qsl/src/types.rs:9</code></p>
+<pre><code>pub const FLAG_PREDICT_SEQ: usize = 0b0100_0000;</code></pre>
+<p><code>qsl/src/types.rs:11</code></p>
+<pre><code>pub const FLAG_FIELD_BORROW: usize = 0b1000_0000;</code></pre>
+<p><code>qsl/src/types.rs:12</code></p>
+<pre><code>pub const FLAG_LIFETIME: usize = 0b0000_1000;</code></pre>
+<p><code>qsl/src/types.rs:13</code></p>
+<pre><code>pub const FLAG_STATE_BITS: usize = 1 &lt;&lt; 8;</code></pre>
+<p><code>qsl/src/types.rs:14</code></p>
+<pre><code>pub const FLAG_INLINE: usize = 1 &lt;&lt; 9;</code></pre>
+<p><code>qsl/src/types.rs:15</code></p>
+<pre><code>pub const FLAG_INLINE_ALWAYS: usize = 1 &lt;&lt; 10;</code></pre>
+<p><code>qsl/src/types.rs:16</code></p>
+<pre><code>pub const FLAG_INLINE_NEVER: usize = 1 &lt;&lt; 11;</code></pre>
+<p><code>qsl/src/types.rs:17</code></p>
+<pre><code>pub const STATE_BITS_QUANTUM_SHIFT: usize = 12;</code></pre>
+<p><code>qsl/src/types.rs:18</code></p>
+<pre><code>pub const STATE_BITS_QUANTUM_MASK: usize = 7 &lt;&lt; STATE_BITS_QUANTUM_SHIFT;</code></pre>
+<p><code>qsl/src/types.rs:20</code></p>
+<pre><code>pub const FLAG_MACRO: usize = 1 &lt;&lt; 15;</code></pre>
+<p><code>qsl/src/types.rs:22</code></p>
+<pre><code>pub const FLAG_OPT_TABLE_LEGACY: usize = 1 &lt;&lt; 16;</code></pre>
+<p><code>qsl/src/types.rs:23</code></p>
+<pre><code>pub const FLAG_PAYLOAD_QUANT: usize = 1 &lt;&lt; 17;</code></pre>
+<p><code>qsl/src/types.rs:25</code></p>
+<pre><code>pub const FLAG_QPS: usize = FLAG_PAYLOAD_QUANT;</code></pre>
+<p><code>qsl/src/types.rs:26</code></p>
+<pre><code>pub const PAYLOAD_QUANT_SHIFT: usize = 18;</code></pre>
+<p><code>qsl/src/types.rs:27</code></p>
+<pre><code>pub const PAYLOAD_QUANT_MASK: usize = 3 &lt;&lt; PAYLOAD_QUANT_SHIFT;</code></pre>
+<p><code>qsl/src/types.rs:34</code></p>
+<pre><code>pub trait QslCustom: Sized {</code></pre>
+<p><code>qsl/src/types.rs:43</code></p>
+<pre><code>fn qsl_validate(_bytes: &amp;[u8], _compact: bool) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/types.rs:50</code></p>
+<pre><code>unsafe fn qsl_write_unchecked(&amp;self, to: *mut u8);</code></pre>
+<p><code>qsl/src/types.rs:55</code></p>
+<pre><code>unsafe fn qsl_read_unchecked(from: *const u8) -&gt; Self;</code></pre>
+<p><code>qsl/src/types.rs:59</code></p>
+<pre><code>fn qsl_size(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/types.rs:65</code></p>
+<pre><code>fn qsl_comp_size(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/types.rs:72</code></p>
+<pre><code>unsafe fn qsl_comp_write_unchecked(&amp;self, to: *mut u8) {</code></pre>
+<p><code>qsl/src/types.rs:79</code></p>
+<pre><code>unsafe fn qsl_comp_read_unchecked(from: *const u8) -&gt; Self {</code></pre>
+<p><code>qsl/src/types.rs:85</code></p>
+<pre><code>pub enum QslType {</code></pre>
+<p><code>qsl/src/types.rs:154</code></p>
+<pre><code>pub fn rank_bits(min: i128, max: i128) -&gt; QslResult&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/types.rs:164</code></p>
+<pre><code>pub fn rank_width(&amp;self, fallback: usize) -&gt; QslResult&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/types.rs:174</code></p>
+<pre><code>pub fn rank_base(&amp;self) -&gt; i128 {</code></pre>
+<p><code>qsl/src/types.rs:186</code></p>
+<pre><code>pub fn number16(signed: bool, min: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/types.rs:193</code></p>
+<pre><code>pub fn number32(signed: bool, min: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/types.rs:200</code></p>
+<pre><code>pub fn number64(signed: bool, min: usize) -&gt; Self {</code></pre>
+<p><code>qsl/src/types.rs:207</code></p>
+<pre><code>pub fn primitive(&amp;self) -&gt; QslResult&lt;Option&lt;&amp;&#x27;static str&gt;&gt; {</code></pre>
+<p><code>qsl/src/types.rs:235</code></p>
+<pre><code>pub fn rust_type(&amp;self, borrowed: bool) -&gt; QslResult&lt;String&gt; {</code></pre>
+<p><code>qsl/src/types.rs:267</code></p>
+<pre><code>pub fn fixed_wire_size(&amp;self) -&gt; QslResult&lt;Option&lt;usize&gt;&gt; {</code></pre>
+<p><code>qsl/src/types.rs:306</code></p>
+<pre><code>pub fn default_compact_bits(&amp;self) -&gt; QslResult&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/types.rs:324</code></p>
+<pre><code>pub fn validate(&amp;self, borrowed: bool) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/types.rs:379</code></p>
+<pre><code>pub struct QslField {</code></pre>
+<p><code>qsl/src/types.rs:393</code></p>
+<pre><code>pub struct QslSchema {</code></pre>
+<p><code>qsl/src/types.rs:401</code></p>
+<pre><code>pub fn compact(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:404</code></p>
+<pre><code>pub fn bitmap(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:407</code></p>
+<pre><code>pub fn opt_table(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:411</code></p>
+<pre><code>pub fn qps(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:414</code></p>
+<pre><code>pub fn quantum(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/types.rs:417</code></p>
+<pre><code>pub fn quant_requested(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:420</code></p>
+<pre><code>pub fn payload_quantum(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/types.rs:423</code></p>
+<pre><code>pub fn legacy_opt_table(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:426</code></p>
+<pre><code>pub fn predict_seq(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:432</code></p>
+<pre><code>pub fn state_bits(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:435</code></p>
+<pre><code>pub fn state_bits_quantum(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/types.rs:438</code></p>
+<pre><code>pub fn predict_table(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:441</code></p>
+<pre><code>pub fn sequential(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:445</code></p>
+<pre><code>pub fn lifetime(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:448</code></p>
+<pre><code>pub fn borrow_strings(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:451</code></p>
+<pre><code>pub fn optional_count(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/types.rs:455</code></p>
+<pre><code>pub fn tag_bits(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/types.rs:463</code></p>
+<pre><code>pub fn count_bits(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/types.rs:472</code></p>
+<pre><code>pub fn bitmap_words(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/types.rs:475</code></p>
+<pre><code>pub fn validate(&amp;self) -&gt; QslResult&lt;()&gt; {</code></pre>
+<h3>qsl/src/validation.rs</h3>
+<p><code>qsl/src/validation.rs:5</code></p>
+<pre><code>pub struct ValidationCursor&lt;&#x27;a&gt; {</code></pre>
+<p><code>qsl/src/validation.rs:10</code></p>
+<pre><code>pub fn new(input: &amp;&#x27;a [u8]) -&gt; Self {</code></pre>
+<p><code>qsl/src/validation.rs:13</code></p>
+<pre><code>pub fn bits(&amp;mut self, width: usize) -&gt; QslResult&lt;u64&gt; {</code></pre>
+<p><code>qsl/src/validation.rs:31</code></p>
+<pre><code>pub fn align(&amp;mut self) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/validation.rs:38</code></p>
+<pre><code>pub fn position(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/validation.rs:41</code></p>
+<pre><code>pub fn bytes(&amp;mut self, n: usize) -&gt; QslResult&lt;&amp;&#x27;a [u8]&gt; {</code></pre>
+<p><code>qsl/src/validation.rs:49</code></p>
+<pre><code>pub fn uint(&amp;mut self, n: usize) -&gt; QslResult&lt;u64&gt; {</code></pre>
+<p><code>qsl/src/validation.rs:57</code></p>
+<pre><code>pub fn utf8(&amp;mut self, n: usize, min: usize, max: usize) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/validation.rs:64</code></p>
+<pre><code>pub fn finish(mut self) -&gt; QslResult&lt;()&gt; {</code></pre>
+<p><code>qsl/src/validation.rs:73</code></p>
+<pre><code>pub fn compressed&lt;const MAX: usize&gt;( &amp;mut self, min: usize, raw_only: bool, fixed: bool, ) -&gt; QslResult&lt;()&gt; {</code></pre></article></div></body></html>

@@ -1,3 +1,5 @@
+> Historical reference. Current contracts: [architecture](../architecture.en.md), [API](../API.en.md), [measurements](../performance.en.md). The snapshot below does not define QPS v2.
+
 # QSL — Architecture and implementation reference
 
 > **Scope:** grounded in the supplied `QSL.rar`, `qsl-demo.rar`, `qsl-bench(1).rar` and benchmark exports. **Implemented**, **Constraint**, and **Planned** describe the inspected sources, not the broad design roadmap. QSL does not automatically make arbitrary network input safe.

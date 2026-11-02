@@ -1,0 +1,62 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080e17"><title>QSL · architecture · EN</title><link rel="stylesheet" href="assets/style.css"></head><body><div style="max-width:1120px;margin:auto;padding:28px"><a href="index.html">QSL</a><article class="article"><h1>QSL: current architecture</h1>
+<p><a href="architecture.ru.html">Русский</a> · <a href="performance.en.html">QSL measurements</a> · <a href="API.en.html">API index</a></p>
+<h3>Purpose and invariants</h3>
+<p>QSL generates specialized Rust for exchanging data described in advance. Schemas define types, ranges, string ownership and physical order. Static analysis and primitive selection happen at build time.</p>
+<p>Attributes and additional mechanisms are opt-in. Order is always mandatory: <code>[required][optional]</code>. Tags are compiler-assigned incrementally. Data is never silently reordered.</p>
+<p><strong>QPS is exact numerical operand compression with quantization. opt_table performs prediction from length. QPS does not require optional fields.</strong></p>
+<table><thead><tr><th>Mechanism</th><th>Selection</th><th>Meaning</th></tr></thead><tbody><tr><td>QPS</td><td>qps, qps=Q2/Q4/Q8/Q16</td><td>Reversible numeric rank packing</td></tr><tr><td>opt_table</td><td>opt_table</td><td>Static length/event/offset graph</td></tr><tr><td>predict_seq</td><td>predict_seq</td><td>Direct predictive path; standalone sequential behavior</td></tr><tr><td>quant</td><td>quant=Qn</td><td>Compatible explicit-quantum QPS alias</td></tr><tr><td>state_bits</td><td>state_bits=Q1/Q2/Q4/Q8/Q16</td><td>Explicit legacy D/u32 compatibility</td></tr><tr><td>safety</td><td>safety</td><td>Checked data and value APIs</td></tr><tr><td>inline</td><td>inline=hint/always/never</td><td>Inlining policy, independent of encoding</td></tr></tbody></table>
+<h3>Build</h3>
+<p>build.rs supplies QSL, DEQ and Rust-template paths. Parsing resolves typed constants and validates ranges/order. Rust declarations expand before layout and codec selection. QslInterpreter emits qsl_gen.rs, then Rust compiles the specialized types and methods.</p>
+<pre><code>qsl::build_qsl_files_with_rust(
+    &amp;[&quot;schema.qsl&quot;], &amp;[&quot;schema.deq&quot;], &amp;[&quot;models.rs&quot;], out_dir,
+)?;</code></pre>
+<p>Templates require the rust-macros feature in normal and build dependencies. Without them, use build_qsl_files.</p>
+<h3>QPS mathematics</h3>
+<pre><code>&amp;P[qps=Q16,safety] { u64(0..15) a; u64(0..15) b; }</code></pre>
+<p>Required-only schemas are valid. <code>[qps]</code> defaults to Q16. Q1 is not a quantum of new QPS. Do not specify both aliases qps and quant.</p>
+<p>For <code>a &lt;= x &lt;= b</code>, rank <code>r=x-a</code>, width <code>B=bit_length(b-a)</code>:</p>
+<pre><code>k = min(log2(Q), B)       d = 1 &lt;&lt; k
+u = r &gt;&gt; k               v = r &amp; (d - 1)
+c = u | (v &lt;&lt; (B-k))
+r = ((c &amp; ((1 &lt;&lt; (B-k))-1)) &lt;&lt; k) | (c &gt;&gt; (B-k))
+x = a + r</code></pre>
+<p>Both quotient and remainder are retained. There is no rounding. B=0 constants restore from the schema without payload bits; code generation separately handles extreme widths and avoids shifts by a register&#x27;s full width.</p>
+<p>Savings come from bounded domains and packing, not from shrinking arbitrary data by arithmetic. Eight u64(0..15) values occupy 4 payload bytes instead of 64. Q2/Q4/Q8/Q16 can have equal lengths but different exact bytes; distinct golden vectors are tested.</p>
+<p>Unsupported types and no saving including private padding select explicit raw fallback. Analysis exposes QUANT_ACTIVE and a reason. The decision is per schema. A short individual frame need not shrink when fixed metadata is present.</p>
+<p>None differs from Some(constant). QPS alone does not infer presence from length. With opt_table, known bit widths and Boolean prefixes supply offsets; compressed payload length never replaces restored object size.</p>
+<h3>Buffers and methods</h3>
+<p>Packed frames and restored objects occupy separate regions. QPS does not reduce size_of::&lt;T&gt;(). Prepared pointer APIs require initialized QUANT_PADDING_BYTES, never transmitted. Exact-slice checked decoding requires no hidden padding.</p>
+<table><thead><tr><th>API</th><th>Contract</th></tr></thead><tbody><tr><td>serialize_quantized_to</td><td>Check values/capacity and reuse caller storage</td></tr><tr><td>QuantizedFrame::decode_into</td><td>Restore into a separate MaybeUninit&lt;T&gt;</td></tr><tr><td>Active QPS serialize()</td><td>Result with QuantizedOut or an RT lease</td></tr><tr><td>QuantizedOut::encode</td><td>Allocate output SerOut and private padding</td></tr><tr><td>decode_boxed</td><td>Additionally allocate a Box for the restored object</td></tr><tr><td>quant_read_padded / quant_write_prepared</td><td>Trusted kernel; caller ensures ranges, padding, capacity and non-overlap</td></tr><tr><td>T as Serializable</td><td>General exact wire path with its own contract</td></tr></tbody></table>
+<pre><code>let value = P { a: 3, b: 15 };
+let mut storage = [0u8; 1 + P::QUANT_PADDING_BYTES];
+let frame = value.serialize_quantized_to(&amp;mut storage)?;
+let decoded = P::deserialize_checked(frame.as_slice())?;</code></pre>
+<p>Raw fallback keeps the original serialize() API. Do not assume every mode returns the same container. deserialize_into writes into final storage; live values require the appropriate reuse API.</p>
+<h3>opt_table prediction</h3>
+<pre><code>&amp;Packet[opt_table,safety] { i32 id; u8? a; u8? b; }</code></pre>
+<p>H is the known metadata span, B the consumed required prefix, L the optional-payload length. <code>I(L)=sum((L &gt; boundary_j) as usize)</code>. Boundaries come from the schema; adjacent equivalent events merge. No dense per-byte array is required.</p>
+<p>Here I=(L&gt;0)+(L&gt;1). L=0 identifies no optionals; L=2 forces both; L=1 needs metadata to distinguish a and b. EVENT_TABLE selects specialized functions. A deterministic handler skips tag reads although the reserved byte remains on wire. Frames occupy 5/6/7 B.</p>
+<p>For str?(3..33) name and str?(1..255) description, lengths above 33 force description while allowing name. Above 255 both are present. Native length words occupy metadata; the last variable field comes from the remainder. Real ambiguity needs metadata.</p>
+<p>CRITICAL_POINTS, EVENT_TABLE, OFFSET_TABLE and reader tables sit beside the type. OFFSET_TABLE stores recipes. <code>[opt_table,predict_seq]</code> replaces the indirect call with direct expressions without changing bytes. Inline is independent. Generic budget: 12 fields / 65535 B; equal fixed widths support 64 fields. Fallbacks are explicit. <code>[opt_table=legacy]</code> preserves the old per-frame directory.</p>
+<h3>Strings</h3>
+<table><thead><tr><th>Description</th><th>Rust</th><th>Ownership</th></tr></thead><tbody><tr><td>str(N), equal bounds</td><td>[u8; N]</td><td>Fixed byte array</td></tr><tr><td>Ordinary/bounded str</td><td>String</td><td>Owned; decoding may allocate</td></tr><tr><td>str with lifetime</td><td>&amp;&#x27;a str</td><td>Borrows the frame</td></tr><tr><td>binary_opt=true</td><td>&amp;&#x27;a [u8]</td><td>UTF-8 byte view</td></tr><tr><td>binary_opt=view</td><td>Utf8Guard&lt;&#x27;a&gt;</td><td>Borrowed guard</td></tr><tr><td>binary_opt=guard</td><td>Utf8CopyGuard</td><td>Copies bytes into reusable SerOut</td></tr><tr><td>binary_opt=inline</td><td>InlineString&lt;MAX&gt;</td><td>Inline capacity and length</td></tr></tbody></table>
+<p>str(A..B) counts UTF-8 bytes, not Unicode characters. Fixed strings always remain arrays. binary_opt applies to strings. Borrowing requires the input to stay alive; CopyGuard is owned and does not remove initial storage cost.</p>
+<p>decompress=true independently enables bounded QSL-LZ. Selected compressed frames are smaller than raw; otherwise raw fallback is used. QPS does not replace LZ. Fresh numeric cases do not measure a 1024-character string.</p>
+<h3>Rust structure macros</h3>
+<pre><code>#[qsl::schem_macro]
+pub struct Clock { pub ticks: u64 }
+#[qsl::qsl_macro]
+pub struct Meta { pub clock: Clock, pub kind: u16 }</code></pre>
+<pre><code>&amp;Message[safety] { Meta meta; u32 id; u8? extra; }</code></pre>
+<p>Original Rust types remain nested. Only Message gets meta_clock_ticks, meta_kind, id and extra. No duplicate types are emitted. There is no QSL [macro] attribute. Expansion checks cycles, collisions, ownership, final order, 64 fields and depth 64. Inputs are explicit; arbitrary generics, cfg and computed capacities are not guessed.</p>
+<h3>Validation, RT and networking</h3>
+<p>[safety] generates validate, validate_values, deserialize_checked and checked decoding into final storage for owned types. Bounds, metadata, ranges, UTF-8, LZ and exact ending are checked. Malformed built-in data returns QslError before trusted reads. Custom codecs need their own correct validator. The attribute does not add checks to every trusted call.</p>
+<pre><code>!config QSL_RT = true;
+!config QSL_RT_DEFAULT = 16;</code></pre>
+<p>RT defaults off. Only finite schemas receive static slots. Here 16 counts simultaneous occupied buffers per schema, not QPS quantum. Exhaustion returns an error without allocating another buffer. Padding and the 64 MiB per-schema budget are included; deserialize_into remains available.</p>
+<p>The native feature supplies Windows NativeRegion, SharedRegion with IPC, and blocking NativeSocket. Shared publication uses release/acquire; processes exchange offsets, not absolute pointers. TCP framing does not replace QSL validation. None of these mechanisms was included in the fresh Criterion run.</p>
+<h3>Editor, compatibility and proofs</h3>
+<p><a href="https://github.com/zadr0/QSL-Extension">QSL-Extension 0.5</a>: RU/EN, inlays, field hover, outline, completion, definitions and Ctrl+. layout/events/Rust actions. QPS needs no optional tail. Exact analysis follows Rust-template expansion. Advisory estimates are labelled; the native bridge exposes qpsCodecRevision=2. Updating server files requires restarting its process.</p>
+<p>Before revision 2, qps selected a different D/index format. Use state_bits to preserve those bytes. quant=Qn retains its numeric operand format and aliases new QPS. Schema, configuration, boundaries and generator revision are part of peer agreement; no len-based format guessing occurs. QBProto handshake/R remains planned.</p>
+<p>Lean 4 verifies 18 arithmetic theorems, not all Rust/LLVM/allocation. Checks passed: 69 core unit, 10 serial native, 2 compile-fail and 3 isolated QPS regressions. Four fresh measurements, ASM, harness and hashes are published separately. Intentionally invalid local View demo files were not repaired just to make the demo build pass.</p>
+<p><a href="opt-table-control.en.html">Separate baseline control</a> compares default and opt_table at five optional-field counts without QPS.</p></article></div></body></html>

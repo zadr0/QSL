@@ -1,3 +1,5 @@
+> Historical reference. Current contracts: [architecture](../architecture.en.md), [API](../API.en.md), [measurements](../performance.en.md). The snapshot below does not define QPS v2.
+
 # Generated QSL methods — implementation walkthrough
 
 The fragments below are **explanatory pseudocode**, not literal compiler output from a particular `qsl_gen.rs` build. Actual dispatch is implemented in `qsl/src/interpreter.rs` based on all schema properties. Runtime method names and trait contracts are grounded in the supplied source.

@@ -1,0 +1,9 @@
+&Raw[opt_table,safety,inline] {i64(-10..10) base;u64(0..15) a;u64?(0..1000) b;i64?(-100..100) c;u64?(7..7) constant;u64? wide;}
+&Qps[qps=Q16,opt_table,safety,inline] {i64(-10..10) base;u64(0..15) a;u64?(0..1000) b;i64?(-100..100) c;u64?(7..7) constant;u64? wide;}
+&Alias[quant=Q16,opt_table,safety,inline] {i64(-10..10) base;u64(0..15) a;u64?(0..1000) b;i64?(-100..100) c;u64?(7..7) constant;u64? wide;}
+&MacroPredict[qps=Q16,safety]{u32 id;OptionalNumbers extras;}
+&Standalone[qps=Q16,safety]{u64(0..15) a;u64(0..15) b;}
+&Q2[qps=Q2,safety]{u64(0..15) f0;u64(0..15) f1;u64(0..15) f2;u64(0..15) f3;u64(0..15) f4;u64(0..15) f5;u64(0..15) f6;u64(0..15) f7;}
+&Q4[qps=Q4,safety]{u64(0..15) f0;u64(0..15) f1;u64(0..15) f2;u64(0..15) f3;u64(0..15) f4;u64(0..15) f5;u64(0..15) f6;u64(0..15) f7;}
+&Q8[qps=Q8,safety]{u64(0..15) f0;u64(0..15) f1;u64(0..15) f2;u64(0..15) f3;u64(0..15) f4;u64(0..15) f5;u64(0..15) f6;u64(0..15) f7;}
+&Q16[qps=Q16,safety]{u64(0..15) f0;u64(0..15) f1;u64(0..15) f2;u64(0..15) f3;u64(0..15) f4;u64(0..15) f5;u64(0..15) f6;u64(0..15) f7;}

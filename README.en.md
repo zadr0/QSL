@@ -1,27 +1,28 @@
-# QSL — Rust code-generating binary serialization DSL
+# QSL — schema-specialized binary codec generation
 
-[Interactive site](docs/index.html) · [Full technical reference](docs/architecture.en.md) · [Rust API index](docs/API.en.md) · [Русский](README.ru.md)
+[Русский](README.ru.md) · [Interactive documentation](docs/index.html) · [Architecture](docs/architecture.en.md) · [API](docs/API.en.md)
 
-QSL declares message **field types, order, ranges, optionality, string representations and memory ownership** in a DSL. The parser produces a normalized `QslSchema`; `QslInterpreter` generates Rust structs and specialized reader/writer methods. Known offsets, masks and bit widths are calculated at build time rather than reinterpreted for every record.
+QSL specializes Rust serialization for declared types, ranges, field order and ownership. Required fields precede optional fields; additional modes are opt-in.
+
+**QPS compresses numeric operands losslessly. opt_table predicts from length. QPS does not require optional fields.**
 
 ```qsl
-&Fixed { u32 id; u64 created_at; u16 checksum; }
-&Dense[compact] { u8(0..7) flags; u8(0..31) rank; u16(0..1023) code; }
-&SeqNumber[predict_seq] { u64 id; u32? extra; }
-&TableFields[opt_table] { u64 id; u32? a; str?(0..100) text|decompress=true|; u16? b; }
+&Numbers[qps=Q16,safety] { u64(0..15) a; u64(0..15) b; }
+&Packet[opt_table,safety] { i32 id; u8? a; u8? b; }
 ```
+`[qps]` defaults to Q16; Q2/Q4/Q8/Q16 are supported. `quant=Qn` is a compatible alias. Select the old D/index format explicitly as `state_bits`; both peers must agree when changing modes. Q changes the exact quotient/remainder representation; savings come from ranges, not lost precision.
 
-Implemented features include ranked `compact`, optional `predict_seq`, indexed `opt_table`, `optionals=bitmap`, string modes via `binary_opt` and explicit `decompress`, `QslCustom`, `SerOut`, and framed TCP `RawSocket`. A structure macro for custom types and an atomic region cluster `R` are **architectural plans**, not implemented APIs in the supplied archives.
+Implemented: checked APIs with [safety], owned/borrowed/byte/CopyGuard/inline strings, nested Rust structure macros, critical-length opt_table, optional static RT pools, and Windows regions with IPC. QBProto handshake/R remains planned. Wire-frame size is not Rust object size.
 
-**Safety:** parsing `[safety]` does not currently select a fully checked generated decoder. Trusted unsafe reads require complete schema-valid input. `RawSocket` provides transport framing, not deep validation of arbitrary QSL records.
+## Fresh measurements: QSL only
 
-**Performance:** [`docs/data/all-estimates.csv`](docs/data/all-estimates.csv) includes 170 Criterion observations across separate profiles, with regressions as well as improvements. Borrowed bytes, trusted UTF-8 Guard, checked validation, owned `String`, and `deserialize_into` are different operations. CPU architecture, memory bandwidth, cache behavior and transport influence actual throughput; QSL is not universally the fastest codec.
+| Operation | Without QPS, ns | QPS Q16, ns |
+|---|---:|---:|
+| deserialize_into | 15.57 | 9.56 |
+| serialize_into | 7.41 | 13.70 |
 
-## Publish on GitHub Pages
+Frame 17–49 B → 3–13 B; prepared QPS APIs additionally require 16 B of private padding. This layout reads faster and writes slower. Warm-up 15 s, measurement 10 s, 200 samples, 99% CI; 8 GiB limit. Windows 11 x86-64, i5-7400, RAM 24 GiB at 2133 MHz. Four cases in one profile, with no other codecs or network tests. [Conditions, intervals, data and commands](docs/performance.en.md).
 
-Copy the root README files and `docs/` into your repository. Enable **Settings → Pages → Deploy from a branch → main → /docs**. The HTML runs without a framework, package manager or CDN and supports RU/EN switching. Full method signatures, layouts, examples and constraints are in the [technical reference](docs/architecture.en.md) and [API index](docs/API.en.md).
+Source and test status: [audit](SOURCE_AUDIT.md). This repository publishes documentation and the harness, not a Cargo workspace. The matching local dev-qsl checkout was measured and source hashes are published. docs/index.html runs without a CDN; GitHub Pages can serve /docs.
 
-The uploaded QSL core archive lacked `Cargo.toml`, so no fresh standalone compilation or benchmark execution is claimed in this documentation build.
-
-**Benchmark version note:** WebSocket smoke numbers used the older QSL string implementation; later `&[u8]`/`Utf8Guard` optimizations were measured separately in Criterion, not in those WebSocket end-to-end results. See [load tests](docs/performance.en.md).
-
+Separate control: [default vs opt_table for 1/2/3/5/10 optional fields](docs/opt-table-control.en.md). Same values and inline policy; reading and writing are shown independently.

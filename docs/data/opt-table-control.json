@@ -1,0 +1,329 @@
+{
+  "date": "2026-11-02",
+  "profile": "opt-table-vs-default",
+  "optionalFields": [
+    1,
+    2,
+    3,
+    5,
+    10
+  ],
+  "requiredFields": 1,
+  "payloadTypes": "u32 id + N Option<u64>",
+  "maskSequence": "(i*405+17)&1023, 1024 frames; exhaustive each smaller domain",
+  "rows": [
+    {
+      "operation": "deserialize_into",
+      "optionalFields": 1,
+      "mode": "default",
+      "ns": 3.551530397596773,
+      "low": 3.4242707435297217,
+      "high": 3.7207111382335425,
+      "confidence": 0.99,
+      "case": "opt_table_control/deserialize_into/n1/default"
+    },
+    {
+      "operation": "deserialize_into",
+      "optionalFields": 1,
+      "mode": "opt_table",
+      "ns": 3.9202353199441955,
+      "low": 3.8739491121875638,
+      "high": 3.970351378123689,
+      "confidence": 0.99,
+      "case": "opt_table_control/deserialize_into/n1/opt_table"
+    },
+    {
+      "operation": "serialize_into",
+      "optionalFields": 1,
+      "mode": "default",
+      "ns": 5.104625105858887,
+      "low": 5.01848477862631,
+      "high": 5.208779085898988,
+      "confidence": 0.99,
+      "case": "opt_table_control/serialize_into/n1/default"
+    },
+    {
+      "operation": "serialize_into",
+      "optionalFields": 1,
+      "mode": "opt_table",
+      "ns": 3.4459552236963207,
+      "low": 3.413953946075761,
+      "high": 3.4805744100403526,
+      "confidence": 0.99,
+      "case": "opt_table_control/serialize_into/n1/opt_table"
+    },
+    {
+      "operation": "deserialize_into",
+      "optionalFields": 2,
+      "mode": "default",
+      "ns": 8.772597844968654,
+      "low": 8.42370961307638,
+      "high": 9.189337871183907,
+      "confidence": 0.99,
+      "case": "opt_table_control/deserialize_into/n2/default"
+    },
+    {
+      "operation": "deserialize_into",
+      "optionalFields": 2,
+      "mode": "opt_table",
+      "ns": 6.367834546166203,
+      "low": 6.297696778208971,
+      "high": 6.44502411938194,
+      "confidence": 0.99,
+      "case": "opt_table_control/deserialize_into/n2/opt_table"
+    },
+    {
+      "operation": "serialize_into",
+      "optionalFields": 2,
+      "mode": "default",
+      "ns": 11.239414955554711,
+      "low": 11.117505191807469,
+      "high": 11.365459519396067,
+      "confidence": 0.99,
+      "case": "opt_table_control/serialize_into/n2/default"
+    },
+    {
+      "operation": "serialize_into",
+      "optionalFields": 2,
+      "mode": "opt_table",
+      "ns": 5.070045263993752,
+      "low": 4.902563020729913,
+      "high": 5.335851038415887,
+      "confidence": 0.99,
+      "case": "opt_table_control/serialize_into/n2/opt_table"
+    },
+    {
+      "operation": "deserialize_into",
+      "optionalFields": 3,
+      "mode": "default",
+      "ns": 12.76861189865214,
+      "low": 12.488428667663538,
+      "high": 13.120478443520383,
+      "confidence": 0.99,
+      "case": "opt_table_control/deserialize_into/n3/default"
+    },
+    {
+      "operation": "deserialize_into",
+      "optionalFields": 3,
+      "mode": "opt_table",
+      "ns": 8.759929598828355,
+      "low": 8.326211897418277,
+      "high": 9.3745761166175,
+      "confidence": 0.99,
+      "case": "opt_table_control/deserialize_into/n3/opt_table"
+    },
+    {
+      "operation": "serialize_into",
+      "optionalFields": 3,
+      "mode": "default",
+      "ns": 20.480991954501604,
+      "low": 20.214422406250627,
+      "high": 20.767395116075917,
+      "confidence": 0.99,
+      "case": "opt_table_control/serialize_into/n3/default"
+    },
+    {
+      "operation": "serialize_into",
+      "optionalFields": 3,
+      "mode": "opt_table",
+      "ns": 6.3963998720848245,
+      "low": 6.3040543732128365,
+      "high": 6.494927542002247,
+      "confidence": 0.99,
+      "case": "opt_table_control/serialize_into/n3/opt_table"
+    },
+    {
+      "operation": "deserialize_into",
+      "optionalFields": 5,
+      "mode": "default",
+      "ns": 14.798984660802237,
+      "low": 14.565093286071432,
+      "high": 15.0853754080194,
+      "confidence": 0.99,
+      "case": "opt_table_control/deserialize_into/n5/default"
+    },
+    {
+      "operation": "deserialize_into",
+      "optionalFields": 5,
+      "mode": "opt_table",
+      "ns": 19.291138743873212,
+      "low": 18.647052199106408,
+      "high": 20.098149589137016,
+      "confidence": 0.99,
+      "case": "opt_table_control/deserialize_into/n5/opt_table"
+    },
+    {
+      "operation": "serialize_into",
+      "optionalFields": 5,
+      "mode": "default",
+      "ns": 36.33142489900597,
+      "low": 35.92045077167776,
+      "high": 36.76780956229517,
+      "confidence": 0.99,
+      "case": "opt_table_control/serialize_into/n5/default"
+    },
+    {
+      "operation": "serialize_into",
+      "optionalFields": 5,
+      "mode": "opt_table",
+      "ns": 9.293302590944231,
+      "low": 9.152656380531752,
+      "high": 9.52579447221301,
+      "confidence": 0.99,
+      "case": "opt_table_control/serialize_into/n5/opt_table"
+    },
+    {
+      "operation": "deserialize_into",
+      "optionalFields": 10,
+      "mode": "default",
+      "ns": 45.89928357638978,
+      "low": 44.915045862520884,
+      "high": 47.06326404326493,
+      "confidence": 0.99,
+      "case": "opt_table_control/deserialize_into/n10/default"
+    },
+    {
+      "operation": "deserialize_into",
+      "optionalFields": 10,
+      "mode": "opt_table",
+      "ns": 34.95773348808283,
+      "low": 34.54442045164514,
+      "high": 35.40535994713922,
+      "confidence": 0.99,
+      "case": "opt_table_control/deserialize_into/n10/opt_table"
+    },
+    {
+      "operation": "serialize_into",
+      "optionalFields": 10,
+      "mode": "default",
+      "ns": 134.65896030003756,
+      "low": 130.52444999343615,
+      "high": 141.31928378486236,
+      "confidence": 0.99,
+      "case": "opt_table_control/serialize_into/n10/default"
+    },
+    {
+      "operation": "serialize_into",
+      "optionalFields": 10,
+      "mode": "opt_table",
+      "ns": 18.964609919153684,
+      "low": 18.515396639302622,
+      "high": 19.52368480420266,
+      "confidence": 0.99,
+      "case": "opt_table_control/serialize_into/n10/opt_table"
+    }
+  ],
+  "memory": {
+    "peakJobBytes": 8278016,
+    "binary": "qsl-bench/opt-table-control/target/release/deps/current_qsl-dc53da8c02ea949a.exe",
+    "sha256": "7582F4DBE0912611E021E875273539A721925C173F9E202C1ACF54799450204A",
+    "limitGiB": 8,
+    "exitCode": 0
+  },
+  "unit": "ns/frame",
+  "warmup_seconds": 15,
+  "measurement_seconds": 10,
+  "samples": 200,
+  "confidence": 0.99,
+  "hardware": {
+    "cpu": "Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz",
+    "rustflags": null,
+    "build": "26200",
+    "os": "Майкрософт Windows 11 Pro",
+    "cores": 4,
+    "ramGiB": 24.0,
+    "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)\r\nbinary: rustc\r\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\r\ncommit-date: 2026-08-18\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.98.0\r\nLLVM version: 22.1.8\r\n",
+    "threads": 4,
+    "memoryMHz": [
+      2133,
+      2133
+    ]
+  },
+  "alignment": "wire buffers and final output: 64 B; native Vec inputs: natural alignment",
+  "timed": "prepared trusted I/O, cyclic frame selection and black_box; no allocation or validation",
+  "layouts": [
+    {
+      "name": "Default1",
+      "maximum": 13,
+      "minimum": 5,
+      "metadataMinBits": 8,
+      "metadataMaxBits": 8,
+      "staticOptional": "disabled"
+    },
+    {
+      "name": "Table1",
+      "maximum": 12,
+      "minimum": 4,
+      "metadataMinBits": 0,
+      "metadataMaxBits": 0,
+      "staticOptional": "payload-length event graph; conditional tag reads; native lengths outside payload"
+    },
+    {
+      "name": "Default2",
+      "maximum": 21,
+      "minimum": 5,
+      "metadataMinBits": 8,
+      "metadataMaxBits": 8,
+      "staticOptional": "disabled"
+    },
+    {
+      "name": "Table2",
+      "maximum": 21,
+      "minimum": 5,
+      "metadataMinBits": 8,
+      "metadataMaxBits": 8,
+      "staticOptional": "payload-length event graph; conditional tag reads; native lengths outside payload"
+    },
+    {
+      "name": "Default3",
+      "maximum": 29,
+      "minimum": 5,
+      "metadataMinBits": 8,
+      "metadataMaxBits": 8,
+      "staticOptional": "disabled"
+    },
+    {
+      "name": "Table3",
+      "maximum": 29,
+      "minimum": 5,
+      "metadataMinBits": 8,
+      "metadataMaxBits": 8,
+      "staticOptional": "payload-length event graph; conditional tag reads; native lengths outside payload"
+    },
+    {
+      "name": "Default5",
+      "maximum": 47,
+      "minimum": 5,
+      "metadataMinBits": 8,
+      "metadataMaxBits": 24,
+      "staticOptional": "disabled"
+    },
+    {
+      "name": "Table5",
+      "maximum": 45,
+      "minimum": 5,
+      "metadataMinBits": 8,
+      "metadataMaxBits": 8,
+      "staticOptional": "payload-length event graph; conditional tag reads; native lengths outside payload"
+    },
+    {
+      "name": "Default10",
+      "maximum": 90,
+      "minimum": 5,
+      "metadataMinBits": 8,
+      "metadataMaxBits": 48,
+      "staticOptional": "disabled"
+    },
+    {
+      "name": "Table10",
+      "maximum": 86,
+      "minimum": 6,
+      "metadataMinBits": 16,
+      "metadataMaxBits": 16,
+      "staticOptional": "payload-length event graph; conditional tag reads; native lengths outside payload"
+    }
+  ],
+  "qps": false,
+  "inline": "same explicit inline hint for both methods",
+  "source_manifest": "opt-table-source-manifest.json"
+}

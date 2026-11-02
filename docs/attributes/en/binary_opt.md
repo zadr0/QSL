@@ -1,34 +1,24 @@
-# `binary_opt` — attribute specification
+# binary_opt: string ownership
 
-**Status:** implemented, except `safety` is only a parsed flag in this revision.
+[Architecture](../../architecture.en.md) · [safety](safety.md)
 
-## Syntax
+| Modifier | Generated Rust field | Storage |
+|---|---|---|
+| absent / false | String, or &str with lifetime | Normal schema ownership |
+| true | &'a [u8] | Borrowed UTF-8 bytes; lifetime required |
+| view | Utf8Guard<'a> | Borrowed string-like view; lifetime required |
+| guard | Utf8CopyGuard | Copies bytes to owned/reusable SerOut |
+| inline | InlineString<MAX> | Inline bounded capacity and length |
+
+Fixed str(N), including equal bounds, always uses `[u8; N]`. Bounds count UTF-8 bytes, not Unicode characters. The modifier applies only to string/str fields.
 
 ```qsl
-&ByteView { str(0..4096) text|binary_opt=true|; }
-&GuardView { str(0..4096) text|binary_opt=guard|; }
-&InlineView { str(0..4096) text|binary_opt=inline|; }
+&Bytes[lifetime,safety] { str(0..4096) text|binary_opt=true|; }
+&View[lifetime,safety] { str(0..4096) text|binary_opt=view|; }
+&Copy[safety] { str(0..4096) text|binary_opt=guard|; }
+&Inline[safety] { str(0..4096) text|binary_opt=inline|; }
 ```
 
-## Exact mechanism and wire effect
+CopyGuard avoids creating a String object but still needs storage. First creation can allocate; prepared reuse avoids repeated storage preparation when capacity suffices. It does not borrow the frame. Borrowed modes require the source to remain alive and immutable. Decompression needs a destination for restored bytes; unsupported borrowed/guard combinations are rejected. Checked decoding validates UTF-8; trusted APIs retain their preconditions.
 
-true generates &'a [u8], guard generates borrowed Utf8Guard<'a>, inline generates InlineString<MAX>. The default creates String. Trusted byte and guard views do not allocate.
-
-## Constraints and invalid combinations
-
-Only string/str. Inline requires a finite bound ≤65535; fixed str(N) always becomes [u8;N]. Decompressed bytes cannot be borrowed from compressed input.
-
-## Runtime contract
-
-Both peers must use compatible schema and wire revisions. The unsafe path does not verify arbitrary network input; source lifetime, data bounds and ranks must satisfy the schema.
-
-## What to measure
-
-Compare complete writes and reads on identical inputs, with metadata and payload separated; record wire size, allocations, CPU, benchmark profile and p99. Existing case:
-`utf8_1024/ascii/read_guard` — [all-estimates.csv](../../data/all-estimates.csv).
-
-## Source implementation
-
-`qsl/src/parser.rs binary_opt; strings.rs Utf8Guard/InlineString`.
-
-[← All attributes](index.md) · [Architecture](../../architecture.en.md)
+Historical string measurements are not part of the current numeric QPS/control runs. No new claim about 1024-character latency is made here.

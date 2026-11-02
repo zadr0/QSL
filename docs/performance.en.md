@@ -1,50 +1,39 @@
-# Load-testing: full smoke comparison
+# Fresh measurements: QSL only
 
-**Method:** one WebSocket, four requests in flight, batch 1/64, 1 s warm-up, 2 s measurement, same-host k6. CPU numbers are **full-run processor seconds**; memory values are separate per-process peak RSS, not necessarily simultaneous. These are not maximum server capacity numbers.
+[Русский](performance.ru.md) · [Architecture](architecture.en.md)
 
-| Codec | Batch | Replies/s | Records/s | App MiB/s | Avg RTT ms | Server CPU s | k6 CPU s | Server RAM MiB | k6 RAM MiB |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| json | 1 | 14,514.0 | 14,514 | 3.48 | 0.255 | 2.047 | 3.969 | 10.22 | 59.16 |
-| msgpack | 1 | 10,566.5 | 10,566 | 1.88 | 0.355 | 1.484 | 2.906 | 10.22 | 60.00 |
-| protobuf | 1 | 15,157.5 | 15,158 | 2.73 | 0.245 | 1.891 | 3.797 | 10.22 | 58.89 |
-| qsl | 1 | 6,689.5 | 6,690 | 0.71 | 0.565 | 1.047 | 2.062 | 10.13 | 59.75 |
-| qsl-legacy | 1 | 12,387.0 | 12,387 | 2.35 | 0.303 | 1.734 | 3.312 | 10.20 | 58.48 |
-| json | 64 | 6,149.5 | 393,568 | 95.18 | 0.607 | 1.672 | 3.438 | 10.32 | 58.64 |
-| msgpack | 64 | 8,610.0 | 551,040 | 99.21 | 0.432 | 1.906 | 3.844 | 10.32 | 60.78 |
-| protobuf | 64 | 9,858.0 | 630,912 | 114.88 | 0.376 | 2.000 | 4.297 | 10.32 | 58.08 |
-| qsl | 64 | 11,513.5 | 736,864 | 75.93 | 0.314 | 1.703 | 3.734 | 10.25 | 60.36 |
-| qsl-legacy | 64 | 6,469.5 | 414,048 | 77.02 | 0.582 | 1.375 | 2.891 | 10.32 | 57.56 |
+QPS profile: four cases of one schema, 2026-11-02: prepared reads and writes with/without QPS. No other codecs, sockets or k6 were run.
 
-## Important QSL version caveat: WebSocket and strings
+| Operation | Variant | ns/frame | 99% CI, ns |
+|---|---|---:|---:|
+| `deserialize_into` | QSL + opt_table | 15.5670 | 15.4188–15.7210 |
+| `deserialize_into` | QSL + QPS Q16 + opt_table | 9.5583 | 9.4735–9.6470 |
+| `serialize_into` | QSL + opt_table | 7.4147 | 7.3280–7.5082 |
+| `serialize_into` | QSL + QPS Q16 + opt_table | 13.6984 | 13.5434–13.8676 |
 
-**Historical result, not a measurement of the current string path.** The WebSocket smoke tests above used the **earlier QSL string-handling implementation**. The subsequent optimizations based on borrowed `&[u8]`, `Utf8Guard`, and other specialized string representations **were not part of the measured path**. Thus the QSL results above, including its `batch=1` deficit, **must not be presented as measurements of the updated string implementation**.
+QPS changes decoding time by -38.6% and encoding by +84.7% relative to current raw opt_table. Reads are faster and writes cost more in this profile. This is neither a comparison with historical runs nor a universal ranking.
 
-| Generation / test | String representation | What the measurement establishes |
-|---|---|---|
-| Historical WebSocket smoke (`batch=1/64`) | Earlier string-handling path | End-to-end throughput, RTT, CPU and RAM of that version through k6/WebSocket only |
-| Later UTF-8 Criterion tests | `String`, borrowed `&[u8]`, `Utf8Guard`, `InlineString`, decode into destination | Costs of individual read/write operations for the specified inputs and conditions |
-| WebSocket rerun after the optimizations | Not present in the supplied data | **No measured end-to-end throughput improvement yet** |
+Windows 11 Pro x86-64; i5-7400, 4 cores / 4 threads; RAM 24 GiB at 2133 MHz. Rust 1.98.0 / LLVM 22.1.8; Criterion 0.8.2; release opt-level=3 with debug info, RUSTFLAGS unset. Affinity was not pinned and the OS was not isolated.
 
-**What changed.** `binary_opt=true` exposes string bytes as borrowed `&[u8]`, avoiding a separately allocated `String` during decoding. `binary_opt=guard` uses `Utf8Guard<'a>`, a borrowed zero-copy UTF-8 view with an explicit validity contract, **not** a newly allocated heap buffer. Both can avoid ownership/allocation costs on their respective paths. An application may choose to copy the bytes afterward, but copying is not inherent to `Utf8Guard`. Fixed strings remain `[u8; N]`, while `InlineString` owns bytes within the Rust value. The alternatives have different lifetime and safety requirements.
+Each case uses 15 s warm-up, 10 s measurement, 200 samples and 99% CI. All 16 optional masks are cycled. Wire and final-output buffers are 64 B aligned; native source objects for writes use Vec's natural alignment. Preparation, allocation and validation are excluded; frame selection and black_box are included. This is not a 1024-character string or network throughput test.
 
-**Interpretation.** Later Criterion measurements show meaningful owned-versus-borrowed decoding differences, but **do not prove an equivalent WebSocket RPS or RTT improvement**. Transport framing, k6 load generation, batching, and other fields still contribute to end-to-end latency. Establishing that improvement requires rerunning the campaign with the new QSL string path, identical schemas, fixtures, environment and load parameters.
+Model: i64(-10..10), u64(0..15), optional u64(0..1000), i64(-100..100), u64(7..7), full u64. Raw: 17–49 B; QPS: 3–13 B. Prepared QPS reads require 16 B of initialized private padding, never transmitted. Both Rust objects occupy 80 B. Both tests use 128 B Wire capacity; this experiment does not establish lower RSS.
 
-## Why more MiB/s does not imply the best codec
+Measured process and descendants: 8 GiB limit; peak job commit 6.83 MiB. Compilation occurs before applying this measured-process limit. Source hashes were captured before the run and verified afterwards. The executable is identified by SHA-256.
 
-JSON and Protobuf produce different encoded payload sizes. Therefore MiB/s alone cannot rank codec efficiency: at batch=64 QSL handled more **records**/s while Protobuf transferred more **wire** MiB/s.
+Selected x86-64 release QPS wrappers have no conditional jumps or calls; the raw reader has one indirect event call. This does not describe the entire checked API. Instruction counts are not cycle counts. Q2/Q4/Q8 have golden-vector and roundtrip coverage; only Q16 has fresh timing.
 
-## How to interpret CPU and RAM
+```powershell
+# Matching dev-qsl checkout; only four cases; 8 GiB measured-process limit.
+.\qsl-bench\tools\run-payload.ps1 -Benchmark current_qsl -ManifestPath .\qsl-bench\current\Cargo.toml -ResultDirectory .\qsl-bench\target\criterion-qps-v2-repeat
+cargo test --manifest-path qsl-bench/current/Cargo.toml --locked
+cargo rustc --manifest-path qsl-bench/current/Cargo.toml --example asm_current --release --locked -- --emit=asm
+```
 
-CPU totals measured over the entire process lifetime, not just the 2 s measurement window. A faster codec may process more total records and accumulate more CPU time. Divide CPU by actual completed work only for a carefully aligned measurement window; the archived full-run CPU and measured-window records are not exactly aligned.
+[JSON](data/current-qsl.json) · [CSV](data/current-qsl.csv) · [Raw samples](data/qsl-current-raw/) · [Log](data/qsl-current-run.log) · [ASM](data/qsl-current-asm/) · [Harness](../reference/current-benchmark/) · [Hashes](../reference/current-source-manifest.json)
 
-## Limitations
+Historical all-estimates, profiles and smoke files remain archived; the fresh chart uses only these four observations.
 
-- WebSocket RTT does not isolate serialization CPU cost.
-- Two seconds is too short for stable peak throughput and p99.
-- One connection does not measure scalability.
-- Load-generator capacity influences results.
-- For micro-operations, compare identical schemas and buffers with Criterion.
+## Separate baseline control
 
-## Raw data
-
-[load-smoke.csv](data/load-smoke.csv) · [Criterion CSV](data/all-estimates.csv)
+[default vs opt_table](opt-table-control.en.md): N=1/2/3/5/10 optional u64 fields after one required u32; twenty paired QSL-only read/write cases. QPS is off in that group. Its shape and working set differ; absolute times are not compared across the groups.

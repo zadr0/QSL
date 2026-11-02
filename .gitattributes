@@ -1,0 +1,5 @@
+# Preserve verbatim historical pages and compiler output, including insignificant whitespace.
+docs/archive/pre-qps-v2/** -text whitespace=-blank-at-eol,-blank-at-eof
+docs/data/qsl-current-asm/*.asm -text whitespace=-blank-at-eol
+# Raw run logs retain the bytes produced by the benchmark runner.
+docs/data/*-run.log -text

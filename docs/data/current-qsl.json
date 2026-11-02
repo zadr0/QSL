@@ -1,0 +1,147 @@
+{
+  "date": "2026-11-02",
+  "codec": "QSL only",
+  "qps_codec_revision": 2,
+  "qps_default_quantum": 16,
+  "warmup_seconds": 15,
+  "measurement_seconds": 10,
+  "samples": 200,
+  "confidence": 0.99,
+  "unit": "ns/frame",
+  "hardware": {
+    "cpu": "Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz",
+    "rustflags": null,
+    "build": "26200",
+    "os": "Майкрософт Windows 11 Pro",
+    "cores": 4,
+    "ramGiB": 24.0,
+    "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)\r\nbinary: rustc\r\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\r\ncommit-date: 2026-08-18\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.98.0\r\nLLVM version: 22.1.8\r\n",
+    "threads": 4,
+    "memoryMHz": [
+      2133,
+      2133
+    ]
+  },
+  "memory": {
+    "peakJobBytes": 7159808,
+    "exitCode": 0,
+    "sha256": "7C3D01CCAC960B4086CA67D0E8F7A85EE596BA0D87AEB05F0F2383C0D5F433F7",
+    "binary": "qsl-bench/current/target/release/deps/current_qsl-ef453711cb70fdc9.exe",
+    "limitGiB": 8
+  },
+  "model": {
+    "rawFrameBytes": [
+      17,
+      25,
+      25,
+      33,
+      25,
+      33,
+      33,
+      41,
+      25,
+      33,
+      33,
+      41,
+      33,
+      41,
+      41,
+      49
+    ],
+    "qpsFrameBytes": [
+      3,
+      4,
+      4,
+      5,
+      3,
+      4,
+      4,
+      5,
+      11,
+      12,
+      12,
+      13,
+      11,
+      12,
+      12,
+      13
+    ],
+    "rawNativeBytes": 80,
+    "qpsNativeBytes": 80,
+    "privatePaddingBytes": 16,
+    "rawHeaderBytes": 1
+  },
+  "rows": [
+    {
+      "profile": "qsl-only-qps-v2-2026-11-02",
+      "case": "qsl_current/deserialize_into/raw_opt_table",
+      "operation": "deserialize_into",
+      "mode": "raw_opt_table",
+      "ns": 15.566996453740853,
+      "low": 15.418849497901965,
+      "high": 15.720979113652069,
+      "confidence": 0.99
+    },
+    {
+      "profile": "qsl-only-qps-v2-2026-11-02",
+      "case": "qsl_current/deserialize_into/qps_Q16_opt_table",
+      "operation": "deserialize_into",
+      "mode": "qps_Q16_opt_table",
+      "ns": 9.55834215216191,
+      "low": 9.473488378437418,
+      "high": 9.647049498020516,
+      "confidence": 0.99
+    },
+    {
+      "profile": "qsl-only-qps-v2-2026-11-02",
+      "case": "qsl_current/serialize_into/raw_opt_table",
+      "operation": "serialize_into",
+      "mode": "raw_opt_table",
+      "ns": 7.41471936531058,
+      "low": 7.328038285840417,
+      "high": 7.508171276125705,
+      "confidence": 0.99
+    },
+    {
+      "profile": "qsl-only-qps-v2-2026-11-02",
+      "case": "qsl_current/serialize_into/qps_Q16_opt_table",
+      "operation": "serialize_into",
+      "mode": "qps_Q16_opt_table",
+      "ns": 13.698381710109535,
+      "low": 13.543391501236995,
+      "high": 13.867578601066413,
+      "confidence": 0.99
+    }
+  ],
+  "assembly": {
+    "asm_raw_read": {
+      "conditional_jumps": [],
+      "static_call_instructions": 1,
+      "instructions": 77
+    },
+    "asm_raw_write": {
+      "conditional_jumps": [],
+      "static_call_instructions": 0,
+      "instructions": 64
+    },
+    "asm_qps16_read": {
+      "conditional_jumps": [],
+      "static_call_instructions": 0,
+      "instructions": 61
+    },
+    "asm_qps16_write": {
+      "conditional_jumps": [],
+      "static_call_instructions": 0,
+      "instructions": 107
+    }
+  },
+  "checks": {
+    "core_unit": 69,
+    "core_native_serial": 10,
+    "core_compile_fail": 2,
+    "current_schema_regressions": 3,
+    "node_lsp": 23,
+    "lean_theorems": 18
+  },
+  "source_manifest": "current-source-manifest.json"
+}

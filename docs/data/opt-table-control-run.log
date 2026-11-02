@@ -1,0 +1,201 @@
+opt_table_control/deserialize_into/n1/default
+                        time:   [3.4243 ns 3.5515 ns 3.7207 ns]
+Found 25 outliers among 200 measurements (12.50%)
+  13 (6.50%) high mild
+  12 (6.00%) high severe
+opt_table_control/deserialize_into/n1/opt_table
+                        time:   [3.8739 ns 3.9202 ns 3.9704 ns]
+Found 17 outliers among 200 measurements (8.50%)
+  3 (1.50%) low mild
+  9 (4.50%) high mild
+  5 (2.50%) high severe
+
+opt_table_control/serialize_into/n1/default
+                        time:   [5.0185 ns 5.1046 ns 5.2088 ns]
+Found 10 outliers among 200 measurements (5.00%)
+  5 (2.50%) high mild
+  5 (2.50%) high severe
+opt_table_control/serialize_into/n1/opt_table
+                        time:   [3.4140 ns 3.4460 ns 3.4806 ns]
+Found 16 outliers among 200 measurements (8.00%)
+  5 (2.50%) low mild
+  6 (3.00%) high mild
+  5 (2.50%) high severe
+
+opt_table_control/deserialize_into/n2/default
+                        time:   [8.4237 ns 8.7726 ns 9.1893 ns]
+Found 26 outliers among 200 measurements (13.00%)
+  8 (4.00%) high mild
+  18 (9.00%) high severe
+opt_table_control/deserialize_into/n2/opt_table
+                        time:   [6.2977 ns 6.3678 ns 6.4450 ns]
+Found 11 outliers among 200 measurements (5.50%)
+  4 (2.00%) low mild
+  3 (1.50%) high mild
+  4 (2.00%) high severe
+
+opt_table_control/serialize_into/n2/default
+                        time:   [11.118 ns 11.239 ns 11.365 ns]
+Found 10 outliers among 200 measurements (5.00%)
+  5 (2.50%) low mild
+  2 (1.00%) high mild
+  3 (1.50%) high severe
+opt_table_control/serialize_into/n2/opt_table
+                        time:   [4.9026 ns 5.0700 ns 5.3359 ns]
+Found 17 outliers among 200 measurements (8.50%)
+  1 (0.50%) low mild
+  10 (5.00%) high mild
+  6 (3.00%) high severe
+
+opt_table_control/deserialize_into/n3/default
+                        time:   [12.488 ns 12.769 ns 13.120 ns]
+Found 11 outliers among 200 measurements (5.50%)
+  5 (2.50%) high mild
+  6 (3.00%) high severe
+opt_table_control/deserialize_into/n3/opt_table
+                        time:   [8.3262 ns 8.7599 ns 9.3746 ns]
+Found 13 outliers among 200 measurements (6.50%)
+  7 (3.50%) high mild
+  6 (3.00%) high severe
+
+opt_table_control/serialize_into/n3/default
+                        time:   [20.214 ns 20.481 ns 20.767 ns]
+Found 18 outliers among 200 measurements (9.00%)
+  8 (4.00%) low mild
+  7 (3.50%) high mild
+  3 (1.50%) high severe
+opt_table_control/serialize_into/n3/opt_table
+                        time:   [6.3041 ns 6.3964 ns 6.4949 ns]
+Found 13 outliers among 200 measurements (6.50%)
+  9 (4.50%) high mild
+  4 (2.00%) high severe
+
+opt_table_control/deserialize_into/n5/default
+                        time:   [14.565 ns 14.799 ns 15.085 ns]
+Found 13 outliers among 200 measurements (6.50%)
+  5 (2.50%) low mild
+  6 (3.00%) high mild
+  2 (1.00%) high severe
+opt_table_control/deserialize_into/n5/opt_table
+                        time:   [18.647 ns 19.291 ns 20.098 ns]
+Found 19 outliers among 200 measurements (9.50%)
+  9 (4.50%) high mild
+  10 (5.00%) high severe
+
+opt_table_control/serialize_into/n5/default
+                        time:   [35.920 ns 36.331 ns 36.768 ns]
+Found 13 outliers among 200 measurements (6.50%)
+  2 (1.00%) low mild
+  8 (4.00%) high mild
+  3 (1.50%) high severe
+opt_table_control/serialize_into/n5/opt_table
+                        time:   [9.1527 ns 9.2933 ns 9.5258 ns]
+Found 9 outliers among 200 measurements (4.50%)
+  5 (2.50%) high mild
+  4 (2.00%) high severe
+
+opt_table_control/deserialize_into/n10/default
+                        time:   [44.915 ns 45.899 ns 47.063 ns]
+Found 18 outliers among 200 measurements (9.00%)
+  9 (4.50%) low mild
+  6 (3.00%) high mild
+  3 (1.50%) high severe
+opt_table_control/deserialize_into/n10/opt_table
+                        time:   [34.544 ns 34.958 ns 35.405 ns]
+Found 10 outliers among 200 measurements (5.00%)
+  6 (3.00%) high mild
+  4 (2.00%) high severe
+
+opt_table_control/serialize_into/n10/default
+                        time:   [130.52 ns 134.66 ns 141.32 ns]
+Found 9 outliers among 200 measurements (4.50%)
+  1 (0.50%) low mild
+  2 (1.00%) high mild
+  6 (3.00%) high severe
+opt_table_control/serialize_into/n10/opt_table
+                        time:   [18.515 ns 18.965 ns 19.524 ns]
+Found 14 outliers among 200 measurements (7.00%)
+  2 (1.00%) high mild
+  12 (6.00%) high severe
+
+
+Benchmarking opt_table_control/deserialize_into/n1/default
+Benchmarking opt_table_control/deserialize_into/n1/default: Warming up for 15.000 s
+Benchmarking opt_table_control/deserialize_into/n1/default: Collecting 200 samples in estimated 10.000 s (3.0B iterations)
+Benchmarking opt_table_control/deserialize_into/n1/default: Analyzing
+Benchmarking opt_table_control/deserialize_into/n1/opt_table
+Benchmarking opt_table_control/deserialize_into/n1/opt_table: Warming up for 15.000 s
+Benchmarking opt_table_control/deserialize_into/n1/opt_table: Collecting 200 samples in estimated 10.000 s (2.3B iterations)
+Benchmarking opt_table_control/deserialize_into/n1/opt_table: Analyzing
+Benchmarking opt_table_control/serialize_into/n1/default
+Benchmarking opt_table_control/serialize_into/n1/default: Warming up for 15.000 s
+Benchmarking opt_table_control/serialize_into/n1/default: Collecting 200 samples in estimated 10.000 s (1.9B iterations)
+Benchmarking opt_table_control/serialize_into/n1/default: Analyzing
+Benchmarking opt_table_control/serialize_into/n1/opt_table
+Benchmarking opt_table_control/serialize_into/n1/opt_table: Warming up for 15.000 s
+Benchmarking opt_table_control/serialize_into/n1/opt_table: Collecting 200 samples in estimated 10.000 s (2.8B iterations)
+Benchmarking opt_table_control/serialize_into/n1/opt_table: Analyzing
+Benchmarking opt_table_control/deserialize_into/n2/default
+Benchmarking opt_table_control/deserialize_into/n2/default: Warming up for 15.000 s
+Benchmarking opt_table_control/deserialize_into/n2/default: Collecting 200 samples in estimated 10.000 s (1.2B iterations)
+Benchmarking opt_table_control/deserialize_into/n2/default: Analyzing
+Benchmarking opt_table_control/deserialize_into/n2/opt_table
+Benchmarking opt_table_control/deserialize_into/n2/opt_table: Warming up for 15.000 s
+Benchmarking opt_table_control/deserialize_into/n2/opt_table: Collecting 200 samples in estimated 10.000 s (1.4B iterations)
+Benchmarking opt_table_control/deserialize_into/n2/opt_table: Analyzing
+Benchmarking opt_table_control/serialize_into/n2/default
+Benchmarking opt_table_control/serialize_into/n2/default: Warming up for 15.000 s
+Benchmarking opt_table_control/serialize_into/n2/default: Collecting 200 samples in estimated 10.000 s (862M iterations)
+Benchmarking opt_table_control/serialize_into/n2/default: Analyzing
+Benchmarking opt_table_control/serialize_into/n2/opt_table
+Benchmarking opt_table_control/serialize_into/n2/opt_table: Warming up for 15.000 s
+Benchmarking opt_table_control/serialize_into/n2/opt_table: Collecting 200 samples in estimated 10.000 s (2.0B iterations)
+Benchmarking opt_table_control/serialize_into/n2/opt_table: Analyzing
+Benchmarking opt_table_control/deserialize_into/n3/default
+Benchmarking opt_table_control/deserialize_into/n3/default: Warming up for 15.000 s
+Benchmarking opt_table_control/deserialize_into/n3/default: Collecting 200 samples in estimated 10.000 s (803M iterations)
+Benchmarking opt_table_control/deserialize_into/n3/default: Analyzing
+Benchmarking opt_table_control/deserialize_into/n3/opt_table
+Benchmarking opt_table_control/deserialize_into/n3/opt_table: Warming up for 15.000 s
+Benchmarking opt_table_control/deserialize_into/n3/opt_table: Collecting 200 samples in estimated 10.000 s (1.2B iterations)
+Benchmarking opt_table_control/deserialize_into/n3/opt_table: Analyzing
+Benchmarking opt_table_control/serialize_into/n3/default
+Benchmarking opt_table_control/serialize_into/n3/default: Warming up for 15.000 s
+Benchmarking opt_table_control/serialize_into/n3/default: Collecting 200 samples in estimated 10.000 s (476M iterations)
+Benchmarking opt_table_control/serialize_into/n3/default: Analyzing
+Benchmarking opt_table_control/serialize_into/n3/opt_table
+Benchmarking opt_table_control/serialize_into/n3/opt_table: Warming up for 15.000 s
+Benchmarking opt_table_control/serialize_into/n3/opt_table: Collecting 200 samples in estimated 10.000 s (1.5B iterations)
+Benchmarking opt_table_control/serialize_into/n3/opt_table: Analyzing
+Benchmarking opt_table_control/deserialize_into/n5/default
+Benchmarking opt_table_control/deserialize_into/n5/default: Warming up for 15.000 s
+Benchmarking opt_table_control/deserialize_into/n5/default: Collecting 200 samples in estimated 10.000 s (633M iterations)
+Benchmarking opt_table_control/deserialize_into/n5/default: Analyzing
+Benchmarking opt_table_control/deserialize_into/n5/opt_table
+Benchmarking opt_table_control/deserialize_into/n5/opt_table: Warming up for 15.000 s
+Benchmarking opt_table_control/deserialize_into/n5/opt_table: Collecting 200 samples in estimated 10.000 s (540M iterations)
+Benchmarking opt_table_control/deserialize_into/n5/opt_table: Analyzing
+Benchmarking opt_table_control/serialize_into/n5/default
+Benchmarking opt_table_control/serialize_into/n5/default: Warming up for 15.000 s
+Benchmarking opt_table_control/serialize_into/n5/default: Collecting 200 samples in estimated 10.000 s (270M iterations)
+Benchmarking opt_table_control/serialize_into/n5/default: Analyzing
+Benchmarking opt_table_control/serialize_into/n5/opt_table
+Benchmarking opt_table_control/serialize_into/n5/opt_table: Warming up for 15.000 s
+Benchmarking opt_table_control/serialize_into/n5/opt_table: Collecting 200 samples in estimated 10.000 s (1.1B iterations)
+Benchmarking opt_table_control/serialize_into/n5/opt_table: Analyzing
+Benchmarking opt_table_control/deserialize_into/n10/default
+Benchmarking opt_table_control/deserialize_into/n10/default: Warming up for 15.000 s
+Benchmarking opt_table_control/deserialize_into/n10/default: Collecting 200 samples in estimated 10.001 s (209M iterations)
+Benchmarking opt_table_control/deserialize_into/n10/default: Analyzing
+Benchmarking opt_table_control/deserialize_into/n10/opt_table
+Benchmarking opt_table_control/deserialize_into/n10/opt_table: Warming up for 15.000 s
+Benchmarking opt_table_control/deserialize_into/n10/opt_table: Collecting 200 samples in estimated 10.001 s (278M iterations)
+Benchmarking opt_table_control/deserialize_into/n10/opt_table: Analyzing
+Benchmarking opt_table_control/serialize_into/n10/default
+Benchmarking opt_table_control/serialize_into/n10/default: Warming up for 15.000 s
+Benchmarking opt_table_control/serialize_into/n10/default: Collecting 200 samples in estimated 10.000 s (73M iterations)
+Benchmarking opt_table_control/serialize_into/n10/default: Analyzing
+Benchmarking opt_table_control/serialize_into/n10/opt_table
+Benchmarking opt_table_control/serialize_into/n10/opt_table: Warming up for 15.000 s
+Benchmarking opt_table_control/serialize_into/n10/opt_table: Collecting 200 samples in estimated 10.000 s (542M iterations)
+Benchmarking opt_table_control/serialize_into/n10/opt_table: Analyzing

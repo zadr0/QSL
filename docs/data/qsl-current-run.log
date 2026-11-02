@@ -1,0 +1,41 @@
+qsl_current/deserialize_into/raw_opt_table
+                        time:   [15.419 ns 15.567 ns 15.721 ns]
+Found 8 outliers among 200 measurements (4.00%)
+  4 (2.00%) high mild
+  4 (2.00%) high severe
+qsl_current/deserialize_into/qps_Q16_opt_table
+                        time:   [9.4735 ns 9.5583 ns 9.6470 ns]
+Found 9 outliers among 200 measurements (4.50%)
+  2 (1.00%) low mild
+  5 (2.50%) high mild
+  2 (1.00%) high severe
+
+qsl_current/serialize_into/raw_opt_table
+                        time:   [7.3280 ns 7.4147 ns 7.5082 ns]
+Found 24 outliers among 200 measurements (12.00%)
+  9 (4.50%) low mild
+  12 (6.00%) high mild
+  3 (1.50%) high severe
+qsl_current/serialize_into/qps_Q16_opt_table
+                        time:   [13.543 ns 13.698 ns 13.868 ns]
+Found 11 outliers among 200 measurements (5.50%)
+  7 (3.50%) high mild
+  4 (2.00%) high severe
+
+
+Benchmarking qsl_current/deserialize_into/raw_opt_table
+Benchmarking qsl_current/deserialize_into/raw_opt_table: Warming up for 15.000 s
+Benchmarking qsl_current/deserialize_into/raw_opt_table: Collecting 200 samples in estimated 10.000 s (634M iterations)
+Benchmarking qsl_current/deserialize_into/raw_opt_table: Analyzing
+Benchmarking qsl_current/deserialize_into/qps_Q16_opt_table
+Benchmarking qsl_current/deserialize_into/qps_Q16_opt_table: Warming up for 15.000 s
+Benchmarking qsl_current/deserialize_into/qps_Q16_opt_table: Collecting 200 samples in estimated 10.000 s (1.0B iterations)
+Benchmarking qsl_current/deserialize_into/qps_Q16_opt_table: Analyzing
+Benchmarking qsl_current/serialize_into/raw_opt_table
+Benchmarking qsl_current/serialize_into/raw_opt_table: Warming up for 15.000 s
+Benchmarking qsl_current/serialize_into/raw_opt_table: Collecting 200 samples in estimated 10.000 s (1.3B iterations)
+Benchmarking qsl_current/serialize_into/raw_opt_table: Analyzing
+Benchmarking qsl_current/serialize_into/qps_Q16_opt_table
+Benchmarking qsl_current/serialize_into/qps_Q16_opt_table: Warming up for 15.000 s
+Benchmarking qsl_current/serialize_into/qps_Q16_opt_table: Collecting 200 samples in estimated 10.000 s (728M iterations)
+Benchmarking qsl_current/serialize_into/qps_Q16_opt_table: Analyzing

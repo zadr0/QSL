@@ -1,2246 +1,3506 @@
-# Публичный API QSL — индекс из исходного кода
-> Сигнатуры извлечены из предоставленного архива QSL.rar. Это индекс исходника, а не вручную проверенная совместимость каждой комбинации feature flags. Сопроводительные комментарии из Rust оставлены в языке оригинала. Для безопасного вызова `unsafe` необходимо соблюдать контракт метода.
+# Индекс публичных объявлений
 
-## `compat.rs`
+[English](API.en.md) · [Архитектура](architecture.ru.md)
 
-### `pub enum ParserQslType` · L10
+Найдено 574 явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Видимость feature native/Windows и rust-macros сохраняется; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из [manifest](../reference/current-source-manifest.json). Этот репозиторий публикует документацию, а не Cargo workspace.
 
-```rust
-pub enum ParserQslType
-```
+## qsl-macros/src/lib.rs
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub struct ParserQslField` · L25
+`qsl-macros/src/lib.rs:22`
 
 ```rust
-pub struct ParserQslField
+pub fn qsl_macro(args: TokenStream, item: TokenStream) -> TokenStream {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub struct ParserQslSchema` · L34
+`qsl-macros/src/lib.rs:26`
 
 ```rust
-pub struct ParserQslSchema
+pub fn schem_macro(args: TokenStream, item: TokenStream) -> TokenStream {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+## qsl/src/analysis.rs
 
-### `pub fn new` · L42
+`qsl/src/analysis.rs:5`
 
 ```rust
-pub fn new(flags: usize) -> Self
+pub enum BitRegister {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn optional_count` · L48
+`qsl/src/analysis.rs:14`
 
 ```rust
-pub fn optional_count(&self) -> usize
+pub fn for_bits(bits: usize) -> QslResult<Self> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn validate` · L51
+`qsl/src/analysis.rs:25`
 
 ```rust
-pub fn validate(&self) -> QslResult<()>
+pub fn bits(self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-
-## `deq.rs`
-
-### `pub struct DeqConstant` · L14
+`qsl/src/analysis.rs:35`
 
 ```rust
-pub struct DeqConstant
+pub fn reader(self) -> &'static str {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub struct DeqConfig` · L20
+`qsl/src/analysis.rs:45`
 
 ```rust
-pub struct DeqConfig
+pub fn writer(self) -> &'static str {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn integer_values` · L27
+`qsl/src/analysis.rs:57`
 
 ```rust
-pub fn integer_values(&self) -> HashMap<String, i128>
+pub struct BitBlock {
 ```
 
-QSL currently interprets numeric constant values at build time, while the DEQ AST retains the source type for validation and diagnostics.
-
-### `pub fn parse_deq` · L35
+`qsl/src/analysis.rs:62`
 
 ```rust
-pub fn parse_deq(source: &str) -> Result<DeqConfig, ParseError>
+pub struct QslIoPlan {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn build_qsl_files` · L89
+`qsl/src/analysis.rs:111`
 
 ```rust
-pub fn build_qsl_files( qsl_files: &[&str], deq_files: &[&str], out_dir: impl AsRef<Path>, ) -> Result<PathBuf, Box<dyn std::error::Error>>
+pub fn analyze(schema: &QslSchema) -> QslResult<Self> {
 ```
 
-Explicit build inputs belong in build.rs; DEQ itself only provides values. Lists are traversed in caller order, preserving deterministic schema order.
+## qsl/src/bit_io.rs
 
-
-## `interpreter.rs`
-
-### `pub trait TypeInterpreter` · L107
+`qsl/src/bit_io.rs:70`
 
 ```rust
-pub trait TypeInterpreter
+pub unsafe fn read_inline_string_into_with<const MAX: usize, H: crate::StringHeader>( &mut self, out: *mut crate::InlineString<MAX>, ) {
 ```
 
-The code generator does all stable arithmetic before emitting Rust source. The same type-specific routines are used by the schema writer and reader.
-
-### `pub struct QslInterpreter` · L1748
+`qsl/src/bit_io.rs:81`
 
 ```rust
-pub struct QslInterpreter
+pub unsafe fn read_raw_inline_string_into_with<const MAX: usize, H: crate::StringHeader>( &mut self, out: *mut crate::InlineString<MAX>, ) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn new` · L1775
+`qsl/src/bit_io.rs:92`
 
 ```rust
-pub fn new() -> Self
+pub unsafe fn read_inline_string_with<const MAX: usize, H: crate::StringHeader>( &mut self, ) -> crate::InlineString<MAX> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn generate` · L1779
+`qsl/src/bit_io.rs:103`
 
 ```rust
-pub fn generate(&mut self, schemas: &[QslSchema]) -> QslResult<()>
+pub unsafe fn read_raw_inline_string_with<const MAX: usize, H: crate::StringHeader>( &mut self, ) -> crate::InlineString<MAX> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn generate_parsed` · L1797
+`qsl/src/bit_io.rs:112`
 
 ```rust
-pub fn generate_parsed(&mut self, schemas: &[crate::compat::ParserQslSchema]) -> QslResult<()>
+pub fn as_ptr(&self) -> *const u8 {
 ```
 
-Parser-compatible front end. QSL parser AST stays untouched; only the internal wire-generation descriptors are normalized here.
-
-### `pub fn generate_field` · L1805
+`qsl/src/bit_io.rs:118`
 
 ```rust
-pub fn generate_field(&mut self, field: &QslField, borrowed: bool) -> QslResult<()>
+pub unsafe fn read_exact(&mut self, n: usize) -> *const u8 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn generate_default` · L2028
+`qsl/src/bit_io.rs:127`
 
 ```rust
-pub fn generate_default(&mut self, schema: &QslSchema) -> QslResult<()>
+pub unsafe fn read_u8(&mut self) -> u8 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn generate_lifetime` · L2039
+`qsl/src/bit_io.rs:133`
 
 ```rust
-pub fn generate_lifetime(&mut self, schema: &QslSchema) -> QslResult<()>
+pub unsafe fn read_u16(&mut self) -> u16 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn push` · L2053
+`qsl/src/bit_io.rs:139`
 
 ```rust
-pub fn push(&self) -> std::io::Result<()>
+pub unsafe fn read_u32(&mut self) -> u32 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/bit_io.rs:145`
 
+```rust
+pub unsafe fn read_u64(&mut self) -> u64 {
+```
 
-## `io.rs`
+`qsl/src/bit_io.rs:151`
 
-### `pub type QslResult` · L9
+```rust
+pub unsafe fn read_i8(&mut self) -> i8 {
+```
+
+`qsl/src/bit_io.rs:157`
+
+```rust
+pub unsafe fn read_i16(&mut self) -> i16 {
+```
+
+`qsl/src/bit_io.rs:163`
+
+```rust
+pub unsafe fn read_i32(&mut self) -> i32 {
+```
+
+`qsl/src/bit_io.rs:169`
+
+```rust
+pub unsafe fn read_i64(&mut self) -> i64 {
+```
+
+`qsl/src/bit_io.rs:175`
+
+```rust
+pub unsafe fn read_inline_string<const MAX: usize>(&mut self) -> crate::InlineString<MAX> {
+```
+
+`qsl/src/bit_io.rs:184`
+
+```rust
+pub unsafe fn read_inline_string_into<const MAX: usize>( &mut self, out: *mut crate::InlineString<MAX>, ) {
+```
+
+`qsl/src/bit_io.rs:195`
+
+```rust
+pub unsafe fn read_raw_inline_string_into<const MAX: usize>( &mut self, out: *mut crate::InlineString<MAX>, ) {
+```
+
+`qsl/src/bit_io.rs:210`
+
+```rust
+pub unsafe fn write_inline_string_with<const MAX: usize, H: crate::StringHeader>( &mut self, value: &crate::InlineString<MAX>, ) {
+```
+
+`qsl/src/bit_io.rs:219`
+
+```rust
+pub fn as_mut_ptr(&self) -> *mut u8 {
+```
+
+`qsl/src/bit_io.rs:225`
+
+```rust
+pub unsafe fn claim_bytes(&mut self, n: usize) -> *mut u8 {
+```
+
+`qsl/src/bit_io.rs:234`
+
+```rust
+pub unsafe fn write_bytes_unchecked(&mut self, bytes: &[u8]) {
+```
+
+`qsl/src/bit_io.rs:240`
+
+```rust
+pub unsafe fn write_ptr_unchecked(&mut self, source: *const u8, n: usize) {
+```
+
+`qsl/src/bit_io.rs:247`
+
+```rust
+pub unsafe fn write_zeros_unchecked(&mut self, n: usize) {
+```
+
+`qsl/src/bit_io.rs:254`
+
+```rust
+pub unsafe fn write_inline_string<const MAX: usize>( &mut self, value: &crate::InlineString<MAX>, ) {
+```
+
+`qsl/src/bit_io.rs:264`
+
+```rust
+pub struct QslByteReader {
+```
+
+`qsl/src/bit_io.rs:271`
+
+```rust
+pub unsafe fn new(ptr: *const u8) -> Self {
+```
+
+`qsl/src/bit_io.rs:275`
+
+```rust
+pub fn align(&mut self) {
+```
+
+`qsl/src/bit_io.rs:279`
+
+```rust
+pub unsafe fn read_bits(&mut self, width: u32) -> u64 {
+```
+
+`qsl/src/bit_io.rs:285`
+
+```rust
+pub struct QslByteWriter {
+```
+
+`qsl/src/bit_io.rs:292`
+
+```rust
+pub unsafe fn from_raw(ptr: *mut u8) -> Self {
+```
+
+`qsl/src/bit_io.rs:296`
+
+```rust
+pub fn flush_unchecked(&mut self) {
+```
+
+`qsl/src/bit_io.rs:300`
+
+```rust
+pub unsafe fn write_bits_unchecked(&mut self, _value: u64, width: u32) {
+```
+
+`qsl/src/bit_io.rs:307`
+
+```rust
+pub struct $reader {
+```
+
+`qsl/src/bit_io.rs:316`
+
+```rust
+pub unsafe fn new(ptr: *const u8) -> Self {
+```
+
+`qsl/src/bit_io.rs:326`
+
+```rust
+pub unsafe fn align(&mut self) {
+```
+
+`qsl/src/bit_io.rs:333`
+
+```rust
+pub unsafe fn read_bits(&mut self, width: u32) -> u64 {
+```
+
+`qsl/src/bit_io.rs:348`
+
+```rust
+pub struct $writer {
+```
+
+`qsl/src/bit_io.rs:357`
+
+```rust
+pub unsafe fn from_raw(ptr: *mut u8) -> Self {
+```
+
+`qsl/src/bit_io.rs:367`
+
+```rust
+pub unsafe fn write_bits_unchecked(&mut self, value: u64, width: u32) {
+```
+
+`qsl/src/bit_io.rs:382`
+
+```rust
+pub unsafe fn flush_unchecked(&mut self) {
+```
+
+## qsl/src/compat.rs
+
+`qsl/src/compat.rs:10`
+
+```rust
+pub enum ParserQslType {
+```
+
+`qsl/src/compat.rs:25`
+
+```rust
+pub struct ParserQslField {
+```
+
+`qsl/src/compat.rs:34`
+
+```rust
+pub struct ParserQslSchema {
+```
+
+`qsl/src/compat.rs:42`
+
+```rust
+pub fn new(flags: usize) -> Self {
+```
+
+`qsl/src/compat.rs:48`
+
+```rust
+pub fn optional_count(&self) -> usize {
+```
+
+`qsl/src/compat.rs:51`
+
+```rust
+pub fn validate(&self) -> QslResult<()> {
+```
+
+## qsl/src/deq.rs
+
+`qsl/src/deq.rs:13`
+
+```rust
+pub struct DeqConstant {
+```
+
+`qsl/src/deq.rs:19`
+
+```rust
+pub struct DeqConfig {
+```
+
+`qsl/src/deq.rs:26`
+
+```rust
+pub struct GenerationConfig {
+```
+
+`qsl/src/deq.rs:42`
+
+```rust
+pub fn integer_values(&self) -> HashMap<String, i128> {
+```
+
+`qsl/src/deq.rs:50`
+
+```rust
+pub fn parse_deq(source: &str) -> Result<DeqConfig, ParseError> {
+```
+
+`qsl/src/deq.rs:130`
+
+```rust
+pub fn build_qsl_files( qsl_files: &[&str], deq_files: &[&str], out_dir: impl AsRef<Path>, ) -> Result<PathBuf, Box<dyn std::error::Error>> {
+```
+
+`qsl/src/deq.rs:138`
+
+```rust
+pub fn build_qsl_files_with_rust( qsl_files: &[&str], deq_files: &[&str], rust_files: &[&str], out_dir: impl AsRef<Path>, ) -> Result<PathBuf, Box<dyn std::error::Error>> {
+```
+
+## qsl/src/interpreter.rs
+
+`qsl/src/interpreter.rs:18`
+
+```rust
+pub fn schema_maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {
+```
+
+`qsl/src/interpreter.rs:130`
+
+```rust
+pub trait TypeInterpreter {
+```
+
+`qsl/src/interpreter.rs:131`
+
+```rust
+fn type_name(&self, out: &mut Vec<u8>, borrowed: bool) -> QslResult<()>;
+```
+
+`qsl/src/interpreter.rs:132`
+
+```rust
+fn size(&self, out: &mut Vec<u8>, expr: &str, width: usize, compact: bool) -> QslResult<()>;
+```
+
+`qsl/src/interpreter.rs:133`
+
+```rust
+fn write(&self, out: &mut Vec<u8>, expr: &str) -> QslResult<()>;
+```
+
+`qsl/src/interpreter.rs:134`
+
+```rust
+fn read(&self, out: &mut Vec<u8>, name: &str, borrowed: bool) -> QslResult<()>;
+```
+
+`qsl/src/interpreter.rs:135`
+
+```rust
+fn comp_write(&self, out: &mut Vec<u8>, expr: &str, bits: usize) -> QslResult<()>;
+```
+
+`qsl/src/interpreter.rs:136`
+
+```rust
+fn comp_read( &self, out: &mut Vec<u8>, name: &str, bits: usize, borrowed: bool, ) -> QslResult<()>;
+```
+
+`qsl/src/interpreter.rs:2233`
+
+```rust
+pub struct QslInterpreter {
+```
+
+`qsl/src/interpreter.rs:2261`
+
+```rust
+pub fn new() -> Self {
+```
+
+`qsl/src/interpreter.rs:2265`
+
+```rust
+pub fn generate(&mut self, schemas: &[QslSchema]) -> QslResult<()> {
+```
+
+`qsl/src/interpreter.rs:2286`
+
+```rust
+pub fn generate_parsed(&mut self, schemas: &[crate::compat::ParserQslSchema]) -> QslResult<()> {
+```
+
+`qsl/src/interpreter.rs:2294`
+
+```rust
+pub fn generate_field(&mut self, field: &QslField, borrowed: bool) -> QslResult<()> {
+```
+
+`qsl/src/interpreter.rs:2647`
+
+```rust
+pub fn generate_default(&mut self, schema: &QslSchema) -> QslResult<()> {
+```
+
+`qsl/src/interpreter.rs:2658`
+
+```rust
+pub fn generate_lifetime(&mut self, schema: &QslSchema) -> QslResult<()> {
+```
+
+`qsl/src/interpreter.rs:2672`
+
+```rust
+pub fn push(&self) -> std::io::Result<()> {
+```
+
+## qsl/src/io.rs
+
+`qsl/src/io.rs:7`
+
+```rust
+pub use checked::{QslCheckedBitsReader, QslCheckedBitsWriter, QslCheckedReader, QslCheckedWriter};
+```
+
+`qsl/src/io.rs:9`
 
 ```rust
 pub type QslResult<T> = Result<T, QslError>;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub enum QslError` · L12
+`qsl/src/io.rs:12`
 
 ```rust
-pub enum QslError
+pub enum QslError {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub struct QslRawWriter` · L33
+`qsl/src/io.rs:34`
 
 ```rust
-pub struct QslRawWriter
+pub struct QslRawWriter {
 ```
 
-Minimal raw-pointer writer used by trusted, compile-time-validated schemas. No bounds checks, dynamic allocation, loops, or error values exist here. The caller is responsible for the complete writable allocation.
-
-### `pub unsafe fn new` · L41
+`qsl/src/io.rs:42`
 
 ```rust
-pub unsafe fn new(ptr: *mut u8) -> Self
+pub unsafe fn new(ptr: *mut u8) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn from` · L48
+`qsl/src/io.rs:49`
 
 ```rust
-pub fn from(out: &mut [u8]) -> Self
+pub fn from(out: &mut [u8]) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_u8` · L58
+`qsl/src/io.rs:59`
 
 ```rust
-pub unsafe fn write_u8(&mut self, value: u8)
+pub unsafe fn write_u8(&mut self, value: u8) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_u16` · L66
+`qsl/src/io.rs:67`
 
 ```rust
-pub unsafe fn write_u16(&mut self, value: u16)
+pub unsafe fn write_u16(&mut self, value: u16) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_u32` · L74
+`qsl/src/io.rs:75`
 
 ```rust
-pub unsafe fn write_u32(&mut self, value: u32)
+pub unsafe fn write_u32(&mut self, value: u32) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_u64` · L82
+`qsl/src/io.rs:83`
 
 ```rust
-pub unsafe fn write_u64(&mut self, value: u64)
+pub unsafe fn write_u64(&mut self, value: u64) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write` · L90
+`qsl/src/io.rs:91`
 
 ```rust
-pub unsafe fn write(&mut self, source: *const u8, len: usize)
+pub unsafe fn write(&mut self, source: *const u8, len: usize) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub struct QslRawReader` · L98
+`qsl/src/io.rs:99`
 
 ```rust
-pub struct QslRawReader
+pub struct QslRawReader {
 ```
 
-Minimal raw-pointer reader. Never checks the input length or its contents. Any use with a truncated or invalid allocation is the caller's fault.
-
-### `pub unsafe fn new` · L106
+`qsl/src/io.rs:107`
 
 ```rust
-pub unsafe fn new(ptr: *const u8) -> Self
+pub unsafe fn new(ptr: *const u8) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn from` · L112
+`qsl/src/io.rs:113`
 
 ```rust
-pub fn from(input: &[u8]) -> Self
+pub fn from(input: &[u8]) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_u8` · L121
+`qsl/src/io.rs:122`
 
 ```rust
-pub unsafe fn read_u8(&mut self) -> u8
+pub unsafe fn read_u8(&mut self) -> u8 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_u16` · L130
+`qsl/src/io.rs:131`
 
 ```rust
-pub unsafe fn read_u16(&mut self) -> u16
+pub unsafe fn read_u16(&mut self) -> u16 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_u32` · L139
+`qsl/src/io.rs:140`
 
 ```rust
-pub unsafe fn read_u32(&mut self) -> u32
+pub unsafe fn read_u32(&mut self) -> u32 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_u64` · L148
+`qsl/src/io.rs:149`
 
 ```rust
-pub unsafe fn read_u64(&mut self) -> u64
+pub unsafe fn read_u64(&mut self) -> u64 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn take` · L156
+`qsl/src/io.rs:157`
 
 ```rust
-pub unsafe fn take(&mut self, len: usize) -> *const u8
+pub unsafe fn take(&mut self, len: usize) -> *const u8 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub struct QslFastBitsReader` · L166
+`qsl/src/io.rs:167`
 
 ```rust
-pub struct QslFastBitsReader
+pub struct QslFastBitsReader {
 ```
 
-Unchecked LSB-first bit reader for trusted records. It deliberately has no length, Result, UTF-8, or padding checks. A u128 register moves exactly 0..=8 bytes per operation without bit-by-bit loops or branches.
-
-### `pub fn as_ptr` · L175
+`qsl/src/io.rs:178`
 
 ```rust
-pub fn as_ptr(&self) -> *const u8
+pub unsafe fn read_inline_string_into_with<const MAX: usize, H: crate::StringHeader>( &mut self, out: *mut crate::InlineString<MAX>, ) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_raw_inline_string_into` · L183
+`qsl/src/io.rs:189`
 
 ```rust
-pub unsafe fn read_raw_inline_string_into<const MAX: usize>( &mut self, output: *mut crate::InlineString<MAX>, )
+pub unsafe fn read_raw_inline_string_into_with<const MAX: usize, H: crate::StringHeader>( &mut self, out: *mut crate::InlineString<MAX>, ) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_inline_string_into` · L195
+`qsl/src/io.rs:200`
 
 ```rust
-pub unsafe fn read_inline_string_into<const MAX: usize>( &mut self, output: *mut crate::InlineString<MAX>, )
+pub unsafe fn read_inline_string_with<const MAX: usize, H: crate::StringHeader>( &mut self, ) -> crate::InlineString<MAX> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_inline_string` · L207
+`qsl/src/io.rs:211`
 
 ```rust
-pub unsafe fn read_inline_string<const MAX: usize>(&mut self) -> crate::InlineString<MAX>
+pub unsafe fn read_raw_inline_string_with<const MAX: usize, H: crate::StringHeader>( &mut self, ) -> crate::InlineString<MAX> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn new` · L218
+`qsl/src/io.rs:222`
 
 ```rust
-pub unsafe fn new(ptr: *const u8) -> Self
+pub fn as_ptr(&self) -> *const u8 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn from` · L229
+`qsl/src/io.rs:230`
 
 ```rust
-pub fn from(input: &[u8]) -> Self
+pub unsafe fn read_raw_inline_string_into<const MAX: usize>( &mut self, output: *mut crate::InlineString<MAX>, ) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_bits` · L243
+`qsl/src/io.rs:242`
 
 ```rust
-pub unsafe fn read_bits(&mut self, width: u32) -> u64
+pub unsafe fn read_inline_string_into<const MAX: usize>( &mut self, output: *mut crate::InlineString<MAX>, ) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn align` · L262
+`qsl/src/io.rs:254`
 
 ```rust
-pub unsafe fn align(&mut self)
+pub unsafe fn read_inline_string<const MAX: usize>(&mut self) -> crate::InlineString<MAX> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_exact` · L271
+`qsl/src/io.rs:265`
 
 ```rust
-pub unsafe fn read_exact(&mut self, len: usize) -> *const u8
+pub unsafe fn new(ptr: *const u8) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_u8` · L283
+`qsl/src/io.rs:276`
 
 ```rust
-pub unsafe fn read_u8(&mut self) -> u8
+pub fn from(input: &[u8]) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_u16` · L294
+`qsl/src/io.rs:290`
 
 ```rust
-pub unsafe fn read_u16(&mut self) -> u16
+pub unsafe fn read_bits(&mut self, width: u32) -> u64 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_u32` · L305
+`qsl/src/io.rs:309`
 
 ```rust
-pub unsafe fn read_u32(&mut self) -> u32
+pub unsafe fn align(&mut self) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_u64` · L316
+`qsl/src/io.rs:318`
 
 ```rust
-pub unsafe fn read_u64(&mut self) -> u64
+pub unsafe fn read_exact(&mut self, len: usize) -> *const u8 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_i8` · L326
+`qsl/src/io.rs:330`
 
 ```rust
-pub unsafe fn read_i8(&mut self) -> i8
+pub unsafe fn read_u8(&mut self) -> u8 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_i16` · L333
+`qsl/src/io.rs:341`
 
 ```rust
-pub unsafe fn read_i16(&mut self) -> i16
+pub unsafe fn read_u16(&mut self) -> u16 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_i32` · L340
+`qsl/src/io.rs:352`
 
 ```rust
-pub unsafe fn read_i32(&mut self) -> i32
+pub unsafe fn read_u32(&mut self) -> u32 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn read_i64` · L347
+`qsl/src/io.rs:363`
 
 ```rust
-pub unsafe fn read_i64(&mut self) -> i64
+pub unsafe fn read_u64(&mut self) -> u64 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub struct QslUncheckedWriter` · L359
+`qsl/src/io.rs:373`
 
 ```rust
-pub struct QslUncheckedWriter
+pub unsafe fn read_i8(&mut self) -> i8 {
 ```
 
-Unchecked hot-path writer used after static schema analysis and exact buffer allocation. Values are trusted; no runtime rank preflight is performed. No capacity checks or value checks occur during the write pass.  The caller must provide a writable allocation large enough for the entire encoded record, and all values must satisfy the declared schem
-
-### `pub fn as_mut_ptr` · L368
+`qsl/src/io.rs:380`
 
 ```rust
-pub fn as_mut_ptr(&self) -> *mut u8
+pub unsafe fn read_i16(&mut self) -> i16 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_inline_string` · L375
+`qsl/src/io.rs:387`
 
 ```rust
-pub unsafe fn write_inline_string<const MAX: usize>( &mut self, value: &crate::InlineString<MAX>, )
+pub unsafe fn read_i32(&mut self) -> i32 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn from_raw` · L386
+`qsl/src/io.rs:394`
 
 ```rust
-pub unsafe fn from_raw(ptr: *mut u8) -> Self
+pub unsafe fn read_i64(&mut self) -> i64 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn from` · L397
+`qsl/src/io.rs:406`
 
 ```rust
-pub fn from(out: &mut [u8]) -> Self
+pub struct QslUncheckedWriter {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_bytes_unchecked` · L409
+`qsl/src/io.rs:416`
 
 ```rust
-pub unsafe fn write_bytes_unchecked(&mut self, bytes: &[u8])
+pub unsafe fn write_inline_string_with<const MAX: usize, H: crate::StringHeader>( &mut self, value: &crate::InlineString<MAX>, ) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_ptr_unchecked` · L419
+`qsl/src/io.rs:427`
 
 ```rust
-pub unsafe fn write_ptr_unchecked(&mut self, source: *const u8, len: usize)
+pub fn as_mut_ptr(&self) -> *mut u8 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_zeros_unchecked` · L429
+`qsl/src/io.rs:434`
 
 ```rust
-pub unsafe fn write_zeros_unchecked(&mut self, count: usize)
+pub unsafe fn write_inline_string<const MAX: usize>( &mut self, value: &crate::InlineString<MAX>, ) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_bits_unchecked` · L439
+`qsl/src/io.rs:445`
 
 ```rust
-pub unsafe fn write_bits_unchecked(&mut self, value: u64, width: u32)
+pub unsafe fn from_raw(ptr: *mut u8) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn flush_unchecked` · L456
+`qsl/src/io.rs:456`
 
 ```rust
-pub unsafe fn flush_unchecked(&mut self)
+pub fn from(out: &mut [u8]) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn claim_bytes` · L471
+`qsl/src/io.rs:468`
 
 ```rust
-pub unsafe fn claim_bytes(&mut self, n: usize) -> *mut u8
+pub unsafe fn write_bytes_unchecked(&mut self, bytes: &[u8]) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_bytes` · L482
+`qsl/src/io.rs:478`
 
 ```rust
-pub unsafe fn write_bytes(&mut self, bytes: &[u8])
+pub unsafe fn write_ptr_unchecked(&mut self, source: *const u8, len: usize) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_zeros` · L490
+`qsl/src/io.rs:488`
 
 ```rust
-pub unsafe fn write_zeros(&mut self, n: usize)
+pub unsafe fn write_zeros_unchecked(&mut self, count: usize) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_bits` · L498
+`qsl/src/io.rs:498`
 
 ```rust
-pub unsafe fn write_bits(&mut self, v: u64, width: u32)
+pub unsafe fn write_bits_unchecked(&mut self, value: u64, width: u32) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn flush` · L507
+`qsl/src/io.rs:515`
 
 ```rust
-pub unsafe fn flush(&mut self)
+pub unsafe fn flush_unchecked(&mut self) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_u8` · L514
+`qsl/src/io.rs:530`
 
 ```rust
-pub unsafe fn write_u8(&mut self, value: u8)
+pub unsafe fn claim_bytes(&mut self, n: usize) -> *mut u8 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_u16` · L524
+`qsl/src/io.rs:541`
 
 ```rust
-pub unsafe fn write_u16(&mut self, value: u16)
+pub unsafe fn write_bytes(&mut self, bytes: &[u8]) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_u32` · L534
+`qsl/src/io.rs:549`
 
 ```rust
-pub unsafe fn write_u32(&mut self, value: u32)
+pub unsafe fn write_zeros(&mut self, n: usize) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_u64` · L544
+`qsl/src/io.rs:557`
 
 ```rust
-pub unsafe fn write_u64(&mut self, value: u64)
+pub unsafe fn write_bits(&mut self, v: u64, width: u32) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_i8` · L553
+`qsl/src/io.rs:566`
 
 ```rust
-pub unsafe fn write_i8(&mut self, v: i8)
+pub unsafe fn flush(&mut self) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_i16` · L560
+`qsl/src/io.rs:573`
 
 ```rust
-pub unsafe fn write_i16(&mut self, v: i16)
+pub unsafe fn write_u8(&mut self, value: u8) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_i32` · L567
+`qsl/src/io.rs:583`
 
 ```rust
-pub unsafe fn write_i32(&mut self, v: i32)
+pub unsafe fn write_u16(&mut self, value: u16) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn write_i64` · L574
+`qsl/src/io.rs:593`
 
 ```rust
-pub unsafe fn write_i64(&mut self, v: i64)
+pub unsafe fn write_u32(&mut self, value: u32) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/io.rs:603`
 
-### `pub type QslWriter = QslRawWriter;` · L581
+```rust
+pub unsafe fn write_u64(&mut self, value: u64) {
+```
+
+`qsl/src/io.rs:612`
+
+```rust
+pub unsafe fn write_i8(&mut self, v: i8) {
+```
+
+`qsl/src/io.rs:619`
+
+```rust
+pub unsafe fn write_i16(&mut self, v: i16) {
+```
+
+`qsl/src/io.rs:626`
+
+```rust
+pub unsafe fn write_i32(&mut self, v: i32) {
+```
+
+`qsl/src/io.rs:633`
+
+```rust
+pub unsafe fn write_i64(&mut self, v: i64) {
+```
+
+`qsl/src/io.rs:640`
 
 ```rust
 pub type QslWriter = QslRawWriter;
 ```
 
-Primary QSL I/O names intentionally resolve to the minimal unchecked cursors. The `QslChecked*` variants are for diagnostics and input validation.
-
-### `pub type QslReader = QslRawReader;` · L582
+`qsl/src/io.rs:641`
 
 ```rust
 pub type QslReader = QslRawReader;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub type QslBitsWriter = QslUncheckedWriter;` · L583
+`qsl/src/io.rs:642`
 
 ```rust
 pub type QslBitsWriter = QslUncheckedWriter;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub type QslBitsReader = QslFastBitsReader;` · L584
+`qsl/src/io.rs:643`
 
 ```rust
 pub type QslBitsReader = QslFastBitsReader;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/io.rs:647`
 
-### `pub struct QslSizer` · L588
+```rust
+pub struct QslSizer {
+```
+
+`qsl/src/io.rs:654`
+
+```rust
+pub fn bits(&mut self, n: usize) -> QslResult<()> {
+```
+
+`qsl/src/io.rs:664`
+
+```rust
+pub fn align(&mut self) -> QslResult<()> {
+```
+
+`qsl/src/io.rs:672`
+
+```rust
+pub fn bytes(&mut self, n: usize) -> QslResult<()> {
+```
+
+`qsl/src/io.rs:678`
+
+```rust
+pub fn finish(mut self) -> QslResult<usize> {
+```
+
+## qsl/src/io_checked.rs
+
+`qsl/src/io_checked.rs:9`
+
+```rust
+pub struct QslCheckedWriter<'a> {
+```
+
+`qsl/src/io_checked.rs:17`
+
+```rust
+pub fn from(out: &'a mut [u8]) -> Self {
+```
+
+`qsl/src/io_checked.rs:22`
+
+```rust
+pub unsafe fn from_raw_parts(ptr: *mut u8, len: usize) -> Self {
+```
+
+`qsl/src/io_checked.rs:31`
+
+```rust
+pub fn from_raw(out: &'a mut crate::serialize::SerOut) -> Self {
+```
+
+`qsl/src/io_checked.rs:34`
+
+```rust
+pub fn position(&self) -> usize {
+```
+
+`qsl/src/io_checked.rs:37`
+
+```rust
+pub fn write(&mut self, bytes: &[u8]) -> QslResult<()> {
+```
+
+`qsl/src/io_checked.rs:53`
+
+```rust
+pub fn write_zeros(&mut self, len: usize) -> QslResult<()> {
+```
+
+`qsl/src/io_checked.rs:66`
+
+```rust
+pub fn write_u8(&mut self, v: u8) -> QslResult<()> {
+```
+
+`qsl/src/io_checked.rs:69`
+
+```rust
+pub fn write_u16(&mut self, v: u16) -> QslResult<()> {
+```
+
+`qsl/src/io_checked.rs:72`
+
+```rust
+pub fn write_u32(&mut self, v: u32) -> QslResult<()> {
+```
+
+`qsl/src/io_checked.rs:75`
+
+```rust
+pub fn write_u64(&mut self, v: u64) -> QslResult<()> {
+```
+
+`qsl/src/io_checked.rs:78`
+
+```rust
+pub fn write_i8(&mut self, v: i8) -> QslResult<()> {
+```
+
+`qsl/src/io_checked.rs:81`
+
+```rust
+pub fn write_i16(&mut self, v: i16) -> QslResult<()> {
+```
+
+`qsl/src/io_checked.rs:84`
+
+```rust
+pub fn write_i32(&mut self, v: i32) -> QslResult<()> {
+```
+
+`qsl/src/io_checked.rs:87`
+
+```rust
+pub fn write_i64(&mut self, v: i64) -> QslResult<()> {
+```
+
+`qsl/src/io_checked.rs:92`
 
 ```rust
-pub struct QslSizer
+pub struct QslCheckedReader<'a> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/io_checked.rs:99`
 
-### `pub fn bits` · L595
+```rust
+pub fn new(bytes: &'a [u8]) -> Self {
+```
+
+`qsl/src/io_checked.rs:104`
+
+```rust
+pub unsafe fn from_raw_parts(ptr: *const u8, len: usize) -> Self {
+```
+
+`qsl/src/io_checked.rs:112`
+
+```rust
+pub fn position(&self) -> usize {
+```
+
+`qsl/src/io_checked.rs:115`
+
+```rust
+pub fn read_bytes(&mut self, n: usize) -> QslResult<&'a [u8]> {
+```
+
+`qsl/src/io_checked.rs:124`
+
+```rust
+pub fn read_u8(&mut self) -> QslResult<u8> {
+```
+
+`qsl/src/io_checked.rs:127`
+
+```rust
+pub fn read_u16(&mut self) -> QslResult<u16> {
+```
 
+`qsl/src/io_checked.rs:130`
+
 ```rust
-pub fn bits(&mut self, n: usize) -> QslResult<()>
+pub fn read_u32(&mut self) -> QslResult<u32> {
 ```
 
-Add `n` bits with checked overflow arithmetic, folding completed bytes. This utility is for code generation, not serialized object I/O.
+`qsl/src/io_checked.rs:133`
+
+```rust
+pub fn read_u64(&mut self) -> QslResult<u64> {
+```
 
-### `pub fn align` · L605
+`qsl/src/io_checked.rs:136`
 
 ```rust
-pub fn align(&mut self) -> QslResult<()>
+pub fn read_i8(&mut self) -> QslResult<i8> {
 ```
+
+`qsl/src/io_checked.rs:139`
 
-Round the pending bits up to the next byte boundary, rejecting overflow.
+```rust
+pub fn read_i16(&mut self) -> QslResult<i16> {
+```
 
-### `pub fn bytes` · L613
+`qsl/src/io_checked.rs:142`
 
 ```rust
-pub fn bytes(&mut self, n: usize) -> QslResult<()>
+pub fn read_i32(&mut self) -> QslResult<i32> {
 ```
+
+`qsl/src/io_checked.rs:145`
 
-Append `n` whole bytes after byte alignment, rejecting overflow.
+```rust
+pub fn read_i64(&mut self) -> QslResult<i64> {
+```
 
-### `pub fn finish` · L619
+`qsl/src/io_checked.rs:152`
 
 ```rust
-pub fn finish(mut self) -> QslResult<usize>
+pub struct QslCheckedBitsWriter<'a> {
 ```
 
-Return the final whole-byte size, including the last partial byte.
+`qsl/src/io_checked.rs:161`
+
+```rust
+pub fn from(out: &'a mut [u8]) -> Self {
+```
 
+`qsl/src/io_checked.rs:166`
 
-## `io_checked.rs`
+```rust
+pub unsafe fn from_raw_parts(ptr: *mut u8, len: usize) -> Self {
+```
 
-### `pub struct QslCheckedWriter` · L9
+`qsl/src/io_checked.rs:177`
 
 ```rust
-pub struct QslCheckedWriter<'a>
+pub fn from_raw(out: &'a mut crate::serialize::SerOut) -> Self {
 ```
 
-All writes use raw pointer copies. Safe constructors still bound-check them.
+`qsl/src/io_checked.rs:180`
+
+```rust
+pub fn position(&self) -> usize {
+```
 
-### `pub fn from` · L17
+`qsl/src/io_checked.rs:193`
 
 ```rust
-pub fn from(out: &'a mut [u8]) -> Self
+pub fn write_bits(&mut self, mut value: u64, mut width: u32) -> QslResult<()> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/io_checked.rs:215`
 
-### `pub unsafe fn from_raw_parts` · L22
+```rust
+pub fn flush(&mut self) -> QslResult<()> {
+```
 
+`qsl/src/io_checked.rs:223`
+
 ```rust
-pub unsafe fn from_raw_parts(ptr: *mut u8, len: usize) -> Self
+pub fn write_bytes(&mut self, bytes: &[u8]) -> QslResult<()> {
 ```
 
-`ptr` must be writable for `len` bytes, exclusively, throughout `'a`.
+`qsl/src/io_checked.rs:240`
+
+```rust
+pub fn write_zeros(&mut self, n: usize) -> QslResult<()> {
+```
 
-### `pub fn from_raw` · L31
+`qsl/src/io_checked.rs:254`
 
 ```rust
-pub fn from_raw(out: &'a mut crate::serialize::SerOut) -> Self
+pub fn write_u8(&mut self, v: u8) -> QslResult<()> {
 ```
+
+`qsl/src/io_checked.rs:257`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub fn write_u16(&mut self, v: u16) -> QslResult<()> {
+```
 
-### `pub fn position` · L34
+`qsl/src/io_checked.rs:260`
 
 ```rust
-pub fn position(&self) -> usize
+pub fn write_u32(&mut self, v: u32) -> QslResult<()> {
 ```
+
+`qsl/src/io_checked.rs:263`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub fn write_u64(&mut self, v: u64) -> QslResult<()> {
+```
 
-### `pub fn write` · L37
+`qsl/src/io_checked.rs:266`
 
 ```rust
-pub fn write(&mut self, bytes: &[u8]) -> QslResult<()>
+pub fn write_i8(&mut self, v: i8) -> QslResult<()> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/io_checked.rs:269`
+
+```rust
+pub fn write_i16(&mut self, v: i16) -> QslResult<()> {
+```
 
-### `pub fn write_zeros` · L53
+`qsl/src/io_checked.rs:272`
 
 ```rust
-pub fn write_zeros(&mut self, len: usize) -> QslResult<()>
+pub fn write_i32(&mut self, v: i32) -> QslResult<()> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/io_checked.rs:275`
 
-### `pub fn write_u8` · L66
+```rust
+pub fn write_i64(&mut self, v: i64) -> QslResult<()> {
+```
 
+`qsl/src/io_checked.rs:280`
+
 ```rust
-pub fn write_u8(&mut self, v: u8) -> QslResult<()>
+pub struct QslCheckedBitsReader<'a> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/io_checked.rs:289`
+
+```rust
+pub fn new(input: &'a [u8]) -> Self {
+```
 
-### `pub fn write_u16` · L69
+`qsl/src/io_checked.rs:294`
 
 ```rust
-pub fn write_u16(&mut self, v: u16) -> QslResult<()>
+pub unsafe fn from_raw_parts(ptr: *const u8, len: usize) -> Self {
 ```
+
+`qsl/src/io_checked.rs:304`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub fn position(&self) -> usize {
+```
 
-### `pub fn write_u32` · L72
+`qsl/src/io_checked.rs:307`
 
 ```rust
-pub fn write_u32(&mut self, v: u32) -> QslResult<()>
+pub fn read_bits(&mut self, width: u32) -> QslResult<u64> {
 ```
+
+`qsl/src/io_checked.rs:332`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub fn align(&mut self) -> QslResult<()> {
+```
 
-### `pub fn write_u64` · L75
+`qsl/src/io_checked.rs:340`
 
 ```rust
-pub fn write_u64(&mut self, v: u64) -> QslResult<()>
+pub fn read_bytes(&mut self, n: usize) -> QslResult<&'a [u8]> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/io_checked.rs:350`
+
+```rust
+pub fn read_u8(&mut self) -> QslResult<u8> {
+```
 
-### `pub fn write_i8` · L78
+`qsl/src/io_checked.rs:353`
 
 ```rust
-pub fn write_i8(&mut self, v: i8) -> QslResult<()>
+pub fn read_u16(&mut self) -> QslResult<u16> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/io_checked.rs:356`
 
-### `pub fn write_i16` · L81
+```rust
+pub fn read_u32(&mut self) -> QslResult<u32> {
+```
 
+`qsl/src/io_checked.rs:359`
+
 ```rust
-pub fn write_i16(&mut self, v: i16) -> QslResult<()>
+pub fn read_u64(&mut self) -> QslResult<u64> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/io_checked.rs:362`
+
+```rust
+pub fn read_i8(&mut self) -> QslResult<i8> {
+```
 
-### `pub fn write_i32` · L84
+`qsl/src/io_checked.rs:365`
 
 ```rust
-pub fn write_i32(&mut self, v: i32) -> QslResult<()>
+pub fn read_i16(&mut self) -> QslResult<i16> {
 ```
+
+`qsl/src/io_checked.rs:368`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub fn read_i32(&mut self) -> QslResult<i32> {
+```
 
-### `pub fn write_i64` · L87
+`qsl/src/io_checked.rs:371`
 
 ```rust
-pub fn write_i64(&mut self, v: i64) -> QslResult<()>
+pub fn read_i64(&mut self) -> QslResult<i64> {
 ```
+
+## qsl/src/length_graph.rs
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/length_graph.rs:6`
 
-### `pub struct QslCheckedReader` · L92
+```rust
+pub struct Domain {
+```
 
+`qsl/src/length_graph.rs:13`
+
 ```rust
-pub struct QslCheckedReader<'a>
+pub struct LengthNode {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/length_graph.rs:22`
+
+```rust
+pub struct OffsetRecipe {
+```
 
-### `pub fn new` · L99
+`qsl/src/length_graph.rs:29`
 
 ```rust
-pub fn new(bytes: &'a [u8]) -> Self
+pub struct LengthGraph {
 ```
+
+`qsl/src/length_graph.rs:37`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub fn analyze(s: &QslSchema) -> QslResult<Option<Self>> {
+```
 
-### `pub unsafe fn from_raw_parts` · L104
+`qsl/src/length_graph.rs:219`
 
 ```rust
-pub unsafe fn from_raw_parts(ptr: *const u8, len: usize) -> Self
+pub fn event_index(&self, len: usize) -> Option<usize> {
 ```
+
+## qsl/src/lib.rs
 
-`ptr` must be readable for `len` bytes throughout `'a`.
+`qsl/src/lib.rs:2`
 
-### `pub fn position` · L112
+```rust
+pub mod compat;
+```
 
+`qsl/src/lib.rs:3`
+
 ```rust
-pub fn position(&self) -> usize
+pub mod deq;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/lib.rs:4`
+
+```rust
+pub mod interpreter;
+```
 
-### `pub fn read_bytes` · L115
+`qsl/src/lib.rs:5`
 
 ```rust
-pub fn read_bytes(&mut self, n: usize) -> QslResult<&'a [u8]>
+pub mod io;
 ```
+
+`qsl/src/lib.rs:6`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub mod parser;
+```
 
-### `pub fn read_u8` · L124
+`qsl/src/lib.rs:7`
 
 ```rust
-pub fn read_u8(&mut self) -> QslResult<u8>
+pub mod parser_util;
 ```
+
+`qsl/src/lib.rs:8`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub mod serialize;
+```
 
-### `pub fn read_u16` · L127
+`qsl/src/lib.rs:9`
 
 ```rust
-pub fn read_u16(&mut self) -> QslResult<u16>
+pub mod strings;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/lib.rs:10`
+
+```rust
+pub mod types;
+```
 
-### `pub fn read_u32` · L130
+`qsl/src/lib.rs:12`
 
 ```rust
-pub fn read_u32(&mut self) -> QslResult<u32>
+pub use compat::*;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/lib.rs:13`
 
-### `pub fn read_u64` · L133
+```rust
+pub use deq::{build_qsl_files, parse_deq, DeqConfig, DeqConstant};
+```
 
+`qsl/src/lib.rs:14`
+
 ```rust
-pub fn read_u64(&mut self) -> QslResult<u64>
+pub use interpreter::*;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/lib.rs:15`
+
+```rust
+pub use io::*;
+```
 
-### `pub fn read_i8` · L136
+`qsl/src/lib.rs:16`
 
 ```rust
-pub fn read_i8(&mut self) -> QslResult<i8>
+pub use parser::{parse_qsl, parse_qsl_with_constants, ParseError};
 ```
+
+`qsl/src/lib.rs:17`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub use serialize::*;
+```
 
-### `pub fn read_i16` · L139
+`qsl/src/lib.rs:18`
 
 ```rust
-pub fn read_i16(&mut self) -> QslResult<i16>
+pub use strings::*;
 ```
+
+`qsl/src/lib.rs:19`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub use types::*;
+```
 
-### `pub fn read_i32` · L142
+`qsl/src/lib.rs:21`
 
 ```rust
-pub fn read_i32(&mut self) -> QslResult<i32>
+pub mod optional;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/lib.rs:22`
+
+```rust
+pub use optional::OptionalOffsets;
+```
 
-### `pub fn read_i64` · L145
+`qsl/src/lib.rs:24`
 
 ```rust
-pub fn read_i64(&mut self) -> QslResult<i64>
+pub mod socket;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/lib.rs:25`
 
-### `pub struct QslCheckedBitsWriter` · L152
+```rust
+pub use socket::RawSocket;
+```
 
+`qsl/src/lib.rs:27`
+
 ```rust
-pub struct QslCheckedBitsWriter<'a>
+pub mod analysis;
 ```
 
-LSB-first bit stream. A value always occupies exactly `width` bits, independently of how many leading zeroes it contains.
+`qsl/src/lib.rs:28`
+
+```rust
+pub mod bit_io;
+```
 
-### `pub fn from` · L161
+`qsl/src/lib.rs:29`
 
 ```rust
-pub fn from(out: &'a mut [u8]) -> Self
+pub mod payload_quant;
 ```
+
+`qsl/src/lib.rs:30`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub mod qps;
+```
 
-### `pub unsafe fn from_raw_parts` · L166
+`qsl/src/lib.rs:31`
 
 ```rust
-pub unsafe fn from_raw_parts(ptr: *mut u8, len: usize) -> Self
+pub mod static_index;
 ```
+
+`qsl/src/lib.rs:32`
 
-`ptr` must be exclusively writable for `len` bytes throughout `'a`.
+```rust
+pub use payload_quant::{QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRegions};
+```
 
-### `pub fn from_raw` · L177
+`qsl/src/lib.rs:33`
 
 ```rust
-pub fn from_raw(out: &'a mut crate::serialize::SerOut) -> Self
+pub mod rt;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/lib.rs:35`
+
+```rust
+pub mod rust_macro;
+```
 
-### `pub fn position` · L180
+`qsl/src/lib.rs:36`
 
 ```rust
-pub fn position(&self) -> usize
+pub mod schema_macro;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/lib.rs:38`
 
-### `pub fn write_bits` · L193
+```rust
+pub use deq::build_qsl_files_with_rust;
+```
 
+`qsl/src/lib.rs:40`
+
 ```rust
-pub fn write_bits(&mut self, mut value: u64, mut width: u32) -> QslResult<()>
+pub use qsl_macros::{qsl_macro, schem_macro};
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/lib.rs:41`
+
+```rust
+pub mod length_graph;
+```
 
-### `pub fn flush` · L215
+`qsl/src/lib.rs:42`
 
 ```rust
-pub fn flush(&mut self) -> QslResult<()>
+pub mod static_optional;
 ```
+
+`qsl/src/lib.rs:43`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub mod validation;
+```
 
-### `pub fn write_bytes` · L223
+`qsl/src/lib.rs:44`
 
 ```rust
-pub fn write_bytes(&mut self, bytes: &[u8]) -> QslResult<()>
+pub use analysis::*;
 ```
+
+`qsl/src/lib.rs:45`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub use bit_io::*;
+```
 
-### `pub fn write_zeros` · L240
+`qsl/src/lib.rs:49`
 
 ```rust
-pub fn write_zeros(&mut self, n: usize) -> QslResult<()>
+pub mod native;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+## qsl/src/native/memory.rs
 
-### `pub fn write_u8` · L254
+`qsl/src/native/memory.rs:56`
 
 ```rust
-pub fn write_u8(&mut self, v: u8) -> QslResult<()>
+pub struct NativeRegion {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/memory.rs:63`
+
+```rust
+pub fn new(capacity: usize) -> io::Result<Self> {
+```
 
-### `pub fn write_u16` · L257
+`qsl/src/native/memory.rs:83`
 
 ```rust
-pub fn write_u16(&mut self, v: u16) -> QslResult<()>
+pub fn capacity(&self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/memory.rs:86`
 
-### `pub fn write_u32` · L260
+```rust
+pub fn used(&self) -> usize {
+```
 
+`qsl/src/native/memory.rs:90`
+
 ```rust
-pub fn write_u32(&mut self, v: u32) -> QslResult<()>
+pub fn reset(&mut self) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/memory.rs:95`
+
+```rust
+pub fn prefault(&mut self) {
+```
 
-### `pub fn write_u64` · L263
+`qsl/src/native/memory.rs:120`
 
 ```rust
-pub fn write_u64(&mut self, v: u64) -> QslResult<()>
+pub fn buffer(&self, capacity: usize, alignment: usize) -> io::Result<RegionBuffer<'_>> {
 ```
+
+`qsl/src/native/memory.rs:131`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub fn slot<T>(&self) -> io::Result<RegionSlot<'_, T>> {
+```
 
-### `pub fn write_i8` · L266
+`qsl/src/native/memory.rs:146`
 
 ```rust
-pub fn write_i8(&mut self, v: i8) -> QslResult<()>
+pub struct RegionBuffer<'r> {
 ```
+
+`qsl/src/native/memory.rs:154`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub fn capacity(&self) -> usize {
+```
 
-### `pub fn write_i16` · L269
+`qsl/src/native/memory.rs:158`
 
 ```rust
-pub fn write_i16(&mut self, v: i16) -> QslResult<()>
+pub fn clear(&mut self) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/memory.rs:162`
+
+```rust
+pub fn as_mut_ptr(&mut self) -> *mut u8 {
+```
 
-### `pub fn write_i32` · L272
+`qsl/src/native/memory.rs:165`
 
 ```rust
-pub fn write_i32(&mut self, v: i32) -> QslResult<()>
+pub fn spare_capacity_mut(&mut self) -> &mut [MaybeUninit<u8>] {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/memory.rs:176`
 
-### `pub fn write_i64` · L275
+```rust
+pub unsafe fn set_len(&mut self, len: usize) {
+```
 
+`qsl/src/native/memory.rs:180`
+
 ```rust
-pub fn write_i64(&mut self, v: i64) -> QslResult<()>
+pub fn write_from_slice(&mut self, bytes: &[u8]) -> io::Result<()> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/memory.rs:205`
+
+```rust
+pub struct RegionSlot<'r, T> {
+```
 
-### `pub struct QslCheckedBitsReader` · L280
+`qsl/src/native/memory.rs:211`
 
 ```rust
-pub struct QslCheckedBitsReader<'a>
+pub fn as_mut_ptr(&mut self) -> *mut T {
 ```
+
+`qsl/src/native/memory.rs:214`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub fn write(self, value: T) -> RegionValue<'r, T> {
+```
 
-### `pub fn new` · L289
+`qsl/src/native/memory.rs:223`
 
 ```rust
-pub fn new(input: &'a [u8]) -> Self
+pub unsafe fn assume_init(self) -> RegionValue<'r, T> {
 ```
+
+`qsl/src/native/memory.rs:230`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub struct RegionValue<'r, T> {
+```
 
-### `pub unsafe fn from_raw_parts` · L294
+`qsl/src/native/memory.rs:341`
 
 ```rust
-pub unsafe fn from_raw_parts(ptr: *const u8, len: usize) -> Self
+pub struct SharedRegion {
 ```
 
-`ptr` must be valid for `len` readable bytes for `'a`.
+`qsl/src/native/memory.rs:345`
+
+```rust
+pub fn create(name: &str, capacity: usize) -> io::Result<Self> {
+```
 
-### `pub fn position` · L304
+`qsl/src/native/memory.rs:394`
 
 ```rust
-pub fn position(&self) -> usize
+pub unsafe fn open(name: &str) -> io::Result<Self> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/memory.rs:425`
 
-### `pub fn read_bits` · L307
+```rust
+pub fn capacity(&self) -> usize {
+```
 
+`qsl/src/native/memory.rs:428`
+
 ```rust
-pub fn read_bits(&mut self, width: u32) -> QslResult<u64>
+pub fn used(&self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/memory.rs:433`
+
+```rust
+pub fn reserve(&self, capacity: usize, alignment: usize) -> io::Result<SharedWrite> {
+```
 
-### `pub fn align` · L332
+`qsl/src/native/memory.rs:477`
 
 ```rust
-pub fn align(&mut self) -> QslResult<()>
+pub unsafe fn read_published(&self, offset: u64) -> io::Result<Option<SharedBytes>> {
 ```
+
+`qsl/src/native/memory.rs:521`
 
-Ignore only zero-filled alignment bits.
+```rust
+pub struct SharedWrite {
+```
 
-### `pub fn read_bytes` · L340
+`qsl/src/native/memory.rs:531`
 
 ```rust
-pub fn read_bytes(&mut self, n: usize) -> QslResult<&'a [u8]>
+pub fn offset(&self) -> u64 {
 ```
+
+`qsl/src/native/memory.rs:535`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub fn capacity(&self) -> usize {
+```
 
-### `pub fn read_u8` · L350
+`qsl/src/native/memory.rs:539`
 
 ```rust
-pub fn read_u8(&mut self) -> QslResult<u8>
+pub fn as_mut_ptr(&mut self) -> *mut u8 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/memory.rs:542`
+
+```rust
+pub fn spare_capacity_mut(&mut self) -> &mut [MaybeUninit<u8>] {
+```
 
-### `pub fn read_u16` · L353
+`qsl/src/native/memory.rs:552`
 
 ```rust
-pub fn read_u16(&mut self) -> QslResult<u16>
+pub unsafe fn set_len(&mut self, len: usize) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/memory.rs:556`
 
-### `pub fn read_u32` · L356
+```rust
+pub fn write_from_slice(&mut self, bytes: &[u8]) -> io::Result<()> {
+```
 
+`qsl/src/native/memory.rs:566`
+
 ```rust
-pub fn read_u32(&mut self) -> QslResult<u32>
+pub fn publish(mut self) -> SharedBytes {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/memory.rs:609`
+
+```rust
+pub struct SharedBytes {
+```
 
-### `pub fn read_u64` · L359
+`qsl/src/native/memory.rs:617`
 
 ```rust
-pub fn read_u64(&mut self) -> QslResult<u64>
+pub fn offset(&self) -> u64 {
 ```
+
+## qsl/src/native/mod.rs
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/mod.rs:6`
+
+```rust
+pub use memory::{ NativeRegion, RegionBuffer, RegionSlot, RegionValue, SharedBytes, SharedRegion, SharedWrite, };
+```
 
-### `pub fn read_i8` · L362
+`qsl/src/native/mod.rs:9`
 
 ```rust
-pub fn read_i8(&mut self) -> QslResult<i8>
+pub use socket::{NativeListener, NativeSocket};
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+## qsl/src/native/socket.rs
 
-### `pub fn read_i16` · L365
+`qsl/src/native/socket.rs:134`
 
 ```rust
-pub fn read_i16(&mut self) -> QslResult<i16>
+pub struct NativeSocket {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/socket.rs:140`
 
-### `pub fn read_i32` · L368
+```rust
+pub fn connect(address: SocketAddr, max_frame: usize) -> io::Result<Self> {
+```
 
+`qsl/src/native/socket.rs:169`
+
 ```rust
-pub fn read_i32(&mut self) -> QslResult<i32>
+pub fn set_read_timeout(&self, timeout: Option<std::time::Duration>) -> io::Result<()> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/socket.rs:173`
+
+```rust
+pub fn set_write_timeout(&self, timeout: Option<std::time::Duration>) -> io::Result<()> {
+```
 
-### `pub fn read_i64` · L371
+`qsl/src/native/socket.rs:198`
 
 ```rust
-pub fn read_i64(&mut self) -> QslResult<i64>
+pub fn local_addr(&self) -> io::Result<SocketAddr> {
 ```
+
+`qsl/src/native/socket.rs:220`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub unsafe fn receive_raw(&mut self, ptr: *mut u8, capacity: usize) -> io::Result<usize> {
+```
 
+`qsl/src/native/socket.rs:241`
 
-## `optional.rs`
+```rust
+pub fn send_raw(&mut self, bytes: &[u8]) -> io::Result<usize> {
+```
 
-### `pub struct OptionalOffsets` · L8
+`qsl/src/native/socket.rs:304`
 
 ```rust
-pub struct OptionalOffsets<'a>
+pub fn receive_into(&mut self, buffer: &mut RegionBuffer<'_>) -> io::Result<usize> {
 ```
+
+`qsl/src/native/socket.rs:313`
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+```rust
+pub fn receive_shared(&mut self, buffer: &mut SharedWrite) -> io::Result<usize> {
+```
 
-### `pub fn parse` · L14
+`qsl/src/native/socket.rs:325`
 
 ```rust
-pub fn parse(table_and_payload: &'a [u8]) -> QslResult<Self>
+pub fn send_frame(&mut self, payload: &[u8]) -> io::Result<()> {
 ```
+
+`qsl/src/native/socket.rs:390`
 
-Check metadata once. This does not validate individual field codecs/UTF-8.
+```rust
+pub unsafe fn send_record<T: Serializable>( &mut self, value: &T, buffer: &mut RegionBuffer<'_>, ) -> io::Result<usize> {
+```
 
-### `pub fn len` · L45
+`qsl/src/native/socket.rs:409`
 
 ```rust
-pub fn len(&self) -> usize
+pub unsafe fn send_borrowed_record<'a, T: BorrowSerializable<'a>>( &mut self, value: &T, buffer: &mut RegionBuffer<'_>, ) -> io::Result<usize> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/socket.rs:427`
+
+```rust
+pub struct NativeListener {
+```
 
-### `pub fn is_empty` · L49
+`qsl/src/native/socket.rs:432`
 
 ```rust
-pub fn is_empty(&self) -> bool
+pub fn bind(address: SocketAddr, max_frame: usize, backlog: i32) -> io::Result<Self> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/native/socket.rs:460`
 
-### `pub fn offset` · L54
+```rust
+pub fn local_addr(&self) -> io::Result<SocketAddr> {
+```
 
+`qsl/src/native/socket.rs:463`
+
 ```rust
-pub fn offset(&self, index: usize) -> Option<usize>
+pub fn accept(&self) -> io::Result<NativeSocket> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+## qsl/src/optional.rs
 
-### `pub fn field_tail` · L68
+`qsl/src/optional.rs:8`
 
 ```rust
-pub fn field_tail(&self, index: usize) -> Option<&'a [u8]>
+pub struct OptionalOffsets<'a> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/optional.rs:14`
+
+```rust
+pub fn parse(table_and_payload: &'a [u8]) -> QslResult<Self> {
+```
 
+`qsl/src/optional.rs:45`
 
-## `parser.rs`
+```rust
+pub fn len(&self) -> usize {
+```
 
-### `pub struct ParseError` · L12
+`qsl/src/optional.rs:49`
 
 ```rust
-pub struct ParseError
+pub fn is_empty(&self) -> bool {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/optional.rs:54`
+
+```rust
+pub fn offset(&self, index: usize) -> Option<usize> {
+```
 
-### `pub fn span` · L26
+`qsl/src/optional.rs:68`
 
 ```rust
-pub fn span(&self) -> (usize, usize)
+pub fn field_tail(&self, index: usize) -> Option<&'a [u8]> {
 ```
 
-Byte offsets are suitable for the existing `qsl_error` source highlighter.
+## qsl/src/parser.rs
 
-### `pub fn parse_qsl` · L222
+`qsl/src/parser.rs:13`
 
 ```rust
-pub fn parse_qsl(source: &str) -> Result<Vec<QslSchema>, ParseError>
+pub struct ParseError {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/parser.rs:27`
+
+```rust
+pub fn span(&self) -> (usize, usize) {
+```
 
-### `pub fn parse_qsl_with_constants` · L226
+`qsl/src/parser.rs:244`
 
 ```rust
-pub fn parse_qsl_with_constants( source: &str, globals: &HashMap<String, i128>, ) -> Result<Vec<QslSchema>, ParseError>
+pub fn parse_qsl(source: &str) -> Result<Vec<QslSchema>, ParseError> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/parser.rs:248`
 
+```rust
+pub fn parse_qsl_with_constants( source: &str, globals: &HashMap<String, i128>, ) -> Result<Vec<QslSchema>, ParseError> {
+```
 
-## `parser_util.rs`
+## qsl/src/parser_util.rs
 
-### `pub struct ParseNum` · L4
+`qsl/src/parser_util.rs:4`
 
 ```rust
 pub struct ParseNum(pub usize, pub bool);
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn rank_bits` · L7
+`qsl/src/parser_util.rs:7`
 
 ```rust
-pub fn rank_bits(min: ParseNum, max: ParseNum) -> Option<usize>
+pub fn rank_bits(min: ParseNum, max: ParseNum) -> Option<usize> {
 ```
 
-Inclusive range width: ceil(log2(MAX-MIN+1)), including singleton = 0.
-
-### `pub fn parse_bytes` · L19
+`qsl/src/parser_util.rs:19`
 
 ```rust
-pub fn parse_bytes(bytes: &[u8]) -> Option<usize>
+pub fn parse_bytes(bytes: &[u8]) -> Option<usize> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn parse_hex_bytes` · L33
+`qsl/src/parser_util.rs:33`
 
 ```rust
-pub fn parse_hex_bytes(bytes: &[u8]) -> Result<usize, &'static str>
+pub fn parse_hex_bytes(bytes: &[u8]) -> Result<usize, &'static str> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn scan_schema_blocks` · L55
+`qsl/src/parser_util.rs:55`
 
 ```rust
-pub fn scan_schema_blocks(source: &[u8]) -> Result<Vec<&[u8]>, &'static str>
+pub fn scan_schema_blocks(source: &[u8]) -> Result<Vec<&[u8]>, &'static str> {
 ```
 
-Linear scanner for `&Name{...}` blocks. Cursor and ranges are always absolute indexes into the same source (unlike the original offset mixup).
-
-### `pub fn parse_schema_flags` · L74
+`qsl/src/parser_util.rs:74`
 
 ```rust
-pub fn parse_schema_flags(source: &[u8]) -> Result<usize, &'static str>
+pub fn parse_schema_flags(source: &[u8]) -> Result<usize, &'static str> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn parse_primitive_type` · L96
+`qsl/src/parser_util.rs:96`
 
 ```rust
-pub fn parse_primitive_type(token: &[u8]) -> Option<crate::compat::ParserQslType>
+pub fn parse_primitive_type(token: &[u8]) -> Option<crate::compat::ParserQslType> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn encode_signed_minimum` · L112
+`qsl/src/parser_util.rs:112`
 
 ```rust
-pub fn encode_signed_minimum(value: ParseNum) -> usize
+pub fn encode_signed_minimum(value: ParseNum) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+## qsl/src/payload_quant.rs
 
-
-## `serialize.rs`
-
-### `pub trait Serializable: Sized` · L3
+`qsl/src/payload_quant.rs:11`
 
 ```rust
-pub trait Serializable: Sized
+pub fn selected_address<T>(mut value: *const T) -> *const T {
 ```
 
-Flat, trusted record serialization. No dynamic dispatch, runtime validation or `Result` is part of this API. The caller supplies schema-valid data.
+`qsl/src/payload_quant.rs:26`
 
-### `fn get_size` · L10
+```rust
+pub fn scalar_operand(mut value: u64) -> u64 {
+```
+
+`qsl/src/payload_quant.rs:39`
+
+```rust
+pub struct QuantField {
+```
+
+`qsl/src/payload_quant.rs:51`
+
+```rust
+pub struct PayloadQuantPlan {
+```
+
+`qsl/src/payload_quant.rs:63`
+
+```rust
+pub fn analyze(s: &QslSchema) -> QslResult<Self> {
+```
+
+`qsl/src/payload_quant.rs:177`
+
+```rust
+pub unsafe trait QuantizedRecord: Serializable {
+```
+
+`qsl/src/payload_quant.rs:181`
+
+```rust
+fn quant_validate_values(&self) -> QslResult<()>;
+```
+
+`qsl/src/payload_quant.rs:185`
+
+```rust
+unsafe fn quant_write_prepared(&self, out: *mut u8) -> usize;
+```
+
+`qsl/src/payload_quant.rs:189`
+
+```rust
+unsafe fn quant_read_padded(bytes: *const u8, len: usize, out: *mut Self);
+```
+
+`qsl/src/payload_quant.rs:191`
+
+```rust
+pub trait CheckedQuantizedRecord: QuantizedRecord {
+```
+
+`qsl/src/payload_quant.rs:192`
+
+```rust
+fn quant_validate(input: &[u8]) -> QslResult<()>;
+```
+
+`qsl/src/payload_quant.rs:195`
+
+```rust
+pub struct QuantizedFrame<'a, T: QuantizedRecord> {
+```
+
+`qsl/src/payload_quant.rs:201`
+
+```rust
+pub fn try_new(storage: &'a [u8], len: usize) -> QslResult<Self> {
+```
+
+`qsl/src/payload_quant.rs:218`
+
+```rust
+pub unsafe fn from_validated(storage: &[u8], len: usize) -> QuantizedFrame<'_, T> {
+```
+
+`qsl/src/payload_quant.rs:225`
+
+```rust
+pub fn as_slice(&self) -> &[u8] {
+```
+
+`qsl/src/payload_quant.rs:228`
+
+```rust
+pub fn decode_into<'out>(&self, out: &'out mut std::mem::MaybeUninit<T>) -> &'out mut T {
+```
+
+`qsl/src/payload_quant.rs:234`
+
+```rust
+pub fn decode_boxed(&self) -> Box<T> {
+```
+
+`qsl/src/payload_quant.rs:243`
+
+```rust
+pub struct QuantizedOut<T: QuantizedRecord> {
+```
+
+`qsl/src/payload_quant.rs:249`
+
+```rust
+pub fn encode(value: &T) -> QslResult<Self> {
+```
+
+`qsl/src/payload_quant.rs:264`
+
+```rust
+pub fn as_slice(&self) -> &[u8] {
+```
+
+`qsl/src/payload_quant.rs:267`
+
+```rust
+pub fn frame(&self) -> QuantizedFrame<'_, T> {
+```
+
+`qsl/src/payload_quant.rs:287`
+
+```rust
+pub struct QuantizedRegions<T: QuantizedRecord, const CAP: usize, const N: usize> {
+```
+
+`qsl/src/payload_quant.rs:297`
+
+```rust
+pub const fn new() -> Self {
+```
+
+`qsl/src/payload_quant.rs:303`
+
+```rust
+pub fn try_encode(&'static self, value: &T) -> QslResult<QuantizedLease<T, CAP, N>> {
+```
+
+`qsl/src/payload_quant.rs:324`
+
+```rust
+pub struct QuantizedLease<T: QuantizedRecord, const CAP: usize, const N: usize> {
+```
+
+`qsl/src/payload_quant.rs:330`
+
+```rust
+pub fn as_slice(&self) -> &[u8] {
+```
+
+`qsl/src/payload_quant.rs:333`
+
+```rust
+pub fn frame(&self) -> QuantizedFrame<'_, T> {
+```
+
+`qsl/src/payload_quant.rs:357`
+
+```rust
+pub trait QuantizedDestination<T: QuantizedRecord> {
+```
+
+`qsl/src/payload_quant.rs:361`
+
+```rust
+unsafe fn decode_padded(self, bytes: *const u8, len: usize);
+```
+
+## qsl/src/qps.rs
+
+`qsl/src/qps.rs:8`
+
+```rust
+pub use crate::payload_quant::{ PayloadQuantPlan as QpsPlan, QuantField as QpsField, QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRecord, QuantizedRegions, };
+```
+
+`qsl/src/qps.rs:14`
+
+```rust
+pub const QPS_CODEC_REVISION: u32 = 2;
+```
+
+## qsl/src/rt.rs
+
+`qsl/src/rt.rs:12`
+
+```rust
+pub struct StaticRegions<const CAP: usize, const N: usize> {
+```
+
+`qsl/src/rt.rs:25`
+
+```rust
+pub const fn new() -> Self {
+```
+
+`qsl/src/rt.rs:32`
+
+```rust
+pub fn try_acquire(&'static self) -> QslResult<RegionLease<CAP, N>> {
+```
+
+`qsl/src/rt.rs:58`
+
+```rust
+pub const fn new_zeroed() -> Self {
+```
+
+`qsl/src/rt.rs:66`
+
+```rust
+pub struct RegionLease<const CAP: usize, const N: usize> {
+```
+
+`qsl/src/rt.rs:72`
+
+```rust
+pub fn capacity(&self) -> usize {
+```
+
+`qsl/src/rt.rs:75`
+
+```rust
+pub fn as_slice(&self) -> &[u8] {
+```
+
+`qsl/src/rt.rs:84`
+
+```rust
+pub unsafe fn as_mut_ptr(&mut self) -> *mut u8 {
+```
+
+`qsl/src/rt.rs:89`
+
+```rust
+pub unsafe fn set_len(&mut self, len: usize) {
+```
+
+## qsl/src/rust_macro.rs
+
+`qsl/src/rust_macro.rs:200`
+
+```rust
+pub fn parse_rust_macros(sources: &[&str]) -> Result<Vec<QslSchema>, MacroError> {
+```
+
+`qsl/src/rust_macro.rs:312`
+
+```rust
+pub fn expand_with_rust( schemas: &[QslSchema], sources: &[&str], ) -> Result<Vec<QslSchema>, MacroError> {
+```
+
+`qsl/src/rust_macro.rs:354`
+
+```rust
+pub fn parse_qsl_with_rust( source: &str, constants: &HashMap<String, i128>, rust_sources: &[&str], ) -> Result<Vec<QslSchema>, MacroError> {
+```
+
+## qsl/src/schema_macro.rs
+
+`qsl/src/schema_macro.rs:7`
+
+```rust
+pub struct MacroError(pub String);
+```
+
+`qsl/src/schema_macro.rs:15`
+
+```rust
+pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError> {
+```
+
+## qsl/src/serialize.rs
+
+`qsl/src/serialize.rs:3`
+
+```rust
+pub trait Serializable: Sized {
+```
+
+`qsl/src/serialize.rs:10`
 
 ```rust
 fn get_size() -> usize;
 ```
 
-Smallest possible encoded size determined at build time.
-
-### `fn serialized_size` · L15
+`qsl/src/serialize.rs:15`
 
 ```rust
 fn serialized_size(&self) -> usize;
 ```
 
-Required writable capacity. Exact for ordinary fields; records with compressed strings return the raw-size upper bound. Use the count from `serialize_into_unsafe`/`serialize_to` as the initialized wire length.
-
-### `fn serialize` · L21
+`qsl/src/serialize.rs:21`
 
 ```rust
-fn serialize(&self) -> SerOut
+fn serialize(&self) -> SerOut {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `fn serialize` · L35
+`qsl/src/serialize.rs:35`
 
 ```rust
-fn serialize(&self) -> Vec<u8>
+fn serialize(&self) -> Vec<u8> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `unsafe fn serialize_unsafe` · L48
+`qsl/src/serialize.rs:48`
 
 ```rust
 unsafe fn serialize_unsafe(&self, to: *mut u8);
 ```
 
-`to` must address `serialized_size()` writable, nonoverlapping bytes. Every field must obey the QSL bounds and fixed byte lengths.
-
-### `unsafe fn serialize_into_unsafe` · L54
+`qsl/src/serialize.rs:54`
 
 ```rust
-unsafe fn serialize_into_unsafe(&self, to: *mut u8) -> usize
+unsafe fn serialize_into_unsafe(&self, to: *mut u8) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `unsafe fn serialize_to` · L63
+`qsl/src/serialize.rs:63`
 
 ```rust
-unsafe fn serialize_to(&self, to: &mut SerOut) -> usize
+unsafe fn serialize_to(&self, to: &mut SerOut) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `unsafe fn serialize_to` · L73
+`qsl/src/serialize.rs:73`
 
 ```rust
-unsafe fn serialize_to(&self, to: &mut [u8]) -> usize
+unsafe fn serialize_to(&self, to: &mut [u8]) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `unsafe fn deserialize` · L80
+`qsl/src/serialize.rs:80`
 
 ```rust
-unsafe fn deserialize(input: &[u8]) -> Self
+unsafe fn deserialize(input: &[u8]) -> Self {
 ```
 
-Convenience pointer-based decoder with a borrowed-slice argument. `input` must contain a complete, valid record matching the schema.
-
-### `unsafe fn deserialize_into` · L89
+`qsl/src/serialize.rs:89`
 
 ```rust
-unsafe fn deserialize_into(bytes: *const u8, len: usize, out: *mut Self)
+unsafe fn deserialize_into(bytes: *const u8, len: usize, out: *mut Self) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/serialize.rs:99`
 
-### `unsafe fn deserialize_unsafe` · L95
+```rust
+unsafe fn deserialize_reuse(input: &[u8], output: &mut Self) {
+```
+
+`qsl/src/serialize.rs:107`
+
+```rust
+unsafe fn deserialize_prepared_into(bytes: *const u8, len: usize, output: &mut Self) {
+```
+
+`qsl/src/serialize.rs:115`
 
 ```rust
 unsafe fn deserialize_unsafe(bytes: *const u8) -> Self;
 ```
 
-`bytes` must point to a complete, valid schema-encoded record.
-
-### `unsafe fn deserialize_from_raw_parts` · L100
+`qsl/src/serialize.rs:120`
 
 ```rust
-unsafe fn deserialize_from_raw_parts(bytes: *const u8, _len: usize) -> Self
+unsafe fn deserialize_from_raw_parts(bytes: *const u8, _len: usize) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub trait BorrowSerializable` · L107
+`qsl/src/serialize.rs:127`
 
 ```rust
-pub trait BorrowSerializable<'a>: Sized
+pub trait BorrowSerializable<'a>: Sized {
 ```
 
-Zero-copy records borrow their string/byte payloads from the input memory. The backing allocation must remain alive for the complete `'a` lifetime.
-
-### `fn get_size` · L113
+`qsl/src/serialize.rs:133`
 
 ```rust
 fn get_size() -> usize;
 ```
 
-Minimum encoded size including required fields and header bytes.
-
-### `fn serialized_size` · L115
+`qsl/src/serialize.rs:135`
 
 ```rust
 fn serialized_size(&self) -> usize;
 ```
 
-Required output capacity; compressed strings use their raw-size bound.
-
-### `fn serialize` · L121
+`qsl/src/serialize.rs:141`
 
 ```rust
-fn serialize(&self) -> SerOut
+fn serialize(&self) -> SerOut {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `fn serialize` · L133
+`qsl/src/serialize.rs:153`
 
 ```rust
-fn serialize(&self) -> Vec<u8>
+fn serialize(&self) -> Vec<u8> {
 ```
 
-Allocate once and encode into bytes initialized by the generated writer. Values must satisfy all QSL bounds and exact byte lengths.
-
-### `unsafe fn serialize_unsafe` · L145
+`qsl/src/serialize.rs:165`
 
 ```rust
 unsafe fn serialize_unsafe(&self, to: *mut u8);
 ```
 
-`to` must address `self.serialized_size()` exclusively writable bytes. Every field must obey the QSL bounds and fixed byte lengths.
-
-### `unsafe fn serialize_into_unsafe` · L151
+`qsl/src/serialize.rs:171`
 
 ```rust
-unsafe fn serialize_into_unsafe(&self, to: *mut u8) -> usize
+unsafe fn serialize_into_unsafe(&self, to: *mut u8) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `unsafe fn serialize_to` · L159
+`qsl/src/serialize.rs:179`
 
 ```rust
-unsafe fn serialize_to(&self, to: &mut SerOut) -> usize
+unsafe fn serialize_to(&self, to: &mut SerOut) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `unsafe fn serialize_to` · L168
+`qsl/src/serialize.rs:188`
 
 ```rust
-unsafe fn serialize_to(&self, to: &mut [u8]) -> usize
+unsafe fn serialize_to(&self, to: &mut [u8]) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `unsafe fn deserialize_borrowed` · L174
+`qsl/src/serialize.rs:194`
 
 ```rust
-unsafe fn deserialize_borrowed(input: &'a [u8]) -> Self
+unsafe fn deserialize_borrowed(input: &'a [u8]) -> Self {
 ```
 
-`input` must be a complete, valid QSL record for the lifetime `'a`.
-
-### `unsafe fn deserialize_borrowed_into` · L183
+`qsl/src/serialize.rs:203`
 
 ```rust
-unsafe fn deserialize_borrowed_into(bytes: *const u8, len: usize, out: *mut Self)
+unsafe fn deserialize_borrowed_into(bytes: *const u8, len: usize, out: *mut Self) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `unsafe fn deserialize_borrowed_unsafe` · L190
+`qsl/src/serialize.rs:210`
 
 ```rust
 unsafe fn deserialize_borrowed_unsafe(bytes: *const u8) -> Self;
 ```
 
-Caller must guarantee that `bytes` points to a complete valid record and remains alive for `'a`.
-
-### `unsafe fn deserialize_borrowed_from_raw_parts` · L195
+`qsl/src/serialize.rs:215`
 
 ```rust
-unsafe fn deserialize_borrowed_from_raw_parts(bytes: *const u8, _len: usize) -> Self
+unsafe fn deserialize_borrowed_from_raw_parts(bytes: *const u8, _len: usize) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub struct SerOut` · L201
+`qsl/src/serialize.rs:220`
 
 ```rust
-pub struct SerOut
+pub struct SerOut {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn new` · L210
+`qsl/src/serialize.rs:228`
 
 ```rust
-pub fn new(len: usize) -> Self
+pub fn new(len: usize) -> Self {
 ```
 
-Allocate initialized zero-filled bytes using the global Rust allocator.
-
-### `pub fn with_capacity_aligned` · L229
+`qsl/src/serialize.rs:247`
 
 ```rust
-pub fn with_capacity_aligned(capacity: usize, alignment: usize) -> Self
+pub fn with_capacity_aligned(capacity: usize, alignment: usize) -> Self {
 ```
 
-Allocate reusable storage with architecture-selected power-of-two alignment. The initialized slice is initially empty; capacity is retained after reuse.
-
-### `pub fn capacity` · L242
+`qsl/src/serialize.rs:264`
 
 ```rust
-pub fn capacity(&self) -> usize
+pub fn capacity(&self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn alignment` · L246
+`qsl/src/serialize.rs:268`
 
 ```rust
-pub fn alignment(&self) -> usize
+pub fn alignment(&self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn clear` · L250
+`qsl/src/serialize.rs:272`
 
 ```rust
-pub fn clear(&mut self)
+pub fn clear(&mut self) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn set_len` · L257
+`qsl/src/serialize.rs:279`
 
 ```rust
-pub unsafe fn set_len(&mut self, len: usize)
+pub unsafe fn set_len(&mut self, len: usize) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn from_raw` · L263
+`qsl/src/serialize.rs:287`
 
 ```rust
-pub unsafe fn from_raw(ptr: *mut u8, layout: std::alloc::Layout, len: usize) -> Self
+pub unsafe fn from_raw(ptr: *mut u8, layout: std::alloc::Layout, len: usize) -> Self {
 ```
 
-Takes ownership of a caller allocation with the exact given layout. Must point to an allocation obtained with the same layout and allocator.
-
-### `pub fn as_mut_ptr` · L272
+`qsl/src/serialize.rs:297`
 
 ```rust
-pub fn as_mut_ptr(&mut self) -> *mut u8
+pub fn as_mut_ptr(&mut self) -> *mut u8 {
 ```
 
-Return the stable output allocation pointer; does not advance a cursor.
-
-
-## `socket.rs`
-
-### `pub struct RawSocket` · L10
+`qsl/src/serialize.rs:342`
 
 ```rust
-pub struct RawSocket
+pub fn len(&self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn new` · L15
+`qsl/src/serialize.rs:346`
 
 ```rust
-pub fn new(stream: TcpStream, max_frame: usize) -> io::Result<Self>
+pub fn is_empty(&self) -> bool {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn receive` · L34
+`qsl/src/serialize.rs:351`
 
 ```rust
-pub fn receive<'a>(&mut self, storage: &'a mut [u8]) -> io::Result<&'a [u8]>
+pub fn copy_from_slice(&mut self, bytes: &[u8]) -> crate::QslResult<()> {
 ```
 
-Read exactly one bounded frame into caller-owned storage. An oversized frame terminates this stream to avoid losing framing state.
-
-### `pub unsafe fn send_record` · L74
+`qsl/src/serialize.rs:365`
 
 ```rust
-pub unsafe fn send_record<T: Serializable>( &mut self, value: &T, storage: &mut [u8], ) -> io::Result<usize>
+pub unsafe fn copy_from_raw_parts(&mut self, source: *const u8, len: usize) {
 ```
 
-Serialize directly after the transport prefix and send the initialized bytes. Every record field must satisfy its schema's range and UTF-8 contracts.
-
-### `pub unsafe fn send_borrowed_record` · L85
+`qsl/src/serialize.rs:370`
 
 ```rust
-pub unsafe fn send_borrowed_record<'a, T: BorrowSerializable<'a>>( &mut self, value: &T, storage: &mut [u8], ) -> io::Result<usize>
+pub fn spare_capacity_mut(&mut self) -> &mut [std::mem::MaybeUninit<u8>] {
 ```
 
-Every record field must satisfy its schema's range and UTF-8 contracts.
-
-### `pub fn stream` · L94
+`qsl/src/serialize.rs:380`
 
 ```rust
-pub fn stream(&self) -> &TcpStream
+pub fn into_utf8_guard(self) -> Result<crate::Utf8CopyGuard, (std::str::Utf8Error, Self)> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/serialize.rs:386`
 
+```rust
+pub trait Sealed {
+```
 
-## `strings.rs`
+`qsl/src/serialize.rs:393`
 
-### `pub const STRING_COMPRESSION_MIN_BYTES: usize = 32;` · L12
+```rust
+pub trait DeserializeDestination<T: Serializable>: destination_private::Sealed {
+```
+
+`qsl/src/serialize.rs:398`
+
+```rust
+unsafe fn decode_into(self, bytes: *const u8, len: usize);
+```
+
+## qsl/src/socket.rs
+
+`qsl/src/socket.rs:10`
+
+```rust
+pub struct RawSocket {
+```
+
+`qsl/src/socket.rs:15`
+
+```rust
+pub fn new(stream: TcpStream, max_frame: usize) -> io::Result<Self> {
+```
+
+`qsl/src/socket.rs:34`
+
+```rust
+pub fn receive<'a>(&mut self, storage: &'a mut [u8]) -> io::Result<&'a [u8]> {
+```
+
+`qsl/src/socket.rs:74`
+
+```rust
+pub unsafe fn send_record<T: Serializable>( &mut self, value: &T, storage: &mut [u8], ) -> io::Result<usize> {
+```
+
+`qsl/src/socket.rs:85`
+
+```rust
+pub unsafe fn send_borrowed_record<'a, T: BorrowSerializable<'a>>( &mut self, value: &T, storage: &mut [u8], ) -> io::Result<usize> {
+```
+
+`qsl/src/socket.rs:94`
+
+```rust
+pub fn stream(&self) -> &TcpStream {
+```
+
+## qsl/src/static_index.rs
+
+`qsl/src/static_index.rs:6`
+
+```rust
+pub const ANALYSIS_MAX_STATES: usize = 4096;
+```
+
+`qsl/src/static_index.rs:7`
+
+```rust
+pub const ANALYSIS_MAX_BYTES: usize = 65535;
+```
+
+`qsl/src/static_index.rs:10`
+
+```rust
+pub struct StateCode {
+```
+
+`qsl/src/static_index.rs:18`
+
+```rust
+pub struct OffsetRow {
+```
+
+`qsl/src/static_index.rs:24`
+
+```rust
+pub struct PredictPlan {
+```
+
+`qsl/src/static_index.rs:34`
+
+```rust
+pub fn analyze(schema: &QslSchema) -> QslResult<Self> {
+```
+
+`qsl/src/static_index.rs:149`
+
+```rust
+pub fn packed_index(&self) -> QslResult<Vec<u32>> {
+```
+
+`qsl/src/static_index.rs:153`
+
+```rust
+pub fn pack_lengths(&self, lengths: &[Option<usize>]) -> QslResult<u32> {
+```
+
+`qsl/src/static_index.rs:169`
+
+```rust
+pub fn unpack_lengths(&self, d: u32) -> QslResult<Vec<Option<usize>>> {
+```
+
+`qsl/src/static_index.rs:201`
+
+```rust
+pub fn quantize_index(index: &[u32], quantum: usize) -> QslResult<Vec<u32>> {
+```
+
+`qsl/src/static_index.rs:229`
+
+```rust
+pub fn lookup_index(table: &[u32], quantum: usize, index: usize) -> Option<u32> {
+```
+
+`qsl/src/static_index.rs:243`
+
+```rust
+pub fn structural_counts(domains: &[Vec<usize>], max_len: usize) -> QslResult<Vec<u64>> {
+```
+
+## qsl/src/static_optional.rs
+
+`qsl/src/static_optional.rs:4`
+
+```rust
+pub enum StaticPresence {
+```
+
+`qsl/src/static_optional.rs:11`
+
+```rust
+pub struct StaticOptionalPlan {
+```
+
+`qsl/src/static_optional.rs:16`
+
+```rust
+pub fn analyze(schema: &QslSchema) -> QslResult<Self> {
+```
+
+`qsl/src/static_optional.rs:75`
+
+```rust
+pub fn header_bytes(&self) -> usize {
+```
+
+## qsl/src/strings.rs
+
+`qsl/src/strings.rs:12`
 
 ```rust
 pub const STRING_COMPRESSION_MIN_BYTES: usize = 32;
 ```
 
-Strings shorter than this are copied raw, without a compression probe.
-
-### `pub struct InlineString` · L22
+`qsl/src/strings.rs:15`
 
 ```rust
-pub struct InlineString<const MAX: usize>
+pub const STRING_ENCODER_REVISION: u8 = 2;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/strings.rs:20`
 
-### `pub const MAX_BYTES: usize = MAX;` · L29
+```rust
+pub trait Sealed {
+```
+
+`qsl/src/strings.rs:28`
+
+```rust
+pub trait StringHeader: header_sealed::Sealed {
+```
+
+`qsl/src/strings.rs:33`
+
+```rust
+unsafe fn load(input: *const u8) -> u32;
+```
+
+`qsl/src/strings.rs:36`
+
+```rust
+unsafe fn store(output: *mut u8, value: u32);
+```
+
+`qsl/src/strings.rs:64`
+
+```rust
+pub struct InlineString<const MAX: usize> {
+```
+
+`qsl/src/strings.rs:71`
 
 ```rust
 pub const MAX_BYTES: usize = MAX;
 ```
 
-Maximum decoded UTF-8 byte count, fixed by the schema.
-
-### `pub const HEADER_BYTES: usize = if MAX` · L31
+`qsl/src/strings.rs:73`
 
 ```rust
-pub const HEADER_BYTES: usize = if MAX <= 127
+pub const HEADER_BYTES: usize = if MAX <= 127 {
 ```
 
-Length and mode share a word: 1 byte through MAX=127, then 2 or 4.
-
-### `pub const OFFSET_BYTES: usize = if MAX` · L39
+`qsl/src/strings.rs:81`
 
 ```rust
-pub const OFFSET_BYTES: usize = if MAX <= 255
+pub const OFFSET_BYTES: usize = if MAX <= 255 {
 ```
 
-Width of each backward distance; match lengths use the control byte.
-
-### `pub const fn new` · L44
+`qsl/src/strings.rs:86`
 
 ```rust
-pub const fn new() -> Self
+pub const fn new() -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn from_str_unchecked` · L56
+`qsl/src/strings.rs:98`
 
 ```rust
-pub unsafe fn from_str_unchecked(value: &str) -> Self
+pub unsafe fn from_str_unchecked(value: &str) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub const fn spaces` · L70
+`qsl/src/strings.rs:112`
 
 ```rust
-pub const fn spaces<const LEN: usize>() -> Self
+pub const fn spaces<const LEN: usize>() -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn len` · L84
+`qsl/src/strings.rs:126`
 
 ```rust
-pub fn len(&self) -> usize
+pub fn len(&self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn is_empty` · L90
+`qsl/src/strings.rs:132`
 
 ```rust
-pub fn is_empty(&self) -> bool
+pub fn is_empty(&self) -> bool {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn as_str` · L96
+`qsl/src/strings.rs:138`
 
 ```rust
-pub fn as_str(&self) -> &str
+pub fn as_str(&self) -> &str {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn wire_capacity` · L108
+`qsl/src/strings.rs:150`
 
 ```rust
-pub fn wire_capacity(&self) -> usize
+pub fn wire_capacity(&self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn encode_to` · L117
+`qsl/src/strings.rs:159`
 
 ```rust
-pub unsafe fn encode_to(&self, output: *mut u8) -> usize
+pub unsafe fn encode_to(&self, output: *mut u8) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn encode_raw_to` · L125
+`qsl/src/strings.rs:167`
 
 ```rust
-pub unsafe fn encode_raw_to(&self, output: *mut u8) -> usize
+pub unsafe fn encode_to_with<H: StringHeader>(&self, output: *mut u8) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn decode_into` · L140
+`qsl/src/strings.rs:175`
 
 ```rust
-pub unsafe fn decode_into(input: *const u8, output: *mut Self) -> usize
+pub unsafe fn encode_raw_to(&self, output: *mut u8) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn decode_raw_into` · L150
+`qsl/src/strings.rs:190`
 
 ```rust
-pub unsafe fn decode_raw_into(input: *const u8, output: *mut Self) -> usize
+pub unsafe fn decode_into(input: *const u8, output: *mut Self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn decode_from` · L167
+`qsl/src/strings.rs:200`
 
 ```rust
-pub unsafe fn decode_from(input: *const u8) -> (Self, usize)
+pub unsafe fn decode_into_with<H: StringHeader>(input: *const u8, output: *mut Self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn encode_bounded` · L319
+`qsl/src/strings.rs:211`
 
 ```rust
-pub unsafe fn encode_bounded<const MAX: usize>( input: *const u8, len: usize, output: *mut u8, ) -> usize
+pub unsafe fn decode_raw_into_with<H: StringHeader>( input: *const u8, output: *mut Self, ) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn decode_bounded` · L577
+`qsl/src/strings.rs:232`
 
 ```rust
-pub unsafe fn decode_bounded<const MAX: usize>( input: *const u8, output: *mut u8, ) -> (usize, usize)
+pub unsafe fn decode_from_with<H: StringHeader>(input: *const u8) -> (Self, usize) {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/strings.rs:242`
 
-### `pub const FIXED_UTF8_CODEC_VERSION: u8 = 2;` · L662
+```rust
+pub unsafe fn decode_raw_from_with<H: StringHeader>(input: *const u8) -> (Self, usize) {
+```
+
+`qsl/src/strings.rs:252`
+
+```rust
+pub unsafe fn decode_raw_into(input: *const u8, output: *mut Self) -> usize {
+```
+
+`qsl/src/strings.rs:269`
+
+```rust
+pub unsafe fn decode_from(input: *const u8) -> (Self, usize) {
+```
+
+`qsl/src/strings.rs:421`
+
+```rust
+pub unsafe fn encode_bounded<const MAX: usize>( input: *const u8, len: usize, output: *mut u8, ) -> usize {
+```
+
+`qsl/src/strings.rs:439`
+
+```rust
+pub unsafe fn encode_bounded_with<const MAX: usize, H: StringHeader>( input: *const u8, len: usize, output: *mut u8, ) -> usize {
+```
+
+`qsl/src/strings.rs:761`
+
+```rust
+pub unsafe fn decode_bounded<const MAX: usize>( input: *const u8, output: *mut u8, ) -> (usize, usize) {
+```
+
+`qsl/src/strings.rs:778`
+
+```rust
+pub unsafe fn decode_bounded_with<const MAX: usize, H: StringHeader>( input: *const u8, output: *mut u8, ) -> (usize, usize) {
+```
+
+`qsl/src/strings.rs:866`
 
 ```rust
 pub const FIXED_UTF8_CODEC_VERSION: u8 = 2;
 ```
 
-Fixed UTF-8 framing revision; peers must use the same revision.
-
-### `pub unsafe fn encode_fixed_utf8` · L670
+`qsl/src/strings.rs:874`
 
 ```rust
-pub unsafe fn encode_fixed_utf8<const MAX: usize>(input: *const u8, output: *mut u8) -> usize
+pub unsafe fn encode_fixed_utf8<const MAX: usize>(input: *const u8, output: *mut u8) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub unsafe fn decode_fixed_utf8` · L692
+`qsl/src/strings.rs:896`
 
 ```rust
-pub unsafe fn decode_fixed_utf8<const MAX: usize>(input: *const u8, output: *mut u8) -> usize
+pub unsafe fn decode_fixed_utf8<const MAX: usize>(input: *const u8, output: *mut u8) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub struct Utf8Guard` · L714
+`qsl/src/strings.rs:918`
 
 ```rust
-pub struct Utf8Guard<'a>
+pub struct Utf8Guard<'a> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub const fn from_str` · L719
+`qsl/src/strings.rs:923`
 
 ```rust
-pub const fn from_str(value: &'a str) -> Self
+pub const fn from_str(value: &'a str) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn try_from_bytes` · L725
+`qsl/src/strings.rs:929`
 
 ```rust
-pub fn try_from_bytes(bytes: &'a [u8]) -> Result<Self, str::Utf8Error>
+pub fn try_from_bytes(bytes: &'a [u8]) -> Result<Self, str::Utf8Error> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub const unsafe fn from_bytes_unchecked` · L732
+`qsl/src/strings.rs:940`
 
 ```rust
-pub const unsafe fn from_bytes_unchecked(bytes: &'a [u8]) -> Self
+pub const unsafe fn from_bytes_unchecked(bytes: &'a [u8]) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub const fn as_bytes` · L736
+`qsl/src/strings.rs:944`
 
 ```rust
-pub const fn as_bytes(self) -> &'a [u8]
+pub const fn as_bytes(self) -> &'a [u8] {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub const fn as_str` · L740
+`qsl/src/strings.rs:948`
 
 ```rust
-pub const fn as_str(self) -> &'a str
+pub const fn as_str(self) -> &'a str {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/strings.rs:1326`
 
+```rust
+pub type Utf8View<'a> = Utf8Guard<'a>;
+```
 
-## `types.rs`
+`qsl/src/strings.rs:1333`
 
-### `pub const FLAG_COMPACT: usize = 0b0000_0001;` · L4
+```rust
+pub struct Utf8CopyGuard {
+```
+
+`qsl/src/strings.rs:1337`
+
+```rust
+pub fn with_capacity(capacity: usize) -> Self {
+```
+
+`qsl/src/strings.rs:1342`
+
+```rust
+pub fn copy_of(value: &str) -> Self {
+```
+
+`qsl/src/strings.rs:1349`
+
+```rust
+pub fn try_from_bytes(bytes: &[u8]) -> Result<Self, str::Utf8Error> {
+```
+
+`qsl/src/strings.rs:1356`
+
+```rust
+pub unsafe fn from_bytes_unchecked(bytes: &[u8]) -> Self {
+```
+
+`qsl/src/strings.rs:1362`
+
+```rust
+pub fn capacity(&self) -> usize {
+```
+
+`qsl/src/strings.rs:1366`
+
+```rust
+pub fn len(&self) -> usize {
+```
+
+`qsl/src/strings.rs:1370`
+
+```rust
+pub fn is_empty(&self) -> bool {
+```
+
+`qsl/src/strings.rs:1374`
+
+```rust
+pub fn as_bytes(&self) -> &[u8] {
+```
+
+`qsl/src/strings.rs:1378`
+
+```rust
+pub fn as_str(&self) -> &str {
+```
+
+`qsl/src/strings.rs:1381`
+
+```rust
+pub fn clear(&mut self) {
+```
+
+`qsl/src/strings.rs:1386`
+
+```rust
+pub fn copy_from_str(&mut self, value: &str) -> crate::QslResult<()> {
+```
+
+`qsl/src/strings.rs:1390`
+
+```rust
+pub fn try_copy_from_bytes(&mut self, bytes: &[u8]) -> crate::QslResult<()> {
+```
+
+`qsl/src/strings.rs:1404`
+
+```rust
+pub unsafe fn copy_from_raw_parts_unchecked(&mut self, source: *const u8, len: usize) {
+```
+
+`qsl/src/strings.rs:1412`
+
+```rust
+pub unsafe fn decode_bounded_into<const MAX: usize>(&mut self, input: *const u8) -> usize {
+```
+
+`qsl/src/strings.rs:1418`
+
+```rust
+pub fn try_from_ser_out( storage: crate::SerOut, ) -> Result<Self, (str::Utf8Error, crate::SerOut)> {
+```
+
+`qsl/src/strings.rs:1428`
+
+```rust
+pub unsafe fn from_ser_out_unchecked(storage: crate::SerOut) -> Self {
+```
+
+`qsl/src/strings.rs:1432`
+
+```rust
+pub fn into_ser_out(self) -> crate::SerOut {
+```
+
+## qsl/src/types.rs
+
+`qsl/src/types.rs:4`
 
 ```rust
 pub const FLAG_COMPACT: usize = 0b0000_0001;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub const FLAG_SAFETY: usize = 0b0000_0010;` · L5
+`qsl/src/types.rs:5`
 
 ```rust
 pub const FLAG_SAFETY: usize = 0b0000_0010;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub const FLAG_ALIGNMENT: usize = 0b0000_0100;` · L6
+`qsl/src/types.rs:6`
 
 ```rust
 pub const FLAG_ALIGNMENT: usize = 0b0000_0100;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub const FLAG_OPTIONAL_BITMAP: usize = 0b0001_0000;` · L7
+`qsl/src/types.rs:7`
 
 ```rust
 pub const FLAG_OPTIONAL_BITMAP: usize = 0b0001_0000;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub const FLAG_OPT_TABLE: usize = 0b0010_0000;` · L8
+`qsl/src/types.rs:8`
 
 ```rust
 pub const FLAG_OPT_TABLE: usize = 0b0010_0000;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub const FLAG_PREDICT_SEQ: usize = 0b0100_0000;` · L9
+`qsl/src/types.rs:9`
 
 ```rust
 pub const FLAG_PREDICT_SEQ: usize = 0b0100_0000;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub const FLAG_FIELD_BORROW: usize = 0b1000_0000;` · L11
+`qsl/src/types.rs:11`
 
 ```rust
 pub const FLAG_FIELD_BORROW: usize = 0b1000_0000;
 ```
 
-Internal lifetime marker for per-field byte/guard borrows.
-
-### `pub const FLAG_LIFETIME: usize = 0b0000_1000;` · L12
+`qsl/src/types.rs:12`
 
 ```rust
 pub const FLAG_LIFETIME: usize = 0b0000_1000;
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub trait QslCustom: Sized` · L19
+`qsl/src/types.rs:13`
 
 ```rust
-pub trait QslCustom: Sized
+pub const FLAG_STATE_BITS: usize = 1 << 8;
 ```
 
-Compile-time-sized custom codec used by generated, unchecked QSL I/O.  All methods are inlined into generated serializers. No `Result` or buffer-length bookkeeping is required at runtime. Implementors must obey the exact wire-size contract under both normal and compact encodings.
+`qsl/src/types.rs:14`
 
-### `unsafe fn qsl_write_unchecked` · L29
+```rust
+pub const FLAG_INLINE: usize = 1 << 9;
+```
+
+`qsl/src/types.rs:15`
+
+```rust
+pub const FLAG_INLINE_ALWAYS: usize = 1 << 10;
+```
+
+`qsl/src/types.rs:16`
+
+```rust
+pub const FLAG_INLINE_NEVER: usize = 1 << 11;
+```
+
+`qsl/src/types.rs:17`
+
+```rust
+pub const STATE_BITS_QUANTUM_SHIFT: usize = 12;
+```
+
+`qsl/src/types.rs:18`
+
+```rust
+pub const STATE_BITS_QUANTUM_MASK: usize = 7 << STATE_BITS_QUANTUM_SHIFT;
+```
+
+`qsl/src/types.rs:20`
+
+```rust
+pub const FLAG_MACRO: usize = 1 << 15;
+```
+
+`qsl/src/types.rs:22`
+
+```rust
+pub const FLAG_OPT_TABLE_LEGACY: usize = 1 << 16;
+```
+
+`qsl/src/types.rs:23`
+
+```rust
+pub const FLAG_PAYLOAD_QUANT: usize = 1 << 17;
+```
+
+`qsl/src/types.rs:25`
+
+```rust
+pub const FLAG_QPS: usize = FLAG_PAYLOAD_QUANT;
+```
+
+`qsl/src/types.rs:26`
+
+```rust
+pub const PAYLOAD_QUANT_SHIFT: usize = 18;
+```
+
+`qsl/src/types.rs:27`
+
+```rust
+pub const PAYLOAD_QUANT_MASK: usize = 3 << PAYLOAD_QUANT_SHIFT;
+```
+
+`qsl/src/types.rs:34`
+
+```rust
+pub trait QslCustom: Sized {
+```
+
+`qsl/src/types.rs:43`
+
+```rust
+fn qsl_validate(_bytes: &[u8], _compact: bool) -> QslResult<()> {
+```
+
+`qsl/src/types.rs:50`
 
 ```rust
 unsafe fn qsl_write_unchecked(&self, to: *mut u8);
 ```
 
-Constant-size normal codec. Use a raw pointer store only. `to` must point to `Self::SIZE` exclusively writable bytes.
-
-### `unsafe fn qsl_read_unchecked` · L34
+`qsl/src/types.rs:55`
 
 ```rust
 unsafe fn qsl_read_unchecked(from: *const u8) -> Self;
 ```
 
-Read an owned value without checking its input buffer. `from` must point to `Self::SIZE` readable, schema-valid bytes.
-
-### `fn qsl_size` · L38
+`qsl/src/types.rs:59`
 
 ```rust
-fn qsl_size(&self) -> usize
+fn qsl_size(&self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `fn qsl_comp_size` · L44
+`qsl/src/types.rs:65`
 
 ```rust
-fn qsl_comp_size(&self) -> usize
+fn qsl_comp_size(&self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `unsafe fn qsl_comp_write_unchecked` · L51
+`qsl/src/types.rs:72`
 
 ```rust
-unsafe fn qsl_comp_write_unchecked(&self, to: *mut u8)
+unsafe fn qsl_comp_write_unchecked(&self, to: *mut u8) {
 ```
 
-Compact raw-pointer encoder (defaults to the normal encoder). `to` must have `Self::COMP_SIZE` valid writable bytes.
-
-### `unsafe fn qsl_comp_read_unchecked` · L58
+`qsl/src/types.rs:79`
 
 ```rust
-unsafe fn qsl_comp_read_unchecked(from: *const u8) -> Self
+unsafe fn qsl_comp_read_unchecked(from: *const u8) -> Self {
 ```
 
-Compact raw-pointer decoder (defaults to the normal decoder). `from` must have `Self::COMP_SIZE` valid readable bytes.
-
-### `pub enum QslType` · L64
+`qsl/src/types.rs:85`
 
 ```rust
-pub enum QslType
+pub enum QslType {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn rank_bits` · L128
+`qsl/src/types.rs:154`
 
 ```rust
-pub fn rank_bits(min: i128, max: i128) -> QslResult<usize>
+pub fn rank_bits(min: i128, max: i128) -> QslResult<usize> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn rank_width` · L138
+`qsl/src/types.rs:164`
 
 ```rust
-pub fn rank_width(&self, fallback: usize) -> QslResult<usize>
+pub fn rank_width(&self, fallback: usize) -> QslResult<usize> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn rank_base` · L148
+`qsl/src/types.rs:174`
 
 ```rust
-pub fn rank_base(&self) -> i128
+pub fn rank_base(&self) -> i128 {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn number16` · L159
+`qsl/src/types.rs:186`
 
 ```rust
-pub fn number16(signed: bool, min: usize) -> Self
+pub fn number16(signed: bool, min: usize) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn number32` · L166
+`qsl/src/types.rs:193`
 
 ```rust
-pub fn number32(signed: bool, min: usize) -> Self
+pub fn number32(signed: bool, min: usize) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn number64` · L173
+`qsl/src/types.rs:200`
 
 ```rust
-pub fn number64(signed: bool, min: usize) -> Self
+pub fn number64(signed: bool, min: usize) -> Self {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn primitive` · L180
+`qsl/src/types.rs:207`
 
 ```rust
-pub fn primitive(&self) -> QslResult<Option<&'static str>>
+pub fn primitive(&self) -> QslResult<Option<&'static str>> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn rust_type` · L208
+`qsl/src/types.rs:235`
 
 ```rust
-pub fn rust_type(&self, borrowed: bool) -> QslResult<String>
+pub fn rust_type(&self, borrowed: bool) -> QslResult<String> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn fixed_wire_size` · L239
+`qsl/src/types.rs:267`
 
 ```rust
-pub fn fixed_wire_size(&self) -> QslResult<Option<usize>>
+pub fn fixed_wire_size(&self) -> QslResult<Option<usize>> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn default_compact_bits` · L277
+`qsl/src/types.rs:306`
 
 ```rust
-pub fn default_compact_bits(&self) -> QslResult<usize>
+pub fn default_compact_bits(&self) -> QslResult<usize> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn validate` · L295
+`qsl/src/types.rs:324`
 
 ```rust
-pub fn validate(&self, borrowed: bool) -> QslResult<()>
+pub fn validate(&self, borrowed: bool) -> QslResult<()> {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub struct QslField` · L347
+`qsl/src/types.rs:379`
 
 ```rust
-pub struct QslField
+pub struct QslField {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub struct QslSchema` · L361
+`qsl/src/types.rs:393`
 
 ```rust
-pub struct QslSchema
+pub struct QslSchema {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn compact` · L369
+`qsl/src/types.rs:401`
 
 ```rust
-pub fn compact(&self) -> bool
+pub fn compact(&self) -> bool {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn bitmap` · L372
+`qsl/src/types.rs:404`
 
 ```rust
-pub fn bitmap(&self) -> bool
+pub fn bitmap(&self) -> bool {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn opt_table` · L375
+`qsl/src/types.rs:407`
 
 ```rust
-pub fn opt_table(&self) -> bool
+pub fn opt_table(&self) -> bool {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn predict_seq` · L378
+`qsl/src/types.rs:411`
 
 ```rust
-pub fn predict_seq(&self) -> bool
+pub fn qps(&self) -> bool {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn sequential` · L382
+`qsl/src/types.rs:414`
 
 ```rust
-pub fn sequential(&self) -> bool
+pub fn quantum(&self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn lifetime` · L385
+`qsl/src/types.rs:417`
 
 ```rust
-pub fn lifetime(&self) -> bool
+pub fn quant_requested(&self) -> bool {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn borrow_strings` · L388
+`qsl/src/types.rs:420`
 
 ```rust
-pub fn borrow_strings(&self) -> bool
+pub fn payload_quantum(&self) -> usize {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn optional_count` · L391
+`qsl/src/types.rs:423`
 
 ```rust
-pub fn optional_count(&self) -> usize
+pub fn legacy_opt_table(&self) -> bool {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
-
-### `pub fn tag_bits` · L395
+`qsl/src/types.rs:426`
 
 ```rust
-pub fn tag_bits(&self) -> usize
+pub fn predict_seq(&self) -> bool {
 ```
 
-Example: max_tag=8 => exactly 3 bits, storing tag-1.
-
-### `pub fn count_bits` · L403
+`qsl/src/types.rs:432`
 
 ```rust
-pub fn count_bits(&self) -> usize
+pub fn state_bits(&self) -> bool {
 ```
 
-Number of bits needed to represent 0..=optional_count.
-
-### `pub fn bitmap_words` · L412
+`qsl/src/types.rs:435`
 
 ```rust
-pub fn bitmap_words(&self) -> usize
+pub fn state_bits_quantum(&self) -> usize {
 ```
 
-One presence bit for every declared field, including required fields.
-
-### `pub fn validate` · L415
+`qsl/src/types.rs:438`
 
 ```rust
-pub fn validate(&self) -> QslResult<()>
+pub fn predict_table(&self) -> bool {
 ```
 
-Описание отсутствует в Rustdoc у предоставленного объявления.
+`qsl/src/types.rs:441`
+
+```rust
+pub fn sequential(&self) -> bool {
+```
+
+`qsl/src/types.rs:445`
+
+```rust
+pub fn lifetime(&self) -> bool {
+```
+
+`qsl/src/types.rs:448`
+
+```rust
+pub fn borrow_strings(&self) -> bool {
+```
+
+`qsl/src/types.rs:451`
+
+```rust
+pub fn optional_count(&self) -> usize {
+```
+
+`qsl/src/types.rs:455`
+
+```rust
+pub fn tag_bits(&self) -> usize {
+```
+
+`qsl/src/types.rs:463`
+
+```rust
+pub fn count_bits(&self) -> usize {
+```
+
+`qsl/src/types.rs:472`
+
+```rust
+pub fn bitmap_words(&self) -> usize {
+```
+
+`qsl/src/types.rs:475`
+
+```rust
+pub fn validate(&self) -> QslResult<()> {
+```
+
+## qsl/src/validation.rs
+
+`qsl/src/validation.rs:5`
+
+```rust
+pub struct ValidationCursor<'a> {
+```
+
+`qsl/src/validation.rs:10`
+
+```rust
+pub fn new(input: &'a [u8]) -> Self {
+```
+
+`qsl/src/validation.rs:13`
+
+```rust
+pub fn bits(&mut self, width: usize) -> QslResult<u64> {
+```
+
+`qsl/src/validation.rs:31`
+
+```rust
+pub fn align(&mut self) -> QslResult<()> {
+```
+
+`qsl/src/validation.rs:38`
+
+```rust
+pub fn position(&self) -> usize {
+```
+
+`qsl/src/validation.rs:41`
+
+```rust
+pub fn bytes(&mut self, n: usize) -> QslResult<&'a [u8]> {
+```
+
+`qsl/src/validation.rs:49`
+
+```rust
+pub fn uint(&mut self, n: usize) -> QslResult<u64> {
+```
+
+`qsl/src/validation.rs:57`
+
+```rust
+pub fn utf8(&mut self, n: usize, min: usize, max: usize) -> QslResult<()> {
+```
+
+`qsl/src/validation.rs:64`
+
+```rust
+pub fn finish(mut self) -> QslResult<()> {
+```
+
+`qsl/src/validation.rs:73`
+
+```rust
+pub fn compressed<const MAX: usize>( &mut self, min: usize, raw_only: bool, fixed: bool, ) -> QslResult<()> {
+```
 

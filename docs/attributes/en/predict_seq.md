@@ -1,6 +1,6 @@
 # `predict_seq` — attribute specification
 
-**Status:** implemented, except `safety` is only a parsed flag in this revision.
+**Status:** implemented. `[safety]` separately enables checked APIs; trusted methods retain their own preconditions.
 
 ## Syntax
 
@@ -14,7 +14,7 @@ Absent tail: 8-byte id; present tail: id plus four-byte extra. No presence heade
 
 ## Constraints and invalid combinations
 
-Exactly one optional at the end. Cannot combine with compact, bitmap or opt_table. A zero-byte present field cannot be represented. `deserialize_unsafe(ptr)` panics.
+Standalone predict_seq uses the remaining frame length for a trailing optional sequence. Required fields always precede optional fields. compact and bitmap are incompatible. With opt_table, predict_seq selects direct numeric masks instead of an indirect event call; it does not change bytes. Standalone EOF inference cannot represent a present zero-byte field. Use APIs that supply frame length; deserialize_unsafe(ptr) without length is not supported for this mode.
 
 ## Runtime contract
 
@@ -22,7 +22,7 @@ Both peers must use compatible schema and wire revisions. The unsafe path does n
 
 ## What to measure
 
-Compare complete writes and reads on identical inputs, with metadata and payload separated; record wire size, allocations, CPU, benchmark profile and p99. Existing case:
+Compare complete writes and reads on identical inputs, with metadata and payload separated; record wire size, allocations, CPU, benchmark profile and p99. Historical case (not part of the fresh QSL-only run):
 `optional/predict_seq_present_read` — [all-estimates.csv](../../data/all-estimates.csv).
 
 ## Source implementation

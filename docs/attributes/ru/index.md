@@ -1,12 +1,5 @@
-# Атрибуты QSL — отдельные технические страницы
+# Атрибуты схемы
 
-- [`compact`](compact.md)
-- [`alignment`](alignment.md)
-- [`optionals=bitmap`](bitmap.md)
-- [`predict_seq`](predict_seq.md)
-- [`opt_table`](opt_table.md)
-- [`lifetime`](lifetime.md)
-- [`safety`](safety.md)
-- [`default=EXPR`](default.md)
-- [`binary_opt`](binary_opt.md)
-- [`decompress=true`](decompress.md)
+[qps](qps.md) · [quant](quant.md) · [state_bits](state_bits.md) · [opt_table](opt_table.md) · [safety](safety.md) · [inline](inline.md) · [rt](rt.md) · [macros](macros.md) · [predict_seq](predict_seq.md) · [binary_opt](binary_opt.md) · [decompress](decompress.md) · [lifetime](lifetime.md) · [compact](compact.md) · [bitmap](bitmap.md) · [alignment](alignment.md) · [default](default.md)
+
+[Актуальная архитектура](../../architecture.ru.md). QPS сжимает числовым операндом; opt_table предсказывает по длине. `[qps]` по умолчанию использует Q16. Старое кодирование D/индексов — `state_bits`; `quant=Qn` — синоним QPS.
