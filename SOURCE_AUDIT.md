@@ -35,3 +35,9 @@ Implemented: QSL/DEQ generation, string modes/LZ, scalar and general QPS, opt_ta
 The public declaration index covers 600 explicit declarations/trait signatures outside comments and Rust string literals. Native and rust-macros feature gates still apply. Paths/lines refer to the current-implementation manifest. Earlier ASM wrappers refer only to their archived scalar snapshot; no whole-codec zero-branch or exact cycle-count claim is made.
 
 Offline checks exercise every chart group/operation/metric, 200-point waveforms, RU/EN, numeric restoration, malformed model frames, API search and local links. Browser preview of local files was unavailable, so no visual browser-rendering verification is claimed. Older docs/data and archived pages remain explicitly historical.
+
+## Documentation workbench / Мастерская документации
+
+The bilingual introduction is fully present in README.md. The documentation now includes an explicit scope/constraint explorer, build/runtime stages, a numeric wire-layout model, a string-memory explorer using existing measurements, actual optional-state frames and QPS group operands/restoration. No new timing data or performance estimates were introduced for these interface changes.
+
+[Reference vectors](docs/data/explorer-vectors.json) cover 32 generated dense records in three formats, four optional states and three malformed-frame errors. UI byte models are checked against these native Rust results. Model limits are labelled beside the controls; the browser is not presented as the native QSL generator. [Reference harness](reference/docs-lab/README.md).

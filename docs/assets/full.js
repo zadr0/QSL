@@ -2,7 +2,7 @@
 (()=>{
 const $=s=>document.querySelector(s),all=s=>Array.from(document.querySelectorAll(s));
 const data=JSON.parse($('#feature-data').textContent),api=JSON.parse($('#api-data').textContent),words=JSON.parse($('#words').textContent),groups=JSON.parse($('#group-notes').textContent);
-const state={lang:/^ru/i.test(navigator.language)?'ru':'en',group:'features/layout',op:'read',metric:'P',wave:'',smoothing:1};
+const state={lang:globalThis.location?.search?.match(/[?&]lang=(ru|en)(?:&|$)/i)?.[1]?.toLowerCase()||(/^ru/i.test(navigator.language)?'ru':'en'),group:'features/layout',op:'read',metric:'P',wave:'',smoothing:1};
 const t=k=>words[k]?.[state.lang==='ru'?0:1]||k,fmt=(n,d=3)=>new Intl.NumberFormat(state.lang,{maximumFractionDigits:d}).format(n);
 const node=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e};
 const svg=(tag,attrs={},text)=>{const e=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;return e};
@@ -21,7 +21,7 @@ function hydrate(){
  $('#run-status').textContent=t(data.status==='complete'?'complete':'running')+` · ${data.measured_cases} / ${data.expected_cases} · ${t('observations')} ${data.measurement_observations||data.measured_cases}`;
  $('#hardware').textContent=`Windows 11 x86-64 · i5-7400 · 24 GiB / 2133 MHz · Rust 1.98 / LLVM 22.1.8`;
  $('#run-memory').textContent=data.memory?`8 GiB · ${t('peak')} ${fmt(Math.max(data.memory.peakJobBytes,...(data.optimized_runs||[]).map(r=>r.memory.peakJobBytes))/1048576,2)} MiB`:`8 GiB · ${t('running')}`;
- $('#api-query').placeholder=t('apiSearch');render();renderQps();renderEvents();renderApi();
+ $('#api-query').placeholder=t('apiSearch');$('#api-query').setAttribute('aria-label',t('apiSearch'));$('#histogram').setAttribute('aria-label',t('hist'));all('[data-aria]').forEach(e=>e.setAttribute('aria-label',t(e.dataset.aria)));render();renderQps();renderEvents();renderApi();globalThis.QslExplorer?.refresh();
 }
 function render(){
  const ops=[...new Set(data.rows.filter(r=>key(r)===state.group).map(r=>r.operation))];all('#operation option').forEach(o=>o.disabled=!ops.includes(o.value));if(!ops.includes(state.op)&&ops.length){state.op=ops[0];$('#operation').value=state.op;}
@@ -62,5 +62,5 @@ function renderQps(){try{const bytes=new TextEncoder().encode($('#qps-text').val
 function renderEvents(){const a=Number($('#event-a').checked),b=Number($('#event-b').checked),L=a+b,I=Number(L>0)+Number(L>1);$('#event-result').textContent=`L=${L}; I=(L>0)+(L>1)=${I}\n${t('tagRead')}: ${t(I===1?'yes':'no')}\nH=1 B; ${t('frame')}=${5+L} B`;$('#event-forced').textContent=I===0?'∅':I===2?'a, b':'∅';$('#event-possible').textContent=I===0?'∅':'a, b';}
 function renderApi(){const q=$('#api-query').value.toLowerCase(),found=api.filter(x=>(x.signature+' '+x.path).toLowerCase().includes(q));$('#api-count').textContent=`${found.length} / ${api.length} · ${t('first60')}`;const box=$('#api-results');box.replaceChildren();found.slice(0,60).forEach(x=>{const e=node('div',undefined,'api-row');e.append(node('code',x.signature),node('small',`${x.path}:${x.line}`));box.append(e)});}
 all('[data-lang]').forEach(b=>b.addEventListener('click',()=>{state.lang=b.dataset.lang;hydrate()}));$('#feature-group').addEventListener('change',()=>{state.group=$('#feature-group').value;state.wave='';render()});$('#operation').addEventListener('change',()=>{state.op=$('#operation').value;state.wave='';render()});$('#metric').addEventListener('change',()=>{state.metric=$('#metric').value;render()});$('#wave-case').addEventListener('change',()=>{state.wave=$('#wave-case').value;render()});$('#smoothing').addEventListener('change',()=>{state.smoothing=Number($('#smoothing').value);renderWave()});$('#api-query').addEventListener('input',renderApi);$('#qps-text').addEventListener('input',renderQps);$('#qps-quantum').addEventListener('change',renderQps);$('#event-a').addEventListener('change',renderEvents);$('#event-b').addEventListener('change',renderEvents);
-globalThis.QslDocsTest={qpsBytes,decodeQpsFrame,smooth,state,render,hydrate};hydrate();
+globalThis.QslDocsTest={qpsBytes,decodeQpsFrame,smooth,state,render,hydrate,renderQps};hydrate();
 })();

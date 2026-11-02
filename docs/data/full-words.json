@@ -462,5 +462,401 @@
   "snapshot": [
     "Снимок",
     "Snapshot"
+  ],
+  "workshop": [
+    "Как устроен QSL",
+    "How QSL works"
+  ],
+  "narrowTitle": [
+    "Специализация начинается с условий",
+    "Specialization starts with constraints"
+  ],
+  "narrowLead": [
+    "QSL подходит для внутреннего бинарного протокола, IPC, телеметрии и повторяющихся записей с согласованной схемой. Текущий генератор создаёт Rust-код. Меняться могут значения и длины; структура формата известна при сборке.",
+    "QSL suits internal binary protocols, IPC, telemetry and repeated records with an agreed schema. The current generator produces Rust. Values and lengths may change; format structure is known at build time."
+  ],
+  "scopeKnown": [
+    "Структура известна при сборке",
+    "Structure known at build time"
+  ],
+  "scopeAgreed": [
+    "Обе стороны согласовали формат",
+    "Both sides agree on the format"
+  ],
+  "scopeBounded": [
+    "Есть верхняя граница длины",
+    "Lengths have an upper bound"
+  ],
+  "scopeReuse": [
+    "Подготовлен повторный буфер",
+    "A reusable buffer is prepared"
+  ],
+  "scopeNote": [
+    "Переключатели показывают последствия условий. Это разбор контрактов, а не оценка скорости.",
+    "These switches show the consequences of constraints. This explores contracts, not estimated performance."
+  ],
+  "scopeCode": [
+    "Генерация",
+    "Generation"
+  ],
+  "scopeCodeYes": [
+    "Создаются специализированные структуры и методы Rust. Значения остаются динамическими.",
+    "Specialized Rust structures and methods can be generated. Values remain dynamic."
+  ],
+  "scopeCodeNo": [
+    "Для генерации требуется описание полей и типов. Динамические значения поддерживаются внутри известной структуры.",
+    "Generation requires declared fields and types. Dynamic values are supported within a known structure."
+  ],
+  "scopePeer": [
+    "Совместимость",
+    "Compatibility"
+  ],
+  "scopePeerYes": [
+    "Настройки кодека и схема входят в договорённость сторон. Изменения формата согласуются явно.",
+    "Schema and codec settings form the agreement between peers. Format changes are coordinated explicitly."
+  ],
+  "scopePeerNo": [
+    "Проверка формы кадра не устанавливает идентичность схемы. Нужен discriminator, версия или протокол согласования. QBProto/R пока запланированы.",
+    "Frame-shape validation does not establish schema identity. Use a discriminator, version or negotiation protocol. QBProto/R remains planned."
+  ],
+  "scopeMax": [
+    "Длины и память",
+    "Lengths and memory"
+  ],
+  "scopeMaxYes": [
+    "Конечный максимум позволяет встроенную ёмкость и RT-пул в пределах их отдельных бюджетов.",
+    "A finite maximum enables inline capacity and an RT pool within their separate budgets."
+  ],
+  "scopeMaxNo": [
+    "Динамические String/Vec доступны. Без конечного максимума встроенная строка и статический RT-регион не планируются.",
+    "Dynamic String/Vec remain available. Inline strings and static RT regions cannot be planned without finite maxima."
+  ],
+  "scopeStorage": [
+    "Повторяемое чтение",
+    "Repeated decoding"
+  ],
+  "scopeStorageYes": [
+    "При достаточной ёмкости prepared/reuse-путь сохраняет хранилище. Borrow требует живого входного региона.",
+    "With sufficient capacity, prepared/reuse decoding retains storage. Borrowing requires the input region to remain alive."
+  ],
+  "scopeStorageNo": [
+    "Создание владеющего String/Vec может выделять память. Для повторного пути выбирается владение и готовится ёмкость.",
+    "Constructing owned String/Vec may allocate. Select ownership and prepare capacity for repeated decoding."
+  ],
+  "scopeBoundary": [
+    "QSL определяет представление данных. Версии, маршрутизация, шифрование и доверие к источнику задаются приложением. Нативные регионы и прямой WinSock-путь текущей реализации зависят от Windows.",
+    "QSL defines a data representation. The application defines versioning, routing, encryption and trust. Current native regions and the direct WinSock path depend on Windows."
+  ],
+  "pipelineTitle": [
+    "От схемы к операции чтения",
+    "From a schema to decoding"
+  ],
+  "pipelineLead": [
+    "Выберите этап: видно, какая работа выполняется при сборке, а какая остаётся при обмене.",
+    "Select a stage to see which work happens during the build and which remains during exchange."
+  ],
+  "pipe0": [
+    "1 · Описание",
+    "1 · Declaration"
+  ],
+  "pipe1": [
+    "2 · Анализ",
+    "2 · Analysis"
+  ],
+  "pipe2": [
+    "3 · Rust-код",
+    "3 · Rust code"
+  ],
+  "pipe3": [
+    "4 · Выполнение",
+    "4 · Execution"
+  ],
+  "pipeTitle0": [
+    "Декларация инвариантов",
+    "Declare invariants"
+  ],
+  "pipeText0": [
+    "Заданы типы, диапазоны, порядок и политика проверки. Эти условия ограничивают допустимые сообщения.",
+    "Types, domains, order and validation policy constrain valid messages."
+  ],
+  "pipeTitle1": [
+    "Анализ выполняется до запуска",
+    "Analysis precedes execution"
+  ],
+  "pipeText1": [
+    "Генератор вычисляет битовые ширины, допустимость сочетаний и известные размеры. Для opt_table строятся критические длины и функции событий.",
+    "The generator computes bit widths, option compatibility and known sizes. opt_table builds critical lengths and event functions."
+  ],
+  "pipeTitle2": [
+    "Специализированные операции",
+    "Specialized operations"
+  ],
+  "pipeText2": [
+    "Генерируются типы, методы записи/чтения, проверки и таблицы. Фрагмент ниже поясняет принцип и не заменяет полный сгенерированный файл.",
+    "Types, read/write methods, validators and tables are generated. The excerpt explains the principle; it is not the complete generated source."
+  ],
+  "pipeTitle3": [
+    "Данные и память остаются динамическими",
+    "Data and storage remain dynamic"
+  ],
+  "pipeText3": [
+    "Исполняются выбранный кодек, необходимые проверки и операции памяти. Аллокации, восстановление сжатого payload и время жизни буферов зависят от API.",
+    "The selected codec, required checks and memory operations run here. Allocation, compressed-payload restoration and buffer lifetimes depend on the API."
+  ],
+  "buildStage": [
+    "Этап сборки",
+    "Build stage"
+  ],
+  "runtimeStage": [
+    "Время выполнения",
+    "Runtime"
+  ],
+  "layoutTitle": [
+    "Мастерская бинарного формата",
+    "Binary format workbench"
+  ],
+  "layoutLead": [
+    "Три конкретные схемы с одинаковыми типами и диапазонами. Меняйте значения: цвет связывает поле, биты и байты. Чтение возвращает те же значения.",
+    "Three concrete schemas share types and domains. Change values: color connects fields, bits and bytes. Decoding restores the same values."
+  ],
+  "layoutMode": [
+    "Представление",
+    "Representation"
+  ],
+  "layoutRaw": [
+    "Обычное",
+    "Default"
+  ],
+  "layoutCompact": [
+    "compact · плотные биты",
+    "compact · packed bits"
+  ],
+  "layoutAligned": [
+    "compact + alignment",
+    "compact + alignment"
+  ],
+  "layoutCorrupt": [
+    "Повредить кадр",
+    "Corrupt the frame"
+  ],
+  "layoutTruncate": [
+    "Удалить последний байт",
+    "Remove the last byte"
+  ],
+  "layoutFrame": [
+    "Переданные байты",
+    "Transmitted bytes"
+  ],
+  "layoutBits": [
+    "Биты в порядке записи: слева младший бит каждого байта",
+    "Write order: least-significant bit first within each byte"
+  ],
+  "layoutRestored": [
+    "Проверка и восстановление",
+    "Validation and restoration"
+  ],
+  "layoutValid": [
+    "Кадр допустим; значения восстановлены точно.",
+    "Valid frame; values restored exactly."
+  ],
+  "layoutEof": [
+    "UnexpectedEof: недостаточно байтов.",
+    "UnexpectedEof: insufficient bytes."
+  ],
+  "layoutRange": [
+    "InvalidValue: значение вне диапазона схемы.",
+    "InvalidValue: value outside the schema domain."
+  ],
+  "layoutPad": [
+    "InvalidPadding: ненулевые биты за пределами полей.",
+    "InvalidPadding: nonzero bits beyond the fields."
+  ],
+  "layoutModel": [
+    "Исполняемая модель этих трёх схем. 32 набора байтов сверены с Rust-генератором; это не парсер произвольной схемы в браузере.",
+    "Executable model of these three schemas. 32 byte sets are checked against the Rust generator; this is not an arbitrary-schema parser in the browser."
+  ],
+  "field": [
+    "Поле",
+    "Field"
+  ],
+  "bitsLabel": [
+    "Биты",
+    "Bits"
+  ],
+  "wireBytes": [
+    "Размер кадра",
+    "Frame size"
+  ],
+  "paddingLabel": [
+    "Выравнивание",
+    "Padding"
+  ],
+  "memoryTitle": [
+    "Куда попадает прочитанная строка",
+    "Where a decoded string goes"
+  ],
+  "memoryLead": [
+    "Форма результата меняет работу с памятью. Здесь показаны реальные замеры чтения на одинаковых данных и логический путь каждого варианта.",
+    "The result form changes memory work. These are actual decoding measurements on identical data, paired with each option’s logical path."
+  ],
+  "memoryDataset": [
+    "Данные",
+    "Data"
+  ],
+  "memoryAscii": [
+    "255 B · ASCII, шум",
+    "255 B · noisy ASCII"
+  ],
+  "memoryUtf8": [
+    "1024 символа · 2048 B, повтор",
+    "1024 characters · 2048 B, repeated"
+  ],
+  "memoryMode": [
+    "Результат чтения",
+    "Decoded result"
+  ],
+  "inputFrame": [
+    "Входной кадр",
+    "Input frame"
+  ],
+  "decoder": [
+    "Чтение / восстановление",
+    "Decode / restore"
+  ],
+  "destination": [
+    "Результат",
+    "Result"
+  ],
+  "memoryBase": [
+    "Обычная новая String",
+    "Ordinary new String"
+  ],
+  "memorySelected": [
+    "Выбранный вариант",
+    "Selected option"
+  ],
+  "memoryOpen": [
+    "Показать на графике",
+    "Inspect in charts"
+  ],
+  "memNew": [
+    "Собственный буфер создаётся при чтении; замер включает создание и Drop результата.",
+    "Owned storage is created during decoding; timing includes construction and Drop."
+  ],
+  "memReuse": [
+    "Подготовленный живой объект сохраняет достаточную ёмкость. Эта подготовка находится вне таймера.",
+    "A prepared live object retains sufficient capacity. Preparation is outside timing."
+  ],
+  "memInline": [
+    "Байты копируются во встроенную ёмкость InlineString<4096>. Размер объекта зависит от MAX.",
+    "Bytes are copied into InlineString<4096> storage. Native object size depends on MAX."
+  ],
+  "memCopy": [
+    "Байты копируются в собственный SerOut. Это отдельное владение; исходный кадр можно освободить после чтения.",
+    "Bytes are copied into an owned SerOut. Ownership is separate; the source frame may be released after decoding."
+  ],
+  "memBorrow": [
+    "Создаётся представление входных байтов. Исходный кадр должен оставаться живым и неизменяемым.",
+    "A view of input bytes is created. The source frame must remain alive and unchanged."
+  ],
+  "memLz": [
+    "Raw/LZ восстанавливается в конечный InlineString<4096>. Размер кадра и цена восстановления показаны отдельно.",
+    "Raw/LZ restores into the final InlineString<4096>. Frame size and restoration cost are shown separately."
+  ],
+  "memoryCaveat": [
+    "Это trusted-чтение подготовленных корректных кадров. Проверки внешнего входа измеряются отдельно. Высокий P для borrow описывает создание вида, а не копирование всего payload. Стрелки показывают логические области, а не измеренный трафик памяти.",
+    "This times trusted decoding of prepared valid frames. External-input validation is measured separately. High borrowed P describes view creation, not copying the whole payload. Arrows show logical regions, not measured memory traffic."
+  ],
+  "eventGraph": [
+    "Статический граф длины optional-payload",
+    "Static optional-payload length graph"
+  ],
+  "eventL0": [
+    "L=0 · ни одного поля",
+    "L=0 · no fields"
+  ],
+  "eventL1": [
+    "L=1 · требуется различение",
+    "L=1 · disambiguation required"
+  ],
+  "eventL2": [
+    "L=2 · оба поля",
+    "L=2 · both fields"
+  ],
+  "eventWireNote": [
+    "Реальный кадр этой схемы: [H: 1 B][id: 4 B][optional-payload]. L = len − 5. H резервируется в каждом кадре; доверенное ядро может пропустить его чтение в однозначных событиях. Проверяемый API отдельно проверяет весь формат.",
+    "Actual frame: [H: 1 B][id: 4 B][optional payload]. L = len − 5. H is reserved in every frame; trusted decoding can skip reading it in unambiguous events. The checked API validates the complete format separately."
+  ],
+  "eventModel": [
+    "Все четыре состояния сверены с Rust. Таблица статична; выбранное событие зависит от длины, а не от квантования.",
+    "All four states match Rust. The table is static; the selected event depends on length, not quantization."
+  ],
+  "qpsPreset": [
+    "Набор данных",
+    "Input preset"
+  ],
+  "qpsRepeat": [
+    "Повтор одного байта",
+    "Repeated byte"
+  ],
+  "qpsRange": [
+    "16 соседних значений",
+    "16 adjacent values"
+  ],
+  "qpsUtf8": [
+    "Повтор UTF-8",
+    "Repeated UTF-8"
+  ],
+  "qpsGroup": [
+    "Группа",
+    "Group"
+  ],
+  "qpsOperand": [
+    "Операнд выбранной группы",
+    "Selected group operand"
+  ],
+  "qpsSourceRank": [
+    "Исходные байты → ранги",
+    "Source bytes → ranks"
+  ],
+  "qpsPackedWord": [
+    "Кандидат W в байтах little-endian",
+    "Candidate W in little-endian bytes"
+  ],
+  "qpsRestoredGroup": [
+    "Восстановленная группа",
+    "Restored group"
+  ],
+  "qpsRawNote": [
+    "В raw-режиме W показан только для объяснения кандидата; в кадр записаны исходные байты.",
+    "In raw mode, W explains the candidate only; the frame carries original bytes."
+  ],
+  "qpsEmpty": [
+    "В пустом входе нет групп.",
+    "Empty input has no groups."
+  ],
+  "guideRoute": [
+    "Подробное руководство",
+    "Detailed guide"
+  ],
+  "guideRouteText": [
+    "Синтаксис, контракты, ограничения, модули и способы интеграции собраны ниже и на отдельных страницах для чтения и печати.",
+    "Syntax, contracts, limits, modules and integration paths follow below and on separate reading/print pages."
+  ],
+  "labTitle": [
+    "Мастерская",
+    "Workbench"
+  ],
+  "heroScope": [
+    "Узкая задача: заранее согласованная структура бинарных данных. Генератор переносит анализ на этап сборки; приложение выбирает кодек, проверки и владение памятью.",
+    "Narrow scope: binary data with a structure agreed in advance. The generator moves analysis to the build; the application chooses its codec, validation and storage ownership."
+  ],
+  "openLab": [
+    "Открыть мастерскую",
+    "Open the workbench"
+  ],
+  "scopeUnknownPlan": [
+    "Сначала требуется описание конкретной схемы: из него выводятся размеры и допустимость механизма.",
+    "A concrete schema must be declared first; its sizes determine whether this facility is available."
   ]
 }

@@ -1,0 +1,4 @@
+&DenseRaw[safety] {u8(0..7) kind;u8(0..31) channel;u16(0..1023) value;}
+&DenseCompact[safety,compact] {u8(0..7) kind;u8(0..31) channel;u16(0..1023) value;}
+&DenseAligned[safety,compact,alignment] {u8(0..7) kind;u8(0..31) channel;u16(0..1023) value;}
+&OptionalTwo[safety,opt_table] {u32 id;u8? a;u8? b;}
