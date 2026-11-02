@@ -594,7 +594,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2286,
+    "line": 2287,
     "kind": "fn",
     "signature": "pub fn generate_parsed(&mut self, schemas: &[crate::compat::ParserQslSchema]) -> QslResult<()> {",
     "doc": ""
@@ -602,7 +602,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2294,
+    "line": 2295,
     "kind": "fn",
     "signature": "pub fn generate_field(&mut self, field: &QslField, borrowed: bool) -> QslResult<()> {",
     "doc": ""
@@ -610,7 +610,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2647,
+    "line": 2648,
     "kind": "fn",
     "signature": "pub fn generate_default(&mut self, schema: &QslSchema) -> QslResult<()> {",
     "doc": ""
@@ -618,7 +618,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2658,
+    "line": 2659,
     "kind": "fn",
     "signature": "pub fn generate_lifetime(&mut self, schema: &QslSchema) -> QslResult<()> {",
     "doc": ""
@@ -626,7 +626,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2672,
+    "line": 2673,
     "kind": "fn",
     "signature": "pub fn push(&self) -> std::io::Result<()> {",
     "doc": ""
@@ -1956,13 +1956,21 @@
     "path": "qsl/src/lib.rs",
     "line": 31,
     "kind": "mod",
-    "signature": "pub mod static_index;",
+    "signature": "pub mod qps_bytes;",
     "doc": ""
   },
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
     "line": 32,
+    "kind": "mod",
+    "signature": "pub mod static_index;",
+    "doc": ""
+  },
+  {
+    "module": "lib",
+    "path": "qsl/src/lib.rs",
+    "line": 33,
     "kind": "use",
     "signature": "pub use payload_quant::{QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRegions};",
     "doc": ""
@@ -1970,7 +1978,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 33,
+    "line": 34,
     "kind": "mod",
     "signature": "pub mod rt;",
     "doc": ""
@@ -1978,7 +1986,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 35,
+    "line": 36,
     "kind": "mod",
     "signature": "pub mod rust_macro;",
     "doc": ""
@@ -1986,7 +1994,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 36,
+    "line": 37,
     "kind": "mod",
     "signature": "pub mod schema_macro;",
     "doc": ""
@@ -1994,7 +2002,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 38,
+    "line": 39,
     "kind": "use",
     "signature": "pub use deq::build_qsl_files_with_rust;",
     "doc": ""
@@ -2002,7 +2010,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 40,
+    "line": 41,
     "kind": "use",
     "signature": "pub use qsl_macros::{qsl_macro, schem_macro};",
     "doc": ""
@@ -2010,7 +2018,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 41,
+    "line": 42,
     "kind": "mod",
     "signature": "pub mod length_graph;",
     "doc": ""
@@ -2018,7 +2026,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 42,
+    "line": 43,
     "kind": "mod",
     "signature": "pub mod static_optional;",
     "doc": ""
@@ -2026,7 +2034,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 43,
+    "line": 44,
     "kind": "mod",
     "signature": "pub mod validation;",
     "doc": ""
@@ -2034,7 +2042,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 44,
+    "line": 45,
     "kind": "use",
     "signature": "pub use analysis::*;",
     "doc": ""
@@ -2042,7 +2050,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 45,
+    "line": 46,
     "kind": "use",
     "signature": "pub use bit_io::*;",
     "doc": ""
@@ -2050,7 +2058,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 49,
+    "line": 50,
     "kind": "mod",
     "signature": "pub mod native;",
     "doc": ""
@@ -2874,7 +2882,7 @@
   {
     "module": "qps",
     "path": "qsl/src/qps.rs",
-    "line": 8,
+    "line": 9,
     "kind": "use",
     "signature": "pub use crate::payload_quant::{ PayloadQuantPlan as QpsPlan, QuantField as QpsField, QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRecord, QuantizedRegions, };",
     "doc": ""
@@ -2882,9 +2890,209 @@
   {
     "module": "qps",
     "path": "qsl/src/qps.rs",
-    "line": 14,
+    "line": 15,
     "kind": "const",
     "signature": "pub const QPS_CODEC_REVISION: u32 = 2;",
+    "doc": ""
+  },
+  {
+    "module": "qps",
+    "path": "qsl/src/qps.rs",
+    "line": 17,
+    "kind": "use",
+    "signature": "pub use crate::qps_bytes::{ ByteFrame, ByteMode, ByteQps, CheckedBorrowedRecord, CheckedRecord, BYTE_FRAME_HEADER, BYTE_QPS_CODEC_REVISION, };",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 7,
+    "kind": "const",
+    "signature": "pub const BYTE_FRAME_HEADER: usize = 16;",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 8,
+    "kind": "const",
+    "signature": "pub const BYTE_QPS_CODEC_REVISION: u32 = 3;",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 245,
+    "kind": "enum",
+    "signature": "pub enum ByteMode {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 251,
+    "kind": "struct",
+    "signature": "pub struct ByteQps<const Q: usize>;",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 252,
+    "kind": "struct",
+    "signature": "pub struct ByteFrame<'a, const Q: usize> {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 258,
+    "kind": "fn",
+    "signature": "pub fn as_slice(&self) -> &[u8] {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 261,
+    "kind": "fn",
+    "signature": "pub fn original_len(&self) -> usize {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 264,
+    "kind": "fn",
+    "signature": "pub fn mode(&self) -> ByteMode {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 267,
+    "kind": "fn",
+    "signature": "pub fn decode_to<'out>(&self, out: &'out mut [u8]) -> QslResult<&'out mut [u8]> {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 270,
+    "kind": "fn",
+    "signature": "pub fn decode_record_into<'out, T: CheckedRecord>( &self, restoration: &mut [u8], out: &'out mut MaybeUninit<T>, ) -> QslResult<&'out mut T> {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 283,
+    "kind": "trait",
+    "signature": "pub unsafe trait CheckedRecord: Serializable {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 284,
+    "kind": "trait method",
+    "signature": "fn qps_validate_values(&self) -> QslResult<()>;",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 285,
+    "kind": "trait method",
+    "signature": "fn qps_validate_wire(input: &[u8]) -> QslResult<()>;",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 290,
+    "kind": "trait",
+    "signature": "pub unsafe trait CheckedBorrowedRecord<'a>: BorrowSerializable<'a> {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 291,
+    "kind": "trait method",
+    "signature": "fn qps_validate_values(&self) -> QslResult<()>;",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 292,
+    "kind": "trait method",
+    "signature": "fn qps_validate_wire(input: &[u8]) -> QslResult<()>;",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 295,
+    "kind": "fn",
+    "signature": "pub fn max_encoded_len(len: usize) -> QslResult<usize> {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 300,
+    "kind": "fn",
+    "signature": "pub fn inspect(input: &[u8]) -> QslResult<(ByteMode, usize)> {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 329,
+    "kind": "fn",
+    "signature": "pub fn encode_to<'out>(input: &[u8], out: &'out mut [u8]) -> QslResult<ByteFrame<'out, Q>> {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 400,
+    "kind": "fn",
+    "signature": "pub fn decode_to<'out>(input: &[u8], out: &'out mut [u8]) -> QslResult<&'out mut [u8]> {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 458,
+    "kind": "fn",
+    "signature": "pub fn encode_borrowed_to<'out, 'a, T: CheckedBorrowedRecord<'a>>( value: &T, scratch: &mut [u8], out: &'out mut [u8], ) -> QslResult<ByteFrame<'out, Q>> {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 469,
+    "kind": "fn",
+    "signature": "pub fn decode_borrowed<'a, T: CheckedBorrowedRecord<'a>>( input: &[u8], restoration: &'a mut [u8], ) -> QslResult<T> {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 477,
+    "kind": "fn",
+    "signature": "pub fn encode_record_to<'out, T: CheckedRecord>( value: &T, scratch: &mut [u8], out: &'out mut [u8], ) -> QslResult<ByteFrame<'out, Q>> {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 488,
+    "kind": "fn",
+    "signature": "pub fn decode_record_into<'out, T: CheckedRecord>( input: &[u8], restoration: &mut [u8], out: &'out mut MaybeUninit<T>, ) -> QslResult<&'out mut T> {",
     "doc": ""
   },
   {

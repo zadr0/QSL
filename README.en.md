@@ -1,28 +1,33 @@
-# QSL — schema-specialized binary codec generation
+# QSL — specialized binary exchange
 
-[Русский](README.ru.md) · [Interactive documentation](docs/index.html) · [Architecture](docs/architecture.en.md) · [API](docs/API.en.md)
+[Русский](README.ru.md) · [Complete guide](docs/guide.en.md) · [Interactive documentation](docs/index.html) · [API](docs/API.en.md)
 
-QSL specializes Rust serialization for declared types, ranges, field order and ownership. Required fields precede optional fields; additional modes are opt-in.
+QSL generates Rust for exchanging data described in advance. Types, domains, field order and ownership define the representation before execution. Additional mechanisms are explicit; [required][optional] ordering is mandatory.
 
-**QPS compresses numeric operands losslessly. opt_table predicts from length. QPS does not require optional fields.**
+**QPS is exact operand compression. opt_table performs length prediction.**
 
 ```qsl
-&Numbers[qps=Q16,safety] { u64(0..15) a; u64(0..15) b; }
-&Packet[opt_table,safety] { i32 id; u8? a; u8? b; }
+&Message[safety,opt_table] {
+    u32 id;
+    str(0..4096) text|binary_opt=guard|;
+    u16? code;
+}
 ```
-`[qps]` defaults to Q16; Q2/Q4/Q8/Q16 are supported. `quant=Qn` is a compatible alias. Select the old D/index format explicitly as `state_bits`; both peers must agree when changing modes. Q changes the exact quotient/remainder representation; savings come from ranges, not lost precision.
 
-Implemented: checked APIs with [safety], owned/borrowed/byte/CopyGuard/inline strings, nested Rust structure macros, critical-length opt_table, optional static RT pools, and Windows regions with IPC. QBProto handshake/R remains planned. Wire-frame size is not Rust object size.
+The guide covers the complete system: QSL/DEQ, default/compact representations, optional/bitmap/predict_seq/opt_table, String and UTF-8 wrappers, string LZ, both QPS paths, validation, inline, Rust templates, custom types, SerOut, RT, native memory, IPC and sockets. Limits accompany each API choice.
 
-## Fresh measurements: QSL only
+## General QPS
 
-| Operation | Without QPS, ns | QPS Q16, ns |
-|---|---:|---:|
-| deserialize_into | 15.57 | 9.56 |
-| serialize_into | 7.41 | 13.70 |
+ByteQps<Q2/Q4/Q8/Q16> accepts arbitrary serialized bytes, including UTF-8 and arrays, and restores them losslessly. Its 16 B QPB3 header stores original length without quantization. Packed is selected only when the complete frame saves space; otherwise explicit raw is used. A separate static scalar specialization remains available.
 
-Frame 17–49 B → 3–13 B; prepared QPS APIs additionally require 16 B of private padding. This layout reads faster and writes slower. Warm-up 15 s, measurement 10 s, 200 samples, 99% CI; 8 GiB limit. Windows 11 x86-64, i5-7400, RAM 24 GiB at 2133 MHz. Four cases in one profile, with no other codecs or network tests. [Conditions, intervals, data and commands](docs/performance.en.md).
+The general path is explicit through ByteQps or serialize_qps_to / deserialize_qps_into. Existing Serializable formats do not change implicitly. Numeric QUANT_ACTIVE describes the specialization, not absence of the general codec. Four u8 values provide a u32 operand but do not guarantee compression of every 32-bit pattern.
 
-Source and test status: [audit](SOURCE_AUDIT.md). This repository publishes documentation and the harness, not a Cargo workspace. The matching local dev-qsl checkout was measured and source hashes are published. docs/index.html runs without a CDN; GitHub Pages can serve /docs.
+## Measurements and limits
 
-Separate control: [default vs opt_table for 1/2/3/5/10 optional fields](docs/opt-table-control.en.md). Same values and inline policy; reading and writing are shown independently.
+The [full report](docs/features.en.md) and [interactive charts](docs/index.html#measurements) show useful P=M/T, time, wire sizes, 99% CI and waveforms of actual Criterion samples. M is original useful bytes. New ownership, reuse and borrowing are labelled separately.
+
+The main pass covers 95 cases; focused UTF-8/whole-record checks add 8. Only the 22 general-QPS cases were repeated after local optimization: 103 distinct cases, 125 observations in total. Earlier N=1/2/3/5/10 snapshots remain separate. Smaller frames do not guarantee faster operations; the general codec is not automatically promoted into a hot path.
+
+Related material: [mathematics and CPU/memory](docs/mathematics.en.md), [architecture](docs/architecture.en.md), [checks](SOURCE_AUDIT.md), [RU/EN Zed extension](https://github.com/zadr0/QSL-Extension).
+
+This repository distributes documentation and reproducible harnesses, not the complete Cargo workspace. Measurements describe captured local dev-qsl sources; hashes, raw data and commands are provided. QBProto handshake/R remains planned.

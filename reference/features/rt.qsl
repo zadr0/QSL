@@ -1,0 +1,1 @@
+&RtIo[safety,inline] {u32 id;u64 tick;u16 code;}

@@ -1,0 +1,34 @@
+&DenseRaw[safety,inline] {u8(0..7) a;u8(0..31) b;u16(0..1023) c;}
+&DenseCompact[safety,inline,compact] {u8(0..7) a;u8(0..31) b;u16(0..1023) c;}
+&DenseAligned[safety,inline,compact,alignment] {u8(0..7) a;u8(0..31) b;u16(0..1023) c;}
+&OptionalDefault[safety,inline] {u32 id;u8? a;u16? b;u32? c;}
+&OptionalBitmap[safety,inline,optionals=bitmap] {u32 id;u8? a;u16? b;u32? c;}
+&OptionalPredict[safety,inline,predict_seq] {u32 id;u8? a;u16? b;u32? c;}
+&OptionalTable[safety,inline,opt_table] {u32 id;u8? a;u16? b;u32? c;}
+&OptionalDirect[safety,inline,opt_table,predict_seq] {u32 id;u8? a;u16? b;u32? c;}
+&StrOwned[safety,inline] {str(0..4096) text;}
+&StrBorrow[lifetime,safety,inline] {str(0..4096) text;}
+&StrBytes[lifetime,safety,inline] {str(0..4096) text|binary_opt=true|;}
+&StrView[lifetime,safety,inline] {str(0..4096) text|binary_opt=view|;}
+&StrCopy[safety,inline] {str(0..4096) text|binary_opt=guard|;}
+&StrInline[safety,inline] {str(0..4096) text|binary_opt=inline|;}
+&StrLz[safety,inline] {str(0..4096) text|decompress=true|;}
+&FixedText[safety,inline] {str(255) text;}
+&VecDynamic[safety,inline] {array<u8>(0..4096) data;}
+&VecFixed[safety,inline] {array<u8>(32) data;}
+&VecBorrow[lifetime,safety,inline] {array<u8>(0..4096) data;}
+&CustomUnit[safety,inline] {Token word;}
+&PrimitiveUnit[safety,inline] {u16 word;}
+&MacroUnit[safety,inline] {Meta meta;u16 code;}
+&ManualUnit[safety,inline] {u32 meta_id;u64 meta_tick;u16 code;}
+&Whole[qps=Q16,safety] {u32 id;str(0..4096) text;array<u8>(0..4096) data;}
+&WholeBorrow[qps=Q16,safety,lifetime] {str(0..4096) text;array<u8>(0..4096) data;}
+&FixedIo[safety,inline] {u32 id;u64 tick;u16 code;}
+&CallDefault[safety] {u32 id;u8? a;u16? b;u32? c;}
+&CallHint[safety,inline] {u32 id;u8? a;u16? b;u32? c;}
+&CallAlways[safety,inline=always] {u32 id;u8? a;u16? b;u32? c;}
+&CallNever[safety,inline=never] {u32 id;u8? a;u16? b;u32? c;}
+&NumericQ2[qps=Q2,safety,inline] {u64(0..15) f0;u64(0..15) f1;u64(0..15) f2;u64(0..15) f3;u64(0..15) f4;u64(0..15) f5;u64(0..15) f6;u64(0..15) f7;}
+&NumericQ4[qps=Q4,safety,inline] {u64(0..15) f0;u64(0..15) f1;u64(0..15) f2;u64(0..15) f3;u64(0..15) f4;u64(0..15) f5;u64(0..15) f6;u64(0..15) f7;}
+&NumericQ8[qps=Q8,safety,inline] {u64(0..15) f0;u64(0..15) f1;u64(0..15) f2;u64(0..15) f3;u64(0..15) f4;u64(0..15) f5;u64(0..15) f6;u64(0..15) f7;}
+&NumericQ16[qps=Q16,safety,inline] {u64(0..15) f0;u64(0..15) f1;u64(0..15) f2;u64(0..15) f3;u64(0..15) f4;u64(0..15) f5;u64(0..15) f6;u64(0..15) f7;}

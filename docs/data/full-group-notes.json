@@ -1,0 +1,252 @@
+{
+  "layout": [
+    {
+      "title": "Раскладка и битовая упаковка",
+      "text": "Три числа одинаковых диапазонов: M=4 B. compact использует 18 бит; alignment завершает поля на байтовой границе. Нативные объекты не уменьшаются вслед за wire-кадром."
+    },
+    {
+      "title": "Layout and bit packing",
+      "text": "Three equal-domain integers: M=4 B. compact uses 18 bits; alignment completes fields at byte boundaries. Native objects do not shrink with wire bytes."
+    }
+  ],
+  "optionals_unique": [
+    {
+      "title": "Optional: уникальные суммы",
+      "text": "Обязательный u32 и optional u8/u16/u32; все восемь состояний. Средние M=7,5 B. Размеры 1/2/4 позволяют однозначный вывод по длине; это отличается от разреженных равных ширин в прежнем контроле N."
+    },
+    {
+      "title": "Optionals: unique subset sums",
+      "text": "One required u32 plus optional u8/u16/u32; all eight states. Mean M=7.5 B. Sizes 1/2/4 have unique subset sums; this differs from sparse equal-width fields in the preceding N control."
+    }
+  ],
+  "inline": [
+    {
+      "title": "Политика inline",
+      "text": "Одинаковая схема с тремя optional-полями. Атрибут влияет на вызовы и размер кода, а не на wire-формат. Фактический результат зависит от rustc/LLVM и места вызова."
+    },
+    {
+      "title": "Inline policy",
+      "text": "Same three-optional schema. The attribute affects calls/code size, not wire format. Actual results depend on rustc/LLVM and the call site."
+    }
+  ],
+  "arrays": [
+    {
+      "title": "Массивы: длина и владение",
+      "text": "32 полезных u8. Фиксированный array<u8>(32) остаётся Vec, поэтому новое чтение может аллоцировать. Borrowed byte-массив требует живого входного кадра."
+    },
+    {
+      "title": "Arrays: count and ownership",
+      "text": "32 useful u8 values. Fixed array<u8>(32) remains Vec, so a new decode can allocate. A borrowed byte array requires a live source frame."
+    }
+  ],
+  "custom": [
+    {
+      "title": "Пользовательский кодек",
+      "text": "Один u16 против QslCustom того же размера. В замере trusted-код; перед ним проверен wire. Корректность custom-методов и их валидатора — обязательство реализации."
+    },
+    {
+      "title": "Custom codec",
+      "text": "One u16 versus an equal-width QslCustom. Timed code is trusted; frames are checked beforehand. Custom methods and their validator remain implementation obligations."
+    }
+  ],
+  "macros": [
+    {
+      "title": "Раскрытие Rust-структуры",
+      "text": "Одинаковые u32/u64/u16. Макрос раскрывается при сборке; вложенный объект не создаётся в сообщении. Микроразличия времени не являются постоянной ценой макроса."
+    },
+    {
+      "title": "Rust structure expansion",
+      "text": "Equal u32/u64/u16 fields. Expansion happens at build time; no nested message object is introduced. Tiny timing differences are not an inherent macro tax."
+    }
+  ],
+  "validation": [
+    {
+      "title": "Цена проверки",
+      "text": "Trusted-чтение, проверка без создания объекта и checked-чтение. validate_only не выполняет всю задачу decoder; сравнение показывает состав работы, а не взаимозаменяемые результаты."
+    },
+    {
+      "title": "Validation cost",
+      "text": "Trusted decode, validation without construction and checked decode. validate_only does not complete the decoder task; this compares work components, not interchangeable results."
+    }
+  ],
+  "buffers": [
+    {
+      "title": "Подготовка выходного буфера",
+      "text": "Один кадр 14 B. Новая SerOut включает allocation/Drop; reuse исключает создание региона; RT включает атомарный захват и Drop lease. NativeRegion создаётся и prefault выполняется до таймера."
+    },
+    {
+      "title": "Output storage preparation",
+      "text": "One 14 B frame. New SerOut includes allocation/drop; reuse excludes region creation; RT includes atomic acquisition/drop. NativeRegion creation and prefault occur before timing."
+    }
+  ],
+  "strings/ascii_255_noise": [
+    {
+      "title": "Строки: 255 ASCII-байтов",
+      "text": "255 символов = 255 B. MAX схемы 4096. Новые String/CopyGuard включают allocation и освобождение; reuse использует достаточную ёмкость. Borrow — другой контракт результата."
+    },
+    {
+      "title": "Strings: 255 ASCII bytes",
+      "text": "255 characters = 255 B. Schema MAX is 4096. New String/CopyGuard includes allocation/drop; reuse has prepared capacity. Borrowing has a different result contract."
+    }
+  ],
+  "strings/utf8_1024_repeated": [
+    {
+      "title": "Строки: 1024 UTF-8-символа, повторы",
+      "text": "1024 двухбайтовых символа = 2048 B. Повторяющийся текст подходит не каждому компрессору. Сравниваются те же значения, включая LZ, владение и повторное использование."
+    },
+    {
+      "title": "Strings: 1024 UTF-8 scalars, repeats",
+      "text": "1024 two-byte scalars = 2048 B. Repetition does not suit every compressor. All variants receive the same values, including LZ, ownership and reuse."
+    }
+  ],
+  "strings/utf8_1024_noise": [
+    {
+      "title": "Строки: 1024 UTF-8-символа, шум",
+      "text": "2048 B псевдослучайного UTF-8. Отдельная пара raw InlineString и LZ показывает цену попытки сжатия и raw-fallback. Не смешивается с повторяющимся текстом."
+    },
+    {
+      "title": "Strings: 1024 UTF-8 scalars, noise",
+      "text": "2048 B of pseudorandom UTF-8. A separate raw InlineString/LZ pair exposes compression-attempt and fallback cost. Not pooled with repetitive input."
+    }
+  ],
+  "qps_bytes/low_range_1024": [
+    {
+      "title": "Общий QPS: 1024 байта 0..15",
+      "text": "Кванты Q2/Q4/Q8/Q16; длина заголовка 16 B включена. Raw copy — копирование без envelope. Время QPS включает все проходы и проверки, а не только арифметическое ядро."
+    },
+    {
+      "title": "General QPS: 1024 bytes in 0..15",
+      "text": "Q2/Q4/Q8/Q16; the 16 B header is included. Raw copy has no envelope. QPS time includes every pass and check, not just its arithmetic kernel."
+    }
+  ],
+  "qps_bytes/full_range_1024": [
+    {
+      "title": "Общий QPS: полный диапазон байтов",
+      "text": "Последовательность покрывает 0..255. Это не криптографический шум. Для данного блочного кодека ожидается raw-fallback с явной ценой заголовка; точность сохраняется."
+    },
+    {
+      "title": "General QPS: full byte range",
+      "text": "The sequence covers 0..255; it is not cryptographic noise. This block codec can choose raw fallback with an explicit header cost; exactness remains mandatory."
+    }
+  ],
+  "qps_utf8/bytes": [
+    {
+      "title": "QPS: UTF-8 без полевых префиксов",
+      "text": "2048 B чистого UTF-8: обычное копирование и ByteQps Q16. База считается по тексту, а исходная длина находится в явном внешнем заголовке."
+    },
+    {
+      "title": "QPS: UTF-8 without field prefixes",
+      "text": "2048 B of UTF-8 alone: raw copy versus ByteQps Q16. The base is computed from text; original length stays in the explicit outer header."
+    }
+  ],
+  "qps_utf8/record": [
+    {
+      "title": "QPS: UTF-8 внутри целого сообщения",
+      "text": "u32, UTF-8-строка и 32 байта массива. Обычный checked-путь сравнивается с общим QPS, включая проверки и восстановление. Нули и длины внутреннего кадра могут изменить базу и убрать выигрыш."
+    },
+    {
+      "title": "QPS: UTF-8 inside a whole record",
+      "text": "u32, a UTF-8 string and a 32-byte array. Default checked APIs versus general QPS, including checks and restoration. Inner zero bytes and lengths can change the base and remove savings."
+    }
+  ],
+  "history/opt_table/n1": [
+    {
+      "title": "Предыдущий снимок · opt_table · N=1",
+      "text": "Отдельный снимок исходников без закрепления ядра. Один required-u32 и N optional-u64, все состояния. M исключает метаданные. Этот профиль не смешивается с новым обзором."
+    },
+    {
+      "title": "Earlier snapshot · opt_table · N=1",
+      "text": "Separate source snapshot without CPU pinning. One required u32 and N optional u64 fields, all states. M excludes metadata. Not pooled with the new survey."
+    }
+  ],
+  "history/opt_table/n2": [
+    {
+      "title": "Предыдущий снимок · opt_table · N=2",
+      "text": "Отдельный снимок исходников без закрепления ядра. Один required-u32 и N optional-u64, все состояния. M исключает метаданные. Этот профиль не смешивается с новым обзором."
+    },
+    {
+      "title": "Earlier snapshot · opt_table · N=2",
+      "text": "Separate source snapshot without CPU pinning. One required u32 and N optional u64 fields, all states. M excludes metadata. Not pooled with the new survey."
+    }
+  ],
+  "history/opt_table/n3": [
+    {
+      "title": "Предыдущий снимок · opt_table · N=3",
+      "text": "Отдельный снимок исходников без закрепления ядра. Один required-u32 и N optional-u64, все состояния. M исключает метаданные. Этот профиль не смешивается с новым обзором."
+    },
+    {
+      "title": "Earlier snapshot · opt_table · N=3",
+      "text": "Separate source snapshot without CPU pinning. One required u32 and N optional u64 fields, all states. M excludes metadata. Not pooled with the new survey."
+    }
+  ],
+  "history/opt_table/n5": [
+    {
+      "title": "Предыдущий снимок · opt_table · N=5",
+      "text": "Отдельный снимок исходников без закрепления ядра. Один required-u32 и N optional-u64, все состояния. M исключает метаданные. Этот профиль не смешивается с новым обзором."
+    },
+    {
+      "title": "Earlier snapshot · opt_table · N=5",
+      "text": "Separate source snapshot without CPU pinning. One required u32 and N optional u64 fields, all states. M excludes metadata. Not pooled with the new survey."
+    }
+  ],
+  "history/opt_table/n10": [
+    {
+      "title": "Предыдущий снимок · opt_table · N=10",
+      "text": "Отдельный снимок исходников без закрепления ядра. Один required-u32 и N optional-u64, все состояния. M исключает метаданные. Этот профиль не смешивается с новым обзором."
+    },
+    {
+      "title": "Earlier snapshot · opt_table · N=10",
+      "text": "Separate source snapshot without CPU pinning. One required u32 and N optional u64 fields, all states. M excludes metadata. Not pooled with the new survey."
+    }
+  ],
+  "history/scalar_qps": [
+    {
+      "title": "Предыдущий снимок · числовая специализация QPS",
+      "text": "Четыре прежних prepared-замера. Средние полезные M=32 B; private padding не передаётся. Другие схема, рабочий набор и политика CPU."
+    },
+    {
+      "title": "Earlier snapshot · scalar QPS specialization",
+      "text": "Four preceding prepared measurements. Mean useful M=32 B; private padding is not transmitted. Different shape, working set and CPU policy."
+    }
+  ],
+  "history/byte_initial/qps_bytes/full_range_1024": [
+    {
+      "title": "Первое ядро · full_range_1024",
+      "text": "Начальная реализация до регистровой оптимизации. Тот же wire-формат, другой бинарник. Снимок сохранён для проверки цены упаковки."
+    },
+    {
+      "title": "Initial kernel · full_range_1024",
+      "text": "Initial implementation before register optimization. Same wire format, different executable. Retained to inspect packing cost."
+    }
+  ],
+  "history/byte_initial/qps_bytes/low_range_1024": [
+    {
+      "title": "Первое ядро · low_range_1024",
+      "text": "Начальная реализация до регистровой оптимизации. Тот же wire-формат, другой бинарник. Снимок сохранён для проверки цены упаковки."
+    },
+    {
+      "title": "Initial kernel · low_range_1024",
+      "text": "Initial implementation before register optimization. Same wire format, different executable. Retained to inspect packing cost."
+    }
+  ],
+  "history/byte_initial/qps_utf8/bytes": [
+    {
+      "title": "Первое ядро · bytes",
+      "text": "Начальная реализация до регистровой оптимизации. Тот же wire-формат, другой бинарник. Снимок сохранён для проверки цены упаковки."
+    },
+    {
+      "title": "Initial kernel · bytes",
+      "text": "Initial implementation before register optimization. Same wire format, different executable. Retained to inspect packing cost."
+    }
+  ],
+  "history/byte_initial/qps_utf8/record": [
+    {
+      "title": "Первое ядро · record",
+      "text": "Начальная реализация до регистровой оптимизации. Тот же wire-формат, другой бинарник. Снимок сохранён для проверки цены упаковки."
+    },
+    {
+      "title": "Initial kernel · record",
+      "text": "Initial implementation before register optimization. Same wire format, different executable. Retained to inspect packing cost."
+    }
+  ]
+}

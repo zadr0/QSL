@@ -1,12 +1,12 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080e17"><title>QSL · API · RU</title><link rel="stylesheet" href="assets/style.css"></head><body><div style="max-width:1120px;margin:auto;padding:28px"><a href="index.html">QSL</a><article class="article"><h1>Индекс публичных объявлений</h1>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><title>QSL · API · RU</title><link rel="stylesheet" href="assets/full.css"></head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="API-ru-1">Индекс публичных объявлений</h1>
 <p><a href="API.en.html">English</a> · <a href="architecture.ru.html">Архитектура</a></p>
-<p>Найдено 574 явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Видимость feature native/Windows и rust-macros сохраняется; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из <a href="../reference/current-source-manifest.json">manifest</a>. Этот репозиторий публикует документацию, а не Cargo workspace.</p>
-<h3>qsl-macros/src/lib.rs</h3>
+<p>Найдено 600 явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Видимость feature native/Windows и rust-macros сохраняется; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из <a href="../reference/current-implementation-manifest.json">manifest</a>. Этот репозиторий публикует документацию, а не Cargo workspace.</p>
+<h2 id="API-ru-2">qsl-macros/src/lib.rs</h2>
 <p><code>qsl-macros/src/lib.rs:22</code></p>
 <pre><code>pub fn qsl_macro(args: TokenStream, item: TokenStream) -&gt; TokenStream {</code></pre>
 <p><code>qsl-macros/src/lib.rs:26</code></p>
 <pre><code>pub fn schem_macro(args: TokenStream, item: TokenStream) -&gt; TokenStream {</code></pre>
-<h3>qsl/src/analysis.rs</h3>
+<h2 id="API-ru-3">qsl/src/analysis.rs</h2>
 <p><code>qsl/src/analysis.rs:5</code></p>
 <pre><code>pub enum BitRegister {</code></pre>
 <p><code>qsl/src/analysis.rs:14</code></p>
@@ -23,7 +23,7 @@
 <pre><code>pub struct QslIoPlan {</code></pre>
 <p><code>qsl/src/analysis.rs:111</code></p>
 <pre><code>pub fn analyze(schema: &amp;QslSchema) -&gt; QslResult&lt;Self&gt; {</code></pre>
-<h3>qsl/src/bit_io.rs</h3>
+<h2 id="API-ru-4">qsl/src/bit_io.rs</h2>
 <p><code>qsl/src/bit_io.rs:70</code></p>
 <pre><code>pub unsafe fn read_inline_string_into_with&lt;const MAX: usize, H: crate::StringHeader&gt;( &amp;mut self, out: *mut crate::InlineString&lt;MAX&gt;, ) {</code></pre>
 <p><code>qsl/src/bit_io.rs:81</code></p>
@@ -104,7 +104,7 @@
 <pre><code>pub unsafe fn write_bits_unchecked(&amp;mut self, value: u64, width: u32) {</code></pre>
 <p><code>qsl/src/bit_io.rs:382</code></p>
 <pre><code>pub unsafe fn flush_unchecked(&amp;mut self) {</code></pre>
-<h3>qsl/src/compat.rs</h3>
+<h2 id="API-ru-5">qsl/src/compat.rs</h2>
 <p><code>qsl/src/compat.rs:10</code></p>
 <pre><code>pub enum ParserQslType {</code></pre>
 <p><code>qsl/src/compat.rs:25</code></p>
@@ -117,7 +117,7 @@
 <pre><code>pub fn optional_count(&amp;self) -&gt; usize {</code></pre>
 <p><code>qsl/src/compat.rs:51</code></p>
 <pre><code>pub fn validate(&amp;self) -&gt; QslResult&lt;()&gt; {</code></pre>
-<h3>qsl/src/deq.rs</h3>
+<h2 id="API-ru-6">qsl/src/deq.rs</h2>
 <p><code>qsl/src/deq.rs:13</code></p>
 <pre><code>pub struct DeqConstant {</code></pre>
 <p><code>qsl/src/deq.rs:19</code></p>
@@ -132,7 +132,7 @@
 <pre><code>pub fn build_qsl_files( qsl_files: &amp;[&amp;str], deq_files: &amp;[&amp;str], out_dir: impl AsRef&lt;Path&gt;, ) -&gt; Result&lt;PathBuf, Box&lt;dyn std::error::Error&gt;&gt; {</code></pre>
 <p><code>qsl/src/deq.rs:138</code></p>
 <pre><code>pub fn build_qsl_files_with_rust( qsl_files: &amp;[&amp;str], deq_files: &amp;[&amp;str], rust_files: &amp;[&amp;str], out_dir: impl AsRef&lt;Path&gt;, ) -&gt; Result&lt;PathBuf, Box&lt;dyn std::error::Error&gt;&gt; {</code></pre>
-<h3>qsl/src/interpreter.rs</h3>
+<h2 id="API-ru-7">qsl/src/interpreter.rs</h2>
 <p><code>qsl/src/interpreter.rs:18</code></p>
 <pre><code>pub fn schema_maximum_size(schema: &amp;QslSchema) -&gt; QslResult&lt;Option&lt;usize&gt;&gt; {</code></pre>
 <p><code>qsl/src/interpreter.rs:130</code></p>
@@ -155,17 +155,17 @@
 <pre><code>pub fn new() -&gt; Self {</code></pre>
 <p><code>qsl/src/interpreter.rs:2265</code></p>
 <pre><code>pub fn generate(&amp;mut self, schemas: &amp;[QslSchema]) -&gt; QslResult&lt;()&gt; {</code></pre>
-<p><code>qsl/src/interpreter.rs:2286</code></p>
+<p><code>qsl/src/interpreter.rs:2287</code></p>
 <pre><code>pub fn generate_parsed(&amp;mut self, schemas: &amp;[crate::compat::ParserQslSchema]) -&gt; QslResult&lt;()&gt; {</code></pre>
-<p><code>qsl/src/interpreter.rs:2294</code></p>
+<p><code>qsl/src/interpreter.rs:2295</code></p>
 <pre><code>pub fn generate_field(&amp;mut self, field: &amp;QslField, borrowed: bool) -&gt; QslResult&lt;()&gt; {</code></pre>
-<p><code>qsl/src/interpreter.rs:2647</code></p>
+<p><code>qsl/src/interpreter.rs:2648</code></p>
 <pre><code>pub fn generate_default(&amp;mut self, schema: &amp;QslSchema) -&gt; QslResult&lt;()&gt; {</code></pre>
-<p><code>qsl/src/interpreter.rs:2658</code></p>
+<p><code>qsl/src/interpreter.rs:2659</code></p>
 <pre><code>pub fn generate_lifetime(&amp;mut self, schema: &amp;QslSchema) -&gt; QslResult&lt;()&gt; {</code></pre>
-<p><code>qsl/src/interpreter.rs:2672</code></p>
+<p><code>qsl/src/interpreter.rs:2673</code></p>
 <pre><code>pub fn push(&amp;self) -&gt; std::io::Result&lt;()&gt; {</code></pre>
-<h3>qsl/src/io.rs</h3>
+<h2 id="API-ru-8">qsl/src/io.rs</h2>
 <p><code>qsl/src/io.rs:7</code></p>
 <pre><code>pub use checked::{QslCheckedBitsReader, QslCheckedBitsWriter, QslCheckedReader, QslCheckedWriter};</code></pre>
 <p><code>qsl/src/io.rs:9</code></p>
@@ -314,7 +314,7 @@
 <pre><code>pub fn bytes(&amp;mut self, n: usize) -&gt; QslResult&lt;()&gt; {</code></pre>
 <p><code>qsl/src/io.rs:678</code></p>
 <pre><code>pub fn finish(mut self) -&gt; QslResult&lt;usize&gt; {</code></pre>
-<h3>qsl/src/io_checked.rs</h3>
+<h2 id="API-ru-9">qsl/src/io_checked.rs</h2>
 <p><code>qsl/src/io_checked.rs:9</code></p>
 <pre><code>pub struct QslCheckedWriter&lt;&#x27;a&gt; {</code></pre>
 <p><code>qsl/src/io_checked.rs:17</code></p>
@@ -435,7 +435,7 @@
 <pre><code>pub fn read_i32(&amp;mut self) -&gt; QslResult&lt;i32&gt; {</code></pre>
 <p><code>qsl/src/io_checked.rs:371</code></p>
 <pre><code>pub fn read_i64(&amp;mut self) -&gt; QslResult&lt;i64&gt; {</code></pre>
-<h3>qsl/src/length_graph.rs</h3>
+<h2 id="API-ru-10">qsl/src/length_graph.rs</h2>
 <p><code>qsl/src/length_graph.rs:6</code></p>
 <pre><code>pub struct Domain {</code></pre>
 <p><code>qsl/src/length_graph.rs:13</code></p>
@@ -448,7 +448,7 @@
 <pre><code>pub fn analyze(s: &amp;QslSchema) -&gt; QslResult&lt;Option&lt;Self&gt;&gt; {</code></pre>
 <p><code>qsl/src/length_graph.rs:219</code></p>
 <pre><code>pub fn event_index(&amp;self, len: usize) -&gt; Option&lt;usize&gt; {</code></pre>
-<h3>qsl/src/lib.rs</h3>
+<h2 id="API-ru-11">qsl/src/lib.rs</h2>
 <p><code>qsl/src/lib.rs:2</code></p>
 <pre><code>pub mod compat;</code></pre>
 <p><code>qsl/src/lib.rs:3</code></p>
@@ -500,32 +500,34 @@
 <p><code>qsl/src/lib.rs:30</code></p>
 <pre><code>pub mod qps;</code></pre>
 <p><code>qsl/src/lib.rs:31</code></p>
-<pre><code>pub mod static_index;</code></pre>
+<pre><code>pub mod qps_bytes;</code></pre>
 <p><code>qsl/src/lib.rs:32</code></p>
-<pre><code>pub use payload_quant::{QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRegions};</code></pre>
+<pre><code>pub mod static_index;</code></pre>
 <p><code>qsl/src/lib.rs:33</code></p>
+<pre><code>pub use payload_quant::{QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRegions};</code></pre>
+<p><code>qsl/src/lib.rs:34</code></p>
 <pre><code>pub mod rt;</code></pre>
-<p><code>qsl/src/lib.rs:35</code></p>
-<pre><code>pub mod rust_macro;</code></pre>
 <p><code>qsl/src/lib.rs:36</code></p>
+<pre><code>pub mod rust_macro;</code></pre>
+<p><code>qsl/src/lib.rs:37</code></p>
 <pre><code>pub mod schema_macro;</code></pre>
-<p><code>qsl/src/lib.rs:38</code></p>
+<p><code>qsl/src/lib.rs:39</code></p>
 <pre><code>pub use deq::build_qsl_files_with_rust;</code></pre>
-<p><code>qsl/src/lib.rs:40</code></p>
-<pre><code>pub use qsl_macros::{qsl_macro, schem_macro};</code></pre>
 <p><code>qsl/src/lib.rs:41</code></p>
-<pre><code>pub mod length_graph;</code></pre>
+<pre><code>pub use qsl_macros::{qsl_macro, schem_macro};</code></pre>
 <p><code>qsl/src/lib.rs:42</code></p>
-<pre><code>pub mod static_optional;</code></pre>
+<pre><code>pub mod length_graph;</code></pre>
 <p><code>qsl/src/lib.rs:43</code></p>
-<pre><code>pub mod validation;</code></pre>
+<pre><code>pub mod static_optional;</code></pre>
 <p><code>qsl/src/lib.rs:44</code></p>
-<pre><code>pub use analysis::*;</code></pre>
+<pre><code>pub mod validation;</code></pre>
 <p><code>qsl/src/lib.rs:45</code></p>
+<pre><code>pub use analysis::*;</code></pre>
+<p><code>qsl/src/lib.rs:46</code></p>
 <pre><code>pub use bit_io::*;</code></pre>
-<p><code>qsl/src/lib.rs:49</code></p>
+<p><code>qsl/src/lib.rs:50</code></p>
 <pre><code>pub mod native;</code></pre>
-<h3>qsl/src/native/memory.rs</h3>
+<h2 id="API-ru-12">qsl/src/native/memory.rs</h2>
 <p><code>qsl/src/native/memory.rs:56</code></p>
 <pre><code>pub struct NativeRegion {</code></pre>
 <p><code>qsl/src/native/memory.rs:63</code></p>
@@ -600,12 +602,12 @@
 <pre><code>pub struct SharedBytes {</code></pre>
 <p><code>qsl/src/native/memory.rs:617</code></p>
 <pre><code>pub fn offset(&amp;self) -&gt; u64 {</code></pre>
-<h3>qsl/src/native/mod.rs</h3>
+<h2 id="API-ru-13">qsl/src/native/mod.rs</h2>
 <p><code>qsl/src/native/mod.rs:6</code></p>
 <pre><code>pub use memory::{ NativeRegion, RegionBuffer, RegionSlot, RegionValue, SharedBytes, SharedRegion, SharedWrite, };</code></pre>
 <p><code>qsl/src/native/mod.rs:9</code></p>
 <pre><code>pub use socket::{NativeListener, NativeSocket};</code></pre>
-<h3>qsl/src/native/socket.rs</h3>
+<h2 id="API-ru-14">qsl/src/native/socket.rs</h2>
 <p><code>qsl/src/native/socket.rs:134</code></p>
 <pre><code>pub struct NativeSocket {</code></pre>
 <p><code>qsl/src/native/socket.rs:140</code></p>
@@ -638,7 +640,7 @@
 <pre><code>pub fn local_addr(&amp;self) -&gt; io::Result&lt;SocketAddr&gt; {</code></pre>
 <p><code>qsl/src/native/socket.rs:463</code></p>
 <pre><code>pub fn accept(&amp;self) -&gt; io::Result&lt;NativeSocket&gt; {</code></pre>
-<h3>qsl/src/optional.rs</h3>
+<h2 id="API-ru-15">qsl/src/optional.rs</h2>
 <p><code>qsl/src/optional.rs:8</code></p>
 <pre><code>pub struct OptionalOffsets&lt;&#x27;a&gt; {</code></pre>
 <p><code>qsl/src/optional.rs:14</code></p>
@@ -651,7 +653,7 @@
 <pre><code>pub fn offset(&amp;self, index: usize) -&gt; Option&lt;usize&gt; {</code></pre>
 <p><code>qsl/src/optional.rs:68</code></p>
 <pre><code>pub fn field_tail(&amp;self, index: usize) -&gt; Option&lt;&amp;&#x27;a [u8]&gt; {</code></pre>
-<h3>qsl/src/parser.rs</h3>
+<h2 id="API-ru-16">qsl/src/parser.rs</h2>
 <p><code>qsl/src/parser.rs:13</code></p>
 <pre><code>pub struct ParseError {</code></pre>
 <p><code>qsl/src/parser.rs:27</code></p>
@@ -660,7 +662,7 @@
 <pre><code>pub fn parse_qsl(source: &amp;str) -&gt; Result&lt;Vec&lt;QslSchema&gt;, ParseError&gt; {</code></pre>
 <p><code>qsl/src/parser.rs:248</code></p>
 <pre><code>pub fn parse_qsl_with_constants( source: &amp;str, globals: &amp;HashMap&lt;String, i128&gt;, ) -&gt; Result&lt;Vec&lt;QslSchema&gt;, ParseError&gt; {</code></pre>
-<h3>qsl/src/parser_util.rs</h3>
+<h2 id="API-ru-17">qsl/src/parser_util.rs</h2>
 <p><code>qsl/src/parser_util.rs:4</code></p>
 <pre><code>pub struct ParseNum(pub usize, pub bool);</code></pre>
 <p><code>qsl/src/parser_util.rs:7</code></p>
@@ -677,7 +679,7 @@
 <pre><code>pub fn parse_primitive_type(token: &amp;[u8]) -&gt; Option&lt;crate::compat::ParserQslType&gt; {</code></pre>
 <p><code>qsl/src/parser_util.rs:112</code></p>
 <pre><code>pub fn encode_signed_minimum(value: ParseNum) -&gt; usize {</code></pre>
-<h3>qsl/src/payload_quant.rs</h3>
+<h2 id="API-ru-18">qsl/src/payload_quant.rs</h2>
 <p><code>qsl/src/payload_quant.rs:11</code></p>
 <pre><code>pub fn selected_address&lt;T&gt;(mut value: *const T) -&gt; *const T {</code></pre>
 <p><code>qsl/src/payload_quant.rs:26</code></p>
@@ -736,12 +738,63 @@
 <pre><code>pub trait QuantizedDestination&lt;T: QuantizedRecord&gt; {</code></pre>
 <p><code>qsl/src/payload_quant.rs:361</code></p>
 <pre><code>unsafe fn decode_padded(self, bytes: *const u8, len: usize);</code></pre>
-<h3>qsl/src/qps.rs</h3>
-<p><code>qsl/src/qps.rs:8</code></p>
+<h2 id="API-ru-19">qsl/src/qps.rs</h2>
+<p><code>qsl/src/qps.rs:9</code></p>
 <pre><code>pub use crate::payload_quant::{ PayloadQuantPlan as QpsPlan, QuantField as QpsField, QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRecord, QuantizedRegions, };</code></pre>
-<p><code>qsl/src/qps.rs:14</code></p>
+<p><code>qsl/src/qps.rs:15</code></p>
 <pre><code>pub const QPS_CODEC_REVISION: u32 = 2;</code></pre>
-<h3>qsl/src/rt.rs</h3>
+<p><code>qsl/src/qps.rs:17</code></p>
+<pre><code>pub use crate::qps_bytes::{ ByteFrame, ByteMode, ByteQps, CheckedBorrowedRecord, CheckedRecord, BYTE_FRAME_HEADER, BYTE_QPS_CODEC_REVISION, };</code></pre>
+<h2 id="API-ru-20">qsl/src/qps_bytes.rs</h2>
+<p><code>qsl/src/qps_bytes.rs:7</code></p>
+<pre><code>pub const BYTE_FRAME_HEADER: usize = 16;</code></pre>
+<p><code>qsl/src/qps_bytes.rs:8</code></p>
+<pre><code>pub const BYTE_QPS_CODEC_REVISION: u32 = 3;</code></pre>
+<p><code>qsl/src/qps_bytes.rs:245</code></p>
+<pre><code>pub enum ByteMode {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:251</code></p>
+<pre><code>pub struct ByteQps&lt;const Q: usize&gt;;</code></pre>
+<p><code>qsl/src/qps_bytes.rs:252</code></p>
+<pre><code>pub struct ByteFrame&lt;&#x27;a, const Q: usize&gt; {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:258</code></p>
+<pre><code>pub fn as_slice(&amp;self) -&gt; &amp;[u8] {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:261</code></p>
+<pre><code>pub fn original_len(&amp;self) -&gt; usize {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:264</code></p>
+<pre><code>pub fn mode(&amp;self) -&gt; ByteMode {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:267</code></p>
+<pre><code>pub fn decode_to&lt;&#x27;out&gt;(&amp;self, out: &amp;&#x27;out mut [u8]) -&gt; QslResult&lt;&amp;&#x27;out mut [u8]&gt; {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:270</code></p>
+<pre><code>pub fn decode_record_into&lt;&#x27;out, T: CheckedRecord&gt;( &amp;self, restoration: &amp;mut [u8], out: &amp;&#x27;out mut MaybeUninit&lt;T&gt;, ) -&gt; QslResult&lt;&amp;&#x27;out mut T&gt; {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:283</code></p>
+<pre><code>pub unsafe trait CheckedRecord: Serializable {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:284</code></p>
+<pre><code>fn qps_validate_values(&amp;self) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/qps_bytes.rs:285</code></p>
+<pre><code>fn qps_validate_wire(input: &amp;[u8]) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/qps_bytes.rs:290</code></p>
+<pre><code>pub unsafe trait CheckedBorrowedRecord&lt;&#x27;a&gt;: BorrowSerializable&lt;&#x27;a&gt; {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:291</code></p>
+<pre><code>fn qps_validate_values(&amp;self) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/qps_bytes.rs:292</code></p>
+<pre><code>fn qps_validate_wire(input: &amp;[u8]) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/qps_bytes.rs:295</code></p>
+<pre><code>pub fn max_encoded_len(len: usize) -&gt; QslResult&lt;usize&gt; {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:300</code></p>
+<pre><code>pub fn inspect(input: &amp;[u8]) -&gt; QslResult&lt;(ByteMode, usize)&gt; {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:329</code></p>
+<pre><code>pub fn encode_to&lt;&#x27;out&gt;(input: &amp;[u8], out: &amp;&#x27;out mut [u8]) -&gt; QslResult&lt;ByteFrame&lt;&#x27;out, Q&gt;&gt; {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:400</code></p>
+<pre><code>pub fn decode_to&lt;&#x27;out&gt;(input: &amp;[u8], out: &amp;&#x27;out mut [u8]) -&gt; QslResult&lt;&amp;&#x27;out mut [u8]&gt; {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:458</code></p>
+<pre><code>pub fn encode_borrowed_to&lt;&#x27;out, &#x27;a, T: CheckedBorrowedRecord&lt;&#x27;a&gt;&gt;( value: &amp;T, scratch: &amp;mut [u8], out: &amp;&#x27;out mut [u8], ) -&gt; QslResult&lt;ByteFrame&lt;&#x27;out, Q&gt;&gt; {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:469</code></p>
+<pre><code>pub fn decode_borrowed&lt;&#x27;a, T: CheckedBorrowedRecord&lt;&#x27;a&gt;&gt;( input: &amp;[u8], restoration: &amp;&#x27;a mut [u8], ) -&gt; QslResult&lt;T&gt; {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:477</code></p>
+<pre><code>pub fn encode_record_to&lt;&#x27;out, T: CheckedRecord&gt;( value: &amp;T, scratch: &amp;mut [u8], out: &amp;&#x27;out mut [u8], ) -&gt; QslResult&lt;ByteFrame&lt;&#x27;out, Q&gt;&gt; {</code></pre>
+<p><code>qsl/src/qps_bytes.rs:488</code></p>
+<pre><code>pub fn decode_record_into&lt;&#x27;out, T: CheckedRecord&gt;( input: &amp;[u8], restoration: &amp;mut [u8], out: &amp;&#x27;out mut MaybeUninit&lt;T&gt;, ) -&gt; QslResult&lt;&amp;&#x27;out mut T&gt; {</code></pre>
+<h2 id="API-ru-21">qsl/src/rt.rs</h2>
 <p><code>qsl/src/rt.rs:12</code></p>
 <pre><code>pub struct StaticRegions&lt;const CAP: usize, const N: usize&gt; {</code></pre>
 <p><code>qsl/src/rt.rs:25</code></p>
@@ -760,19 +813,19 @@
 <pre><code>pub unsafe fn as_mut_ptr(&amp;mut self) -&gt; *mut u8 {</code></pre>
 <p><code>qsl/src/rt.rs:89</code></p>
 <pre><code>pub unsafe fn set_len(&amp;mut self, len: usize) {</code></pre>
-<h3>qsl/src/rust_macro.rs</h3>
+<h2 id="API-ru-22">qsl/src/rust_macro.rs</h2>
 <p><code>qsl/src/rust_macro.rs:200</code></p>
 <pre><code>pub fn parse_rust_macros(sources: &amp;[&amp;str]) -&gt; Result&lt;Vec&lt;QslSchema&gt;, MacroError&gt; {</code></pre>
 <p><code>qsl/src/rust_macro.rs:312</code></p>
 <pre><code>pub fn expand_with_rust( schemas: &amp;[QslSchema], sources: &amp;[&amp;str], ) -&gt; Result&lt;Vec&lt;QslSchema&gt;, MacroError&gt; {</code></pre>
 <p><code>qsl/src/rust_macro.rs:354</code></p>
 <pre><code>pub fn parse_qsl_with_rust( source: &amp;str, constants: &amp;HashMap&lt;String, i128&gt;, rust_sources: &amp;[&amp;str], ) -&gt; Result&lt;Vec&lt;QslSchema&gt;, MacroError&gt; {</code></pre>
-<h3>qsl/src/schema_macro.rs</h3>
+<h2 id="API-ru-23">qsl/src/schema_macro.rs</h2>
 <p><code>qsl/src/schema_macro.rs:7</code></p>
 <pre><code>pub struct MacroError(pub String);</code></pre>
 <p><code>qsl/src/schema_macro.rs:15</code></p>
 <pre><code>pub fn expand_macros(schemas: &amp;[QslSchema]) -&gt; Result&lt;Vec&lt;QslSchema&gt;, MacroError&gt; {</code></pre>
-<h3>qsl/src/serialize.rs</h3>
+<h2 id="API-ru-24">qsl/src/serialize.rs</h2>
 <p><code>qsl/src/serialize.rs:3</code></p>
 <pre><code>pub trait Serializable: Sized {</code></pre>
 <p><code>qsl/src/serialize.rs:10</code></p>
@@ -865,7 +918,7 @@
 <pre><code>pub trait DeserializeDestination&lt;T: Serializable&gt;: destination_private::Sealed {</code></pre>
 <p><code>qsl/src/serialize.rs:398</code></p>
 <pre><code>unsafe fn decode_into(self, bytes: *const u8, len: usize);</code></pre>
-<h3>qsl/src/socket.rs</h3>
+<h2 id="API-ru-25">qsl/src/socket.rs</h2>
 <p><code>qsl/src/socket.rs:10</code></p>
 <pre><code>pub struct RawSocket {</code></pre>
 <p><code>qsl/src/socket.rs:15</code></p>
@@ -878,7 +931,7 @@
 <pre><code>pub unsafe fn send_borrowed_record&lt;&#x27;a, T: BorrowSerializable&lt;&#x27;a&gt;&gt;( &amp;mut self, value: &amp;T, storage: &amp;mut [u8], ) -&gt; io::Result&lt;usize&gt; {</code></pre>
 <p><code>qsl/src/socket.rs:94</code></p>
 <pre><code>pub fn stream(&amp;self) -&gt; &amp;TcpStream {</code></pre>
-<h3>qsl/src/static_index.rs</h3>
+<h2 id="API-ru-26">qsl/src/static_index.rs</h2>
 <p><code>qsl/src/static_index.rs:6</code></p>
 <pre><code>pub const ANALYSIS_MAX_STATES: usize = 4096;</code></pre>
 <p><code>qsl/src/static_index.rs:7</code></p>
@@ -903,7 +956,7 @@
 <pre><code>pub fn lookup_index(table: &amp;[u32], quantum: usize, index: usize) -&gt; Option&lt;u32&gt; {</code></pre>
 <p><code>qsl/src/static_index.rs:243</code></p>
 <pre><code>pub fn structural_counts(domains: &amp;[Vec&lt;usize&gt;], max_len: usize) -&gt; QslResult&lt;Vec&lt;u64&gt;&gt; {</code></pre>
-<h3>qsl/src/static_optional.rs</h3>
+<h2 id="API-ru-27">qsl/src/static_optional.rs</h2>
 <p><code>qsl/src/static_optional.rs:4</code></p>
 <pre><code>pub enum StaticPresence {</code></pre>
 <p><code>qsl/src/static_optional.rs:11</code></p>
@@ -912,7 +965,7 @@
 <pre><code>pub fn analyze(schema: &amp;QslSchema) -&gt; QslResult&lt;Self&gt; {</code></pre>
 <p><code>qsl/src/static_optional.rs:75</code></p>
 <pre><code>pub fn header_bytes(&amp;self) -&gt; usize {</code></pre>
-<h3>qsl/src/strings.rs</h3>
+<h2 id="API-ru-28">qsl/src/strings.rs</h2>
 <p><code>qsl/src/strings.rs:12</code></p>
 <pre><code>pub const STRING_COMPRESSION_MIN_BYTES: usize = 32;</code></pre>
 <p><code>qsl/src/strings.rs:15</code></p>
@@ -1031,7 +1084,7 @@
 <pre><code>pub unsafe fn from_ser_out_unchecked(storage: crate::SerOut) -&gt; Self {</code></pre>
 <p><code>qsl/src/strings.rs:1432</code></p>
 <pre><code>pub fn into_ser_out(self) -&gt; crate::SerOut {</code></pre>
-<h3>qsl/src/types.rs</h3>
+<h2 id="API-ru-29">qsl/src/types.rs</h2>
 <p><code>qsl/src/types.rs:4</code></p>
 <pre><code>pub const FLAG_COMPACT: usize = 0b0000_0001;</code></pre>
 <p><code>qsl/src/types.rs:5</code></p>
@@ -1156,7 +1209,7 @@
 <pre><code>pub fn bitmap_words(&amp;self) -&gt; usize {</code></pre>
 <p><code>qsl/src/types.rs:475</code></p>
 <pre><code>pub fn validate(&amp;self) -&gt; QslResult&lt;()&gt; {</code></pre>
-<h3>qsl/src/validation.rs</h3>
+<h2 id="API-ru-30">qsl/src/validation.rs</h2>
 <p><code>qsl/src/validation.rs:5</code></p>
 <pre><code>pub struct ValidationCursor&lt;&#x27;a&gt; {</code></pre>
 <p><code>qsl/src/validation.rs:10</code></p>
@@ -1176,4 +1229,4 @@
 <p><code>qsl/src/validation.rs:64</code></p>
 <pre><code>pub fn finish(mut self) -&gt; QslResult&lt;()&gt; {</code></pre>
 <p><code>qsl/src/validation.rs:73</code></p>
-<pre><code>pub fn compressed&lt;const MAX: usize&gt;( &amp;mut self, min: usize, raw_only: bool, fixed: bool, ) -&gt; QslResult&lt;()&gt; {</code></pre></article></div></body></html>
+<pre><code>pub fn compressed&lt;const MAX: usize&gt;( &amp;mut self, min: usize, raw_only: bool, fixed: bool, ) -&gt; QslResult&lt;()&gt; {</code></pre></main></body></html>

@@ -1,0 +1,156 @@
+features/qps_bytes/low_range_1024/read/raw_copy
+                        time:   [16.523 ns 16.681 ns 16.862 ns]
+Found 25 outliers among 200 measurements (12.50%)
+  11 (5.50%) low mild
+  6 (3.00%) high mild
+  8 (4.00%) high severe
+
+features/qps_bytes/low_range_1024/write/raw_copy
+                        time:   [16.747 ns 16.972 ns 17.256 ns]
+Found 14 outliers among 200 measurements (7.00%)
+  1 (0.50%) low mild
+  9 (4.50%) high mild
+  4 (2.00%) high severe
+
+features/qps_bytes/full_range_1024/read/raw_copy
+                        time:   [17.884 ns 18.048 ns 18.230 ns]
+Found 25 outliers among 200 measurements (12.50%)
+  12 (6.00%) low mild
+  8 (4.00%) high mild
+  5 (2.50%) high severe
+
+features/qps_bytes/full_range_1024/write/raw_copy
+                        time:   [16.562 ns 16.673 ns 16.794 ns]
+Found 21 outliers among 200 measurements (10.50%)
+  13 (6.50%) low mild
+  3 (1.50%) high mild
+  5 (2.50%) high severe
+
+features/qps_bytes/low_range_1024/write/Q2
+                        time:   [916.43 ns 925.24 ns 935.30 ns]
+Found 18 outliers among 200 measurements (9.00%)
+  9 (4.50%) low mild
+  6 (3.00%) high mild
+  3 (1.50%) high severe
+
+features/qps_bytes/low_range_1024/read/Q2
+                        time:   [19.323 ns 19.455 ns 19.600 ns]
+Found 23 outliers among 200 measurements (11.50%)
+  12 (6.00%) low mild
+  8 (4.00%) high mild
+  3 (1.50%) high severe
+
+features/qps_bytes/low_range_1024/write/Q4
+                        time:   [1.5904 µs 1.6036 µs 1.6194 µs]
+Found 13 outliers among 200 measurements (6.50%)
+  9 (4.50%) high mild
+  4 (2.00%) high severe
+
+features/qps_bytes/low_range_1024/read/Q4
+                        time:   [870.29 ns 876.48 ns 883.40 ns]
+Found 16 outliers among 200 measurements (8.00%)
+  3 (1.50%) low mild
+  11 (5.50%) high mild
+  2 (1.00%) high severe
+
+features/qps_bytes/low_range_1024/write/Q8
+                        time:   [826.58 ns 832.09 ns 838.38 ns]
+Found 23 outliers among 200 measurements (11.50%)
+  10 (5.00%) low mild
+  9 (4.50%) high mild
+  4 (2.00%) high severe
+
+features/qps_bytes/low_range_1024/read/Q8
+                        time:   [453.74 ns 456.74 ns 460.03 ns]
+Found 16 outliers among 200 measurements (8.00%)
+  6 (3.00%) low mild
+  6 (3.00%) high mild
+  4 (2.00%) high severe
+
+features/qps_bytes/low_range_1024/write/Q16
+                        time:   [436.81 ns 440.05 ns 443.60 ns]
+Found 19 outliers among 200 measurements (9.50%)
+  9 (4.50%) low mild
+  5 (2.50%) high mild
+  5 (2.50%) high severe
+
+features/qps_bytes/low_range_1024/read/Q16
+                        time:   [256.47 ns 258.01 ns 259.68 ns]
+Found 23 outliers among 200 measurements (11.50%)
+  7 (3.50%) low mild
+  8 (4.00%) high mild
+  8 (4.00%) high severe
+
+features/qps_bytes/full_range_1024/write/Q16
+                        time:   [215.40 ns 217.03 ns 218.93 ns]
+Found 24 outliers among 200 measurements (12.00%)
+  10 (5.00%) low mild
+  10 (5.00%) high mild
+  4 (2.00%) high severe
+
+features/qps_bytes/full_range_1024/read/Q16
+                        time:   [18.753 ns 18.896 ns 19.069 ns]
+Found 20 outliers among 200 measurements (10.00%)
+  10 (5.00%) low mild
+  6 (3.00%) high mild
+  4 (2.00%) high severe
+
+
+Measurement affinity mask: 0x4; measuring thread priority: above normal
+CPU features: avx2=true, bmi2=true
+Benchmarking features/qps_bytes/low_range_1024/read/raw_copy
+Benchmarking features/qps_bytes/low_range_1024/read/raw_copy: Warming up for 15.000 s
+Benchmarking features/qps_bytes/low_range_1024/read/raw_copy: Collecting 200 samples in estimated 10.000 s (576M iterations)
+Benchmarking features/qps_bytes/low_range_1024/read/raw_copy: Analyzing
+Benchmarking features/qps_bytes/low_range_1024/write/raw_copy
+Benchmarking features/qps_bytes/low_range_1024/write/raw_copy: Warming up for 15.000 s
+Benchmarking features/qps_bytes/low_range_1024/write/raw_copy: Collecting 200 samples in estimated 10.000 s (577M iterations)
+Benchmarking features/qps_bytes/low_range_1024/write/raw_copy: Analyzing
+Benchmarking features/qps_bytes/full_range_1024/read/raw_copy
+Benchmarking features/qps_bytes/full_range_1024/read/raw_copy: Warming up for 15.000 s
+Benchmarking features/qps_bytes/full_range_1024/read/raw_copy: Collecting 200 samples in estimated 10.000 s (546M iterations)
+Benchmarking features/qps_bytes/full_range_1024/read/raw_copy: Analyzing
+Benchmarking features/qps_bytes/full_range_1024/write/raw_copy
+Benchmarking features/qps_bytes/full_range_1024/write/raw_copy: Warming up for 15.000 s
+Benchmarking features/qps_bytes/full_range_1024/write/raw_copy: Collecting 200 samples in estimated 10.000 s (577M iterations)
+Benchmarking features/qps_bytes/full_range_1024/write/raw_copy: Analyzing
+Benchmarking features/qps_bytes/low_range_1024/write/Q2
+Benchmarking features/qps_bytes/low_range_1024/write/Q2: Warming up for 15.000 s
+Benchmarking features/qps_bytes/low_range_1024/write/Q2: Collecting 200 samples in estimated 10.004 s (11M iterations)
+Benchmarking features/qps_bytes/low_range_1024/write/Q2: Analyzing
+Benchmarking features/qps_bytes/low_range_1024/read/Q2
+Benchmarking features/qps_bytes/low_range_1024/read/Q2: Warming up for 15.000 s
+Benchmarking features/qps_bytes/low_range_1024/read/Q2: Collecting 200 samples in estimated 10.000 s (511M iterations)
+Benchmarking features/qps_bytes/low_range_1024/read/Q2: Analyzing
+Benchmarking features/qps_bytes/low_range_1024/write/Q4
+Benchmarking features/qps_bytes/low_range_1024/write/Q4: Warming up for 15.000 s
+Benchmarking features/qps_bytes/low_range_1024/write/Q4: Collecting 200 samples in estimated 10.022 s (6.2M iterations)
+Benchmarking features/qps_bytes/low_range_1024/write/Q4: Analyzing
+Benchmarking features/qps_bytes/low_range_1024/read/Q4
+Benchmarking features/qps_bytes/low_range_1024/read/Q4: Warming up for 15.000 s
+Benchmarking features/qps_bytes/low_range_1024/read/Q4: Collecting 200 samples in estimated 10.015 s (11M iterations)
+Benchmarking features/qps_bytes/low_range_1024/read/Q4: Analyzing
+Benchmarking features/qps_bytes/low_range_1024/write/Q8
+Benchmarking features/qps_bytes/low_range_1024/write/Q8: Warming up for 15.000 s
+Benchmarking features/qps_bytes/low_range_1024/write/Q8: Collecting 200 samples in estimated 10.014 s (12M iterations)
+Benchmarking features/qps_bytes/low_range_1024/write/Q8: Analyzing
+Benchmarking features/qps_bytes/low_range_1024/read/Q8
+Benchmarking features/qps_bytes/low_range_1024/read/Q8: Warming up for 15.000 s
+Benchmarking features/qps_bytes/low_range_1024/read/Q8: Collecting 200 samples in estimated 10.004 s (22M iterations)
+Benchmarking features/qps_bytes/low_range_1024/read/Q8: Analyzing
+Benchmarking features/qps_bytes/low_range_1024/write/Q16
+Benchmarking features/qps_bytes/low_range_1024/write/Q16: Warming up for 15.000 s
+Benchmarking features/qps_bytes/low_range_1024/write/Q16: Collecting 200 samples in estimated 10.006 s (23M iterations)
+Benchmarking features/qps_bytes/low_range_1024/write/Q16: Analyzing
+Benchmarking features/qps_bytes/low_range_1024/read/Q16
+Benchmarking features/qps_bytes/low_range_1024/read/Q16: Warming up for 15.000 s
+Benchmarking features/qps_bytes/low_range_1024/read/Q16: Collecting 200 samples in estimated 10.001 s (38M iterations)
+Benchmarking features/qps_bytes/low_range_1024/read/Q16: Analyzing
+Benchmarking features/qps_bytes/full_range_1024/write/Q16
+Benchmarking features/qps_bytes/full_range_1024/write/Q16: Warming up for 15.000 s
+Benchmarking features/qps_bytes/full_range_1024/write/Q16: Collecting 200 samples in estimated 10.002 s (46M iterations)
+Benchmarking features/qps_bytes/full_range_1024/write/Q16: Analyzing
+Benchmarking features/qps_bytes/full_range_1024/read/Q16
+Benchmarking features/qps_bytes/full_range_1024/read/Q16: Warming up for 15.000 s
+Benchmarking features/qps_bytes/full_range_1024/read/Q16: Collecting 200 samples in estimated 10.000 s (527M iterations)
+Benchmarking features/qps_bytes/full_range_1024/read/Q16: Analyzing

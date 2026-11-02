@@ -1,0 +1,142 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><title>QSL · features · EN</title><link rel="stylesheet" href="assets/full.css"></head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="features-en-1">QSL feature measurements</h1>
+<p><a href="features.ru.html">Русский</a> · <a href="guide.en.html">Guide</a> · <a href="index.html#measurements">Interactive charts</a></p>
+<p>Complete: 103 distinct cases, 125 measurement observations. The original survey has 95 main and 8 separate UTF-8/whole-record cases. Only 22 affected cases were repeated after the byte-kernel change; the other 81 retain their initial snapshot. Each JSON row identifies profile and source_manifest.</p>
+<h2 id="features-en-2">What is measured</h2>
+<p>The primary index is P=M/T: M is original useful bytes and T is ns per operation. Wire size, capacity and object size_of do not replace M. Tables use mean wire size; min/max remain in JSON and charts. Optional-set M is averaged over uniformly represented states.</p>
+<p>Each case: Criterion 0.8.2, 15 s warm-up, 10 s measurement, 200 samples and 99% CI. The measuring thread uses CPU mask 0x4 when permitted, otherwise the lowest allowed CPU, with above-normal thread priority. The OS is not isolated.</p>
+<p>Windows 11 x86-64; i5-7400; RAM 24 GiB / 2133 MHz; Rust 1.98.0 / LLVM 22.1.8; release opt-level=3 with debug info, RUSTFLAGS unset. The measured process and descendants have an 8 GiB limit; compilation precedes that limit.</p>
+<p>Peak job commit: 7.72 MiB.</p>
+<h2 id="features-en-3">Comparison contracts</h2>
+<p>Value/frame/region preparation is outside timing. A new owned read includes construction and Drop; prepared reuse retains capacity. Borrowing creates a view and touches fewer physical bytes. Their P describes different result forms. Allocation/lease named in buffer cases is included.</p>
+<p>Each option is compared with its baseline on the same values and states. Raw InlineString is the LZ baseline for noisy UTF-8. Validation without construction is a work component, not a complete decoder replacement. Byte QPS is compared with copying the same input bytes and exposes envelope cost.</p>
+<p>Wire and final owned destinations in the main suite are 64 B aligned; source Vec objects retain natural alignment. Strings rotate through 16 values; optional schemas cover all states. Code-placement/cache effects are not declared an intrinsic attribute tax.</p>
+<h2 id="features-en-4">Waveforms and intervals</h2>
+<p>T_i = sample_time_i / iterations_i; P_i = M / T_i. X is the Criterion sample number. These are batch averages, not individual-call distributions; neither operation p99 nor network latency follows from them. HTML smoothing affects only the displayed line.</p>
+<p>For a positive time CI [T_low,T_high], the P interval is [M/T_high,M/T_low]. Frame-size plot intervals are the range of frames, not a CI. Original samples/estimates are retained.</p>
+<h2 id="features-en-5">Arrays: count and ownership</h2>
+<p>32 useful u8 values. Fixed array&lt;u8&gt;(32) remains Vec, so a new decode can allocate. A borrowed byte array requires a live source frame.</p>
+<h3 id="features-en-6">Read</h3>
+<p>M = 32 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>Vec_dynamic</td><td>36.000</td><td>70.1072</td><td>0.4564</td><td>66.5445–75.2043</td></tr><tr><td>Vec_fixed_count</td><td>32.000</td><td>69.4541</td><td>0.4607</td><td>67.0060–72.2413</td></tr><tr><td>bytes_borrow</td><td>36.000</td><td>1.4763</td><td>21.6752</td><td>1.4409–1.5132</td></tr></tbody></table></div>
+<h3 id="features-en-7">Write</h3>
+<p>M = 32 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>Vec_dynamic</td><td>36.000</td><td>4.4572</td><td>7.1795</td><td>4.3386–4.5837</td></tr><tr><td>Vec_fixed_count</td><td>32.000</td><td>5.6329</td><td>5.6809</td><td>5.0856–6.3520</td></tr><tr><td>bytes_borrow</td><td>36.000</td><td>4.7750</td><td>6.7015</td><td>4.6533–4.9055</td></tr></tbody></table></div>
+<h2 id="features-en-8">Output storage preparation</h2>
+<p>One 14 B frame. New SerOut includes allocation/drop; reuse excludes region creation; RT includes atomic acquisition/drop. NativeRegion creation and prefault occur before timing.</p>
+<h3 id="features-en-9">Write</h3>
+<p>M = 14 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>RT_lease</td><td>14.000</td><td>32.9021</td><td>0.4255</td><td>31.8329–34.2016</td></tr><tr><td>allocate_SerOut</td><td>14.000</td><td>85.6461</td><td>0.1635</td><td>83.7010–87.9124</td></tr><tr><td>reuse_NativeRegion</td><td>14.000</td><td>2.3305</td><td>6.0073</td><td>2.2706–2.4023</td></tr><tr><td>reuse_SerOut</td><td>14.000</td><td>3.1698</td><td>4.4167</td><td>2.9714–3.4313</td></tr></tbody></table></div>
+<h2 id="features-en-10">Custom codec</h2>
+<p>One u16 versus an equal-width QslCustom. Timed code is trusted; frames are checked beforehand. Custom methods and their validator remain implementation obligations.</p>
+<h3 id="features-en-11">Read</h3>
+<p>M = 2 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>QslCustom</td><td>2.000</td><td>3.1072</td><td>0.6437</td><td>3.0501–3.1710</td></tr><tr><td>primitive</td><td>2.000</td><td>3.2681</td><td>0.6120</td><td>3.1581–3.3939</td></tr></tbody></table></div>
+<h3 id="features-en-12">Write</h3>
+<p>M = 2 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>QslCustom</td><td>2.000</td><td>4.2342</td><td>0.4723</td><td>4.0950–4.3830</td></tr><tr><td>primitive</td><td>2.000</td><td>3.0832</td><td>0.6487</td><td>2.9862–3.1940</td></tr></tbody></table></div>
+<h2 id="features-en-13">Inline policy</h2>
+<p>Same three-optional schema. The attribute affects calls/code size, not wire format. Actual results depend on rustc/LLVM and the call site.</p>
+<h3 id="features-en-14">Read</h3>
+<p>M = 7.5 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>always</td><td>8.500</td><td>15.0969</td><td>0.4968</td><td>14.5291–15.8301</td></tr><tr><td>compiler_default</td><td>8.500</td><td>15.7912</td><td>0.4749</td><td>15.4864–16.1857</td></tr><tr><td>hint</td><td>8.500</td><td>14.7816</td><td>0.5074</td><td>14.5397–15.0561</td></tr><tr><td>never</td><td>8.500</td><td>16.2061</td><td>0.4628</td><td>15.8017–16.6859</td></tr></tbody></table></div>
+<h3 id="features-en-15">Write</h3>
+<p>M = 7.5 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>always</td><td>8.500</td><td>19.9288</td><td>0.3763</td><td>19.7625–20.1149</td></tr><tr><td>compiler_default</td><td>8.500</td><td>21.8614</td><td>0.3431</td><td>21.2894–22.7664</td></tr><tr><td>hint</td><td>8.500</td><td>23.3840</td><td>0.3207</td><td>22.8336–23.9595</td></tr><tr><td>never</td><td>8.500</td><td>21.7593</td><td>0.3447</td><td>21.0619–22.5535</td></tr></tbody></table></div>
+<h2 id="features-en-16">Layout and bit packing</h2>
+<p>Three equal-domain integers: M=4 B. compact uses 18 bits; alignment completes fields at byte boundaries. Native objects do not shrink with wire bytes.</p>
+<h3 id="features-en-17">Read</h3>
+<p>M = 4 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>compact</td><td>3.000</td><td>4.1328</td><td>0.9679</td><td>4.0036–4.2767</td></tr><tr><td>compact_alignment</td><td>4.000</td><td>3.2365</td><td>1.2359</td><td>3.1806–3.3031</td></tr><tr><td>default</td><td>4.000</td><td>3.0100</td><td>1.3289</td><td>2.9214–3.1025</td></tr></tbody></table></div>
+<h3 id="features-en-18">Write</h3>
+<p>M = 4 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>compact</td><td>3.000</td><td>3.9388</td><td>1.0155</td><td>3.6939–4.3067</td></tr><tr><td>compact_alignment</td><td>4.000</td><td>3.7706</td><td>1.0609</td><td>3.6928–3.8667</td></tr><tr><td>default</td><td>4.000</td><td>4.1410</td><td>0.9659</td><td>4.0178–4.2727</td></tr></tbody></table></div>
+<h2 id="features-en-19">Rust structure expansion</h2>
+<p>Equal u32/u64/u16 fields. Expansion happens at build time; no nested message object is introduced. Tiny timing differences are not an inherent macro tax.</p>
+<h3 id="features-en-20">Read</h3>
+<p>M = 14 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>expanded_Rust</td><td>14.000</td><td>4.2596</td><td>3.2867</td><td>4.0802–4.4659</td></tr><tr><td>manual</td><td>14.000</td><td>3.5695</td><td>3.9222</td><td>3.4979–3.6571</td></tr></tbody></table></div>
+<h3 id="features-en-21">Write</h3>
+<p>M = 14 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>expanded_Rust</td><td>14.000</td><td>3.4278</td><td>4.0843</td><td>3.3727–3.4903</td></tr><tr><td>manual</td><td>14.000</td><td>4.5338</td><td>3.0879</td><td>4.3020–4.8095</td></tr></tbody></table></div>
+<h2 id="features-en-22">Optionals: unique subset sums</h2>
+<p>One required u32 plus optional u8/u16/u32; all eight states. Mean M=7.5 B. Sizes 1/2/4 have unique subset sums; this differs from sparse equal-width fields in the preceding N control.</p>
+<h3 id="features-en-23">Read</h3>
+<p>M = 7.5 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>bitmap</td><td>11.500</td><td>4.5401</td><td>1.6520</td><td>4.4662–4.6330</td></tr><tr><td>default</td><td>8.500</td><td>14.6592</td><td>0.5116</td><td>14.3436–15.0510</td></tr><tr><td>opt_table</td><td>7.500</td><td>6.1250</td><td>1.2245</td><td>6.0313–6.2418</td></tr><tr><td>opt_table_predict_seq</td><td>7.500</td><td>6.2713</td><td>1.1959</td><td>6.1043–6.5096</td></tr><tr><td>predict_seq</td><td>7.500</td><td>6.9019</td><td>1.0867</td><td>6.6429–7.2085</td></tr></tbody></table></div>
+<h3 id="features-en-24">Write</h3>
+<p>M = 7.5 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>bitmap</td><td>11.500</td><td>12.8241</td><td>0.5848</td><td>12.3880–13.4724</td></tr><tr><td>default</td><td>8.500</td><td>22.2680</td><td>0.3368</td><td>21.7334–23.0926</td></tr><tr><td>opt_table</td><td>7.500</td><td>6.4137</td><td>1.1694</td><td>6.1981–6.6937</td></tr><tr><td>opt_table_predict_seq</td><td>7.500</td><td>6.2335</td><td>1.2032</td><td>6.1049–6.3811</td></tr><tr><td>predict_seq</td><td>7.500</td><td>6.1852</td><td>1.2126</td><td>6.1004–6.2762</td></tr></tbody></table></div>
+<h2 id="features-en-25">General QPS: full byte range</h2>
+<p>The sequence covers 0..255; it is not cryptographic noise. This block codec can choose raw fallback with an explicit header cost; exactness remains mandatory.</p>
+<h3 id="features-en-26">Read</h3>
+<p>M = 1024 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>Q16</td><td>1040.000</td><td>18.8961</td><td>54.1911</td><td>18.7532–19.0690</td></tr><tr><td>raw_copy</td><td>1024.000</td><td>18.0478</td><td>56.7383</td><td>17.8845–18.2295</td></tr></tbody></table></div>
+<h3 id="features-en-27">Write</h3>
+<p>M = 1024 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>Q16</td><td>1040.000</td><td>217.0342</td><td>4.7182</td><td>215.4037–218.9293</td></tr><tr><td>raw_copy</td><td>1024.000</td><td>16.6732</td><td>61.4159</td><td>16.5623–16.7936</td></tr></tbody></table></div>
+<h2 id="features-en-28">General QPS: 1024 bytes in 0..15</h2>
+<p>Q2/Q4/Q8/Q16; the 16 B header is included. Raw copy has no envelope. QPS time includes every pass and check, not just its arithmetic kernel.</p>
+<h3 id="features-en-29">Read</h3>
+<p>M = 1024 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>Q16</td><td>592.000</td><td>258.0053</td><td>3.9689</td><td>256.4726–259.6755</td></tr><tr><td>Q2</td><td>1040.000</td><td>19.4553</td><td>52.6333</td><td>19.3231–19.5999</td></tr><tr><td>Q4</td><td>720.000</td><td>876.4771</td><td>1.1683</td><td>870.2937–883.4013</td></tr><tr><td>Q8</td><td>592.000</td><td>456.7358</td><td>2.2420</td><td>453.7363–460.0314</td></tr><tr><td>raw_copy</td><td>1024.000</td><td>16.6808</td><td>61.3881</td><td>16.5235–16.8624</td></tr></tbody></table></div>
+<h3 id="features-en-30">Write</h3>
+<p>M = 1024 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>Q16</td><td>592.000</td><td>440.0472</td><td>2.3270</td><td>436.8138–443.5965</td></tr><tr><td>Q2</td><td>1040.000</td><td>925.2369</td><td>1.1067</td><td>916.4309–935.3020</td></tr><tr><td>Q4</td><td>720.000</td><td>1603.6457</td><td>0.6385</td><td>1590.4139–1619.3920</td></tr><tr><td>Q8</td><td>592.000</td><td>832.0875</td><td>1.2306</td><td>826.5848–838.3821</td></tr><tr><td>raw_copy</td><td>1024.000</td><td>16.9716</td><td>60.3360</td><td>16.7468–17.2561</td></tr></tbody></table></div>
+<h2 id="features-en-31">QPS: UTF-8 without field prefixes</h2>
+<p>2048 B of UTF-8 alone: raw copy versus ByteQps Q16. The base is computed from text; original length stays in the explicit outer header.</p>
+<h3 id="features-en-32">Read</h3>
+<p>M = 2048 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>Q16</td><td>1936.000</td><td>571.3408</td><td>3.5846</td><td>568.1478–574.9159</td></tr><tr><td>raw_copy</td><td>2048.000</td><td>27.8833</td><td>73.4489</td><td>27.6462–28.1412</td></tr></tbody></table></div>
+<h3 id="features-en-33">Write</h3>
+<p>M = 2048 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>Q16</td><td>1936.000</td><td>904.6144</td><td>2.2639</td><td>898.0614–912.5338</td></tr><tr><td>raw_copy</td><td>2048.000</td><td>28.0085</td><td>73.1207</td><td>27.7270–28.3436</td></tr></tbody></table></div>
+<h2 id="features-en-34">QPS: UTF-8 inside a whole record</h2>
+<p>u32, a UTF-8 string and a 32-byte array. Default checked APIs versus general QPS, including checks and restoration. Inner zero bytes and lengths can change the base and remove savings.</p>
+<h3 id="features-en-35">Read</h3>
+<p>M = 2084 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>checked_default</td><td>2092.000</td><td>1863.3718</td><td>1.1184</td><td>1806.5972–1940.2019</td></tr><tr><td>Q16</td><td>2108.000</td><td>1800.4252</td><td>1.1575</td><td>1785.2283–1821.2796</td></tr></tbody></table></div>
+<h3 id="features-en-36">Write</h3>
+<p>M = 2084 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>checked_default</td><td>2092.000</td><td>31.2032</td><td>66.7881</td><td>30.9964–31.4214</td></tr><tr><td>Q16</td><td>2108.000</td><td>457.3166</td><td>4.5570</td><td>454.6054–460.1915</td></tr></tbody></table></div>
+<h2 id="features-en-37">Strings: 255 ASCII bytes</h2>
+<p>255 characters = 255 B. Schema MAX is 4096. New String/CopyGuard includes allocation/drop; reuse has prepared capacity. Borrowing has a different result contract.</p>
+<h3 id="features-en-38">Read</h3>
+<p>M = 255 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>CopyGuard_new</td><td>259.000</td><td>78.9262</td><td>3.2309</td><td>76.7463–81.7462</td></tr><tr><td>CopyGuard_reuse</td><td>259.000</td><td>9.0782</td><td>28.0892</td><td>8.8931–9.2874</td></tr><tr><td>InlineString</td><td>257.000</td><td>9.8084</td><td>25.9982</td><td>9.5890–10.0833</td></tr><tr><td>String_new</td><td>259.000</td><td>76.3834</td><td>3.3384</td><td>73.6953–79.4684</td></tr><tr><td>String_reuse</td><td>259.000</td><td>10.0320</td><td>25.4187</td><td>9.7984–10.2970</td></tr><tr><td>bytes_borrow</td><td>259.000</td><td>1.5578</td><td>163.6905</td><td>1.5066–1.6206</td></tr><tr><td>str_borrow</td><td>259.000</td><td>1.4975</td><td>170.2850</td><td>1.4675–1.5311</td></tr><tr><td>string_LZ</td><td>257.000</td><td>12.3412</td><td>20.6625</td><td>11.8625–12.9534</td></tr><tr><td>view_borrow</td><td>259.000</td><td>1.5034</td><td>169.6130</td><td>1.4714–1.5399</td></tr></tbody></table></div>
+<h3 id="features-en-39">Write</h3>
+<p>M = 255 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>CopyGuard_new</td><td>259.000</td><td>9.6301</td><td>26.4796</td><td>9.3764–9.9416</td></tr><tr><td>InlineString</td><td>257.000</td><td>13.3248</td><td>19.1373</td><td>12.9133–13.8490</td></tr><tr><td>String_new</td><td>259.000</td><td>9.1957</td><td>27.7304</td><td>8.9599–9.4811</td></tr><tr><td>bytes_borrow</td><td>259.000</td><td>9.4668</td><td>26.9362</td><td>9.2333–9.7486</td></tr><tr><td>str_borrow</td><td>259.000</td><td>9.4515</td><td>26.9798</td><td>9.2500–9.6832</td></tr><tr><td>string_LZ</td><td>257.000</td><td>13.9049</td><td>18.3389</td><td>13.5923–14.2743</td></tr><tr><td>view_borrow</td><td>259.000</td><td>10.0823</td><td>25.2918</td><td>9.8172–10.3822</td></tr></tbody></table></div>
+<h2 id="features-en-40">Strings: 1024 UTF-8 scalars, noise</h2>
+<p>2048 B of pseudorandom UTF-8. A separate raw InlineString/LZ pair exposes compression-attempt and fallback cost. Not pooled with repetitive input.</p>
+<h3 id="features-en-41">Read</h3>
+<p>M = 2048 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>InlineString</td><td>2050.000</td><td>42.2299</td><td>48.4965</td><td>41.4060–43.1522</td></tr><tr><td>string_LZ</td><td>2050.000</td><td>44.8378</td><td>45.6758</td><td>43.3429–46.7553</td></tr></tbody></table></div>
+<h3 id="features-en-42">Write</h3>
+<p>M = 2048 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>InlineString</td><td>2050.000</td><td>51.6763</td><td>39.6313</td><td>49.3339–54.5520</td></tr><tr><td>string_LZ</td><td>2050.000</td><td>53.4001</td><td>38.3520</td><td>50.5700–56.9738</td></tr></tbody></table></div>
+<h2 id="features-en-43">Strings: 1024 UTF-8 scalars, repeats</h2>
+<p>1024 two-byte scalars = 2048 B. Repetition does not suit every compressor. All variants receive the same values, including LZ, ownership and reuse.</p>
+<h3 id="features-en-44">Read</h3>
+<p>M = 2048 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>CopyGuard_new</td><td>2052.000</td><td>135.0154</td><td>15.1686</td><td>128.7680–142.6728</td></tr><tr><td>CopyGuard_reuse</td><td>2052.000</td><td>48.6836</td><td>42.0675</td><td>47.1371–50.4633</td></tr><tr><td>InlineString</td><td>2050.000</td><td>40.5403</td><td>50.5177</td><td>39.1576–42.2985</td></tr><tr><td>String_new</td><td>2052.000</td><td>102.5873</td><td>19.9635</td><td>99.0760–107.5682</td></tr><tr><td>String_reuse</td><td>2052.000</td><td>47.7050</td><td>42.9305</td><td>46.7305–48.9487</td></tr><tr><td>bytes_borrow</td><td>2052.000</td><td>1.5983</td><td>1281.3816</td><td>1.5429–1.6625</td></tr><tr><td>str_borrow</td><td>2052.000</td><td>1.5938</td><td>1284.9808</td><td>1.5461–1.6489</td></tr><tr><td>string_LZ</td><td>67.000</td><td>315.6066</td><td>6.4891</td><td>304.0331–329.0468</td></tr><tr><td>view_borrow</td><td>2052.000</td><td>1.5199</td><td>1347.4611</td><td>1.4879–1.5561</td></tr></tbody></table></div>
+<h3 id="features-en-45">Write</h3>
+<p>M = 2048 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>CopyGuard_new</td><td>2052.000</td><td>46.4950</td><td>44.0477</td><td>45.2699–47.8620</td></tr><tr><td>InlineString</td><td>2050.000</td><td>51.2247</td><td>39.9807</td><td>49.1185–53.7917</td></tr><tr><td>String_new</td><td>2052.000</td><td>39.9749</td><td>51.2321</td><td>39.1508–40.9978</td></tr><tr><td>bytes_borrow</td><td>2052.000</td><td>40.8558</td><td>50.1275</td><td>39.9287–41.8721</td></tr><tr><td>str_borrow</td><td>2052.000</td><td>39.3467</td><td>52.0501</td><td>38.5355–40.2377</td></tr><tr><td>string_LZ</td><td>67.000</td><td>157.0205</td><td>13.0429</td><td>153.9566–161.3731</td></tr><tr><td>view_borrow</td><td>2052.000</td><td>40.6908</td><td>50.3308</td><td>39.7737–41.8178</td></tr></tbody></table></div>
+<h2 id="features-en-46">Validation cost</h2>
+<p>Trusted decode, validation without construction and checked decode. validate_only does not complete the decoder task; this compares work components, not interchangeable results.</p>
+<h3 id="features-en-47">Read</h3>
+<p>M = 4 B.</p>
+<div class="table-scroll"><table><thead><tr><th>Mode</th><th>Wire, B</th><th>T, ns</th><th>P, B/ns</th><th>CI 99%, ns</th></tr></thead><tbody><tr><td>checked_into</td><td>4.000</td><td>54.2311</td><td>0.0738</td><td>52.1893–56.4766</td></tr><tr><td>trusted</td><td>4.000</td><td>1.9115</td><td>2.0926</td><td>1.8776–1.9459</td></tr><tr><td>validate_only</td><td>4.000</td><td>45.8246</td><td>0.0873</td><td>45.0274–46.7068</td></tr></tbody></table></div>
+<h2 id="features-en-48">Coverage boundaries</h2>
+<p>IPC and network transport are covered by the full guide and separate functional tests. Their system latency is not inferred from codec-only T. Earlier N=1/2/3/5/10 and scalar-QPS controls remain separate historical groups in the interactive page, with their own source snapshots and CPU policy.</p>
+<h2 id="features-en-49">Register kernel: result and limit</h2>
+<div class="table-scroll"><table><thead><tr><th>Case</th><th>Before, ns</th><th>After, ns</th><th>Before/after</th><th>Wire, B</th></tr></thead><tbody><tr><td>qps_bytes/low_range_1024/write/Q16</td><td>1226.55</td><td>440.05</td><td>2.79</td><td>592</td></tr><tr><td>qps_bytes/low_range_1024/read/Q16</td><td>2089.77</td><td>258.01</td><td>8.10</td><td>592</td></tr><tr><td>qps_utf8/bytes/write/Q16</td><td>2282.74</td><td>904.61</td><td>2.52</td><td>1936</td></tr><tr><td>qps_utf8/bytes/read/Q16</td><td>4464.94</td><td>571.34</td><td>7.81</td><td>1936</td></tr></tbody></table></div>
+<p>Wire format and data match; executables differ. Runs were sequential at different times, so the ratio cannot exclude OS/cache-state effects. Initial-kernel waveforms remain separate groups.</p>
+<p>General QPS does not meet the 20–30% overhead budget. For 1024 UTF-8 characters (2048 B), prepared String decoding takes 47.71 ns, InlineString 40.54 ns and LZ 315.61 ns with a 67 B frame. The 25 ns target is also unmet. Borrowed views have another contract and do not prove copying in 1–2 ns. General QPS produces 1936 B for pure UTF-8; adding headers/numbers to the whole record instead yields raw 2108 B for a 2092 B inner frame. Neither string types nor grouping u8 guarantees compression.</p>
+<h2 id="features-en-50">Commands and reproducibility</h2>
+<pre><code>.\qsl-bench\tools\run-payload.ps1 -Benchmark current_qsl -ManifestPath .\qsl-bench\features\Cargo.toml -ResultDirectory .\qsl-bench\target\criterion-features-repeat
+.\qsl-bench\tools\run-qps-kernel.ps1 -Benchmark current_qsl -ManifestPath .\qsl-bench\features\Cargo.toml -ResultDirectory .\qsl-bench\target\criterion-qps-kernel-repeat
+.\qsl-bench\tools\run-qps-utf8.ps1 -ResultDirectory .\qsl-bench\target\criterion-qps-utf8-repeat
+cargo test --manifest-path qsl-bench/features/Cargo.toml --locked
+cargo test --manifest-path qsl-bench/features/Cargo.toml --bench current_qsl --locked -- --test</code></pre>
+<p><a href="data/features.json">JSON</a> · <a href="data/features.csv">CSV</a> · <a href="data/features-raw/">Raw samples</a> · <a href="../reference/features-source-manifest.json">Initial SHA-256</a> · <a href="../reference/qps-words-source-manifest.json">QPS SHA-256</a> · <a href="../reference/qps-utf8-words-source-manifest.json">UTF-8 SHA-256</a> · <a href="../reference/features/">Harness</a></p></main></body></html>

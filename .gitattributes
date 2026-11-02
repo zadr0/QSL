@@ -3,3 +3,9 @@ docs/archive/pre-qps-v2/** -text whitespace=-blank-at-eol,-blank-at-eof
 docs/data/qsl-current-asm/*.asm -text whitespace=-blank-at-eol
 # Raw run logs retain the bytes produced by the benchmark runner.
 docs/data/*-run.log -text
+
+# Keep source snapshots and historical pages byte-for-byte.
+docs/archive/before-full-guide-2026-11-02/** -text whitespace=-blank-at-eol,-blank-at-eof
+reference/features/** -text
+reference/proofs/** -text
+reference/tools/*.ps1 -text

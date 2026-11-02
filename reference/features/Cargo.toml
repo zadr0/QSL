@@ -1,0 +1,16 @@
+[package]
+name="qsl-feature-bench"
+version="0.1.0"
+edition="2024"
+build="build.rs"
+[dependencies]
+qsl={path="../../qsl",features=["native","rust-macros"]}
+[build-dependencies]
+qsl={path="../../qsl",features=["native","rust-macros"]}
+[dev-dependencies]
+criterion={version="=0.8.2",default-features=false,features=["cargo_bench_support"]}
+[[bench]]
+name="current_qsl"
+harness=false
+[profile.release]
+debug=true

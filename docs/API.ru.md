@@ -2,7 +2,7 @@
 
 [English](API.en.md) · [Архитектура](architecture.ru.md)
 
-Найдено 574 явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Видимость feature native/Windows и rust-macros сохраняется; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из [manifest](../reference/current-source-manifest.json). Этот репозиторий публикует документацию, а не Cargo workspace.
+Найдено 600 явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Видимость feature native/Windows и rust-macros сохраняется; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из [manifest](../reference/current-implementation-manifest.json). Этот репозиторий публикует документацию, а не Cargo workspace.
 
 ## qsl-macros/src/lib.rs
 
@@ -460,31 +460,31 @@ pub fn new() -> Self {
 pub fn generate(&mut self, schemas: &[QslSchema]) -> QslResult<()> {
 ```
 
-`qsl/src/interpreter.rs:2286`
+`qsl/src/interpreter.rs:2287`
 
 ```rust
 pub fn generate_parsed(&mut self, schemas: &[crate::compat::ParserQslSchema]) -> QslResult<()> {
 ```
 
-`qsl/src/interpreter.rs:2294`
+`qsl/src/interpreter.rs:2295`
 
 ```rust
 pub fn generate_field(&mut self, field: &QslField, borrowed: bool) -> QslResult<()> {
 ```
 
-`qsl/src/interpreter.rs:2647`
+`qsl/src/interpreter.rs:2648`
 
 ```rust
 pub fn generate_default(&mut self, schema: &QslSchema) -> QslResult<()> {
 ```
 
-`qsl/src/interpreter.rs:2658`
+`qsl/src/interpreter.rs:2659`
 
 ```rust
 pub fn generate_lifetime(&mut self, schema: &QslSchema) -> QslResult<()> {
 ```
 
-`qsl/src/interpreter.rs:2672`
+`qsl/src/interpreter.rs:2673`
 
 ```rust
 pub fn push(&self) -> std::io::Result<()> {
@@ -1491,76 +1491,82 @@ pub mod qps;
 `qsl/src/lib.rs:31`
 
 ```rust
-pub mod static_index;
+pub mod qps_bytes;
 ```
 
 `qsl/src/lib.rs:32`
 
 ```rust
-pub use payload_quant::{QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRegions};
+pub mod static_index;
 ```
 
 `qsl/src/lib.rs:33`
 
 ```rust
-pub mod rt;
+pub use payload_quant::{QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRegions};
 ```
 
-`qsl/src/lib.rs:35`
+`qsl/src/lib.rs:34`
 
 ```rust
-pub mod rust_macro;
+pub mod rt;
 ```
 
 `qsl/src/lib.rs:36`
 
 ```rust
+pub mod rust_macro;
+```
+
+`qsl/src/lib.rs:37`
+
+```rust
 pub mod schema_macro;
 ```
 
-`qsl/src/lib.rs:38`
+`qsl/src/lib.rs:39`
 
 ```rust
 pub use deq::build_qsl_files_with_rust;
 ```
 
-`qsl/src/lib.rs:40`
+`qsl/src/lib.rs:41`
 
 ```rust
 pub use qsl_macros::{qsl_macro, schem_macro};
 ```
 
-`qsl/src/lib.rs:41`
+`qsl/src/lib.rs:42`
 
 ```rust
 pub mod length_graph;
 ```
 
-`qsl/src/lib.rs:42`
+`qsl/src/lib.rs:43`
 
 ```rust
 pub mod static_optional;
 ```
 
-`qsl/src/lib.rs:43`
+`qsl/src/lib.rs:44`
 
 ```rust
 pub mod validation;
 ```
 
-`qsl/src/lib.rs:44`
+`qsl/src/lib.rs:45`
 
 ```rust
 pub use analysis::*;
 ```
 
-`qsl/src/lib.rs:45`
+`qsl/src/lib.rs:46`
 
 ```rust
 pub use bit_io::*;
 ```
 
-`qsl/src/lib.rs:49`
+`qsl/src/lib.rs:50`
 
 ```rust
 pub mod native;
@@ -2194,16 +2200,168 @@ unsafe fn decode_padded(self, bytes: *const u8, len: usize);
 
 ## qsl/src/qps.rs
 
-`qsl/src/qps.rs:8`
+`qsl/src/qps.rs:9`
 
 ```rust
 pub use crate::payload_quant::{ PayloadQuantPlan as QpsPlan, QuantField as QpsField, QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRecord, QuantizedRegions, };
 ```
 
-`qsl/src/qps.rs:14`
+`qsl/src/qps.rs:15`
 
 ```rust
 pub const QPS_CODEC_REVISION: u32 = 2;
+```
+
+`qsl/src/qps.rs:17`
+
+```rust
+pub use crate::qps_bytes::{ ByteFrame, ByteMode, ByteQps, CheckedBorrowedRecord, CheckedRecord, BYTE_FRAME_HEADER, BYTE_QPS_CODEC_REVISION, };
+```
+
+## qsl/src/qps_bytes.rs
+
+`qsl/src/qps_bytes.rs:7`
+
+```rust
+pub const BYTE_FRAME_HEADER: usize = 16;
+```
+
+`qsl/src/qps_bytes.rs:8`
+
+```rust
+pub const BYTE_QPS_CODEC_REVISION: u32 = 3;
+```
+
+`qsl/src/qps_bytes.rs:245`
+
+```rust
+pub enum ByteMode {
+```
+
+`qsl/src/qps_bytes.rs:251`
+
+```rust
+pub struct ByteQps<const Q: usize>;
+```
+
+`qsl/src/qps_bytes.rs:252`
+
+```rust
+pub struct ByteFrame<'a, const Q: usize> {
+```
+
+`qsl/src/qps_bytes.rs:258`
+
+```rust
+pub fn as_slice(&self) -> &[u8] {
+```
+
+`qsl/src/qps_bytes.rs:261`
+
+```rust
+pub fn original_len(&self) -> usize {
+```
+
+`qsl/src/qps_bytes.rs:264`
+
+```rust
+pub fn mode(&self) -> ByteMode {
+```
+
+`qsl/src/qps_bytes.rs:267`
+
+```rust
+pub fn decode_to<'out>(&self, out: &'out mut [u8]) -> QslResult<&'out mut [u8]> {
+```
+
+`qsl/src/qps_bytes.rs:270`
+
+```rust
+pub fn decode_record_into<'out, T: CheckedRecord>( &self, restoration: &mut [u8], out: &'out mut MaybeUninit<T>, ) -> QslResult<&'out mut T> {
+```
+
+`qsl/src/qps_bytes.rs:283`
+
+```rust
+pub unsafe trait CheckedRecord: Serializable {
+```
+
+`qsl/src/qps_bytes.rs:284`
+
+```rust
+fn qps_validate_values(&self) -> QslResult<()>;
+```
+
+`qsl/src/qps_bytes.rs:285`
+
+```rust
+fn qps_validate_wire(input: &[u8]) -> QslResult<()>;
+```
+
+`qsl/src/qps_bytes.rs:290`
+
+```rust
+pub unsafe trait CheckedBorrowedRecord<'a>: BorrowSerializable<'a> {
+```
+
+`qsl/src/qps_bytes.rs:291`
+
+```rust
+fn qps_validate_values(&self) -> QslResult<()>;
+```
+
+`qsl/src/qps_bytes.rs:292`
+
+```rust
+fn qps_validate_wire(input: &[u8]) -> QslResult<()>;
+```
+
+`qsl/src/qps_bytes.rs:295`
+
+```rust
+pub fn max_encoded_len(len: usize) -> QslResult<usize> {
+```
+
+`qsl/src/qps_bytes.rs:300`
+
+```rust
+pub fn inspect(input: &[u8]) -> QslResult<(ByteMode, usize)> {
+```
+
+`qsl/src/qps_bytes.rs:329`
+
+```rust
+pub fn encode_to<'out>(input: &[u8], out: &'out mut [u8]) -> QslResult<ByteFrame<'out, Q>> {
+```
+
+`qsl/src/qps_bytes.rs:400`
+
+```rust
+pub fn decode_to<'out>(input: &[u8], out: &'out mut [u8]) -> QslResult<&'out mut [u8]> {
+```
+
+`qsl/src/qps_bytes.rs:458`
+
+```rust
+pub fn encode_borrowed_to<'out, 'a, T: CheckedBorrowedRecord<'a>>( value: &T, scratch: &mut [u8], out: &'out mut [u8], ) -> QslResult<ByteFrame<'out, Q>> {
+```
+
+`qsl/src/qps_bytes.rs:469`
+
+```rust
+pub fn decode_borrowed<'a, T: CheckedBorrowedRecord<'a>>( input: &[u8], restoration: &'a mut [u8], ) -> QslResult<T> {
+```
+
+`qsl/src/qps_bytes.rs:477`
+
+```rust
+pub fn encode_record_to<'out, T: CheckedRecord>( value: &T, scratch: &mut [u8], out: &'out mut [u8], ) -> QslResult<ByteFrame<'out, Q>> {
+```
+
+`qsl/src/qps_bytes.rs:488`
+
+```rust
+pub fn decode_record_into<'out, T: CheckedRecord>( input: &[u8], restoration: &mut [u8], out: &'out mut MaybeUninit<T>, ) -> QslResult<&'out mut T> {
 ```
 
 ## qsl/src/rt.rs
@@ -3503,4 +3661,3 @@ pub fn finish(mut self) -> QslResult<()> {
 ```rust
 pub fn compressed<const MAX: usize>( &mut self, min: usize, raw_only: bool, fixed: bool, ) -> QslResult<()> {
 ```
-

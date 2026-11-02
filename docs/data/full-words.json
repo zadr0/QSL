@@ -1,0 +1,466 @@
+{
+  "project": [
+    "Руководство и измерения",
+    "Guide and measurements"
+  ],
+  "hero": [
+    "QSL: обмен заранее описанными данными",
+    "QSL: exchange of data described in advance"
+  ],
+  "lead": [
+    "Типы, диапазоны, порядок и владение задают формат. Генератор использует эти условия для специализированного Rust-кода.",
+    "Types, domains, order and ownership define the format. The generator uses these conditions to produce specialized Rust."
+  ],
+  "overview": [
+    "Проект",
+    "Project"
+  ],
+  "measurements": [
+    "Основные возможности: измерения",
+    "Feature measurements"
+  ],
+  "guide": [
+    "Полное руководство",
+    "Complete guide"
+  ],
+  "quantDemo": [
+    "Обратимые группы QPS",
+    "Reversible QPS groups"
+  ],
+  "eventDemo": [
+    "Предиктование opt_table",
+    "opt_table prediction"
+  ],
+  "api": [
+    "API всего QSL",
+    "Complete QSL API"
+  ],
+  "history": [
+    "Предыдущие снимки",
+    "Earlier snapshots"
+  ],
+  "download": [
+    "Данные и команды",
+    "Data and commands"
+  ],
+  "audit": [
+    "Состояние проверок",
+    "Validation status"
+  ],
+  "feature": [
+    "Возможность / сценарий",
+    "Feature / scenario"
+  ],
+  "operation": [
+    "Операция",
+    "Operation"
+  ],
+  "metric": [
+    "Показатель",
+    "Metric"
+  ],
+  "read": [
+    "Чтение",
+    "Decode"
+  ],
+  "write": [
+    "Запись",
+    "Encode"
+  ],
+  "Pchoice": [
+    "P: полезные B/ns",
+    "P: useful B/ns"
+  ],
+  "Tchoice": [
+    "T: нс/операцию",
+    "T: ns/operation"
+  ],
+  "Wchoice": [
+    "Wire: размер кадра",
+    "Wire: frame size"
+  ],
+  "complete": [
+    "Прогон завершён",
+    "Run complete"
+  ],
+  "running": [
+    "Измерение продолжается",
+    "Measurement in progress"
+  ],
+  "peak": [
+    "пиковый job commit",
+    "peak job commit"
+  ],
+  "conditions": [
+    "15 s прогрев · 10 s измерение · 200 выборок · CI 99%",
+    "15 s warm-up · 10 s measurement · 200 samples · 99% CI"
+  ],
+  "Pdefinition": [
+    "P = M / T; M — исходные полезные байты, T — нс на операцию. Wire-размер и ёмкость показываются отдельно.",
+    "P = M / T; M is original useful bytes, T is ns per operation. Wire size and capacity are separate."
+  ],
+  "compareNote": [
+    "Сравнение имеет смысл внутри одного сценария. Borrow создаёт представление payload и обращается к меньшему числу физических байтов; новое владеющее значение выполняет другую работу.",
+    "Compare within one scenario. Borrowing creates a payload view and touches fewer physical bytes; a new owned value performs different work."
+  ],
+  "mode": [
+    "Режим",
+    "Mode"
+  ],
+  "M": [
+    "M, полезные B",
+    "M, useful B"
+  ],
+  "wire": [
+    "Wire, средние B",
+    "Wire, mean B"
+  ],
+  "time": [
+    "T, ns",
+    "T, ns"
+  ],
+  "P": [
+    "P, B/ns",
+    "P, B/ns"
+  ],
+  "PCI": [
+    "P: CI 99%",
+    "P: 99% CI"
+  ],
+  "timeUnit": [
+    "T, ns · меньше — быстрее",
+    "T, ns · lower is faster"
+  ],
+  "Punit": [
+    "P, B/ns · больше — выше полезная пропускная способность",
+    "P, B/ns · higher is more useful throughput"
+  ],
+  "wireUnit": [
+    "Wire, B · интервал показывает минимум и максимум кадров",
+    "Wire, B · intervals show minimum/maximum frames"
+  ],
+  "confidence": [
+    "CI 99%",
+    "99% CI"
+  ],
+  "frameRange": [
+    "размах кадров",
+    "frame-size range"
+  ],
+  "unmeasured": [
+    "Этот случай ещё не измерен.",
+    "This case has not been measured yet."
+  ],
+  "wave": [
+    "Кардиограмма выборок",
+    "Sample waveform"
+  ],
+  "waveExplain": [
+    "Каждая точка — среднее время операции в выборке Criterion. Это не задержка отдельного вызова и не сетевой p99. Сглаживание меняет только вид линии.",
+    "Each point is the average operation time in one Criterion sample. It is not single-call latency or network p99. Smoothing changes only the displayed line."
+  ],
+  "case": [
+    "Выборка режима",
+    "Mode to inspect"
+  ],
+  "smooth": [
+    "Сглаживание",
+    "Smoothing"
+  ],
+  "none": [
+    "Нет",
+    "None"
+  ],
+  "sample": [
+    "Выборка",
+    "Sample"
+  ],
+  "sampleAxis": [
+    "номер выборки Criterion",
+    "Criterion sample number"
+  ],
+  "sampleCount": [
+    "Число выборок",
+    "Sample count"
+  ],
+  "hist": [
+    "Распределение средних по выборкам",
+    "Distribution of sample averages"
+  ],
+  "rawSamples": [
+    "Исходные выборки выбранного режима",
+    "Raw samples for the selected mode"
+  ],
+  "qpsNote": [
+    "QPS сжимает операнды и восстанавливает байты. Присутствие полей он не предиктует. Здесь показан общий byte-envelope QPB3; числовая специализация имеет отдельный формат.",
+    "QPS compresses operands and restores bytes; it does not predict field presence. This explorer shows the general QPB3 byte envelope; scalar specialization has a distinct format."
+  ],
+  "text": [
+    "Текст UTF-8",
+    "UTF-8 text"
+  ],
+  "quantum": [
+    "Квант / размер группы",
+    "Quantum / group size"
+  ],
+  "sourceBytes": [
+    "Исходные байты",
+    "Original bytes"
+  ],
+  "frame": [
+    "Кадр",
+    "Frame"
+  ],
+  "qpsMode": [
+    "Режим",
+    "Mode"
+  ],
+  "originalLength": [
+    "Исходная длина без квантования",
+    "Unquantized original length"
+  ],
+  "base": [
+    "База",
+    "Base"
+  ],
+  "groups": [
+    "Групп",
+    "Groups"
+  ],
+  "candidate": [
+    "Полный packed-кандидат",
+    "Complete packed candidate"
+  ],
+  "restored": [
+    "Точное восстановление",
+    "Exact restoration"
+  ],
+  "qpsError": [
+    "Допустимы Q2/Q4/Q8/Q16 и не более 8192 байтов в примере.",
+    "Use Q2/Q4/Q8/Q16 and at most 8192 bytes in this example."
+  ],
+  "hexNote": [
+    "Показаны первые 128 байтов кадра. Raw сохраняет явную цену заголовка 16 B.",
+    "Showing the first 128 frame bytes. Raw retains the explicit 16 B header cost."
+  ],
+  "eventNote": [
+    "Для i32 id; u8? a; u8? b длина L исключает i32 и известную метаобласть H. В однозначном событии тег не читается, но зарезервированный байт остаётся в кадре.",
+    "For i32 id; u8? a; u8? b, L excludes i32 and known metadata H. Deterministic events skip tag reads but retain the reserved byte on wire."
+  ],
+  "presentA": [
+    "a присутствует",
+    "a is present"
+  ],
+  "presentB": [
+    "b присутствует",
+    "b is present"
+  ],
+  "forced": [
+    "Гарантированы",
+    "Forced"
+  ],
+  "possible": [
+    "Возможны",
+    "Possible"
+  ],
+  "tagRead": [
+    "Читать тег",
+    "Read tag"
+  ],
+  "yes": [
+    "да",
+    "yes"
+  ],
+  "no": [
+    "нет",
+    "no"
+  ],
+  "apiSearch": [
+    "Найти метод, тип или модуль",
+    "Find a method, type or module"
+  ],
+  "first60": [
+    "первые 60 совпадений",
+    "first 60 matches"
+  ],
+  "sourceNote": [
+    "Пути и строки относятся к зафиксированному исходному снимку. Репозиторий распространяет документацию и стенд, а не весь Cargo workspace.",
+    "Paths and lines refer to the captured source snapshot. This repository distributes documentation and harnesses, not the complete Cargo workspace."
+  ],
+  "historyNote": [
+    "Предыдущие N=1/2/3/5/10, числовой QPS и первое общее ядро сохранены отдельно. Снимки имеют свои исходники, бинарники и условия; их числа не смешиваются в одну выборку.",
+    "Earlier N=1/2/3/5/10, scalar QPS and the first general kernel remain separate. Snapshots have their own sources, executables and conditions; samples are not pooled."
+  ],
+  "cardSchema": [
+    "Явная схема",
+    "Explicit schema"
+  ],
+  "cardSchemaText": [
+    "Диапазоны, UTF-8-байты, обязательный порядок required → optional и согласование формата.",
+    "Domains, UTF-8 bytes, mandatory required → optional order and format agreement."
+  ],
+  "cardMemory": [
+    "Выбор памяти",
+    "Storage choice"
+  ],
+  "cardMemoryText": [
+    "String, borrow, CopyGuard, inline, SerOut, RT и native-регионы имеют разные контракты.",
+    "String, borrowing, CopyGuard, inline, SerOut, RT and native regions have different contracts."
+  ],
+  "cardCodec": [
+    "Раздельные механизмы",
+    "Separate mechanisms"
+  ],
+  "cardCodecText": [
+    "compact и QPS упаковывают значения; opt_table анализирует длину. Проверки включаются отдельно.",
+    "compact and QPS pack values; opt_table analyzes lengths. Validation is selected separately."
+  ],
+  "mode_default": [
+    "обычный режим",
+    "default"
+  ],
+  "mode_compact": [
+    "compact",
+    "compact"
+  ],
+  "mode_compact_alignment": [
+    "compact + alignment",
+    "compact + alignment"
+  ],
+  "mode_bitmap": [
+    "bitmap",
+    "bitmap"
+  ],
+  "mode_predict_seq": [
+    "predict_seq",
+    "predict_seq"
+  ],
+  "mode_opt_table": [
+    "opt_table",
+    "opt_table"
+  ],
+  "mode_opt_table_predict_seq": [
+    "opt_table + predict_seq",
+    "opt_table + predict_seq"
+  ],
+  "mode_compiler_default": [
+    "решение компилятора",
+    "compiler default"
+  ],
+  "mode_hint": [
+    "inline hint",
+    "inline hint"
+  ],
+  "mode_always": [
+    "inline always",
+    "inline always"
+  ],
+  "mode_never": [
+    "inline never",
+    "inline never"
+  ],
+  "mode_Vec_dynamic": [
+    "Vec · длина в кадре",
+    "Vec · encoded length"
+  ],
+  "mode_Vec_fixed_count": [
+    "Vec · фиксированное число",
+    "Vec · fixed count"
+  ],
+  "mode_bytes_borrow": [
+    "&[u8] · borrow",
+    "&[u8] · borrow"
+  ],
+  "mode_primitive": [
+    "примитив",
+    "primitive"
+  ],
+  "mode_QslCustom": [
+    "QslCustom",
+    "QslCustom"
+  ],
+  "mode_manual": [
+    "ручные поля схемы",
+    "explicit schema fields"
+  ],
+  "mode_expanded_Rust": [
+    "раскрытый Rust-макрос",
+    "expanded Rust template"
+  ],
+  "mode_trusted": [
+    "trusted decode_into",
+    "trusted decode_into"
+  ],
+  "mode_validate_only": [
+    "только валидация",
+    "validation only"
+  ],
+  "mode_checked_into": [
+    "checked decode_into",
+    "checked decode_into"
+  ],
+  "mode_allocate_SerOut": [
+    "SerOut · новая allocation",
+    "SerOut · new allocation"
+  ],
+  "mode_reuse_SerOut": [
+    "SerOut · reuse",
+    "SerOut · reuse"
+  ],
+  "mode_reuse_NativeRegion": [
+    "NativeRegion · reuse",
+    "NativeRegion · reuse"
+  ],
+  "mode_RT_lease": [
+    "RT · захват и Drop lease",
+    "RT · acquire/drop lease"
+  ],
+  "mode_String_new": [
+    "String · создание",
+    "String · new"
+  ],
+  "mode_String_reuse": [
+    "String · reuse",
+    "String · reuse"
+  ],
+  "mode_CopyGuard_new": [
+    "CopyGuard · создание",
+    "CopyGuard · new"
+  ],
+  "mode_CopyGuard_reuse": [
+    "CopyGuard · reuse",
+    "CopyGuard · reuse"
+  ],
+  "mode_str_borrow": [
+    "&str · borrow",
+    "&str · borrow"
+  ],
+  "mode_view_borrow": [
+    "Utf8Guard · borrow",
+    "Utf8Guard · borrow"
+  ],
+  "mode_InlineString": [
+    "InlineString",
+    "InlineString"
+  ],
+  "mode_string_LZ": [
+    "строковый LZ",
+    "string LZ"
+  ],
+  "mode_raw_copy": [
+    "обычное копирование",
+    "raw copy"
+  ],
+  "mode_checked_default": [
+    "обычный checked-режим",
+    "default checked"
+  ],
+  "observations": [
+    "наблюдений",
+    "observations"
+  ],
+  "snapshot": [
+    "Снимок",
+    "Snapshot"
+  ]
+}

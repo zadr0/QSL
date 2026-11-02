@@ -1,5 +1,3 @@
-# qps
+# QPS
 
-[Current architecture and full contract](../../architecture.en.md).
-
-Exact rank quotient/remainder operands. Q16 by default; select Q2/Q4/Q8/Q16. No optional fields required. quant is an alias; state_bits is the legacy D format.
+[Complete contracts](../../guide.en.md). QPS is exact operand compression, never field-presence prediction. opt_table owns prediction. Scalar specialization packs bounded numeric ranks. General ByteQps handles the complete serialized payload through explicit encode/restore APIs, with a 16 B QPB3 header and unquantized original length. qps defaults to Q16; Q2/Q4/Q8/Q16 are supported. quant is an alias; state_bits explicitly selects old D/index compatibility. General QPS can fall back to raw with visible framing cost; grouping arbitrary u8 values does not guarantee savings.

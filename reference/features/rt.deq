@@ -1,0 +1,2 @@
+!config QSL_RT = true;
+!config QSL_RT_DEFAULT = 16;
