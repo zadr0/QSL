@@ -1,0 +1,2 @@
+!config MAX_DATA_SIZE = 65535;
+!config USE_HASH = xxHash;

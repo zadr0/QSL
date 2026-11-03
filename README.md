@@ -1,5 +1,7 @@
 # QSL
 
+[Examples RU/EN](examples/README.md) · [Fresh results](examples/PERFORMANCE.md) · [Interactive charts](examples/performance.html)
+
 [Русский](#ru) · [English](#en) · [Docs RU](docs/index.html?lang=ru) · [Docs EN](docs/index.html?lang=en)
 
 <a id="ru"></a>

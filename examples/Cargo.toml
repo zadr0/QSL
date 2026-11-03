@@ -1,0 +1,49 @@
+[package]
+name = "qsl-examples"
+version = "0.1.0"
+edition = "2021"
+publish = false
+[lib]
+path = "lib.rs"
+[features]
+default = []
+native = ["qsl/native"]
+[dependencies]
+qsl = { path = "../qsl" }
+[build-dependencies]
+qsl = { path = "../qsl", features = ["rust-macros"] }
+[dev-dependencies]
+criterion = { version = "=0.8.2", default-features = false, features = ["cargo_bench_support"] }
+[[bench]]
+name = "showcase"
+harness = false
+[profile.release]
+debug = true
+
+[[example]]
+name = "basic"
+path = "01-basic/main.rs"
+
+[[example]]
+name = "strings"
+path = "02-strings/main.rs"
+
+[[example]]
+name = "optionals"
+path = "03-optionals/main.rs"
+
+[[example]]
+name = "qps"
+path = "04-qps/main.rs"
+
+[[example]]
+name = "rt"
+path = "05-rt/main.rs"
+
+[[example]]
+name = "macros"
+path = "06-macros/main.rs"
+
+[[example]]
+name = "safety"
+path = "07-safety/main.rs"

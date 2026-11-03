@@ -76,7 +76,7 @@ Limits and checked API availability leave wire bytes unchanged and are excluded 
 
 ## Verification
 
-Passed: 77 unit tests, 10 serial native/IPC/socket tests, 2 wire vectors, 12 hash checks and 2 compile-fail examples. A separate fixture has 6 integration scenarios and 7200 malformed-frame validator calls across raw/compact/LZ/borrowed/opt_table/predict_seq/state_bits/legacy/QPS. Strict Clippy, analyzer build and 5 main-feature regressions passed. Benchmarks were not rerun; published timings retain their recorded source versions.
+Passed: 77 unit tests, 10 serial native/IPC/socket tests, 2 wire vectors, 12 hash checks and 2 compile-fail examples. A separate fixture has 6 integration scenarios and 7200 malformed-frame validator calls across raw/compact/LZ/borrowed/opt_table/predict_seq/state_bits/legacy/QPS. Strict Clippy, analyzer build and 5 main-feature regressions passed. A separate [examples report](examples.en.md) contains 39 fresh operations; historical timings retain their recorded source versions.
 
 ```powershell
 cargo test --manifest-path qsl/Cargo.toml --locked --all-features -- --test-threads=1

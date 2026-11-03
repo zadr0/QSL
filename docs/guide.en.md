@@ -370,3 +370,7 @@ rust_type(borrowed) determines the generated type. fixed_wire_size reports known
 | PoolExhausted | All static slots are occupied |
 
 File and socket operations also use std::io::Error. Schema validation does not authenticate a sender.
+
+## Executable examples
+
+[Seven programs and commands](../examples/README.md) · [39 fresh measurements](examples.en.md) · [Charts and waveforms](../examples/performance.html). Timings retain their explicit source snapshots; historical tables are not replaced.

@@ -1,0 +1,381 @@
+numbers_8/read/raw_checked
+                        time:   [88.877 ns 89.552 ns 90.281 ns]
+Found 16 outliers among 200 measurements (8.00%)
+  7 (3.50%) low mild
+  4 (2.00%) high mild
+  5 (2.50%) high severe
+
+numbers_8/write/raw_checked
+                        time:   [10.263 ns 10.336 ns 10.415 ns]
+Found 13 outliers among 200 measurements (6.50%)
+  4 (2.00%) low mild
+  7 (3.50%) high mild
+  2 (1.00%) high severe
+
+numbers_8/read/raw_trusted
+                        time:   [7.0523 ns 7.1103 ns 7.1740 ns]
+Found 17 outliers among 200 measurements (8.50%)
+  6 (3.00%) low mild
+  8 (4.00%) high mild
+  3 (1.50%) high severe
+
+numbers_8/write/raw_trusted
+                        time:   [4.6913 ns 4.7563 ns 4.8376 ns]
+Found 12 outliers among 200 measurements (6.00%)
+  9 (4.50%) high mild
+  3 (1.50%) high severe
+
+numbers_8/read/compact_checked
+                        time:   [132.93 ns 134.05 ns 135.41 ns]
+Found 9 outliers among 200 measurements (4.50%)
+  2 (1.00%) low mild
+  4 (2.00%) high mild
+  3 (1.50%) high severe
+
+numbers_8/write/compact_checked
+                        time:   [10.126 ns 10.218 ns 10.322 ns]
+Found 9 outliers among 200 measurements (4.50%)
+  5 (2.50%) high mild
+  4 (2.00%) high severe
+
+numbers_8/read/qps_Q16_checked
+                        time:   [131.77 ns 132.63 ns 133.55 ns]
+Found 12 outliers among 200 measurements (6.00%)
+  1 (0.50%) low mild
+  8 (4.00%) high mild
+  3 (1.50%) high severe
+
+numbers_8/write/qps_Q16_checked
+                        time:   [9.8729 ns 9.9444 ns 10.023 ns]
+Found 18 outliers among 200 measurements (9.00%)
+  7 (3.50%) low mild
+  7 (3.50%) high mild
+  4 (2.00%) high severe
+
+strings_utf8_1024/read/String_checked
+                        time:   [1.6307 µs 1.6422 µs 1.6551 µs]
+Found 6 outliers among 200 measurements (3.00%)
+  1 (0.50%) low mild
+  4 (2.00%) high mild
+  1 (0.50%) high severe
+
+strings_utf8_1024/write/String_checked
+                        time:   [54.448 ns 55.644 ns 57.136 ns]
+Found 22 outliers among 200 measurements (11.00%)
+  4 (2.00%) low mild
+  15 (7.50%) high mild
+  3 (1.50%) high severe
+
+strings_utf8_1024/read/String_trusted
+                        time:   [118.54 ns 120.74 ns 123.40 ns]
+Found 11 outliers among 200 measurements (5.50%)
+  7 (3.50%) high mild
+  4 (2.00%) high severe
+
+strings_utf8_1024/write/String_trusted
+                        time:   [52.301 ns 52.813 ns 53.371 ns]
+Found 16 outliers among 200 measurements (8.00%)
+  7 (3.50%) low mild
+  5 (2.50%) high mild
+  4 (2.00%) high severe
+
+strings_utf8_1024/read/borrowed_checked
+                        time:   [1.5348 µs 1.5473 µs 1.5607 µs]
+Found 13 outliers among 200 measurements (6.50%)
+  5 (2.50%) low mild
+  2 (1.00%) high mild
+  6 (3.00%) high severe
+
+strings_utf8_1024/write/borrowed_checked
+                        time:   [55.613 ns 56.392 ns 57.313 ns]
+Found 20 outliers among 200 measurements (10.00%)
+  9 (4.50%) high mild
+  11 (5.50%) high severe
+
+strings_utf8_1024/read/borrowed_trusted
+                        time:   [3.2305 ns 3.2595 ns 3.2909 ns]
+Found 15 outliers among 200 measurements (7.50%)
+  6 (3.00%) low mild
+  4 (2.00%) high mild
+  5 (2.50%) high severe
+
+strings_utf8_1024/read/CopyGuard_checked
+                        time:   [1.6550 µs 1.6784 µs 1.7037 µs]
+Found 17 outliers among 200 measurements (8.50%)
+  5 (2.50%) low mild
+  8 (4.00%) high mild
+  4 (2.00%) high severe
+
+strings_utf8_1024/read/LZ_inline_checked
+                        time:   [1.5693 µs 1.5806 µs 1.5927 µs]
+Found 21 outliers among 200 measurements (10.50%)
+  9 (4.50%) low mild
+  9 (4.50%) high mild
+  3 (1.50%) high severe
+
+strings_utf8_1024/write/LZ_inline_checked
+                        time:   [59.489 ns 60.588 ns 61.952 ns]
+Found 21 outliers among 200 measurements (10.50%)
+  5 (2.50%) low mild
+  8 (4.00%) high mild
+  8 (4.00%) high severe
+
+optional_N1/read/default_checked
+                        time:   [54.241 ns 54.859 ns 55.576 ns]
+Found 14 outliers among 200 measurements (7.00%)
+  9 (4.50%) high mild
+  5 (2.50%) high severe
+
+optional_N1/read/opt_table_checked
+                        time:   [35.780 ns 36.056 ns 36.371 ns]
+Found 24 outliers among 200 measurements (12.00%)
+  10 (5.00%) low mild
+  7 (3.50%) high mild
+  7 (3.50%) high severe
+
+optional_N2/read/default_checked
+                        time:   [77.592 ns 78.274 ns 79.139 ns]
+Found 16 outliers among 200 measurements (8.00%)
+  7 (3.50%) low mild
+  4 (2.00%) high mild
+  5 (2.50%) high severe
+
+optional_N2/read/opt_table_checked
+                        time:   [53.138 ns 53.583 ns 54.083 ns]
+Found 20 outliers among 200 measurements (10.00%)
+  12 (6.00%) low mild
+  6 (3.00%) high mild
+  2 (1.00%) high severe
+
+optional_N3/read/default_checked
+                        time:   [95.013 ns 95.801 ns 96.687 ns]
+Found 21 outliers among 200 measurements (10.50%)
+  9 (4.50%) low mild
+  7 (3.50%) high mild
+  5 (2.50%) high severe
+
+optional_N3/read/opt_table_checked
+                        time:   [59.289 ns 59.738 ns 60.230 ns]
+Found 18 outliers among 200 measurements (9.00%)
+  6 (3.00%) low mild
+  7 (3.50%) high mild
+  5 (2.50%) high severe
+
+optional_N5/read/default_checked
+                        time:   [131.58 ns 133.08 ns 134.89 ns]
+Found 12 outliers among 200 measurements (6.00%)
+  2 (1.00%) low mild
+  5 (2.50%) high mild
+  5 (2.50%) high severe
+
+optional_N5/read/opt_table_checked
+                        time:   [75.387 ns 76.000 ns 76.676 ns]
+Found 16 outliers among 200 measurements (8.00%)
+  6 (3.00%) low mild
+  7 (3.50%) high mild
+  3 (1.50%) high severe
+
+optional_N10/read/default_checked
+                        time:   [239.42 ns 242.15 ns 245.33 ns]
+Found 11 outliers among 200 measurements (5.50%)
+  3 (1.50%) low mild
+  5 (2.50%) high mild
+  3 (1.50%) high severe
+
+optional_N10/read/opt_table_checked
+                        time:   [136.30 ns 137.49 ns 138.86 ns]
+Found 20 outliers among 200 measurements (10.00%)
+  8 (4.00%) low mild
+  7 (3.50%) high mild
+  5 (2.50%) high severe
+
+whole_qps_ascii_1024/read/qps_Q16_checked
+                        time:   [501.68 ns 506.88 ns 512.68 ns]
+Found 9 outliers among 200 measurements (4.50%)
+  8 (4.00%) high mild
+  1 (0.50%) high severe
+
+whole_qps_ascii_1024/write/qps_Q16_checked
+                        time:   [514.20 ns 517.93 ns 521.97 ns]
+Found 19 outliers among 200 measurements (9.50%)
+  9 (4.50%) low mild
+  8 (4.00%) high mild
+  2 (1.00%) high severe
+
+whole_qps_ascii_1024/read/default_checked
+                        time:   [166.65 ns 169.07 ns 171.83 ns]
+Found 15 outliers among 200 measurements (7.50%)
+  1 (0.50%) low mild
+  11 (5.50%) high mild
+  3 (1.50%) high severe
+
+whole_qps_ascii_1024/write/default_checked
+                        time:   [35.590 ns 35.872 ns 36.183 ns]
+Found 21 outliers among 200 measurements (10.50%)
+  11 (5.50%) low mild
+  7 (3.50%) high mild
+  3 (1.50%) high severe
+
+buffers/write/heap_checked
+                        time:   [81.708 ns 82.502 ns 83.394 ns]
+Found 8 outliers among 200 measurements (4.00%)
+  1 (0.50%) low mild
+  4 (2.00%) high mild
+  3 (1.50%) high severe
+
+buffers/write/rt_checked
+                        time:   [22.577 ns 22.718 ns 22.872 ns]
+Found 18 outliers among 200 measurements (9.00%)
+  8 (4.00%) low mild
+  6 (3.00%) high mild
+  4 (2.00%) high severe
+
+safety/validate/numbers_checked
+                        time:   [86.227 ns 86.785 ns 87.389 ns]
+Found 16 outliers among 200 measurements (8.00%)
+  7 (3.50%) low mild
+  5 (2.50%) high mild
+  4 (2.00%) high severe
+
+
+QSL measuring thread affinity=0x4, priority=above-normal
+Benchmarking numbers_8/read/raw_checked
+Benchmarking numbers_8/read/raw_checked: Warming up for 15.000 s
+Benchmarking numbers_8/read/raw_checked: Collecting 200 samples in estimated 10.001 s (111M iterations)
+Benchmarking numbers_8/read/raw_checked: Analyzing
+Benchmarking numbers_8/write/raw_checked
+Benchmarking numbers_8/write/raw_checked: Warming up for 15.000 s
+Benchmarking numbers_8/write/raw_checked: Collecting 200 samples in estimated 10.000 s (959M iterations)
+Benchmarking numbers_8/write/raw_checked: Analyzing
+Benchmarking numbers_8/read/raw_trusted
+Benchmarking numbers_8/read/raw_trusted: Warming up for 15.000 s
+Benchmarking numbers_8/read/raw_trusted: Collecting 200 samples in estimated 10.000 s (1.4B iterations)
+Benchmarking numbers_8/read/raw_trusted: Analyzing
+Benchmarking numbers_8/write/raw_trusted
+Benchmarking numbers_8/write/raw_trusted: Warming up for 15.000 s
+Benchmarking numbers_8/write/raw_trusted: Collecting 200 samples in estimated 10.000 s (2.1B iterations)
+Benchmarking numbers_8/write/raw_trusted: Analyzing
+Benchmarking numbers_8/read/compact_checked
+Benchmarking numbers_8/read/compact_checked: Warming up for 15.000 s
+Benchmarking numbers_8/read/compact_checked: Collecting 200 samples in estimated 10.002 s (75M iterations)
+Benchmarking numbers_8/read/compact_checked: Analyzing
+Benchmarking numbers_8/write/compact_checked
+Benchmarking numbers_8/write/compact_checked: Warming up for 15.000 s
+Benchmarking numbers_8/write/compact_checked: Collecting 200 samples in estimated 10.000 s (978M iterations)
+Benchmarking numbers_8/write/compact_checked: Analyzing
+Benchmarking numbers_8/read/qps_Q16_checked
+Benchmarking numbers_8/read/qps_Q16_checked: Warming up for 15.000 s
+Benchmarking numbers_8/read/qps_Q16_checked: Collecting 200 samples in estimated 10.002 s (75M iterations)
+Benchmarking numbers_8/read/qps_Q16_checked: Analyzing
+Benchmarking numbers_8/write/qps_Q16_checked
+Benchmarking numbers_8/write/qps_Q16_checked: Warming up for 15.000 s
+Benchmarking numbers_8/write/qps_Q16_checked: Collecting 200 samples in estimated 10.000 s (995M iterations)
+Benchmarking numbers_8/write/qps_Q16_checked: Analyzing
+Benchmarking strings_utf8_1024/read/String_checked
+Benchmarking strings_utf8_1024/read/String_checked: Warming up for 15.000 s
+Benchmarking strings_utf8_1024/read/String_checked: Collecting 200 samples in estimated 10.029 s (6.1M iterations)
+Benchmarking strings_utf8_1024/read/String_checked: Analyzing
+Benchmarking strings_utf8_1024/write/String_checked
+Benchmarking strings_utf8_1024/write/String_checked: Warming up for 15.000 s
+Benchmarking strings_utf8_1024/write/String_checked: Collecting 200 samples in estimated 10.000 s (182M iterations)
+Benchmarking strings_utf8_1024/write/String_checked: Analyzing
+Benchmarking strings_utf8_1024/read/String_trusted
+Benchmarking strings_utf8_1024/read/String_trusted: Warming up for 15.000 s
+Benchmarking strings_utf8_1024/read/String_trusted: Collecting 200 samples in estimated 10.001 s (79M iterations)
+Benchmarking strings_utf8_1024/read/String_trusted: Analyzing
+Benchmarking strings_utf8_1024/write/String_trusted
+Benchmarking strings_utf8_1024/write/String_trusted: Warming up for 15.000 s
+Benchmarking strings_utf8_1024/write/String_trusted: Collecting 200 samples in estimated 10.000 s (188M iterations)
+Benchmarking strings_utf8_1024/write/String_trusted: Analyzing
+Benchmarking strings_utf8_1024/read/borrowed_checked
+Benchmarking strings_utf8_1024/read/borrowed_checked: Warming up for 15.000 s
+Benchmarking strings_utf8_1024/read/borrowed_checked: Collecting 200 samples in estimated 10.027 s (6.5M iterations)
+Benchmarking strings_utf8_1024/read/borrowed_checked: Analyzing
+Benchmarking strings_utf8_1024/write/borrowed_checked
+Benchmarking strings_utf8_1024/write/borrowed_checked: Warming up for 15.000 s
+Benchmarking strings_utf8_1024/write/borrowed_checked: Collecting 200 samples in estimated 10.001 s (178M iterations)
+Benchmarking strings_utf8_1024/write/borrowed_checked: Analyzing
+Benchmarking strings_utf8_1024/read/borrowed_trusted
+Benchmarking strings_utf8_1024/read/borrowed_trusted: Warming up for 15.000 s
+Benchmarking strings_utf8_1024/read/borrowed_trusted: Collecting 200 samples in estimated 10.000 s (3.1B iterations)
+Benchmarking strings_utf8_1024/read/borrowed_trusted: Analyzing
+Benchmarking strings_utf8_1024/read/CopyGuard_checked
+Benchmarking strings_utf8_1024/read/CopyGuard_checked: Warming up for 15.000 s
+Benchmarking strings_utf8_1024/read/CopyGuard_checked: Collecting 200 samples in estimated 10.026 s (6.1M iterations)
+Benchmarking strings_utf8_1024/read/CopyGuard_checked: Analyzing
+Benchmarking strings_utf8_1024/read/LZ_inline_checked
+Benchmarking strings_utf8_1024/read/LZ_inline_checked: Warming up for 15.000 s
+Benchmarking strings_utf8_1024/read/LZ_inline_checked: Collecting 200 samples in estimated 10.019 s (6.3M iterations)
+Benchmarking strings_utf8_1024/read/LZ_inline_checked: Analyzing
+Benchmarking strings_utf8_1024/write/LZ_inline_checked
+Benchmarking strings_utf8_1024/write/LZ_inline_checked: Warming up for 15.000 s
+Benchmarking strings_utf8_1024/write/LZ_inline_checked: Collecting 200 samples in estimated 10.000 s (162M iterations)
+Benchmarking strings_utf8_1024/write/LZ_inline_checked: Analyzing
+Benchmarking optional_N1/read/default_checked
+Benchmarking optional_N1/read/default_checked: Warming up for 15.000 s
+Benchmarking optional_N1/read/default_checked: Collecting 200 samples in estimated 10.000 s (184M iterations)
+Benchmarking optional_N1/read/default_checked: Analyzing
+Benchmarking optional_N1/read/opt_table_checked
+Benchmarking optional_N1/read/opt_table_checked: Warming up for 15.000 s
+Benchmarking optional_N1/read/opt_table_checked: Collecting 200 samples in estimated 10.001 s (273M iterations)
+Benchmarking optional_N1/read/opt_table_checked: Analyzing
+Benchmarking optional_N2/read/default_checked
+Benchmarking optional_N2/read/default_checked: Warming up for 15.000 s
+Benchmarking optional_N2/read/default_checked: Collecting 200 samples in estimated 10.000 s (126M iterations)
+Benchmarking optional_N2/read/default_checked: Analyzing
+Benchmarking optional_N2/read/opt_table_checked
+Benchmarking optional_N2/read/opt_table_checked: Warming up for 15.000 s
+Benchmarking optional_N2/read/opt_table_checked: Collecting 200 samples in estimated 10.000 s (188M iterations)
+Benchmarking optional_N2/read/opt_table_checked: Analyzing
+Benchmarking optional_N3/read/default_checked
+Benchmarking optional_N3/read/default_checked: Warming up for 15.000 s
+Benchmarking optional_N3/read/default_checked: Collecting 200 samples in estimated 10.000 s (104M iterations)
+Benchmarking optional_N3/read/default_checked: Analyzing
+Benchmarking optional_N3/read/opt_table_checked
+Benchmarking optional_N3/read/opt_table_checked: Warming up for 15.000 s
+Benchmarking optional_N3/read/opt_table_checked: Collecting 200 samples in estimated 10.001 s (167M iterations)
+Benchmarking optional_N3/read/opt_table_checked: Analyzing
+Benchmarking optional_N5/read/default_checked
+Benchmarking optional_N5/read/default_checked: Warming up for 15.000 s
+Benchmarking optional_N5/read/default_checked: Collecting 200 samples in estimated 10.002 s (73M iterations)
+Benchmarking optional_N5/read/default_checked: Analyzing
+Benchmarking optional_N5/read/opt_table_checked
+Benchmarking optional_N5/read/opt_table_checked: Warming up for 15.000 s
+Benchmarking optional_N5/read/opt_table_checked: Collecting 200 samples in estimated 10.000 s (133M iterations)
+Benchmarking optional_N5/read/opt_table_checked: Analyzing
+Benchmarking optional_N10/read/default_checked
+Benchmarking optional_N10/read/default_checked: Warming up for 15.000 s
+Benchmarking optional_N10/read/default_checked: Collecting 200 samples in estimated 10.003 s (42M iterations)
+Benchmarking optional_N10/read/default_checked: Analyzing
+Benchmarking optional_N10/read/opt_table_checked
+Benchmarking optional_N10/read/opt_table_checked: Warming up for 15.000 s
+Benchmarking optional_N10/read/opt_table_checked: Collecting 200 samples in estimated 10.002 s (72M iterations)
+Benchmarking optional_N10/read/opt_table_checked: Analyzing
+Benchmarking whole_qps_ascii_1024/read/qps_Q16_checked
+Benchmarking whole_qps_ascii_1024/read/qps_Q16_checked: Warming up for 15.000 s
+Benchmarking whole_qps_ascii_1024/read/qps_Q16_checked: Collecting 200 samples in estimated 10.010 s (19M iterations)
+Benchmarking whole_qps_ascii_1024/read/qps_Q16_checked: Analyzing
+Benchmarking whole_qps_ascii_1024/write/qps_Q16_checked
+Benchmarking whole_qps_ascii_1024/write/qps_Q16_checked: Warming up for 15.000 s
+Benchmarking whole_qps_ascii_1024/write/qps_Q16_checked: Collecting 200 samples in estimated 10.006 s (19M iterations)
+Benchmarking whole_qps_ascii_1024/write/qps_Q16_checked: Analyzing
+Benchmarking whole_qps_ascii_1024/read/default_checked
+Benchmarking whole_qps_ascii_1024/read/default_checked: Warming up for 15.000 s
+Benchmarking whole_qps_ascii_1024/read/default_checked: Collecting 200 samples in estimated 10.003 s (60M iterations)
+Benchmarking whole_qps_ascii_1024/read/default_checked: Analyzing
+Benchmarking whole_qps_ascii_1024/write/default_checked
+Benchmarking whole_qps_ascii_1024/write/default_checked: Warming up for 15.000 s
+Benchmarking whole_qps_ascii_1024/write/default_checked: Collecting 200 samples in estimated 10.001 s (277M iterations)
+Benchmarking whole_qps_ascii_1024/write/default_checked: Analyzing
+Benchmarking buffers/write/heap_checked
+Benchmarking buffers/write/heap_checked: Warming up for 15.000 s
+Benchmarking buffers/write/heap_checked: Collecting 200 samples in estimated 10.002 s (122M iterations)
+Benchmarking buffers/write/heap_checked: Analyzing
+Benchmarking buffers/write/rt_checked
+Benchmarking buffers/write/rt_checked: Warming up for 15.000 s
+Benchmarking buffers/write/rt_checked: Collecting 200 samples in estimated 10.000 s (438M iterations)
+Benchmarking buffers/write/rt_checked: Analyzing
+Benchmarking safety/validate/numbers_checked
+Benchmarking safety/validate/numbers_checked: Warming up for 15.000 s
+Benchmarking safety/validate/numbers_checked: Collecting 200 samples in estimated 10.001 s (115M iterations)
+Benchmarking safety/validate/numbers_checked: Analyzing

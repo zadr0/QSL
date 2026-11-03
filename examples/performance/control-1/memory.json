@@ -1,0 +1,14 @@
+{
+  "fixtureCount": 1024,
+  "peakJobBytes": 16990208,
+  "filter": "strings_utf8_1024_uniform",
+  "samples": 200,
+  "confidence": 0.99,
+  "warmupSeconds": 15,
+  "binary": "C:\\Users\\Guild\\Desktop\\dev-qsl\\examples\\target\\release\\deps\\showcase-535fe935f85f8b01.exe",
+  "limitGiB": 8,
+  "measurementSeconds": 10,
+  "exitCode": 0,
+  "sha256": "2FA4C2C5E28EEB993065CCF7B9A4540616B25F58AFA3542FA48B879A76EA9938",
+  "measuredCases": 4
+}

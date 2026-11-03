@@ -1,0 +1,81 @@
+&Optional1Default {
+    u32 id;
+    u8? f0;
+}
+
+&Optional1Table[opt_table] {
+    u32 id;
+    u8? f0;
+}
+
+&Optional2Default {
+    u32 id;
+    u8? f0;
+    u8? f1;
+}
+
+&Optional2Table[opt_table] {
+    u32 id;
+    u8? f0;
+    u8? f1;
+}
+
+&Optional3Default {
+    u32 id;
+    u8? f0;
+    u8? f1;
+    u8? f2;
+}
+
+&Optional3Table[opt_table] {
+    u32 id;
+    u8? f0;
+    u8? f1;
+    u8? f2;
+}
+
+&Optional5Default {
+    u32 id;
+    u8? f0;
+    u8? f1;
+    u8? f2;
+    u8? f3;
+    u8? f4;
+}
+
+&Optional5Table[opt_table] {
+    u32 id;
+    u8? f0;
+    u8? f1;
+    u8? f2;
+    u8? f3;
+    u8? f4;
+}
+
+&Optional10Default {
+    u32 id;
+    u8? f0;
+    u8? f1;
+    u8? f2;
+    u8? f3;
+    u8? f4;
+    u8? f5;
+    u8? f6;
+    u8? f7;
+    u8? f8;
+    u8? f9;
+}
+
+&Optional10Table[opt_table] {
+    u32 id;
+    u8? f0;
+    u8? f1;
+    u8? f2;
+    u8? f3;
+    u8? f4;
+    u8? f5;
+    u8? f6;
+    u8? f7;
+    u8? f8;
+    u8? f9;
+}

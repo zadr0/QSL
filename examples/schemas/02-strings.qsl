@@ -1,0 +1,6 @@
+&OwnedText { str(1..4096) text; }
+&BorrowedText[lifetime] { str(1..4096) text; }
+&GuardText { str(1..4096) text|binary_opt=guard|; }
+&InlineText { str(1..4096) text|binary_opt=inline|; }
+&CompressedText { str(1..4096) text|decompress=true|; }
+&FixedText { str(4) text; }

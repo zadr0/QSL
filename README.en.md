@@ -1,5 +1,7 @@
 # QSL — exchange of data described in advance
 
+[Examples RU/EN](examples/README.md) · [Fresh results](examples/PERFORMANCE.md) · [Interactive charts](examples/performance.html)
+
 [Русский](README.ru.md) · [Complete guide](docs/guide.en.md) · [Interactive documentation](docs/index.html?lang=en)
 
 **QSL is a data-description language and Rust code generator for binary exchange.** Its original task is to transfer data whose structure both sides know in advance: field types, valid values, lengths and serialization order.

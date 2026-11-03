@@ -56,3 +56,11 @@ Offline checks exercise every chart group/operation/metric, 200-point waveforms,
 The bilingual introduction is fully present in README.md. The documentation now includes an explicit scope/constraint explorer, build/runtime stages, a numeric wire-layout model, a string-memory explorer using existing measurements, actual optional-state frames and QPS group operands/restoration. No new timing data or performance estimates were introduced for these interface changes.
 
 [Reference vectors](docs/data/explorer-vectors.json) cover 32 generated dense records in three formats, four optional states and three malformed-frame errors. UI byte models are checked against these native Rust results. Model limits are labelled beside the controls; the browser is not presented as the native QSL generator. [Reference harness](reference/docs-lab/README.md).
+
+## Examples measurement / Замер примеров — 2026-11-04
+
+Seven executable examples and one Criterion suite are under examples/. There are 39 measured operations: 35 main cases plus four focused true-LZ controls after the phrase set selected raw fallback. Two source profiles remain explicit per row; codec-source hashes match and matched groups use one executable. No duplicate cases are pooled. [Results](examples/PERFORMANCE.md) · [Interactive report](examples/performance.html) · [Exact sources and raw samples](examples/performance/measurements.json).
+
+15 s warm-up, 10 s measurement, 200 samples, 99% CI; i5-7400, 24 GiB / 2133 MHz, Windows 11 Pro 10.0.26200, Rust 1.98.0 / LLVM 22.1.8. CPU mask 0x4, above-normal measuring thread. Both runs completed in an 8 GiB JobObject; maximum reported peak job memory was 16.20 MiB. This is a job-memory reading, not a claim of process RSS isolation.
+
+Validated: four example regression tests; all seven release programs; strict example Clippy and formatting; every Criterion fixture before timing. The report checks source SHA-256 before/after and the archived source bytes, 200 samples and 99% CI. Interactive checks cover every group, operation, contract, P/T, RU/EN and waveform. PNG/SVG were exported with Matplotlib; the PNG was visually inspected. Historical measurement tables remain unchanged.

@@ -1,0 +1,13 @@
+{
+  "filter": "",
+  "warmupSeconds": 15,
+  "sha256": "83DF235A128BA487B30C300913E40E8E35F4FCD2614C1C5D8C1056CD6B7798A4",
+  "exitCode": 0,
+  "limitGiB": 8,
+  "binary": "C:\\Users\\Guild\\Desktop\\dev-qsl\\examples\\target\\release\\deps\\showcase-535fe935f85f8b01.exe",
+  "samples": 200,
+  "peakJobBytes": 16539648,
+  "measurementSeconds": 10,
+  "fixtureCount": 1024,
+  "confidence": 0.99
+}

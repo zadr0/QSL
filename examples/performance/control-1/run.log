@@ -1,0 +1,45 @@
+strings_utf8_1024_uniform/read/String_checked
+                        time:   [2.2043 µs 2.2206 µs 2.2384 µs]
+Found 12 outliers among 200 measurements (6.00%)
+  1 (0.50%) low mild
+  6 (3.00%) high mild
+  5 (2.50%) high severe
+
+strings_utf8_1024_uniform/write/String_checked
+                        time:   [62.025 ns 62.794 ns 63.697 ns]
+Found 14 outliers among 200 measurements (7.00%)
+  7 (3.50%) low mild
+  1 (0.50%) high mild
+  6 (3.00%) high severe
+
+strings_utf8_1024_uniform/read/LZ_inline_checked
+                        time:   [4.8758 µs 4.9302 µs 5.0037 µs]
+Found 14 outliers among 200 measurements (7.00%)
+  8 (4.00%) high mild
+  6 (3.00%) high severe
+
+strings_utf8_1024_uniform/write/LZ_inline_checked
+                        time:   [172.95 ns 176.40 ns 180.56 ns]
+Found 33 outliers among 200 measurements (16.50%)
+  13 (6.50%) low mild
+  8 (4.00%) high mild
+  12 (6.00%) high severe
+
+
+QSL measuring thread affinity=0x4, priority=above-normal
+Benchmarking strings_utf8_1024_uniform/read/String_checked
+Benchmarking strings_utf8_1024_uniform/read/String_checked: Warming up for 15.000 s
+Benchmarking strings_utf8_1024_uniform/read/String_checked: Collecting 200 samples in estimated 10.041 s (4.5M iterations)
+Benchmarking strings_utf8_1024_uniform/read/String_checked: Analyzing
+Benchmarking strings_utf8_1024_uniform/write/String_checked
+Benchmarking strings_utf8_1024_uniform/write/String_checked: Warming up for 15.000 s
+Benchmarking strings_utf8_1024_uniform/write/String_checked: Collecting 200 samples in estimated 10.001 s (154M iterations)
+Benchmarking strings_utf8_1024_uniform/write/String_checked: Analyzing
+Benchmarking strings_utf8_1024_uniform/read/LZ_inline_checked
+Benchmarking strings_utf8_1024_uniform/read/LZ_inline_checked: Warming up for 15.000 s
+Benchmarking strings_utf8_1024_uniform/read/LZ_inline_checked: Collecting 200 samples in estimated 10.020 s (2.1M iterations)
+Benchmarking strings_utf8_1024_uniform/read/LZ_inline_checked: Analyzing
+Benchmarking strings_utf8_1024_uniform/write/LZ_inline_checked
+Benchmarking strings_utf8_1024_uniform/write/LZ_inline_checked: Warming up for 15.000 s
+Benchmarking strings_utf8_1024_uniform/write/LZ_inline_checked: Collecting 200 samples in estimated 10.001 s (50M iterations)
+Benchmarking strings_utf8_1024_uniform/write/LZ_inline_checked: Analyzing

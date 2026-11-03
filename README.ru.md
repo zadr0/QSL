@@ -1,5 +1,7 @@
 # QSL — обмен заранее описанными данными
 
+[Examples RU/EN](examples/README.md) · [Fresh results](examples/PERFORMANCE.md) · [Interactive charts](examples/performance.html)
+
 [English](README.en.md) · [Полное руководство](docs/guide.ru.md) · [Интерактивная документация](docs/index.html?lang=ru)
 
 **QSL — язык описания данных и генератор Rust-кода для бинарного обмена.** Исходная задача проекта — передавать данные, структура которых известна обеим сторонам заранее: типы полей, допустимые значения, длины и порядок записи.
