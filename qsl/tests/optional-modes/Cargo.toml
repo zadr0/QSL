@@ -1,0 +1,11 @@
+[package]
+name="qsl-optional-modes-control"
+version="0.1.0"
+edition="2021"
+publish=false
+[dependencies]
+qsl={path="../..",features=["rust-macros"]}
+[build-dependencies]
+qsl={path="../..",features=["rust-macros"]}
+[lib]
+path="lib.rs"

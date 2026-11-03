@@ -24,7 +24,7 @@ The shared base depends on every supplied byte. Inner lengths and zero-valued nu
 
 ## Prediction remains separate
 
-The opt_table graph uses sets of admissible lengths. In an event, presence may be forced, possible or impossible. I(L)=Σ(L>c_j) turns crossed boundaries into an integer. Ambiguity requires metadata. Packed frame length does not replace ordinary-message L.
+The predict_seq graph combined with opt_table uses sets of admissible lengths. In an event, presence may be forced, possible or impossible. I(L)=Σ(L>c_j) turns crossed boundaries into an integer. Ambiguity requires metadata. Packed frame length does not replace ordinary-message L.
 
 QPS invertibility and uniqueness of length interpretation are separate proof obligations with different inputs, invariants and limits.
 

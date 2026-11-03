@@ -23,7 +23,7 @@ Fields retain declaration order; they are not sorted by name. `&A{u32 id;}` and 
 
 - Ordered fields after DEQ expression evaluation and recursive Rust-template expansion.
 - Numeric types and domains, UTF-8 length bounds, array elements and lengths, padding and optional presence.
-- Value and metadata formats: compact, effective alignment, bitmap, opt_table, predict_seq, the legacy directory and state_bits.
+- Value and metadata formats: compact, effective alignment, bitmap, predict_seq, predict_seq+opt_table, the legacy directory and state_bits. Standalone opt_table preserves default bytes and is excluded as a reader-selection policy.
 - String compression, InlineString's dedicated length header, QPS selection and Q2/Q4/Q8/Q16. The separate QPB3 envelope is represented: the identity describes the schema's selected codec family, not one serialized object.
 - Used optional tags and tag width in the ordinary tagged format.
 
@@ -33,7 +33,7 @@ Fields retain declaration order; they are not sorted by name. `&A{u32 id;}` and 
 
 `String`, borrowed `&str`, `binary_opt=true`, `binary_opt=view` and `binary_opt=guard` normalize to the same UTF-8 descriptor when bounds match. `binary_opt=inline` remains distinct because it selects a different length header in this implementation. `decompress=true` selects a string codec; fixed strings below the compression threshold retain raw-format identity.
 
-`[qps]`, `[qps=Q16]` and `[quant=Q16]` are equivalent. `[opt_table,predict_seq]` has the same identity as `[opt_table]`: the hint changes execution of one format. The static `state_bits=Qn` table quantum is excluded, while the state_bits wire format remains included. Alignment without compact is excluded.
+`[qps]`, `[qps=Q16]` and `[quant=Q16]` are equivalent. `[opt_table]` now has the default hash. `[predict_seq,opt_table]` retains mode 3 and the hashes of former mixed `[opt_table]`. This changes attribute selection; add predict_seq for old frames. The static `state_bits=Qn` table quantum is excluded, while the state_bits wire format remains included. Alignment without compact is excluded.
 
 This is a conservative identity of the canonical format and domains, not a complete equivalence proof for arbitrary decoder implementations. Different domains remain different contracts even when particular values produce equal bytes.
 

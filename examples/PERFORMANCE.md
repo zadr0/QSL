@@ -1,12 +1,14 @@
 # Производительность примеров / Example performance
 
+> Уточнение режимов: `opt_table` в этом измеренном профиле — прежняя смешанная реализация. Её wire-формат сохраняет `[predict_seq,opt_table]`. Новый отдельный `[opt_table]` — диспетчеризация по тегам; прежнее ускорение к нему не относится. / Mode correction: measured `opt_table` is the former mixed implementation, whose wire format is retained by `[predict_seq,opt_table]`. New standalone `[opt_table]` is tag dispatch; the old speedup does not describe it.
+
 [Примеры / Examples](README.md) · [Интерактивный отчёт / Interactive report](performance.html) · [CSV](performance/measurements.csv) · [JSON](performance/measurements.json)
 
-Замер текущих примеров, без смешивания с прежними таблицами QSL. Windows 11 Pro x86-64 (10.0.26200), Intel Core i5-7400, 24 GiB / 2133 MHz; Rust 1.98.0 / LLVM 22.1.8; Criterion 0.8.2. Измерительный поток: CPU mask 0x4, above-normal; ОС не изолирована.
+Замер исходного профиля примеров, без смешивания с прежними таблицами QSL. Windows 11 Pro x86-64 (10.0.26200), Intel Core i5-7400, 24 GiB / 2133 MHz; Rust 1.98.0 / LLVM 22.1.8; Criterion 0.8.2. Измерительный поток: CPU mask 0x4, above-normal; ОС не изолирована.
 
 15 с прогрева + 10 с измерения на операцию, 200 выборок, 99% CI; 1024 заранее подготовленных записи. T — среднее Criterion в нс/операцию. M — исходные полезные байты, P=M/T — B/ns. Размер wire включает метаданные; он не используется как M.
 
-Current examples only; older QSL measurements are separate. Warm-up 15 s, measurement 10 s, 200 samples, 99% CI, 1024 prepared records. T is Criterion's arithmetic mean in ns/op, M original useful bytes, and P=M/T is B/ns. Wire bytes include metadata and do not replace M.
+Original measured example profile; older QSL measurements are separate. Warm-up 15 s, measurement 10 s, 200 samples, 99% CI, 1024 prepared records. T is Criterion's arithmetic mean in ns/op, M original useful bytes, and P=M/T is B/ns. Wire bytes include metadata and do not replace M.
 
 Owned reads include construction and destruction; writes reuse prepared output unless labelled heap. Checked includes the generated validation and resource limit. Trusted assumes a prevalidated matching frame. Borrowed results do not copy payload bytes: their P is not memcpy bandwidth. Validation-only is not a full decode. RT uses one live uncontended lease.
 

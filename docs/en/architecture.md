@@ -1,5 +1,7 @@
 > Historical reference. Current contracts: [architecture](../architecture.en.md), [API](../API.en.md), [measurements](../performance.en.md). The snapshot below does not define QPS v2.
 
+> The directory in this chapter is `opt_table=legacy`. Standalone `opt_table` now means tag-indexed reader dispatch; `predict_seq` means a length-derived index. [Current contract](../optional-modes.en.md).
+
 # QSL — Architecture and implementation reference
 
 > **Scope:** grounded in the supplied `QSL.rar`, `qsl-demo.rar`, `qsl-bench(1).rar` and benchmark exports. **Implemented**, **Constraint**, and **Planned** describe the inspected sources, not the broad design roadmap. QSL does not automatically make arbitrary network input safe.
@@ -59,7 +61,7 @@ Without bitmap, one optional uses a presence bit; multiple optionals use a count
 
 ### 3.4 Offset table cost
 
-For `opt_table` with `K≥2` optionals, directory bytes are `1+4K`: `count:u8`, followed by `K × u32 LE` offsets and optional payload. Zero means absent; positive entries store `payload_offset+1`. Indexed lookup is `O(1)`; decoding all `K` fields is `O(K)`. A table trades additional wire bytes for easier indexed access.
+For `opt_table=legacy` with `K≥2` optionals, directory bytes are `1+4K`: `count:u8`, followed by `K × u32 LE` offsets and optional payload. Zero means absent; positive entries store `payload_offset+1`. Indexed lookup is `O(1)`; decoding all `K` fields is `O(K)`. A table trades additional wire bytes for easier indexed access.
 
 ## 4. Schema attributes — implementation and limitations
 
@@ -67,7 +69,7 @@ For `opt_table` with `K≥2` optionals, directory bytes are `1+4K`: `count:u8`, 
 
 **Implemented.** `&Dense[compact]` makes constrained integers occupy their computed rank width rather than the full Rust storage width. Fixed compact paths can be emitted with literal masks/shifts and fully unrolled 64-bit word operations. Compact-generated types expose `comp_size()`, `comp_write()` and `unsafe comp_read()` alongside the serialization trait methods.
 
-**Constraints:** incompatible with the sequential optional formats `predict_seq` and `opt_table`. Variable-length fields still require length and payload processing; `compact` does not transparently compress mixed numeric-and-string objects. Values outside declared ranks violate the unchecked encoder contract. Additional bit operations may offset size benefits on particular hardware.
+**Constraints:** incompatible with the sequential optional formats `predict_seq` and `opt_table=legacy`. Variable-length fields still require length and payload processing; `compact` does not transparently compress mixed numeric-and-string objects. Values outside declared ranks violate the unchecked encoder contract. Additional bit operations may offset size benefits on particular hardware.
 
 **Exact example:** `u8(0..7)` = 3 bits, `u8(0..31)` = 5 bits, `u16(0..1023)` = 10 bits, total 18 bits and three wire bytes.
 
@@ -81,19 +83,19 @@ For `opt_table` with `K≥2` optionals, directory bytes are `1+4K`: `count:u8`, 
 
 **Implemented.** A bit is present for **every declared field**, including required fields; required bits must be one, unused trailing bits zero. The first declared field maps to `1u32<<31`, the second to `1u32<<30`, and so on; each `u32` is written little-endian.
 
-**Constraints:** costs four bytes per 32 fields, potentially excessive for one optional; incompatible with `predict_seq` and `opt_table`. Reordering fields changes bit identities. A bitmap indicates presence but does not automatically provide byte offsets into preceding variable-length fields.
+**Constraints:** costs four bytes per 32 fields, potentially excessive for one optional; incompatible with `predict_seq` and `opt_table=legacy`. Reordering fields changes bit identities. A bitmap indicates presence but does not automatically provide byte offsets into preceding variable-length fields.
 
 ### `predict_seq` — EOF-inferred single optional tail
 
 **Implemented.** `&SeqNumber[predict_seq] { u64 id; u32? extra; }` encodes `[required fields][optional field if present]`, with **no tag or presence header**. Wire is eight bytes when absent and twelve when present; presence is inferred after decoding the required prefix.
 
-**Constraints:** exactly **one optional**, after all required fields; incompatible with compact, bitmap and simultaneous opt_table. Present zero-byte fields are prohibited. A pointer-only `deserialize_unsafe(ptr)` intentionally panics: use length-aware `deserialize(&slice)` or `deserialize_from_raw_parts(ptr,len)`. `len>8` only detects an additional suffix; a truncated 9–11 byte message is **not** a valid `u32` suffix. The caller must validate complete trusted input. A source-level boolean comparison does not prove branchless assembly.
+**Constraints:** exactly **one optional**, after all required fields; incompatible with compact, bitmap and simultaneous opt_table=legacy. Present zero-byte fields are prohibited. A pointer-only `deserialize_unsafe(ptr)` intentionally panics: use length-aware `deserialize(&slice)` or `deserialize_from_raw_parts(ptr,len)`. `len>8` only detects an additional suffix; a truncated 9–11 byte message is **not** a valid `u32` suffix. The caller must validate complete trusted input. A source-level boolean comparison does not prove branchless assembly.
 
-### `opt_table` — indexed optional directory
+### `opt_table=legacy` — indexed optional directory
 
 **Implemented.** For two or more optional fields following all required fields, the writer emits `[count:u8][count×u32 LE offsets][present payload]`. Entries are zero for absent values, otherwise `offset+1` relative to optional payload. Indices are assigned in declaration order. `OptionalOffsets::parse/offset/field_tail` provides a metadata checker and direct lookups.
 
-**Constraints:** incompatible with compact, bitmap and predict_seq; requires all mandatory fields before any optional. Directory size `1+4K` bytes; offsets fit `u32`; current validation supports no more than 64 optional indices. `OptionalOffsets::parse` **does not check field codecs or UTF-8**. One optional under `opt_table` uses predict_seq-style EOF layout, not a directory; adding a second optional changes the format. For ≥2 optional fields, appended fields preserve existing indices; changing required layout, ordering or field type requires a schema revision.
+**Constraints:** incompatible with compact, bitmap and predict_seq; requires all mandatory fields before any optional. Directory size `1+4K` bytes; offsets fit `u32`; current validation supports no more than 64 optional indices. `OptionalOffsets::parse` **does not check field codecs or UTF-8**. One optional under `opt_table=legacy` uses predict_seq-style EOF layout, not a directory; adding a second optional changes the format. For ≥2 optional fields, appended fields preserve existing indices; changing required layout, ordering or field type requires a schema revision.
 
 ### `lifetime` — borrowing the input
 
@@ -162,7 +164,7 @@ Three constrained fields occupy 3+5+10 = 18 bits → 3 wire bytes. The generator
 &Tagged { u32 id; u16? a; u8? b; }
 ```
 
-`Packet` has one presence bit rounded to a byte in noncompact layout, followed by its required u64 and optionally u16. `Tagged` has count and assigned optional tags. When numeric payloads are tiny, metadata and conditional code can dominate the work. The indexed `opt_table` alternative trades a larger directory for direct access with many optional fields.
+`Packet` has one presence bit rounded to a byte in noncompact layout, followed by its required u64 and optionally u16. `Tagged` has count and assigned optional tags. When numeric payloads are tiny, metadata and conditional code can dominate the work. The indexed `opt_table=legacy` alternative trades a larger directory for direct access with many optional fields.
 
 ### `SeqNumber[predict_seq]` — one dependent tail
 
@@ -172,10 +174,10 @@ Three constrained fields occupy 3+5+10 = 18 bits → 3 wire bytes. The generator
 
 Wire size is **8 or 12** bytes. The length-aware read method determines optional presence from cursor position; missing fields decode as `None`, regardless of the default initializer. A nine-to-eleven-byte message is invalid and must not be passed to the unchecked decoder.
 
-### `TableFields[opt_table]` — offset directory
+### `TableFields[opt_table=legacy]` — offset directory
 
 ```qsl
-&TableFields[opt_table] {
+&TableFields[opt_table=legacy] {
     u64 id; u32? a;
     str?(0..100) text|decompress=true|;
     u16? b;
@@ -253,7 +255,7 @@ The k6/WebSocket comparison used **the earlier QSL string implementation**. Borr
 |---|---|---|---|
 | Owned UTF-8 read | heap allocation and copy | byte borrow, guard, lifetime | source must outlive borrowed result |
 | Large inline return | moving `InlineString<MAX>` | `deserialize_into` | aligned uninitialized final storage required |
-| Many optionals | tags/presence processing | `opt_table` | `1+4K` directory bytes |
+| Many optionals | tags/presence processing | `opt_table=legacy` | `1+4K` directory bytes |
 | Single optional suffix | presence header | `predict_seq` | precisely one nonzero-byte tail and a known input length |
 | Bounded integers | full Rust widths on wire | `compact` | bit operations and edge conditions remain |
 | Poorly compressible text | token search/header | QSL-LZ raw fallback | not all strings shrink or meet time targets |
@@ -265,7 +267,7 @@ Optimization is meaningful only in the context of **schema + operation + platfor
 
 ## 11. Implemented vs planned vs unsafe contracts
 
-**Implemented in supplied sources:** QSL/DEQ parsing, `QslInterpreter`, compact/alignment/lifetime/bitmap, predict_seq, opt_table, binary_opt, decompress, QslCustom, OptionalOffsets, Utf8Guard, InlineString, native SerOut, RawSocket and diagnostics helpers.
+**Implemented in supplied sources:** QSL/DEQ parsing, `QslInterpreter`, compact/alignment/lifetime/bitmap, predict_seq, opt_table=legacy, binary_opt, decompress, QslCustom, OptionalOffsets, Utf8Guard, InlineString, native SerOut, RawSocket and diagnostics helpers.
 
 **Not identical to implemented functionality:** `safety` is currently only a parsed flag in the inspected code; the proposed QslCustom structure macro is not present; the thread-local region distribution and atomic cluster with the `R` occupancy bitmask remain **architectural proposals**, not active Rust APIs.
 

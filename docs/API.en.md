@@ -2,7 +2,7 @@
 
 [Русский](API.ru.md) · [Architecture](architecture.en.md)
 
-624 explicitly public declarations and trait method signatures from current sources. This is a source index, not reflection of every platform export. native/Windows and rust-macros feature gates still apply; generator string literals are excluded. Paths/lines refer to the local snapshot in the [manifest](../reference/safety-source-manifest.json). The crate source and Cargo manifest are under qsl.
+625 explicitly public declarations and trait method signatures from current sources. This is a source index, not reflection of every platform export. native/Windows and rust-macros feature gates still apply; generator string literals are excluded. Paths/lines refer to the local snapshot in the [manifest](../reference/optional-modes-source-manifest.json). The crate source and Cargo manifest are under qsl.
 
 ## qsl/macros/src/lib.rs
 
@@ -394,97 +394,97 @@ pub fn build_qsl_files_with_rust( qsl_files: &[&str], deq_files: &[&str], rust_f
 
 ## qsl/src/interpreter.rs
 
-`qsl/src/interpreter.rs:18`
+`qsl/src/interpreter.rs:20`
 
 ```rust
 pub fn schema_maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {
 ```
 
-`qsl/src/interpreter.rs:130`
+`qsl/src/interpreter.rs:132`
 
 ```rust
 pub trait TypeInterpreter {
 ```
 
-`qsl/src/interpreter.rs:131`
+`qsl/src/interpreter.rs:133`
 
 ```rust
 fn type_name(&self, out: &mut Vec<u8>, borrowed: bool) -> QslResult<()>;
 ```
 
-`qsl/src/interpreter.rs:132`
+`qsl/src/interpreter.rs:134`
 
 ```rust
 fn size(&self, out: &mut Vec<u8>, expr: &str, width: usize, compact: bool) -> QslResult<()>;
 ```
 
-`qsl/src/interpreter.rs:133`
+`qsl/src/interpreter.rs:135`
 
 ```rust
 fn write(&self, out: &mut Vec<u8>, expr: &str) -> QslResult<()>;
 ```
 
-`qsl/src/interpreter.rs:134`
+`qsl/src/interpreter.rs:136`
 
 ```rust
 fn read(&self, out: &mut Vec<u8>, name: &str, borrowed: bool) -> QslResult<()>;
 ```
 
-`qsl/src/interpreter.rs:135`
+`qsl/src/interpreter.rs:137`
 
 ```rust
 fn comp_write(&self, out: &mut Vec<u8>, expr: &str, bits: usize) -> QslResult<()>;
 ```
 
-`qsl/src/interpreter.rs:136`
+`qsl/src/interpreter.rs:138`
 
 ```rust
 fn comp_read( &self, out: &mut Vec<u8>, name: &str, bits: usize, borrowed: bool, ) -> QslResult<()>;
 ```
 
-`qsl/src/interpreter.rs:2233`
+`qsl/src/interpreter.rs:2238`
 
 ```rust
 pub struct QslInterpreter {
 ```
 
-`qsl/src/interpreter.rs:2261`
+`qsl/src/interpreter.rs:2266`
 
 ```rust
 pub fn new() -> Self {
 ```
 
-`qsl/src/interpreter.rs:2265`
+`qsl/src/interpreter.rs:2270`
 
 ```rust
 pub fn generate(&mut self, schemas: &[QslSchema]) -> QslResult<()> {
 ```
 
-`qsl/src/interpreter.rs:2287`
+`qsl/src/interpreter.rs:2292`
 
 ```rust
 pub fn generate_parsed(&mut self, schemas: &[crate::compat::ParserQslSchema]) -> QslResult<()> {
 ```
 
-`qsl/src/interpreter.rs:2295`
+`qsl/src/interpreter.rs:2300`
 
 ```rust
 pub fn generate_field(&mut self, field: &QslField, borrowed: bool) -> QslResult<()> {
 ```
 
-`qsl/src/interpreter.rs:2678`
+`qsl/src/interpreter.rs:2683`
 
 ```rust
 pub fn generate_default(&mut self, schema: &QslSchema) -> QslResult<()> {
 ```
 
-`qsl/src/interpreter.rs:2689`
+`qsl/src/interpreter.rs:2694`
 
 ```rust
 pub fn generate_lifetime(&mut self, schema: &QslSchema) -> QslResult<()> {
 ```
 
-`qsl/src/interpreter.rs:2703`
+`qsl/src/interpreter.rs:2708`
 
 ```rust
 pub fn push(&self) -> std::io::Result<()> {
@@ -3632,19 +3632,19 @@ pub fn legacy_opt_table(&self) -> bool {
 pub fn predict_seq(&self) -> bool {
 ```
 
-`qsl/src/types.rs:438`
+`qsl/src/types.rs:437`
 
 ```rust
 pub fn state_bits(&self) -> bool {
 ```
 
-`qsl/src/types.rs:441`
+`qsl/src/types.rs:440`
 
 ```rust
 pub fn state_bits_quantum(&self) -> usize {
 ```
 
-`qsl/src/types.rs:444`
+`qsl/src/types.rs:443`
 
 ```rust
 pub fn predict_table(&self) -> bool {
@@ -3653,46 +3653,52 @@ pub fn predict_table(&self) -> bool {
 `qsl/src/types.rs:447`
 
 ```rust
+pub fn predicted_opt_table(&self) -> bool {
+```
+
+`qsl/src/types.rs:450`
+
+```rust
 pub fn sequential(&self) -> bool {
 ```
 
-`qsl/src/types.rs:451`
+`qsl/src/types.rs:453`
 
 ```rust
 pub fn lifetime(&self) -> bool {
 ```
 
-`qsl/src/types.rs:454`
+`qsl/src/types.rs:456`
 
 ```rust
 pub fn borrow_strings(&self) -> bool {
 ```
 
-`qsl/src/types.rs:457`
+`qsl/src/types.rs:459`
 
 ```rust
 pub fn optional_count(&self) -> usize {
 ```
 
-`qsl/src/types.rs:461`
+`qsl/src/types.rs:463`
 
 ```rust
 pub fn tag_bits(&self) -> usize {
 ```
 
-`qsl/src/types.rs:469`
+`qsl/src/types.rs:471`
 
 ```rust
 pub fn count_bits(&self) -> usize {
 ```
 
-`qsl/src/types.rs:478`
+`qsl/src/types.rs:480`
 
 ```rust
 pub fn bitmap_words(&self) -> usize {
 ```
 
-`qsl/src/types.rs:481`
+`qsl/src/types.rs:483`
 
 ```rust
 pub fn validate(&self) -> QslResult<()> {

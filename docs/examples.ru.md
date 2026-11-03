@@ -1,5 +1,7 @@
 # Примеры и свежие замеры
 
+> Исторический профиль: подпись `opt_table` здесь обозначает прежний смешанный граф длин. Его формат сохраняет `[predict_seq,opt_table]`; новый отдельный `[opt_table]` выбирает читателя по тегу. [Разделение и переход](optional-modes.ru.md).
+
 [English](examples.en.md) · [Examples](../examples/README.md) · [Interactive](../examples/performance.html) · [CSV](../examples/performance/measurements.csv)
 
 Семь запускаемых программ: базовый кодек, строки, optional-поля, QPS, RT, вложенные макросы/хэши и безопасные ошибки. Каждая использует реальные генерируемые типы. Команды запуска и схемы находятся в examples.

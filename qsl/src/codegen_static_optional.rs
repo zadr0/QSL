@@ -140,40 +140,13 @@ pub(super) fn read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
         )?;
     }
     ln(out,"let optional_len=len-reader.as_ptr().offset_from(bytes) as usize;let presence=Self::__qsl_optional_mask(optional_len,explicit_mask);let _=presence;");
-    for (j, (i, f)) in schema
-        .fields
-        .iter()
-        .enumerate()
-        .filter(|(_, f)| f.optional)
-        .enumerate()
-    {
-        if optional_scalar_read(
-            &f.data,
-            out,
-            &format!("field_{i}"),
-            &format!("(presence>>{j})&1!=0"),
-        )? {
-            continue;
-        }
-        ln(
-            out,
-            format!("let present=(presence>>{j})&1!=0;let field_{i}=if present {{"),
-        );
-        emit_unchecked_value(
-            &f.data,
-            out,
-            "value",
-            f.bits,
-            false,
-            schema.borrow_strings(),
-        )?;
-        ln(out, "Some(value)}else{None};");
+    tagged_optional_codegen::result(schema, out);
+    for (j, f) in schema.fields.iter().filter(|f| f.optional).enumerate() {
+        ln(out, format!("if (presence>>{j})&1!=0{{"));
+        tagged_optional_codegen::dispatch(schema, out, &(f.tag - 1).to_string(), "0");
+        ln(out, "}");
     }
-    ln(out, "Self{");
-    for (i, f) in schema.fields.iter().enumerate() {
-        ln(out, format!("{}:field_{i},", f.name));
-    }
-    ln(out, "} }");
+    ln(out, "result}");
     Ok(())
 }
 pub(super) fn validation(schema: &QslSchema, out: &mut String) -> QslResult<()> {

@@ -1,6 +1,6 @@
 # Current source and claim audit / Аудит текущего снимка
 
-Date / Дата: 2026-11-03. Scalar QPS revision 2, general byte envelope QPB3 revision 3. QPS is exact operand compression; opt_table predicts presence from ordinary-payload length. Both are optional; required fields must precede optional fields.
+Date / Дата: 2026-11-03. Scalar QPS revision 2, general byte envelope QPB3 revision 3. QPS is exact operand compression; predict_seq infers presence from length and opt_table selects readers by tag. Both are optional; required fields must precede optional fields.
 
 ## Restoration / Восстановление
 
@@ -64,3 +64,5 @@ Seven executable examples and one Criterion suite are under examples/. There are
 15 s warm-up, 10 s measurement, 200 samples, 99% CI; i5-7400, 24 GiB / 2133 MHz, Windows 11 Pro 10.0.26200, Rust 1.98.0 / LLVM 22.1.8. CPU mask 0x4, above-normal measuring thread. Both runs completed in an 8 GiB JobObject; maximum reported peak job memory was 16.20 MiB. This is a job-memory reading, not a claim of process RSS isolation.
 
 Validated: four example regression tests; all seven release programs; strict example Clippy and formatting; every Criterion fixture before timing. The report checks source SHA-256 before/after and the archived source bytes, 200 samples and 99% CI. Interactive checks cover every group, operation, contract, P/T, RU/EN and waveform. PNG/SVG were exported with Matplotlib; the PNG was visually inspected. Historical measurement tables remain unchanged.
+
+Current optional-mode separation: [source manifest](reference/optional-modes-source-manifest.json); old measured archives remain unchanged. predict_seq owns length inference; opt_table dispatches readers by schema tags.

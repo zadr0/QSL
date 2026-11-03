@@ -1,5 +1,7 @@
 # Examples and fresh measurements
 
+> Historical profile: `opt_table` here labels the former mixed length graph. `[predict_seq,opt_table]` preserves its format; new standalone `[opt_table]` dispatches readers by tag. [Separation and migration](optional-modes.en.md).
+
 [Русский](examples.ru.md) · [Examples](../examples/README.md) · [Interactive](../examples/performance.html) · [CSV](../examples/performance/measurements.csv)
 
 Seven executable programs cover basic I/O, strings, optional fields, QPS, RT, nested templates/hashes and checked errors. All use actual generated types; commands and schemas are under examples.

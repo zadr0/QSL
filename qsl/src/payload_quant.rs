@@ -142,7 +142,7 @@ impl PayloadQuantPlan {
         }
         let raw_header = if s.state_bits() {
             4
-        } else if s.opt_table() {
+        } else if s.predicted_opt_table() {
             crate::static_optional::StaticOptionalPlan::analyze(s)?.header_bytes()
         } else if s.predict_seq() || n == 0 {
             0
@@ -162,7 +162,7 @@ impl PayloadQuantPlan {
                 Some("no physical buffer saving after exact operands and padding; raw fallback");
             return Ok(p);
         }
-        if s.predict_seq() || s.state_bits() && s.state_bits_quantum() != 1 {
+        if s.predict_seq() && !s.opt_table() || s.state_bits() && s.state_bits_quantum() != 1 {
             return Err(QslError::InvalidSchema);
         }
         p.active = true;

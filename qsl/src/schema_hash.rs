@@ -280,11 +280,11 @@ fn descriptor(schema: &QslSchema, kind: SchemaHashKind) -> QslResult<(Vec<u8>, b
         schema.compact() && schema.flags & crate::FLAG_ALIGNMENT != 0,
     ));
     // Effective format, not a raw bit-mask of source attributes. predict_seq
-    // combined with opt_table is only an implementation hint. Q_table quantum
+    // controls length inference; opt_table alone only dispatches readers. Q_table quantum
     // changes the static lookup representation, never the wire bytes.
     let mode = if quant.active {
         6
-    } else if schema.opt_table() && !schema.state_bits() {
+    } else if schema.predicted_opt_table() {
         3
     } else if schema.state_bits() {
         4

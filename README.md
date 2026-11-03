@@ -49,12 +49,12 @@ QSL рассчитан на управляемый бинарный обмен: 
 | Задача | Возможности QSL |
 |---|---|
 | Уменьшить размер представления | Диапазоны значений, `compact`, строковый LZ и QPS |
-| Ускорить доступ к опциональным полям | `opt_table` и `predict_seq`, использующие известные размеры и длину данных |
+| Ускорить доступ к опциональным полям | `opt_table`: таблица читателей по тегам; `predict_seq`: индекс по длине |
 | Выбрать владение строкой | `String`, заимствованный UTF-8, копирующая обёртка или встроенная ёмкость; фиксированные строки — `[u8; N]` |
 | Управлять памятью | Переиспользуемые буферы, статические RT-пулы, нативные регионы и IPC |
 | Расширить схему | Rust-шаблоны полей и пользовательские кодеки |
 
-**QPS выполняет обратимое сжатие с точным восстановлением данных. Предиктование по длине относится к `opt_table` и `predict_seq`.** У этих механизмов разные задачи и ограничения.
+**QPS выполняет обратимое сжатие с точным восстановлением данных. `predict_seq` использует длину и числовой индекс; `opt_table` выбирает читателя по тегу.** У этих механизмов разные задачи и ограничения.
 
 Выгода каждой опции проверяется на конкретной схеме. Меньший кадр может требовать больше времени на восстановление, а заимствование и создание новой строки дают разные формы результата. Условия измерений, сравнения с обычными методами и ограничения приведены в отчёте.
 
@@ -117,12 +117,12 @@ Both sides agree on the schema and encoding settings. Changing field order, doma
 | Task | QSL facilities |
 |---|---|
 | Reduce representation size | Value domains, `compact`, string LZ and QPS |
-| Access optional fields efficiently | `opt_table` and `predict_seq`, using known sizes and data length |
+| Access optional fields efficiently | `opt_table`: tag-indexed readers; `predict_seq`: a length-derived index |
 | Choose string ownership | `String`, borrowed UTF-8, a copying wrapper or inline capacity; fixed strings use `[u8; N]` |
 | Control storage | Reusable buffers, static RT pools, native regions and IPC |
 | Extend a schema | Rust field templates and custom codecs |
 
-**QPS performs reversible compression with exact data restoration. Length-based prediction belongs to `opt_table` and `predict_seq`.** These mechanisms have separate responsibilities and limits.
+**QPS performs reversible compression with exact data restoration. `predict_seq` uses length and a numeric index; `opt_table` selects a reader by tag.** These mechanisms have separate responsibilities and limits.
 
 Each option must be assessed on a concrete schema. A smaller frame can take longer to restore; borrowing and constructing a new string produce different result forms. The report includes measurement conditions, baseline comparisons and limitations.
 
@@ -137,3 +137,7 @@ Each option must be assessed on a concrete schema. A smaller frame can take long
 ### Repository contents
 
 The standalone `qsl` crate includes source, internal attribute macros and a Cargo manifest. Documentation and fixtures are under `docs` and `reference`. [Checked schemas](docs/safety.en.md) · [Hashes](docs/schema-hashes.en.md).
+
+[Разделение predict_seq / opt_table и переход со старого формата](docs/optional-modes.ru.md).
+
+[Tag-only opt_table control / Контроль отдельного opt_table](examples/tag-dispatch/README.md).

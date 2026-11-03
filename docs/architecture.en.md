@@ -6,8 +6,10 @@ QSL separates build-time analysis from specialized execution: DEQ → parser →
 
 At runtime, the application selects ownership and regions, writes an agreed wire format and reads through checked or trusted APIs. [required][optional] ordering is mandatory; other modes are opt-in.
 
-QPS transforms numeric operands and restores data exactly. opt_table derives events from length. The general byte envelope restores the inner frame before ordinary field offsets apply.
+QPS transforms numeric operands and restores data exactly. predict_seq determines state from length; opt_table selects a reader by tag. The general byte envelope restores the inner frame before ordinary field offsets apply.
 
-The complete guide contains method contracts, every module, type mappings, option limits, storage costs and errors. The API index contains 624 public declarations for this snapshot; feature gates apply.
+The complete guide contains method contracts, every module, type mappings, option limits, storage costs and errors. The API index contains 625 public declarations for this snapshot; feature gates apply.
 
 Every schema generates checked methods. A native cursor validates the complete frame and aggregate budget before pointer decoding; QPS checks original length before restoration. [Contract](safety.en.md) · [Schema hashes](schema-hashes.en.md).
+
+[Optional modes and compatibility](optional-modes.en.md).

@@ -18,3 +18,5 @@ reference/schema-hash-control/** -text whitespace=cr-at-eol
 # Exact Criterion samples, manifests, archives and source hashes.
 examples/performance/** -text whitespace=-blank-at-eol,-blank-at-eof
 examples/run-output.txt -text
+
+examples/tag-dispatch/** -text whitespace=-blank-at-eol,-blank-at-eof

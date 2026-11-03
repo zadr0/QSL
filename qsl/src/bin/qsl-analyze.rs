@@ -24,7 +24,7 @@ fn json(s: &str) -> String {
 fn main() {
     if std::env::args().any(|a| a == "--capabilities") {
         println!(
-            "{{\"editorBundle\":1,\"wireLayout\":1,\"schemaHashVersion\":1,\"checkedSchemas\":1,\"generatedRust\":1,\"qpsCodecRevision\":2,\"qpsByteCodecRevision\":3,\"rustMacros\":{}}}",
+            "{{\"editorBundle\":1,\"wireLayout\":1,\"schemaHashVersion\":1,\"checkedSchemas\":1,\"optionalModes\":2,\"generatedRust\":1,\"qpsCodecRevision\":2,\"qpsByteCodecRevision\":3,\"rustMacros\":{}}}",
             cfg!(feature = "rust-macros")
         );
         return;
@@ -261,10 +261,10 @@ fn main() {
             .collect::<Vec<_>>()
             .join(",");
         let static_mode = if quant.active && s.opt_table() {
-            "packed bit-prefix Boolean graph"
+            "packed numeric kernel; no wire tags"
         } else if s.state_bits() && s.opt_table() {
-            "legacy descriptor graph driven by D"
-        } else if s.opt_table() {
+            "descriptor presence with tag-indexed reader dispatch"
+        } else if s.predicted_opt_table() {
             match qsl::static_optional::StaticOptionalPlan::analyze(&s)
                 .expect("validated optional plan")
                 .presence
@@ -276,14 +276,18 @@ fn main() {
                 qsl::static_optional::StaticPresence::Mask { .. } => {
                     "static prefix graph with presence bits; no wire directory"
                 }
-                qsl::static_optional::StaticPresence::Graph(_)=>"payload-length event graph; conditional tag reads; native lengths outside payload",
+                qsl::static_optional::StaticPresence::Graph(_) => {
+                    "payload-length event graph plus tag-indexed reader dispatch"
+                }
             }
+        } else if s.opt_table() {
+            "tag-indexed reader dispatch; default wire format"
         } else if s.flags & qsl::FLAG_OPT_TABLE_LEGACY != 0 {
             "legacy wire offset directory"
         } else {
             "disabled"
         };
-        let length_events = if s.opt_table() && !s.state_bits() && !quant.active {
+        let length_events = if s.predicted_opt_table() && !quant.active {
             match qsl::static_optional::StaticOptionalPlan::analyze(&s).expect("validated length plan").presence{
             qsl::static_optional::StaticPresence::Graph(g)=>format!("{{\"metadataBytes\":{},\"tagBytes\":{},\"maxPayload\":{},\"events\":[{}]}}",g.metadata_bytes,g.tag_bytes,g.max_payload,g.nodes.iter().map(|n|format!("{{\"start\":{},\"end\":{},\"forced\":{},\"possible\":{},\"valid\":{}}}",n.start,n.end,mask_json(n.forced),mask_json(n.possible),n.valid)).collect::<Vec<_>>().join(",")),
             _=>"null".into()
@@ -292,11 +296,13 @@ fn main() {
             "null".into()
         };
         let wire_layout = editor_layout::describe(&s);
-        let hint = s.opt_table() && s.flags & qsl::FLAG_PREDICT_SEQ != 0;
+        let prediction = s.predict_seq();
+        let dispatch = s.opt_table() && !quant.active;
+        let hint = false;
         let byte_maximum = maximum
             .and_then(|n| n.checked_add(qsl::qps_bytes::BYTE_FRAME_HEADER))
             .map_or("null".to_string(), |n| n.to_string());
-        let payload=format!("\"qpsByteCodecRevision\":3,\"qpsByteHeader\":16,\"qpsByteMaximum\":{byte_maximum},\"qpsByteAPI\":{safety},\"stateBits\":{},\"stateBitsQuantum\":{},\"qpsCodecRevision\":2,\"payloadQuantRequested\":{},\"payloadQuantActive\":{},\"payloadQuantum\":{},\"payloadPadding\":{padding},\"payloadMaximum\":{},\"rawMaximum\":{},\"payloadReason\":{},\"staticOptional\":{},\"lengthGraph\":{length_events},\"predictSequenceHint\":{hint}",s.state_bits(),s.state_bits_quantum(),s.quant_requested(),quant.active,quant.quantum,quant.max_bytes,quant.raw_max_bytes.map_or("null".into(),|x|x.to_string()),json(quant.reason.unwrap_or("exact quotient and remainder; separate native restoration")),json(static_mode));
+        let payload=format!("\"qpsByteCodecRevision\":3,\"qpsByteHeader\":16,\"qpsByteMaximum\":{byte_maximum},\"qpsByteAPI\":{safety},\"stateBits\":{},\"stateBitsQuantum\":{},\"qpsCodecRevision\":2,\"payloadQuantRequested\":{},\"payloadQuantActive\":{},\"payloadQuantum\":{},\"payloadPadding\":{padding},\"payloadMaximum\":{},\"rawMaximum\":{},\"payloadReason\":{},\"staticOptional\":{},\"lengthGraph\":{length_events},\"predictSequenceHint\":{hint},\"predictSequence\":{prediction},\"tagDispatch\":{dispatch}",s.state_bits(),s.state_bits_quantum(),s.quant_requested(),quant.active,quant.quantum,quant.max_bytes,quant.raw_max_bytes.map_or("null".into(),|x|x.to_string()),json(quant.reason.unwrap_or("exact quotient and remainder; separate native restoration")),json(static_mode));
         rows.push(format!("{{\"maxDataSize\":{maximum_data},{hash_json},\"wireLayout\":{wire_layout},\"name\":{},\"maximum\":{},\"rtEligible\":{eligible},\"rtReason\":{},\"strings\":[{strings}],\"rtEnabled\":{},\"slots\":{slots},\"qps\":{},\"quantum\":{},\"dBits\":{bits},\"indexBytes\":{index},\"plainIndexBytes\":{plain},\"reason\":{},\"inline\":{},\"optionalCount\":{},\"fieldCount\":{},\"structureMacro\":{structure_macro},\"safety\":{safety},\"optionalTailRequired\":{optional_tail},\"suggestFixedPrefix\":{suggest},{payload}}}",json(&s.name),maximum.map_or("null".into(),|x|x.to_string()),json(rt_reason),rt&&eligible,s.qps(),if s.qps(){s.quantum()}else{s.state_bits_quantum()},json(reason),json(inline),s.optional_count(),s.fields.len()));
     }
     println!(

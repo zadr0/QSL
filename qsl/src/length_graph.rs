@@ -253,7 +253,7 @@ mod tests {
     fn many_equal_scalars_need_no_exponential_state_enumeration() {
         for count in [13, 32, 64] {
             let fields = (0..count).map(|n| format!("u8? p{n};")).collect::<String>();
-            let p = graph(&format!("&P[opt_table]{{{fields}}}"));
+            let p = graph(&format!("&P[predict_seq,opt_table]{{{fields}}}"));
             assert_eq!(p.nodes.len(), 3);
             assert_eq!(p.metadata_bytes, (count + 7) >> 3);
             assert_eq!(

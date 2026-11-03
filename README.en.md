@@ -45,12 +45,12 @@ Both sides agree on the schema and encoding settings. Changing field order, doma
 | Task | QSL facilities |
 |---|---|
 | Reduce representation size | Value domains, `compact`, string LZ and QPS |
-| Access optional fields efficiently | `opt_table` and `predict_seq`, using known sizes and data length |
+| Access optional fields efficiently | `opt_table`: tag-indexed readers; `predict_seq`: a length-derived index |
 | Choose string ownership | `String`, borrowed UTF-8, a copying wrapper or inline capacity; fixed strings use `[u8; N]` |
 | Control storage | Reusable buffers, static RT pools, native regions and IPC |
 | Extend a schema | Rust field templates and custom codecs |
 
-**QPS performs reversible compression with exact data restoration. Length-based prediction belongs to `opt_table` and `predict_seq`.** These mechanisms have separate responsibilities and limits.
+**QPS performs reversible compression with exact data restoration. `predict_seq` uses length and a numeric index; `opt_table` selects a reader by tag.** These mechanisms have separate responsibilities and limits.
 
 Each option must be assessed on a concrete schema. A smaller frame can take longer to restore; borrowing and constructing a new string produce different result forms. The report includes measurement conditions, baseline comparisons and limitations.
 
@@ -65,3 +65,7 @@ Each option must be assessed on a concrete schema. A smaller frame can take long
 ## Repository contents
 
 The standalone `qsl` crate includes source, internal attribute macros and a Cargo manifest. Documentation and fixtures are under `docs` and `reference`. [Checked schemas](docs/safety.en.md) · [Hashes](docs/schema-hashes.en.md).
+
+[predict_seq / opt_table separation and migration](docs/optional-modes.en.md).
+
+[Tag-only opt_table control / Контроль отдельного opt_table](examples/tag-dispatch/README.md).

@@ -65,7 +65,7 @@ fn bounds(t: &QslType, raw: bool) -> (Option<usize>, Option<usize>) {
 pub(super) fn describe(s: &QslSchema) -> String {
     let quant = qsl::payload_quant::PayloadQuantPlan::analyze(s).ok();
     let packed = quant.as_ref().is_some_and(|q| q.active);
-    let graph = if s.opt_table() && !s.state_bits() && !packed {
+    let graph = if s.predicted_opt_table() && !packed {
         qsl::static_optional::StaticOptionalPlan::analyze(s).ok()
     } else {
         None

@@ -14,7 +14,7 @@ QSL is a codec constructor shaped by the project's conditions. Developers establ
 
 Additional mechanisms and attributes are opt-in. Field order is always mandatory: required fields first, optional fields last. Changing order, ranges, codec, quantum or configuration may change wire format. Both peers must agree on the representation.
 
-General QPS restores the complete supplied payload. The scalar specialization packs statically bounded numeric ranks. Length prediction belongs to opt_table and predict_seq. Quantization itself does not determine which fields are present.
+General QPS restores the complete supplied payload. The scalar specialization packs statically bounded numeric ranks. Length prediction belongs to predict_seq; opt_table selects a reader by tag. Quantization itself does not determine which fields are present.
 
 ## Minimal integration
 
@@ -35,7 +35,7 @@ include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
 }
 ```
 
-Every schema supplies checked entry points; safety remains a compatibility attribute. opt_table selects a static optional-tail graph. These attributes do not make an arbitrary pointer safe or remove a custom codec's obligations.
+Every schema supplies checked entry points; safety remains a compatibility attribute. opt_table selects optional readers by tag; predict_seq,opt_table enables the length graph. These attributes do not make an arbitrary pointer safe or remove a custom codec's obligations.
 
 ## Build pipeline
 
@@ -102,27 +102,29 @@ The default modifier supplies numeric initialization for Rust Default; it does n
 
 optionals=bitmap allocates one bit per declared field, including required fields, using complete little-endian u32 words. Required-field bits must be set. Four metadata bytes can cost more than the default header for a small schema. Field order determines bit positions.
 
-## predict_seq
+## predict_seq: a length-derived index
 
-Standalone predict_seq uses total frame length to handle a sequential optional tail. For a single optional, the end of the required prefix separates absence from presence. Multiple fixed sizes require unique subset sums within the analysis budget; ambiguous states are not guessed.
+`predict_seq` determines field presence from length; it does not choose readers by tag. Standalone mode writes no tags: one optional uses EOF, while several optionals use a numeric index into a static table of unique fixed-size subset sums. Ambiguous sums, a zero-size single optional and analysis-budget overflow are rejected. Input length is required; `deserialize_unsafe(ptr)` without length is unsupported.
 
-A present zero-byte value cannot be distinguished from an absent one using EOF alone. Use a length-aware decoder. deserialize_unsafe(ptr) without length is unsupported for this layout; that limitation is not a safe decoder for arbitrary bytes.
+## opt_table: reader selection by tag
 
-With opt_table,predict_seq, the attribute chooses direct numeric expressions instead of an indirect event function call. Bytes retain the opt_table format. Rust inline policy is independent.
+`opt_table` generates a static reader-function table indexed by the actual schema tag: `readers[tag - 1]`. This is not the optional ordinal: required-field tags leave empty entries. Before trusted dispatch, the checked cursor validates allowed tags, order, duplicates, bounds and values across the complete frame. A reader returns its consumed byte count so the cursor advances without computing field length again.
 
-## opt_table: length prediction
+Standalone `[opt_table]` preserves the default wire format and hashes. For several optionals, decoding reads the count and packed tags from the header, then dispatches readers for present fields. A single optional needs only presence; its tag is already known from the schema. No table is allocated per message. The table has `max_tag` Option-function-pointer entries; each entry occupies one machine pointer on x86-64. A table does not guarantee a speedup: indirect calls and result preparation have costs.
 
-opt_table stores critical boundaries and functions next to the generated type. Tables are not allocated per message. After consuming the required portion and known metadata span, decoding derives optional payload length L.
+## predict_seq + opt_table: preserved length graph
 
-The event index is I(L)=sum((L>c_j) as usize). Each event describes forced and possible fields. A deterministic event does not read tags. Ambiguity reads only necessary metadata; skipping a tag read does not delete its reserved wire byte.
+`[predict_seq,opt_table]` preserves the wire bytes and hashes of the former mixed `[opt_table]` implementation. `predict_seq` determines the length event; `opt_table` supplies the reader for each resolved field. These responsibilities are separate.
 
-For two optional u8 fields, I=(L>0)+(L>1). L=0 means neither is present, L=2 means both, and L=1 must distinguish a from b. For string ranges 3..33 and 1..255, some intervals force description while others remain ambiguous. Boundaries and accounting come from the schema, not a manually selected number 34.
+After metadata and required fields, decoding derives optional payload length L. The numeric index is `I(L) = sum((L > c_j) as usize)`. Events describe forced and possible fields. For two optional u8 fields, `I=(L>0)+(L>1)`: L=0 means neither, L=2 means both, and L=1 requires metadata to distinguish a from b. Skipping a metadata read does not remove its reserved wire byte. When a tag is not separately stored, the generator knows it from the resolved field position.
 
-CRITICAL_POINTS stores boundaries, EVENT_TABLE handlers and OFFSET_TABLE offset functions. Adjacent equivalent intervals merge. No dense array per possible payload byte is necessary. General analysis is limited to 12 fields / 65535 payload bytes; equal fixed widths support up to 64 fields. Unsupported cases select an explicit fallback.
+For string ranges 3..33 and 1..255, boundaries follow from the ranges. CRITICAL_POINTS and the event graph belong to `predict_seq`; OPT_TABLE dispatches readers. General graph analysis supports 12 fields and 65535 payload bytes; equal fixed widths support up to 64 fields. Unsupported graphs fall back to checked EOF, an exact length table, or an explicit presence mask. This is not a promise of a branch-free complete decoder.
 
-opt_table=legacy preserves the older per-message offset directory as a distinct format. A quantized outer payload must restore before ordinary offsets can be applied to its fields.
+`opt_table=legacy` is the separate older wire offset directory. The scalar QPS specialization and its prepared kernel contain no ordinary field tags and use their own bit offsets; `opt_table` does not force them through a byte reader table. With `state_bits`, D supplies presence while optional reads use the reader table. General outer QPS restores the inner frame first.
 
-The preceding snapshot's baseline control already found read regressions at some N. A table is not assumed faster merely because it exists. The fresh survey separately measures a schema with unique subset sums.
+### Migration and previous measurements
+
+To retain an old `[opt_table]` frame, select `[predict_seq,opt_table]` on both peers. New standalone `[opt_table]` matches default, but generally differs from the former mixed format. There is no automatic version detection. Previous measurements labelled opt_table, including the 1.46–1.73x example speedups, measured the mixed length graph. They are not measurements of the new tag table; original JSON, sources and values remain unchanged.
 
 ## Strings, UTF-8 and ownership
 
@@ -319,7 +321,7 @@ The API index lists public names, signatures, source paths and lines for this sn
 
 ## Limits, proofs and development
 
-Lean4 checks arithmetic obligations for ranks, quotient/remainder pairs, non-overlapping radix groups and opt_table boundary indices. Prediction theorems are not a property of QPS. The Lean file does not verify the entire Rust implementation, LLVM, allocator or IPC.
+Lean4 checks arithmetic obligations for ranks, quotient/remainder pairs, non-overlapping radix groups and predict_seq boundary indices. Prediction theorems are not a property of QPS. The Lean file does not verify the entire Rust implementation, LLVM, allocator or IPC.
 
 General-QPS tests include every byte value, short tails, UTF-8, high bases, repetition, mutated frames, invalid widths/lengths and restoration of multiple types. These tests do not make arbitrary custom unsafe code sound.
 
@@ -374,3 +376,5 @@ File and socket operations also use std::io::Error. Schema validation does not a
 ## Executable examples
 
 [Seven programs and commands](../examples/README.md) · [39 fresh measurements](examples.en.md) · [Charts and waveforms](../examples/performance.html). Timings retain their explicit source snapshots; historical tables are not replaced.
+
+Standalone tag dispatch inherits `optional_count * tag_bits <= 64`; compact and bitmap cannot be combined with opt_table. A wider optional tail needs a compatible combined/state_bits/legacy layout within that layout’s own limits.

@@ -1,5 +1,7 @@
 # QSL feature measurements
 
+> Historical profile: `opt_table` here labels the former mixed length graph. `[predict_seq,opt_table]` preserves its format; new standalone `[opt_table]` dispatches readers by tag. [Separation and migration](optional-modes.en.md).
+
 Measurements below belong to their recorded snapshots before universal checking and MAX_DATA_SIZE. They are not new timings of the current checked API. [Current contract](safety.en.md).
 
 

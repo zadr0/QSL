@@ -1,5 +1,7 @@
 > Historical reference. Current contracts: [architecture](../architecture.en.md), [API](../API.en.md), [measurements](../performance.en.md). The snapshot below does not define QPS v2.
 
+> The directory in this chapter is `opt_table=legacy`. Standalone `opt_table` now means tag-indexed reader dispatch; `predict_seq` means a length-derived index. [Current contract](../optional-modes.en.md).
+
 # Generated QSL methods — implementation walkthrough
 
 The fragments below are **explanatory pseudocode**, not literal compiler output from a particular `qsl_gen.rs` build. Actual dispatch is implemented in `qsl/src/interpreter.rs` based on all schema properties. Runtime method names and trait contracts are grounded in the supplied source.
@@ -52,7 +54,7 @@ let extra = if input.len() > 8 {
 
 For `len=9..11`, a naive presence test would lead to an incomplete field. Trusted decode **requires** an already validated record; checked network decode needs an explicit full-length check. Pointer-only `deserialize_unsafe(ptr)` intentionally panics because presence cannot be determined without a length.
 
-## `TableFields[opt_table]`: directory and indexed read
+## `TableFields[opt_table=legacy]`: directory and indexed read
 
 ```text
 required u64 id | count=3 | u32 offset[0] | u32 offset[1] | u32 offset[2] | payload

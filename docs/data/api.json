@@ -506,7 +506,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 18,
+    "line": 20,
     "kind": "fn",
     "signature": "pub fn schema_maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {",
     "doc": ""
@@ -514,7 +514,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 130,
+    "line": 132,
     "kind": "trait",
     "signature": "pub trait TypeInterpreter {",
     "doc": ""
@@ -522,7 +522,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 131,
+    "line": 133,
     "kind": "trait method",
     "signature": "fn type_name(&self, out: &mut Vec<u8>, borrowed: bool) -> QslResult<()>;",
     "doc": ""
@@ -530,7 +530,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 132,
+    "line": 134,
     "kind": "trait method",
     "signature": "fn size(&self, out: &mut Vec<u8>, expr: &str, width: usize, compact: bool) -> QslResult<()>;",
     "doc": ""
@@ -538,7 +538,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 133,
+    "line": 135,
     "kind": "trait method",
     "signature": "fn write(&self, out: &mut Vec<u8>, expr: &str) -> QslResult<()>;",
     "doc": ""
@@ -546,7 +546,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 134,
+    "line": 136,
     "kind": "trait method",
     "signature": "fn read(&self, out: &mut Vec<u8>, name: &str, borrowed: bool) -> QslResult<()>;",
     "doc": ""
@@ -554,7 +554,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 135,
+    "line": 137,
     "kind": "trait method",
     "signature": "fn comp_write(&self, out: &mut Vec<u8>, expr: &str, bits: usize) -> QslResult<()>;",
     "doc": ""
@@ -562,7 +562,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 136,
+    "line": 138,
     "kind": "trait method",
     "signature": "fn comp_read( &self, out: &mut Vec<u8>, name: &str, bits: usize, borrowed: bool, ) -> QslResult<()>;",
     "doc": ""
@@ -570,7 +570,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2233,
+    "line": 2238,
     "kind": "struct",
     "signature": "pub struct QslInterpreter {",
     "doc": ""
@@ -578,7 +578,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2261,
+    "line": 2266,
     "kind": "fn",
     "signature": "pub fn new() -> Self {",
     "doc": ""
@@ -586,7 +586,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2265,
+    "line": 2270,
     "kind": "fn",
     "signature": "pub fn generate(&mut self, schemas: &[QslSchema]) -> QslResult<()> {",
     "doc": ""
@@ -594,7 +594,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2287,
+    "line": 2292,
     "kind": "fn",
     "signature": "pub fn generate_parsed(&mut self, schemas: &[crate::compat::ParserQslSchema]) -> QslResult<()> {",
     "doc": ""
@@ -602,7 +602,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2295,
+    "line": 2300,
     "kind": "fn",
     "signature": "pub fn generate_field(&mut self, field: &QslField, borrowed: bool) -> QslResult<()> {",
     "doc": ""
@@ -610,7 +610,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2678,
+    "line": 2683,
     "kind": "fn",
     "signature": "pub fn generate_default(&mut self, schema: &QslSchema) -> QslResult<()> {",
     "doc": ""
@@ -618,7 +618,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2689,
+    "line": 2694,
     "kind": "fn",
     "signature": "pub fn generate_lifetime(&mut self, schema: &QslSchema) -> QslResult<()> {",
     "doc": ""
@@ -626,7 +626,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2703,
+    "line": 2708,
     "kind": "fn",
     "signature": "pub fn push(&self) -> std::io::Result<()> {",
     "doc": ""
@@ -4762,7 +4762,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 438,
+    "line": 437,
     "kind": "fn",
     "signature": "pub fn state_bits(&self) -> bool {",
     "doc": ""
@@ -4770,7 +4770,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 441,
+    "line": 440,
     "kind": "fn",
     "signature": "pub fn state_bits_quantum(&self) -> usize {",
     "doc": ""
@@ -4778,7 +4778,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 444,
+    "line": 443,
     "kind": "fn",
     "signature": "pub fn predict_table(&self) -> bool {",
     "doc": ""
@@ -4788,13 +4788,21 @@
     "path": "qsl/src/types.rs",
     "line": 447,
     "kind": "fn",
+    "signature": "pub fn predicted_opt_table(&self) -> bool {",
+    "doc": ""
+  },
+  {
+    "module": "types",
+    "path": "qsl/src/types.rs",
+    "line": 450,
+    "kind": "fn",
     "signature": "pub fn sequential(&self) -> bool {",
     "doc": ""
   },
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 451,
+    "line": 453,
     "kind": "fn",
     "signature": "pub fn lifetime(&self) -> bool {",
     "doc": ""
@@ -4802,7 +4810,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 454,
+    "line": 456,
     "kind": "fn",
     "signature": "pub fn borrow_strings(&self) -> bool {",
     "doc": ""
@@ -4810,7 +4818,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 457,
+    "line": 459,
     "kind": "fn",
     "signature": "pub fn optional_count(&self) -> usize {",
     "doc": ""
@@ -4818,7 +4826,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 461,
+    "line": 463,
     "kind": "fn",
     "signature": "pub fn tag_bits(&self) -> usize {",
     "doc": ""
@@ -4826,7 +4834,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 469,
+    "line": 471,
     "kind": "fn",
     "signature": "pub fn count_bits(&self) -> usize {",
     "doc": ""
@@ -4834,7 +4842,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 478,
+    "line": 480,
     "kind": "fn",
     "signature": "pub fn bitmap_words(&self) -> usize {",
     "doc": ""
@@ -4842,7 +4850,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 481,
+    "line": 483,
     "kind": "fn",
     "signature": "pub fn validate(&self) -> QslResult<()> {",
     "doc": ""

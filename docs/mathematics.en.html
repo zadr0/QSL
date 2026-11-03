@@ -11,7 +11,7 @@
 <p>Packed candidate size is C=16+Σ(1+ceil(n·B/8)). Select packed when C&lt;M_input; otherwise raw uses M_input+16. The header stores original length without quantization. Header cost must not be removed to improve the reported ratio.</p>
 <p>The shared base depends on every supplied byte. Inner lengths and zero-valued numeric bytes can change the text payload base and eliminate savings. UTF-8 alone and whole records are therefore compared separately. Repetition does not guarantee success for this codec; LZ exploits different redundancy.</p>
 <h2 id="mathematics-en-5">Prediction remains separate</h2>
-<p>The opt_table graph uses sets of admissible lengths. In an event, presence may be forced, possible or impossible. I(L)=Σ(L&gt;c_j) turns crossed boundaries into an integer. Ambiguity requires metadata. Packed frame length does not replace ordinary-message L.</p>
+<p>The predict_seq graph combined with opt_table uses sets of admissible lengths. In an event, presence may be forced, possible or impossible. I(L)=Σ(L&gt;c_j) turns crossed boundaries into an integer. Ambiguity requires metadata. Packed frame length does not replace ordinary-message L.</p>
 <p>QPS invertibility and uniqueness of length interpretation are separate proof obligations with different inputs, invariants and limits.</p>
 <h2 id="mathematics-en-6">Performance index P</h2>
 <p>P=M/T: M is useful original bytes and T is ns/operation. Variable optionals use mean M under the same state distribution. P does not replace encoded size or native object size. A borrowed view may avoid copying most payload; its high P describes view creation.</p>

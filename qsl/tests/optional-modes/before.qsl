@@ -1,0 +1,4 @@
+&Pair[opt_table,safety]{u32 id;u8? a;u8? b;}
+&Unique[opt_table,safety]{u32 id;u8? a;u16? b;u32? c;}
+&Text[opt_table,safety]{u32 id;str?(3..33) name;str?(1..255) description;}
+&Fallback[opt_table,safety]{u32 id;array<u8>?(0..16) data;u8? flag;}

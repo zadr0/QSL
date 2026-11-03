@@ -28,8 +28,8 @@
     "Reversible QPS groups"
   ],
   "eventDemo": [
-    "Предиктование opt_table",
-    "opt_table prediction"
+    "predict_seq + opt_table: граф длины",
+    "predict_seq + opt_table: length graph"
   ],
   "api": [
     "API всего QSL",
@@ -312,8 +312,8 @@
     "Separate mechanisms"
   ],
   "cardCodecText": [
-    "compact и QPS упаковывают значения; opt_table анализирует длину. Проверки включаются отдельно.",
-    "compact and QPS pack values; opt_table analyzes lengths. Validation is selected separately."
+    "QPS упаковывает значения; predict_seq анализирует длину; opt_table выбирает читателя по тегу.",
+    "QPS packs values; predict_seq analyzes length; opt_table selects readers by tag."
   ],
   "mode_default": [
     "обычный режим",
@@ -584,8 +584,8 @@
     "Analysis precedes execution"
   ],
   "pipeText1": [
-    "Генератор вычисляет битовые ширины, допустимость сочетаний и известные размеры. Для opt_table строятся критические длины и функции событий.",
-    "The generator computes bit widths, option compatibility and known sizes. opt_table builds critical lengths and event functions."
+    "Генератор вычисляет ширины и размеры. predict_seq строит индекс длины; opt_table — таблицу читателей по тегам.",
+    "The generator computes widths and sizes. predict_seq builds a length index; opt_table builds tag-indexed readers."
   ],
   "pipeTitle2": [
     "Специализированные операции",

@@ -1,0 +1,506 @@
+[
+  {
+    "maxDataSize": 65535,
+    "hashes": {
+      "version": 1,
+      "algorithm": "xxHash",
+      "bits": 64,
+      "strict": "6237b4fafef9fb21",
+      "light": "41705fb4b84c28cc",
+      "complete": true
+    },
+    "wireLayout": {
+      "unit": "byte",
+      "headerMinBits": 8,
+      "headerMaxBits": 8,
+      "minimumBytes": 5,
+      "nativeSize": null,
+      "fields": [
+        {
+          "name": "id",
+          "rustType": "u32",
+          "optional": false,
+          "tag": 1,
+          "minBits": 32,
+          "maxBits": 32,
+          "offsetMinBits": 8,
+          "offsetMaxBits": 8,
+          "offsetExpr": "H"
+        },
+        {
+          "name": "a",
+          "rustType": "Option<u8>",
+          "optional": true,
+          "tag": 2,
+          "minBits": 8,
+          "maxBits": 8,
+          "offsetMinBits": 40,
+          "offsetMaxBits": 40,
+          "offsetExpr": "H + size(id)"
+        },
+        {
+          "name": "b",
+          "rustType": "Option<u8>",
+          "optional": true,
+          "tag": 3,
+          "minBits": 8,
+          "maxBits": 8,
+          "offsetMinBits": 40,
+          "offsetMaxBits": 48,
+          "offsetExpr": "H + size(id) + present(a) * size(a)"
+        }
+      ]
+    },
+    "name": "Pair",
+    "maximum": 7,
+    "rtEligible": true,
+    "rtReason": "finite wire upper bound",
+    "strings": [],
+    "rtEnabled": false,
+    "slots": 16,
+    "qps": false,
+    "quantum": 1,
+    "dBits": 0,
+    "indexBytes": 0,
+    "plainIndexBytes": 0,
+    "reason": "legacy codec",
+    "inline": "compiler default",
+    "optionalCount": 2,
+    "fieldCount": 3,
+    "structureMacro": false,
+    "safety": true,
+    "optionalTailRequired": true,
+    "suggestFixedPrefix": false,
+    "qpsByteCodecRevision": 3,
+    "qpsByteHeader": 16,
+    "qpsByteMaximum": 23,
+    "qpsByteAPI": true,
+    "stateBits": false,
+    "stateBitsQuantum": 1,
+    "qpsCodecRevision": 2,
+    "payloadQuantRequested": false,
+    "payloadQuantActive": false,
+    "payloadQuantum": 2,
+    "payloadPadding": 0,
+    "payloadMaximum": 0,
+    "rawMaximum": null,
+    "payloadReason": "payload quantization disabled",
+    "staticOptional": "payload-length event graph; conditional tag reads; native lengths outside payload",
+    "lengthGraph": {
+      "metadataBytes": 1,
+      "tagBytes": 1,
+      "maxPayload": 2,
+      "events": [
+        {
+          "start": 0,
+          "end": 0,
+          "forced": 0,
+          "possible": 0,
+          "valid": true
+        },
+        {
+          "start": 1,
+          "end": 1,
+          "forced": 0,
+          "possible": 3,
+          "valid": true
+        },
+        {
+          "start": 2,
+          "end": 2,
+          "forced": 3,
+          "possible": 3,
+          "valid": true
+        }
+      ]
+    },
+    "predictSequenceHint": false
+  },
+  {
+    "maxDataSize": 65535,
+    "hashes": {
+      "version": 1,
+      "algorithm": "xxHash",
+      "bits": 64,
+      "strict": "e63ee69b603930d3",
+      "light": "516145795129d7dd",
+      "complete": true
+    },
+    "wireLayout": {
+      "unit": "byte",
+      "headerMinBits": 0,
+      "headerMaxBits": 0,
+      "minimumBytes": 4,
+      "nativeSize": null,
+      "fields": [
+        {
+          "name": "id",
+          "rustType": "u32",
+          "optional": false,
+          "tag": 1,
+          "minBits": 32,
+          "maxBits": 32,
+          "offsetMinBits": 0,
+          "offsetMaxBits": 0,
+          "offsetExpr": "H"
+        },
+        {
+          "name": "a",
+          "rustType": "Option<u8>",
+          "optional": true,
+          "tag": 2,
+          "minBits": 8,
+          "maxBits": 8,
+          "offsetMinBits": 32,
+          "offsetMaxBits": 32,
+          "offsetExpr": "H + size(id)"
+        },
+        {
+          "name": "b",
+          "rustType": "Option<u16>",
+          "optional": true,
+          "tag": 3,
+          "minBits": 16,
+          "maxBits": 16,
+          "offsetMinBits": 32,
+          "offsetMaxBits": 40,
+          "offsetExpr": "H + size(id) + present(a) * size(a)"
+        },
+        {
+          "name": "c",
+          "rustType": "Option<u32>",
+          "optional": true,
+          "tag": 4,
+          "minBits": 32,
+          "maxBits": 32,
+          "offsetMinBits": 32,
+          "offsetMaxBits": 56,
+          "offsetExpr": "H + size(id) + present(a) * size(a) + present(b) * size(b)"
+        }
+      ]
+    },
+    "name": "Unique",
+    "maximum": 11,
+    "rtEligible": true,
+    "rtReason": "finite wire upper bound",
+    "strings": [],
+    "rtEnabled": false,
+    "slots": 16,
+    "qps": false,
+    "quantum": 1,
+    "dBits": 0,
+    "indexBytes": 0,
+    "plainIndexBytes": 0,
+    "reason": "legacy codec",
+    "inline": "compiler default",
+    "optionalCount": 3,
+    "fieldCount": 4,
+    "structureMacro": false,
+    "safety": true,
+    "optionalTailRequired": true,
+    "suggestFixedPrefix": false,
+    "qpsByteCodecRevision": 3,
+    "qpsByteHeader": 16,
+    "qpsByteMaximum": 27,
+    "qpsByteAPI": true,
+    "stateBits": false,
+    "stateBitsQuantum": 1,
+    "qpsCodecRevision": 2,
+    "payloadQuantRequested": false,
+    "payloadQuantActive": false,
+    "payloadQuantum": 2,
+    "payloadPadding": 0,
+    "payloadMaximum": 0,
+    "rawMaximum": null,
+    "payloadReason": "payload quantization disabled",
+    "staticOptional": "payload-length event graph; conditional tag reads; native lengths outside payload",
+    "lengthGraph": {
+      "metadataBytes": 0,
+      "tagBytes": 0,
+      "maxPayload": 7,
+      "events": [
+        {
+          "start": 0,
+          "end": 0,
+          "forced": 0,
+          "possible": 0,
+          "valid": true
+        },
+        {
+          "start": 1,
+          "end": 1,
+          "forced": 1,
+          "possible": 1,
+          "valid": true
+        },
+        {
+          "start": 2,
+          "end": 2,
+          "forced": 2,
+          "possible": 2,
+          "valid": true
+        },
+        {
+          "start": 3,
+          "end": 3,
+          "forced": 3,
+          "possible": 3,
+          "valid": true
+        },
+        {
+          "start": 4,
+          "end": 4,
+          "forced": 4,
+          "possible": 4,
+          "valid": true
+        },
+        {
+          "start": 5,
+          "end": 5,
+          "forced": 5,
+          "possible": 5,
+          "valid": true
+        },
+        {
+          "start": 6,
+          "end": 6,
+          "forced": 6,
+          "possible": 6,
+          "valid": true
+        },
+        {
+          "start": 7,
+          "end": 7,
+          "forced": 7,
+          "possible": 7,
+          "valid": true
+        }
+      ]
+    },
+    "predictSequenceHint": false
+  },
+  {
+    "maxDataSize": 65535,
+    "hashes": {
+      "version": 1,
+      "algorithm": "xxHash",
+      "bits": 64,
+      "strict": "e6f0ceb74dba48d5",
+      "light": "bd8391df550cfbab",
+      "complete": true
+    },
+    "wireLayout": {
+      "unit": "byte",
+      "headerMinBits": 16,
+      "headerMaxBits": 16,
+      "minimumBytes": 6,
+      "nativeSize": null,
+      "fields": [
+        {
+          "name": "id",
+          "rustType": "u32",
+          "optional": false,
+          "tag": 1,
+          "minBits": 32,
+          "maxBits": 32,
+          "offsetMinBits": 16,
+          "offsetMaxBits": 16,
+          "offsetExpr": "H"
+        },
+        {
+          "name": "name",
+          "rustType": "Option<String>",
+          "optional": true,
+          "tag": 2,
+          "minBits": 24,
+          "maxBits": 264,
+          "offsetMinBits": 48,
+          "offsetMaxBits": 48,
+          "offsetExpr": "H + size(id)"
+        },
+        {
+          "name": "description",
+          "rustType": "Option<String>",
+          "optional": true,
+          "tag": 3,
+          "minBits": 8,
+          "maxBits": 2040,
+          "offsetMinBits": 48,
+          "offsetMaxBits": 312,
+          "offsetExpr": "H + size(id) + present(name) * size(name)"
+        }
+      ]
+    },
+    "name": "Text",
+    "maximum": 294,
+    "rtEligible": true,
+    "rtReason": "finite wire upper bound",
+    "strings": [
+      "name: UTF-8 3..33 B; raw UTF-8",
+      "description: UTF-8 1..255 B; raw UTF-8"
+    ],
+    "rtEnabled": false,
+    "slots": 16,
+    "qps": false,
+    "quantum": 1,
+    "dBits": 0,
+    "indexBytes": 0,
+    "plainIndexBytes": 0,
+    "reason": "legacy codec",
+    "inline": "compiler default",
+    "optionalCount": 2,
+    "fieldCount": 3,
+    "structureMacro": false,
+    "safety": true,
+    "optionalTailRequired": true,
+    "suggestFixedPrefix": false,
+    "qpsByteCodecRevision": 3,
+    "qpsByteHeader": 16,
+    "qpsByteMaximum": 310,
+    "qpsByteAPI": true,
+    "stateBits": false,
+    "stateBitsQuantum": 1,
+    "qpsCodecRevision": 2,
+    "payloadQuantRequested": false,
+    "payloadQuantActive": false,
+    "payloadQuantum": 2,
+    "payloadPadding": 0,
+    "payloadMaximum": 0,
+    "rawMaximum": null,
+    "payloadReason": "payload quantization disabled",
+    "staticOptional": "payload-length event graph; conditional tag reads; native lengths outside payload",
+    "lengthGraph": {
+      "metadataBytes": 2,
+      "tagBytes": 1,
+      "maxPayload": 288,
+      "events": [
+        {
+          "start": 0,
+          "end": 0,
+          "forced": 0,
+          "possible": 0,
+          "valid": true
+        },
+        {
+          "start": 1,
+          "end": 2,
+          "forced": 2,
+          "possible": 2,
+          "valid": true
+        },
+        {
+          "start": 3,
+          "end": 33,
+          "forced": 0,
+          "possible": 3,
+          "valid": true
+        },
+        {
+          "start": 34,
+          "end": 255,
+          "forced": 2,
+          "possible": 3,
+          "valid": true
+        },
+        {
+          "start": 256,
+          "end": 288,
+          "forced": 3,
+          "possible": 3,
+          "valid": true
+        }
+      ]
+    },
+    "predictSequenceHint": false
+  },
+  {
+    "maxDataSize": 65535,
+    "hashes": {
+      "version": 1,
+      "algorithm": "xxHash",
+      "bits": 64,
+      "strict": "0b1be3a893d5e1b4",
+      "light": "7bda31534760060a",
+      "complete": true
+    },
+    "wireLayout": {
+      "unit": "byte",
+      "headerMinBits": 8,
+      "headerMaxBits": 8,
+      "minimumBytes": 5,
+      "nativeSize": null,
+      "fields": [
+        {
+          "name": "id",
+          "rustType": "u32",
+          "optional": false,
+          "tag": 1,
+          "minBits": 32,
+          "maxBits": 32,
+          "offsetMinBits": 8,
+          "offsetMaxBits": 8,
+          "offsetExpr": "H"
+        },
+        {
+          "name": "data",
+          "rustType": "Option<Vec<u8>>",
+          "optional": true,
+          "tag": 2,
+          "minBits": null,
+          "maxBits": null,
+          "offsetMinBits": 40,
+          "offsetMaxBits": 40,
+          "offsetExpr": "H + size(id)"
+        },
+        {
+          "name": "flag",
+          "rustType": "Option<u8>",
+          "optional": true,
+          "tag": 3,
+          "minBits": 8,
+          "maxBits": 8,
+          "offsetMinBits": 40,
+          "offsetMaxBits": null,
+          "offsetExpr": "H + size(id) + present(data) * size(data)"
+        }
+      ]
+    },
+    "name": "Fallback",
+    "maximum": 26,
+    "rtEligible": true,
+    "rtReason": "finite wire upper bound",
+    "strings": [],
+    "rtEnabled": false,
+    "slots": 16,
+    "qps": false,
+    "quantum": 1,
+    "dBits": 0,
+    "indexBytes": 0,
+    "plainIndexBytes": 0,
+    "reason": "legacy codec",
+    "inline": "compiler default",
+    "optionalCount": 2,
+    "fieldCount": 3,
+    "structureMacro": false,
+    "safety": true,
+    "optionalTailRequired": true,
+    "suggestFixedPrefix": false,
+    "qpsByteCodecRevision": 3,
+    "qpsByteHeader": 16,
+    "qpsByteMaximum": 42,
+    "qpsByteAPI": true,
+    "stateBits": false,
+    "stateBitsQuantum": 1,
+    "qpsCodecRevision": 2,
+    "payloadQuantRequested": false,
+    "payloadQuantActive": false,
+    "payloadQuantum": 2,
+    "payloadPadding": 0,
+    "payloadMaximum": 0,
+    "rawMaximum": null,
+    "payloadReason": "payload quantization disabled",
+    "staticOptional": "static prefix graph with presence bits; no wire directory",
+    "lengthGraph": null,
+    "predictSequenceHint": false
+  }
+]

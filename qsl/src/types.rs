@@ -413,7 +413,7 @@ impl QslSchema {
     pub fn opt_table(&self) -> bool {
         self.flags & FLAG_OPT_TABLE != 0
     }
-    /// QPS is lossless operand compression; opt_table owns length prediction.
+    /// QPS is lossless operand compression; predict_seq owns length prediction.
     pub fn qps(&self) -> bool {
         self.flags & FLAG_QPS != 0
     }
@@ -431,7 +431,6 @@ impl QslSchema {
     }
     pub fn predict_seq(&self) -> bool {
         !self.state_bits()
-            && !self.opt_table()
             && (self.flags & FLAG_PREDICT_SEQ != 0
                 || (self.flags & FLAG_OPT_TABLE_LEGACY != 0 && self.optional_count() == 1))
     }
@@ -442,11 +441,14 @@ impl QslSchema {
         1usize << ((self.flags & STATE_BITS_QUANTUM_MASK) >> STATE_BITS_QUANTUM_SHIFT)
     }
     pub fn predict_table(&self) -> bool {
-        self.predict_seq() && self.optional_count() > 1
+        self.predict_seq() && !self.opt_table() && self.optional_count() > 1
+    }
+    /// The historic length graph is selected explicitly by both mechanisms.
+    pub fn predicted_opt_table(&self) -> bool {
+        self.opt_table() && self.predict_seq()
     }
     pub fn sequential(&self) -> bool {
-        self.flags & (FLAG_OPT_TABLE | FLAG_OPT_TABLE_LEGACY | FLAG_PREDICT_SEQ | FLAG_STATE_BITS)
-            != 0
+        self.flags & (FLAG_OPT_TABLE_LEGACY | FLAG_PREDICT_SEQ | FLAG_STATE_BITS) != 0
     }
     pub fn lifetime(&self) -> bool {
         self.flags & (FLAG_LIFETIME | FLAG_FIELD_BORROW) != 0
@@ -533,6 +535,9 @@ impl QslSchema {
                 }
             }
         }
+        if self.opt_table() && (self.compact() || self.bitmap()) {
+            return Err(QslError::InvalidSchema);
+        }
         if self.sequential() {
             if self.bitmap() || self.compact() || (self.optional_count() == 0 && !self.opt_table())
             {
@@ -546,6 +551,7 @@ impl QslSchema {
                 }
                 // EOF cannot represent a present zero-byte optional value.
                 if self.predict_seq()
+                    && !self.opt_table()
                     && !self.predict_table()
                     && field.optional
                     && field.data.fixed_wire_size()? == Some(0)

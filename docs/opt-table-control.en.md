@@ -1,5 +1,7 @@
 # Control: default vs opt_table
 
+> Historical profile: `opt_table` here labels the former mixed length graph. `[predict_seq,opt_table]` preserves its format; new standalone `[opt_table]` dispatches readers by tag. [Separation and migration](optional-modes.en.md).
+
 [Русский](opt-table-control.ru.md) · [QPS measurements](performance.en.md)
 
 One required u32 plus N optional u64 fields. N = 1, 2, 3, 5, 10; each pair uses identical logical values, field order and explicit inline/safety policy. QPS is off. This separates the table effect from compression. The earlier QPS profile has a different shape and working set; do not compare its absolute times against this group.

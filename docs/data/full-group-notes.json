@@ -151,51 +151,51 @@
   ],
   "history/opt_table/n1": [
     {
-      "title": "Предыдущий снимок · opt_table · N=1",
+      "title": "Предыдущий снимок · смешанный predict_seq+opt_table · N=1",
       "text": "Отдельный снимок исходников без закрепления ядра. Один required-u32 и N optional-u64, все состояния. M исключает метаданные. Этот профиль не смешивается с новым обзором."
     },
     {
-      "title": "Earlier snapshot · opt_table · N=1",
+      "title": "Earlier snapshot · mixed predict_seq+opt_table · N=1",
       "text": "Separate source snapshot without CPU pinning. One required u32 and N optional u64 fields, all states. M excludes metadata. Not pooled with the new survey."
     }
   ],
   "history/opt_table/n2": [
     {
-      "title": "Предыдущий снимок · opt_table · N=2",
+      "title": "Предыдущий снимок · смешанный predict_seq+opt_table · N=2",
       "text": "Отдельный снимок исходников без закрепления ядра. Один required-u32 и N optional-u64, все состояния. M исключает метаданные. Этот профиль не смешивается с новым обзором."
     },
     {
-      "title": "Earlier snapshot · opt_table · N=2",
+      "title": "Earlier snapshot · mixed predict_seq+opt_table · N=2",
       "text": "Separate source snapshot without CPU pinning. One required u32 and N optional u64 fields, all states. M excludes metadata. Not pooled with the new survey."
     }
   ],
   "history/opt_table/n3": [
     {
-      "title": "Предыдущий снимок · opt_table · N=3",
+      "title": "Предыдущий снимок · смешанный predict_seq+opt_table · N=3",
       "text": "Отдельный снимок исходников без закрепления ядра. Один required-u32 и N optional-u64, все состояния. M исключает метаданные. Этот профиль не смешивается с новым обзором."
     },
     {
-      "title": "Earlier snapshot · opt_table · N=3",
+      "title": "Earlier snapshot · mixed predict_seq+opt_table · N=3",
       "text": "Separate source snapshot without CPU pinning. One required u32 and N optional u64 fields, all states. M excludes metadata. Not pooled with the new survey."
     }
   ],
   "history/opt_table/n5": [
     {
-      "title": "Предыдущий снимок · opt_table · N=5",
+      "title": "Предыдущий снимок · смешанный predict_seq+opt_table · N=5",
       "text": "Отдельный снимок исходников без закрепления ядра. Один required-u32 и N optional-u64, все состояния. M исключает метаданные. Этот профиль не смешивается с новым обзором."
     },
     {
-      "title": "Earlier snapshot · opt_table · N=5",
+      "title": "Earlier snapshot · mixed predict_seq+opt_table · N=5",
       "text": "Separate source snapshot without CPU pinning. One required u32 and N optional u64 fields, all states. M excludes metadata. Not pooled with the new survey."
     }
   ],
   "history/opt_table/n10": [
     {
-      "title": "Предыдущий снимок · opt_table · N=10",
+      "title": "Предыдущий снимок · смешанный predict_seq+opt_table · N=10",
       "text": "Отдельный снимок исходников без закрепления ядра. Один required-u32 и N optional-u64, все состояния. M исключает метаданные. Этот профиль не смешивается с новым обзором."
     },
     {
-      "title": "Earlier snapshot · opt_table · N=10",
+      "title": "Earlier snapshot · mixed predict_seq+opt_table · N=10",
       "text": "Separate source snapshot without CPU pinning. One required u32 and N optional u64 fields, all states. M excludes metadata. Not pooled with the new survey."
     }
   ],

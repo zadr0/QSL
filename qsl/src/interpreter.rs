@@ -11,6 +11,8 @@ mod payload_quant_codegen;
 mod qps_codegen;
 #[path = "codegen_static_optional.rs"]
 mod static_optional_codegen;
+#[path = "codegen_tagged_optional.rs"]
+mod tagged_optional_codegen;
 #[path = "codegen_validation.rs"]
 mod validation_codegen;
 
@@ -112,7 +114,7 @@ fn string_layout(ty: &QslType) -> Option<(usize, Option<usize>, usize, usize)> {
 /// Generic cursor writers already know the actual initialized length. Return it
 /// directly instead of walking variable fields again after writing.
 fn needs_written_length(schema: &QslSchema) -> bool {
-    if schema.opt_table() {
+    if schema.predicted_opt_table() {
         return true;
     }
     if schema.state_bits() || schema.predict_table() {
@@ -354,7 +356,7 @@ fn minimum_field(s: &mut QslSizer, ty: &QslType, compact: bool, width: usize) ->
 
 fn minimum_size(schema: &QslSchema) -> QslResult<usize> {
     let mut s = QslSizer::default();
-    if schema.opt_table() && !schema.state_bits() {
+    if schema.predicted_opt_table() {
         s.bytes(crate::static_optional::StaticOptionalPlan::analyze(schema)?.header_bytes())?;
     } else if schema.legacy_opt_table() {
         s.bytes(1 + schema.optional_count() * 4)?;
@@ -571,7 +573,7 @@ fn add_size_bytes(out: &mut String, bytes: &str) {
 }
 
 fn emit_size(schema: &QslSchema, out: &mut String) -> QslResult<()> {
-    if schema.opt_table() && !schema.state_bits() {
+    if schema.predicted_opt_table() {
         if let crate::static_optional::StaticPresence::Graph(p) =
             crate::static_optional::StaticOptionalPlan::analyze(schema)?.presence
         {
@@ -587,7 +589,7 @@ fn emit_size(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             out,
             format!(
                 "let mut __qsl_bits: usize = {};",
-                if schema.opt_table() && !schema.state_bits() {
+                if schema.predicted_opt_table() {
                     crate::static_optional::StaticOptionalPlan::analyze(schema)?.header_bytes() * 8
                 } else if schema.legacy_opt_table() {
                     (1 + schema.optional_count() * 4) * 8
@@ -1756,11 +1758,14 @@ fn emit_sequential_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
 }
 
 fn emit_fast_read(schema: &QslSchema, out: &mut String, plan: &QslIoPlan) -> QslResult<()> {
-    if schema.opt_table() && !schema.state_bits() {
+    if schema.predicted_opt_table() {
         return static_optional_codegen::read(schema, out);
     }
     if schema.state_bits() || schema.predict_table() {
         return qps_codegen::read(schema, out);
+    }
+    if schema.opt_table() && !schema.state_bits() {
+        return tagged_optional_codegen::read(schema, out);
     }
     if !unchecked_read_supported(schema) {
         return Ok(());
@@ -1859,7 +1864,7 @@ fn emit_fast_write(schema: &QslSchema, out: &mut String, plan: &QslIoPlan) -> Qs
     );
     if schema.state_bits() || schema.predict_table() {
         qps_codegen::write(schema, out)?;
-    } else if schema.opt_table() {
+    } else if schema.predicted_opt_table() {
         static_optional_codegen::write(schema, out)?;
     } else if schema.sequential() {
         emit_sequential_write(schema, out)?;
@@ -2211,13 +2216,13 @@ fn emit_trait(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             "#[inline] unsafe fn deserialize_unsafe(bytes: *const u8) -> Self {",
         );
     }
-    if schema.predict_seq() || schema.opt_table() && !schema.state_bits() {
+    if schema.predict_seq() || schema.predicted_opt_table() {
         ln(out, "let _ = bytes; panic!(\"predict_seq needs an input length; use deserialize(slice) or deserialize_from_raw_parts\")");
     } else {
         ln(out, "Self::__qsl_read_unchecked(bytes)");
     }
     ln(out, "}");
-    if schema.predict_seq() || schema.opt_table() && !schema.state_bits() {
+    if schema.predict_seq() || schema.predicted_opt_table() {
         let method = if borrowing {
             "deserialize_borrowed_from_raw_parts"
         } else {
@@ -2430,7 +2435,7 @@ impl QslInterpreter {
             return Err(QslError::InvalidSchema);
         }
         Self::generate_struct(schema, out)?;
-        if schema.opt_table() && !schema.state_bits() {
+        if schema.predicted_opt_table() {
             static_optional_codegen::tables(schema, out)?;
         } else {
             qps_codegen::tables(schema, out)?;
@@ -2439,7 +2444,7 @@ impl QslInterpreter {
             qps_codegen::region_static(schema, out, self.config.qsl_rt_default)?;
         }
         Self::emit_default_impl(schema, out)?;
-        if schema.predict_seq() {
+        if schema.predict_seq() && !schema.opt_table() {
             for f in schema.fields.iter().filter(|f| f.optional) {
                 if let QslType::Custom { rust_type, .. } = &f.data {
                     ln(out,format!("const _: () = assert!(<{rust_type} as ::qsl::QslCustom>::SIZE > 0, \"predict_seq cannot represent a zero-byte optional codec\");"));
@@ -2571,7 +2576,7 @@ impl QslInterpreter {
             emit_size(schema, out)?;
         }
         qps_codegen::callbacks(schema, out)?;
-        if schema.opt_table() && !schema.state_bits() {
+        if schema.predicted_opt_table() {
             static_optional_codegen::methods(schema, out)?;
         }
         if schema.state_bits() {

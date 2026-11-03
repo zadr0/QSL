@@ -9,13 +9,12 @@ pub(crate) fn maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {
         return Ok(Some(quant.max_bytes));
     }
     let mut s = QslSizer::default();
-    let graph_raw = schema.opt_table()
-        && !schema.state_bits()
+    let graph_raw = schema.predicted_opt_table()
         && matches!(
             crate::static_optional::StaticOptionalPlan::analyze(schema)?.presence,
             crate::static_optional::StaticPresence::Graph(_)
         );
-    if schema.opt_table() && !schema.state_bits() {
+    if schema.predicted_opt_table() {
         s.bytes(crate::static_optional::StaticOptionalPlan::analyze(schema)?.header_bytes())?;
     } else if schema.state_bits() {
         s.bytes(4)?;
@@ -117,7 +116,7 @@ pub(super) fn region_method(schema: &QslSchema, out: &mut String, slots: usize) 
 
 pub(super) fn tables(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     if !(schema.state_bits() || schema.predict_table() || schema.legacy_opt_table()) {
-        return Ok(());
+        return callback_table(schema, out);
     }
     let name = &schema.name;
     if schema.state_bits() || schema.predict_table() {
@@ -153,54 +152,48 @@ pub(super) fn tables(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     }
     callback_table(schema, out)
 }
+/// Readers are keyed by the actual encoded zero-based tag, not by optional
+/// ordinal. Required-field tags deliberately have no callable entry.
 pub(super) fn callback_table(schema: &QslSchema, out: &mut String) -> QslResult<()> {
-    let name = &schema.name;
-    if schema.flags & (crate::FLAG_OPT_TABLE | crate::FLAG_OPT_TABLE_LEGACY) != 0 {
-        let ty = if schema.lifetime() {
-            format!("{name}<'a>")
-        } else {
-            name.clone()
-        };
-        let hrtb = if schema.lifetime() { "for<'a> " } else { "" };
-        if schema.lifetime() {
-            for f in schema.fields.iter().filter(|f| f.optional) {
-                ln(out,format!("#[allow(dead_code,non_snake_case)] unsafe fn {name}_opt_{}<'a>(bytes:*const u8,out:*mut {name}<'a>,len:usize){{{name}::__qsl_read_{}(bytes,out,len);}}",f.name,f.name));
-            }
-        }
-        let callbacks = schema
-            .fields
-            .iter()
-            .filter(|f| f.optional)
-            .map(|f| {
-                if schema.lifetime() {
-                    format!("{name}_opt_{}", f.name)
-                } else {
-                    format!("{name}::__qsl_read_{}", f.name)
-                }
-            })
-            .collect::<Vec<_>>()
-            .join(",");
-        ln(out,format!("#[allow(dead_code,non_upper_case_globals)] static {name}_OPT_TABLE:[{hrtb}unsafe fn(*const u8,*mut {ty},usize);{}]=[{callbacks}];",schema.optional_count()));
-    }
-    Ok(())
-}
-
-pub(super) fn callbacks(schema: &QslSchema, out: &mut String) -> QslResult<()> {
-    if schema.flags & (crate::FLAG_OPT_TABLE | crate::FLAG_OPT_TABLE_LEGACY) == 0 {
+    if !schema.opt_table() {
         return Ok(());
     }
-    let graph_raw = schema.opt_table()
-        && !schema.state_bits()
+    let name = &schema.name;
+    let ty = if schema.lifetime() {
+        format!("{name}<'a>")
+    } else {
+        name.clone()
+    };
+    let hrtb = if schema.lifetime() { "for<'a> " } else { "" };
+    if schema.lifetime() {
+        for f in schema.fields.iter().filter(|f| f.optional) {
+            ln(out,format!("#[allow(dead_code,non_snake_case)] unsafe fn {name}_opt_{}<'a>(bytes:*const u8,out:*mut {name}<'a>,len:usize)->usize{{{name}::__qsl_read_{}(bytes,out,len)}}",f.name,f.name));
+        }
+    }
+    let entries = (1..=schema.max_tag)
+        .map(
+            |tag| match schema.fields.iter().find(|f| f.optional && f.tag == tag) {
+                Some(f) if schema.lifetime() => format!("Some({name}_opt_{})", f.name),
+                Some(f) => format!("Some({name}::__qsl_read_{})", f.name),
+                None => "None".into(),
+            },
+        )
+        .collect::<Vec<_>>()
+        .join(",");
+    ln(out,format!("#[allow(dead_code,non_upper_case_globals,clippy::type_complexity)] static {name}_OPT_TABLE:[Option<{hrtb}unsafe fn(*const u8,*mut {ty},usize)->usize>;{}]=[{entries}];",schema.max_tag));
+    Ok(())
+}
+pub(super) fn callbacks(schema: &QslSchema, out: &mut String) -> QslResult<()> {
+    if !schema.opt_table() {
+        return Ok(());
+    }
+    let graph_raw = schema.predicted_opt_table()
         && matches!(
             crate::static_optional::StaticOptionalPlan::analyze(schema)?.presence,
             crate::static_optional::StaticPresence::Graph(_)
         );
     for f in schema.fields.iter().filter(|f| f.optional) {
-        ln(out,format!("/// # Safety\n/// Input is a validated field; out points to an initialized, disjoint Self.\n#[allow(dead_code)] unsafe fn __qsl_read_{}(bytes:*const u8,out:*mut Self,len:usize) {{",f.name));
-        ln(
-            out,
-            "let mut reader=::qsl::QslByteReader::new(bytes); let _=len;",
-        );
+        ln(out,format!("/// # Safety\n/// Input is a validated field; out points to an initialized, disjoint Self.\n#[allow(dead_code)] unsafe fn __qsl_read_{}(bytes:*const u8,out:*mut Self,len:usize)->usize{{let mut reader=::qsl::QslByteReader::new(bytes);let _=len;",f.name));
         if (schema.state_bits() || graph_raw) && variable(&f.data) {
             raw_read(&f.data, out, "value", "len", schema.borrow_strings())?;
         } else {
@@ -213,10 +206,17 @@ pub(super) fn callbacks(schema: &QslSchema, out: &mut String) -> QslResult<()> {
                 schema.borrow_strings(),
             )?;
         }
-        ln(out, format!("(*out).{}=Some(value); }}", f.name));
+        ln(
+            out,
+            format!(
+                "(*out).{}=Some(value);reader.as_ptr().offset_from(bytes) as usize}}",
+                f.name
+            ),
+        );
     }
     Ok(())
 }
+
 pub(super) fn variable(ty: &QslType) -> bool {
     matches!(
         ty,
@@ -395,6 +395,9 @@ pub(super) fn read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
         // strategy, not decorative metadata that LLVM immediately discards.
         ln(out, "let d=row.1;");
     }
+    if schema.opt_table() {
+        tagged_optional_codegen::result(schema, out);
+    }
     for ((i, f), c) in schema
         .fields
         .iter()
@@ -408,6 +411,17 @@ pub(super) fn read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             (1u32 << c.bits) - 1
         };
         ln(out, format!("let code=(d>>{})&{mask}u32;", c.shift));
+        if schema.opt_table() {
+            ln(out, "if code!=0{");
+            let length = if variable(&f.data) {
+                format!("(code as usize-1)+{}", c.min)
+            } else {
+                "0".into()
+            };
+            tagged_optional_codegen::dispatch(schema, out, &(f.tag - 1).to_string(), &length);
+            ln(out, "}");
+            continue;
+        }
         if optional_scalar_read(&f.data, out, &format!("field_{i}"), "code!=0")? {
             continue;
         }
@@ -429,6 +443,10 @@ pub(super) fn read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             )?;
         }
         ln(out, "Some(value)}else{None};");
+    }
+    if schema.opt_table() {
+        ln(out, "result}");
+        return Ok(());
     }
     ln(out, "Self {");
     for (i, f) in schema.fields.iter().enumerate() {

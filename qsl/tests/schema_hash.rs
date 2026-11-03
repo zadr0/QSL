@@ -54,12 +54,17 @@ fn codegen_policies_and_initializers_do_not_change_hashes() {
     );
 }
 #[test]
-fn effective_optional_modes_exclude_hint_and_table_representation() {
-    let a = hashes("&P[opt_table]{u32 id;u8? a;u16? b;}");
+fn tag_dispatch_preserves_default_identity_and_prediction_is_distinct() {
+    let a = hashes("&P{u32 id;u8? a;u16? b;}");
     assert_eq!(
         a,
-        hashes("&P[opt_table,predict_seq,safety,inline]{u32 id;u8? a;u16? b;}")
+        hashes("&P[opt_table,safety,inline]{u32 id;u8? a;u16? b;}")
     );
+    let combined = hashes("&P[opt_table,predict_seq]{u32 id;u8? a;u16? b;}");
+    assert_ne!(a.light, combined.light);
+    // Published mode-3 identity of the former mixed opt_table is retained.
+    assert_eq!(combined.strict, 3654834731878387164);
+    assert_eq!(combined.light, 845696593770569169);
     let a = hashes("&P[state_bits=Q1]{u8? a;u16? b;u32? c;u64? d;}");
     for q in [2, 4, 8, 16] {
         assert_eq!(
@@ -80,7 +85,7 @@ fn changes_to_data_domains_order_and_wire_modes_change_both_hashes() {
         "&P{u32 id;u8?(0..7) a;u16? b;}",
         "&P[compact]{u32 id;u8? a;u16? b;}",
         "&P[optionals=bitmap]{u32 id;u8? a;u16? b;}",
-        "&P[opt_table]{u32 id;u8? a;u16? b;}",
+        "&P[opt_table,predict_seq]{u32 id;u8? a;u16? b;}",
         "&P[opt_table=legacy]{u32 id;u8? a;u16? b;}",
         "&P[predict_seq]{u32 id;u8? a;u16? b;}",
         "&P[state_bits]{u32 id;u8? a;u16? b;}",

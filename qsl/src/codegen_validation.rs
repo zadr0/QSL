@@ -44,7 +44,7 @@ pub(super) fn field(ty: &QslType, out: &mut String, width: usize, compact: bool)
 pub(super) fn methods(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     values(schema, out)?;
     ln(out,"/// Validate one complete frame before any trusted pointer decoding.\n#[allow(unused_variables,unused_mut,clippy::manual_range_contains,clippy::absurd_extreme_comparisons,clippy::unnecessary_cast)] pub fn validate(input:&[u8])->::qsl::QslResult<()> {let mut c=::qsl::validation::ValidationCursor::with_limit(input,Self::MAX_DATA_SIZE)?;");
-    if schema.opt_table() && !schema.state_bits() {
+    if schema.predicted_opt_table() {
         return static_optional_codegen::validation(schema, out);
     }
     let optional = schema

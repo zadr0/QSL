@@ -1,6 +1,6 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><title>QSL · API · RU</title><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css"></head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="API-ru-1">Индекс публичных объявлений</h1>
 <p><a href="API.en.html">English</a> · <a href="architecture.ru.html">Архитектура</a></p>
-<p>Найдено 624 явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Видимость feature native/Windows и rust-macros сохраняется; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из <a href="../reference/safety-source-manifest.json">manifest</a>. Исходники и Cargo-манифест крейта находятся в qsl.</p>
+<p>Найдено 625 явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Видимость feature native/Windows и rust-macros сохраняется; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из <a href="../reference/optional-modes-source-manifest.json">manifest</a>. Исходники и Cargo-манифест крейта находятся в qsl.</p>
 <h2 id="API-ru-2">qsl/macros/src/lib.rs</h2>
 <p><code>qsl/macros/src/lib.rs:22</code></p>
 <pre><code>pub fn qsl_macro(args: TokenStream, item: TokenStream) -&gt; TokenStream {</code></pre>
@@ -133,37 +133,37 @@
 <p><code>qsl/src/deq.rs:155</code></p>
 <pre><code>pub fn build_qsl_files_with_rust( qsl_files: &amp;[&amp;str], deq_files: &amp;[&amp;str], rust_files: &amp;[&amp;str], out_dir: impl AsRef&lt;Path&gt;, ) -&gt; Result&lt;PathBuf, Box&lt;dyn std::error::Error&gt;&gt; {</code></pre>
 <h2 id="API-ru-7">qsl/src/interpreter.rs</h2>
-<p><code>qsl/src/interpreter.rs:18</code></p>
+<p><code>qsl/src/interpreter.rs:20</code></p>
 <pre><code>pub fn schema_maximum_size(schema: &amp;QslSchema) -&gt; QslResult&lt;Option&lt;usize&gt;&gt; {</code></pre>
-<p><code>qsl/src/interpreter.rs:130</code></p>
-<pre><code>pub trait TypeInterpreter {</code></pre>
-<p><code>qsl/src/interpreter.rs:131</code></p>
-<pre><code>fn type_name(&amp;self, out: &amp;mut Vec&lt;u8&gt;, borrowed: bool) -&gt; QslResult&lt;()&gt;;</code></pre>
 <p><code>qsl/src/interpreter.rs:132</code></p>
-<pre><code>fn size(&amp;self, out: &amp;mut Vec&lt;u8&gt;, expr: &amp;str, width: usize, compact: bool) -&gt; QslResult&lt;()&gt;;</code></pre>
+<pre><code>pub trait TypeInterpreter {</code></pre>
 <p><code>qsl/src/interpreter.rs:133</code></p>
-<pre><code>fn write(&amp;self, out: &amp;mut Vec&lt;u8&gt;, expr: &amp;str) -&gt; QslResult&lt;()&gt;;</code></pre>
+<pre><code>fn type_name(&amp;self, out: &amp;mut Vec&lt;u8&gt;, borrowed: bool) -&gt; QslResult&lt;()&gt;;</code></pre>
 <p><code>qsl/src/interpreter.rs:134</code></p>
-<pre><code>fn read(&amp;self, out: &amp;mut Vec&lt;u8&gt;, name: &amp;str, borrowed: bool) -&gt; QslResult&lt;()&gt;;</code></pre>
+<pre><code>fn size(&amp;self, out: &amp;mut Vec&lt;u8&gt;, expr: &amp;str, width: usize, compact: bool) -&gt; QslResult&lt;()&gt;;</code></pre>
 <p><code>qsl/src/interpreter.rs:135</code></p>
-<pre><code>fn comp_write(&amp;self, out: &amp;mut Vec&lt;u8&gt;, expr: &amp;str, bits: usize) -&gt; QslResult&lt;()&gt;;</code></pre>
+<pre><code>fn write(&amp;self, out: &amp;mut Vec&lt;u8&gt;, expr: &amp;str) -&gt; QslResult&lt;()&gt;;</code></pre>
 <p><code>qsl/src/interpreter.rs:136</code></p>
+<pre><code>fn read(&amp;self, out: &amp;mut Vec&lt;u8&gt;, name: &amp;str, borrowed: bool) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/interpreter.rs:137</code></p>
+<pre><code>fn comp_write(&amp;self, out: &amp;mut Vec&lt;u8&gt;, expr: &amp;str, bits: usize) -&gt; QslResult&lt;()&gt;;</code></pre>
+<p><code>qsl/src/interpreter.rs:138</code></p>
 <pre><code>fn comp_read( &amp;self, out: &amp;mut Vec&lt;u8&gt;, name: &amp;str, bits: usize, borrowed: bool, ) -&gt; QslResult&lt;()&gt;;</code></pre>
-<p><code>qsl/src/interpreter.rs:2233</code></p>
+<p><code>qsl/src/interpreter.rs:2238</code></p>
 <pre><code>pub struct QslInterpreter {</code></pre>
-<p><code>qsl/src/interpreter.rs:2261</code></p>
+<p><code>qsl/src/interpreter.rs:2266</code></p>
 <pre><code>pub fn new() -&gt; Self {</code></pre>
-<p><code>qsl/src/interpreter.rs:2265</code></p>
+<p><code>qsl/src/interpreter.rs:2270</code></p>
 <pre><code>pub fn generate(&amp;mut self, schemas: &amp;[QslSchema]) -&gt; QslResult&lt;()&gt; {</code></pre>
-<p><code>qsl/src/interpreter.rs:2287</code></p>
+<p><code>qsl/src/interpreter.rs:2292</code></p>
 <pre><code>pub fn generate_parsed(&amp;mut self, schemas: &amp;[crate::compat::ParserQslSchema]) -&gt; QslResult&lt;()&gt; {</code></pre>
-<p><code>qsl/src/interpreter.rs:2295</code></p>
+<p><code>qsl/src/interpreter.rs:2300</code></p>
 <pre><code>pub fn generate_field(&amp;mut self, field: &amp;QslField, borrowed: bool) -&gt; QslResult&lt;()&gt; {</code></pre>
-<p><code>qsl/src/interpreter.rs:2678</code></p>
+<p><code>qsl/src/interpreter.rs:2683</code></p>
 <pre><code>pub fn generate_default(&amp;mut self, schema: &amp;QslSchema) -&gt; QslResult&lt;()&gt; {</code></pre>
-<p><code>qsl/src/interpreter.rs:2689</code></p>
+<p><code>qsl/src/interpreter.rs:2694</code></p>
 <pre><code>pub fn generate_lifetime(&amp;mut self, schema: &amp;QslSchema) -&gt; QslResult&lt;()&gt; {</code></pre>
-<p><code>qsl/src/interpreter.rs:2703</code></p>
+<p><code>qsl/src/interpreter.rs:2708</code></p>
 <pre><code>pub fn push(&amp;self) -&gt; std::io::Result&lt;()&gt; {</code></pre>
 <h2 id="API-ru-8">qsl/src/io.rs</h2>
 <p><code>qsl/src/io.rs:7</code></p>
@@ -1220,27 +1220,29 @@
 <pre><code>pub fn legacy_opt_table(&amp;self) -&gt; bool {</code></pre>
 <p><code>qsl/src/types.rs:432</code></p>
 <pre><code>pub fn predict_seq(&amp;self) -&gt; bool {</code></pre>
-<p><code>qsl/src/types.rs:438</code></p>
+<p><code>qsl/src/types.rs:437</code></p>
 <pre><code>pub fn state_bits(&amp;self) -&gt; bool {</code></pre>
-<p><code>qsl/src/types.rs:441</code></p>
+<p><code>qsl/src/types.rs:440</code></p>
 <pre><code>pub fn state_bits_quantum(&amp;self) -&gt; usize {</code></pre>
-<p><code>qsl/src/types.rs:444</code></p>
+<p><code>qsl/src/types.rs:443</code></p>
 <pre><code>pub fn predict_table(&amp;self) -&gt; bool {</code></pre>
 <p><code>qsl/src/types.rs:447</code></p>
+<pre><code>pub fn predicted_opt_table(&amp;self) -&gt; bool {</code></pre>
+<p><code>qsl/src/types.rs:450</code></p>
 <pre><code>pub fn sequential(&amp;self) -&gt; bool {</code></pre>
-<p><code>qsl/src/types.rs:451</code></p>
+<p><code>qsl/src/types.rs:453</code></p>
 <pre><code>pub fn lifetime(&amp;self) -&gt; bool {</code></pre>
-<p><code>qsl/src/types.rs:454</code></p>
+<p><code>qsl/src/types.rs:456</code></p>
 <pre><code>pub fn borrow_strings(&amp;self) -&gt; bool {</code></pre>
-<p><code>qsl/src/types.rs:457</code></p>
+<p><code>qsl/src/types.rs:459</code></p>
 <pre><code>pub fn optional_count(&amp;self) -&gt; usize {</code></pre>
-<p><code>qsl/src/types.rs:461</code></p>
+<p><code>qsl/src/types.rs:463</code></p>
 <pre><code>pub fn tag_bits(&amp;self) -&gt; usize {</code></pre>
-<p><code>qsl/src/types.rs:469</code></p>
+<p><code>qsl/src/types.rs:471</code></p>
 <pre><code>pub fn count_bits(&amp;self) -&gt; usize {</code></pre>
-<p><code>qsl/src/types.rs:478</code></p>
+<p><code>qsl/src/types.rs:480</code></p>
 <pre><code>pub fn bitmap_words(&amp;self) -&gt; usize {</code></pre>
-<p><code>qsl/src/types.rs:481</code></p>
+<p><code>qsl/src/types.rs:483</code></p>
 <pre><code>pub fn validate(&amp;self) -&gt; QslResult&lt;()&gt; {</code></pre>
 <h2 id="API-ru-31">qsl/src/validation.rs</h2>
 <p><code>qsl/src/validation.rs:5</code></p>

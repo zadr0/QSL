@@ -1,0 +1,113 @@
+optional_N1/read/default_checked
+                        time:   [55.378 ns 56.383 ns 58.451 ns]
+Found 12 outliers among 200 measurements (6.00%)
+  2 (1.00%) low mild
+  4 (2.00%) high mild
+  6 (3.00%) high severe
+
+optional_N1/read/opt_table_checked
+                        time:   [55.720 ns 56.474 ns 57.832 ns]
+Found 18 outliers among 200 measurements (9.00%)
+  7 (3.50%) low mild
+  7 (3.50%) high mild
+  4 (2.00%) high severe
+
+optional_N2/read/default_checked
+                        time:   [79.982 ns 81.326 ns 83.483 ns]
+Found 27 outliers among 200 measurements (13.50%)
+  14 (7.00%) low mild
+  5 (2.50%) high mild
+  8 (4.00%) high severe
+
+optional_N2/read/opt_table_checked
+                        time:   [86.871 ns 88.392 ns 91.576 ns]
+Found 17 outliers among 200 measurements (8.50%)
+  4 (2.00%) low mild
+  10 (5.00%) high mild
+  3 (1.50%) high severe
+
+optional_N3/read/default_checked
+                        time:   [94.302 ns 94.951 ns 95.905 ns]
+Found 21 outliers among 200 measurements (10.50%)
+  9 (4.50%) low mild
+  7 (3.50%) high mild
+  5 (2.50%) high severe
+
+optional_N3/read/opt_table_checked
+                        time:   [105.86 ns 108.64 ns 112.64 ns]
+Found 13 outliers among 200 measurements (6.50%)
+  7 (3.50%) high mild
+  6 (3.00%) high severe
+
+optional_N5/read/default_checked
+                        time:   [132.10 ns 133.70 ns 136.69 ns]
+Found 30 outliers among 200 measurements (15.00%)
+  15 (7.50%) low mild
+  7 (3.50%) high mild
+  8 (4.00%) high severe
+
+optional_N5/read/opt_table_checked
+                        time:   [150.71 ns 153.03 ns 158.02 ns]
+Found 21 outliers among 200 measurements (10.50%)
+  9 (4.50%) low mild
+  5 (2.50%) high mild
+  7 (3.50%) high severe
+
+optional_N10/read/default_checked
+                        time:   [238.53 ns 240.23 ns 243.03 ns]
+Found 30 outliers among 200 measurements (15.00%)
+  3 (1.50%) low severe
+  10 (5.00%) low mild
+  9 (4.50%) high mild
+  8 (4.00%) high severe
+
+optional_N10/read/opt_table_checked
+                        time:   [246.05 ns 248.79 ns 252.47 ns]
+Found 28 outliers among 200 measurements (14.00%)
+  2 (1.00%) low severe
+  9 (4.50%) low mild
+  11 (5.50%) high mild
+  6 (3.00%) high severe
+
+
+QSL measuring thread affinity=0x4, priority=above-normal
+Benchmarking optional_N1/read/default_checked
+Benchmarking optional_N1/read/default_checked: Warming up for 15.000 s
+Benchmarking optional_N1/read/default_checked: Collecting 200 samples in estimated 10.000 s (157M iterations)
+Benchmarking optional_N1/read/default_checked: Analyzing
+Benchmarking optional_N1/read/opt_table_checked
+Benchmarking optional_N1/read/opt_table_checked: Warming up for 15.000 s
+Benchmarking optional_N1/read/opt_table_checked: Collecting 200 samples in estimated 10.000 s (181M iterations)
+Benchmarking optional_N1/read/opt_table_checked: Analyzing
+Benchmarking optional_N2/read/default_checked
+Benchmarking optional_N2/read/default_checked: Warming up for 15.000 s
+Benchmarking optional_N2/read/default_checked: Collecting 200 samples in estimated 10.000 s (123M iterations)
+Benchmarking optional_N2/read/default_checked: Analyzing
+Benchmarking optional_N2/read/opt_table_checked
+Benchmarking optional_N2/read/opt_table_checked: Warming up for 15.000 s
+Benchmarking optional_N2/read/opt_table_checked: Collecting 200 samples in estimated 10.000 s (112M iterations)
+Benchmarking optional_N2/read/opt_table_checked: Analyzing
+Benchmarking optional_N3/read/default_checked
+Benchmarking optional_N3/read/default_checked: Warming up for 15.000 s
+Benchmarking optional_N3/read/default_checked: Collecting 200 samples in estimated 10.001 s (101M iterations)
+Benchmarking optional_N3/read/default_checked: Analyzing
+Benchmarking optional_N3/read/opt_table_checked
+Benchmarking optional_N3/read/opt_table_checked: Warming up for 15.000 s
+Benchmarking optional_N3/read/opt_table_checked: Collecting 200 samples in estimated 10.002 s (85M iterations)
+Benchmarking optional_N3/read/opt_table_checked: Analyzing
+Benchmarking optional_N5/read/default_checked
+Benchmarking optional_N5/read/default_checked: Warming up for 15.000 s
+Benchmarking optional_N5/read/default_checked: Collecting 200 samples in estimated 10.003 s (73M iterations)
+Benchmarking optional_N5/read/default_checked: Analyzing
+Benchmarking optional_N5/read/opt_table_checked
+Benchmarking optional_N5/read/opt_table_checked: Warming up for 15.000 s
+Benchmarking optional_N5/read/opt_table_checked: Collecting 200 samples in estimated 10.002 s (63M iterations)
+Benchmarking optional_N5/read/opt_table_checked: Analyzing
+Benchmarking optional_N10/read/default_checked
+Benchmarking optional_N10/read/default_checked: Warming up for 15.000 s
+Benchmarking optional_N10/read/default_checked: Collecting 200 samples in estimated 10.001 s (41M iterations)
+Benchmarking optional_N10/read/default_checked: Analyzing
+Benchmarking optional_N10/read/opt_table_checked
+Benchmarking optional_N10/read/opt_table_checked: Warming up for 15.000 s
+Benchmarking optional_N10/read/opt_table_checked: Collecting 200 samples in estimated 10.004 s (40M iterations)
+Benchmarking optional_N10/read/opt_table_checked: Analyzing

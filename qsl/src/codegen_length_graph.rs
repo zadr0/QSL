@@ -255,28 +255,20 @@ pub(super) fn read(s: &QslSchema, p: &LengthGraph, out: &mut String) -> QslResul
             ),
         );
     }
-    for (j, ((i, f), d)) in s
+    tagged_optional_codegen::result(s, out);
+    for (j, (f, d)) in s
         .fields
         .iter()
-        .enumerate()
-        .filter(|(_, f)| f.optional)
+        .filter(|f| f.optional)
         .zip(&p.fields)
         .enumerate()
     {
-        if optional_scalar_read(
-            &f.data,
-            out,
-            &format!("field_{i}"),
-            &format!("(presence>>{j})&1!=0"),
-        )? {
-            continue;
-        }
-        ln(out, format!("let present=(presence>>{j})&1!=0;"));
+        ln(out, format!("if (presence>>{j})&1!=0{{"));
         if d.variable {
             ln(
                 out,
                 format!(
-                    "let derived=i-reader.as_ptr().offset_from(payload) as usize-({});",
+                    "let derived=i-reader.as_ptr().offset_from(payload)as usize-({});",
                     fixed_tail(p, j)
                 ),
             );
@@ -289,23 +281,20 @@ pub(super) fn read(s: &QslSchema, p: &LengthGraph, out: &mut String) -> QslResul
                     .skip(j + 1)
                     .filter(|(_, f)| f.variable)
                     .fold(0u64, |m, (k, _)| m | (1u64 << k));
-                ln(out,format!("let fallback=(derived as {ty}).to_le();let source=::qsl::payload_quant::selected_address(std::hint::select_unpredictable(present&&presence&{later}u64!=0,bytes.add({offset}).cast::<{ty}>(),&fallback));let length=<{ty}>::from_le(source.read_unaligned())as usize;"));
+                ln(out,format!("let fallback=(derived as {ty}).to_le();let source=::qsl::payload_quant::selected_address(std::hint::select_unpredictable(presence&{later}u64!=0,bytes.add({offset}).cast::<{ty}>(),&fallback));let length=<{ty}>::from_le(source.read_unaligned())as usize;"));
             } else {
                 ln(out, "let length=derived;");
             }
-            ln(out, format!("let field_{i}=if present{{"));
-            qps_codegen::raw_read(&f.data, out, "value", "length", s.borrow_strings())?;
-        } else {
-            ln(out, format!("let field_{i}=if present{{"));
-            emit_unchecked_value(&f.data, out, "value", f.bits, false, s.borrow_strings())?;
         }
-        ln(out, "Some(value)}else{None};");
+        tagged_optional_codegen::dispatch(
+            s,
+            out,
+            &(f.tag - 1).to_string(),
+            if d.variable { "length" } else { "0" },
+        );
+        ln(out, "}");
     }
-    ln(out, "Self{");
-    for (i, f) in s.fields.iter().enumerate() {
-        ln(out, format!("{}:field_{i},", f.name));
-    }
-    ln(out, "}} ");
+    ln(out, "result}");
     Ok(())
 }
 pub(super) fn validation(s: &QslSchema, p: &LengthGraph, out: &mut String) -> QslResult<()> {
