@@ -1,5 +1,8 @@
 # QSL feature measurements
 
+Measurements below belong to their recorded snapshots before universal checking and MAX_DATA_SIZE. They are not new timings of the current checked API. [Current contract](safety.en.md).
+
+
 [Русский](features.ru.md) · [Guide](guide.en.md) · [Interactive charts](index.html#measurements)
 
 Complete: 103 distinct cases, 125 measurement observations. The original survey has 95 main and 8 separate UTF-8/whole-record cases. Only 22 affected cases were repeated after the byte-kernel change; the other 81 retain their initial snapshot. Each JSON row identifies profile and source_manifest.

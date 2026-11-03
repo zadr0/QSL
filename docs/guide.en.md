@@ -2,6 +2,10 @@
 
 [Русский](guide.ru.md) · [Architecture](architecture.en.md) · [API](API.en.md) · [Feature measurements](features.en.md)
 
+## Checked input and identity
+
+Every schema has checked APIs. `!config MAX_DATA_SIZE = 65535;` bounds the frame, QPS restoration and aggregate values. Strict/light hashes are computed during analysis; `!config USE_HASH = xxHash;` selects XXH3-64 and xxHash128 selects 128 bits. Both attributes are imported from qsl; implementation lives in qsl/macros. [Full safety contract](safety.en.md) · [Schema identity](schema-hashes.en.md).
+
 ## Purpose and boundaries
 
 QSL's original task is exchanging data described in advance. Types, ranges, field order and ownership are known before execution. The generator turns these conditions into specialized Rust. A dynamic schema interpreter does not run on every encode or decode.
@@ -24,14 +28,14 @@ include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
 ```
 
 ```qsl
-&Message[safety,opt_table] {
+&Message[opt_table] {
     u32 id;
     str(0..4096) text|binary_opt=guard|;
     u16? code;
 }
 ```
 
-safety supplies checked entry points. opt_table selects a static optional-tail graph. These attributes do not make an arbitrary pointer safe or remove a custom codec's obligations.
+Every schema supplies checked entry points; safety remains a compatibility attribute. opt_table selects a static optional-tail graph. These attributes do not make an arbitrary pointer safe or remove a custom codec's obligations.
 
 ## Build pipeline
 
@@ -183,7 +187,7 @@ assert_eq!(restored, input_bytes);
 
 Safety schemas implement CheckedRecord or CheckedBorrowedRecord. These unsafe traits connect a validator to the exact trusted decoder. encode_record_to checks values, writes the inner frame to scratch and encodes into a separate output. decode_record_into restores the inner frame, validates it and writes the object into MaybeUninit.
 
-[qps,safety] generates serialize_qps_to(scratch,out) and deserialize_qps_into(input,restoration,out). For borrowed schemas, deserialize_qps returns a value whose lifetime follows restoration storage. The type system prevents releasing that region while the value remains in use.
+[qps] generates serialize_qps_to(scratch,out) and deserialize_qps_into(input,restoration,out). For borrowed schemas, deserialize_qps returns a value whose lifetime follows restoration storage. The type system prevents releasing that region while the value remains in use.
 
 The general path is explicit through these APIs or ByteQps; existing Serializable formats are not automatically redefined. Numeric QUANT_ACTIVE indicates the scalar specialization, not the existence of all QPS APIs. An active scalar schema's convenient serialize() and outer serialize_qps_to have different output types and framing contracts.
 
@@ -203,14 +207,14 @@ Ordinary offsets cannot address packed bytes. With active scalar QPS, opt_table 
 |---|---|---|
 | validate | Complete frame checks | Safe input; custom codecs need a validator |
 | deserialize_checked | Checks and constructs a result | Matching schema and format |
-| deserialize_checked_into | Checks and writes into MaybeUninit | Supported owned schemas |
+| deserialize_checked_into | Checks and writes into MaybeUninit | Supported owned and borrowed schemas |
 | deserialize_into / raw pointers | Trusted fast path | Valid frame, sufficient regions, aligned destination |
 | deserialize_prepared_into | Updates a live object | Every reused field has sufficient capacity |
 | deserialize_reuse | Retains supported buffers | Reuse behavior depends on the generated layout |
 
 Writing a new owned String over a live object through the raw uninitialized path without dropping its old value leaks memory. Use prepared/reuse or correctly drop before replacement. REUSES_STORAGE identifies a supported generated shape; it does not create missing capacity.
 
-safety checks lengths, domains, metadata, UTF-8, padding, LZ and complete frame ending. It does not add implicit checks to every trusted call. Invalid built-in input returns QslError before unsafe reading.
+Each schema cursor checks lengths, domains, metadata, UTF-8, padding, LZ and complete frame ending. It does not add implicit checks to every trusted call. Invalid built-in input returns QslError before unsafe reading.
 
 Structural validation is not schema identification. Schemas with identical admissible wire forms can accept the same bytes. Type discrimination requires an agreed discriminator, version or handshake. QBProto and identifier R remain planned.
 
@@ -274,7 +278,7 @@ DEQ supports !define NAME: type = expression; and the documented !config setting
 
 inline, inline=hint, inline=always and inline=never explicitly control generated methods. Without an attribute, the compiler decides. This is independent of InlineString and prediction. always can increase code and instruction-cache pressure; never may preserve a call. Actual effects depend on the build.
 
-rust-macros enables marked Rust-structure parsing. native enables native outputs and, on Windows with 64-bit atomics, memory/socket facilities. diagnostics supplies separate checked-cursor tools; it does not replace schema safety. Read public APIs together with feature gates.
+rust-macros enables marked Rust-structure parsing. native enables native outputs and, on Windows with 64-bit atomics, memory/socket facilities. diagnostics supplies separate checked-cursor tools; it is not required for automatically generated checked APIs. Read public APIs together with feature gates.
 
 ## Measurement method and P
 

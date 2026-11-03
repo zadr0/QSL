@@ -5,6 +5,7 @@ pub(super) fn field(ty: &QslType, out: &mut String, width: usize, compact: bool)
         QslType::Padding(n)=>ln(out,format!("if c.bytes({n})?.iter().any(|&b|b!=0){{return Err(::qsl::QslError::InvalidPadding);}}")),
         QslType::Byte|QslType::Integer{..}|QslType::RangedInteger{..}|QslType::Flags(_)=>{
             let primitive=ty.primitive()?.ok_or(QslError::InvalidSchema)?;
+            ln(out,format!("c.charge({})?;",bytes_of(ty)?));
             if compact && matches!(ty,QslType::RangedInteger{..}) {ln(out,format!("let value=(c.bits({width})? as i128)+{}i128;",ty.rank_base()));}
             else if compact {ln(out,format!("let value=(((c.bits({width})? as i128)+{}i128) as {primitive}) as i128;",ty.rank_base()));}
             else {let n=bytes_of(ty)?;ln(out,format!("let value=(c.uint({n})? as {primitive}) as i128;"));}
@@ -26,23 +27,23 @@ pub(super) fn field(ty: &QslType, out: &mut String, width: usize, compact: bool)
             else {ln(out,"let length=c.uint(4)? as usize;");}
             ln(out,format!("c.utf8(length,{min},{})?;",max.unwrap_or(u32::MAX as usize)));
         }
-        QslType::FixedArray(_,n)=>ln(out,format!("c.bytes({n})?;")),
+        QslType::FixedArray(_,n)=>ln(out,format!("c.payload({n})?;")),
         QslType::Array(_,min)|QslType::RangedArray{min,..}=>{
             if compact {ln(out,format!("let length=(c.bits({width})? as usize).checked_add({min}).ok_or(::qsl::QslError::LengthOverflow)?;"));}
             else {ln(out,"let length=c.uint(4)? as usize;");}
             let max=if let QslType::RangedArray{max,..}=ty {*max}else{u32::MAX as usize};
-            ln(out,format!("if !({min}..={max}).contains(&length){{return Err(::qsl::QslError::InvalidValue);}}c.bytes(length)?;"));
+            ln(out,format!("if !({min}..={max}).contains(&length){{return Err(::qsl::QslError::InvalidValue);}}c.payload(length)?;"));
         }
         QslType::Custom{rust_type,..}=>{
             let size=if compact {"COMP_SIZE"}else{"SIZE"};
-            ln(out,format!("<{rust_type} as ::qsl::QslCustom>::qsl_validate(c.bytes(<{rust_type} as ::qsl::QslCustom>::{size})?,{compact})?;"));
+            ln(out,format!("c.charge(<{rust_type} as ::qsl::QslCustom>::{size})?;<{rust_type} as ::qsl::QslCustom>::qsl_validate(c.bytes(<{rust_type} as ::qsl::QslCustom>::{size})?,{compact})?;"));
         }
     }
     Ok(())
 }
 pub(super) fn methods(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     values(schema, out)?;
-    ln(out,"/// Validate one complete frame before any trusted pointer decoding.\n#[allow(unused_variables,unused_mut,clippy::manual_range_contains,clippy::absurd_extreme_comparisons,clippy::unnecessary_cast)] pub fn validate(input:&[u8])->::qsl::QslResult<()> {let mut c=::qsl::validation::ValidationCursor::new(input);");
+    ln(out,"/// Validate one complete frame before any trusted pointer decoding.\n#[allow(unused_variables,unused_mut,clippy::manual_range_contains,clippy::absurd_extreme_comparisons,clippy::unnecessary_cast)] pub fn validate(input:&[u8])->::qsl::QslResult<()> {let mut c=::qsl::validation::ValidationCursor::with_limit(input,Self::MAX_DATA_SIZE)?;");
     if schema.opt_table() && !schema.state_bits() {
         return static_optional_codegen::validation(schema, out);
     }
@@ -197,12 +198,25 @@ pub(super) fn finish(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     if !schema.lifetime() {
         ln(out,"pub fn deserialize_checked_into<'out>(input:&[u8],output:&'out mut std::mem::MaybeUninit<Self>)->::qsl::QslResult<&'out mut Self>{Self::validate(input)?;unsafe{<Self as ::qsl::Serializable>::deserialize_into(input.as_ptr(),input.len(),output.as_mut_ptr());Ok(output.assume_init_mut())}}");
     }
+    if schema.lifetime() {
+        ln(out,"pub fn deserialize_checked_into<'out>(input:&'a[u8],output:&'out mut std::mem::MaybeUninit<Self>)->::qsl::QslResult<&'out mut Self>{Self::validate(input)?;unsafe{<Self as ::qsl::BorrowSerializable<'a>>::deserialize_borrowed_into(input.as_ptr(),input.len(),output.as_mut_ptr());Ok(output.assume_init_mut())}}");
+    }
+    let encoder = if schema.lifetime() {
+        "::qsl::BorrowSerializable<'a>"
+    } else {
+        "::qsl::Serializable"
+    };
+    ln(out,format!("/// Validate values once, then write into the caller's native byte region.
+/// The output may be modified when an encoded-size limit error is returned.
+pub fn serialize_checked_to(&self,out:&mut[u8])->::qsl::QslResult<usize>{{self.validate_values()?;let cap=<Self as {encoder}>::serialized_size(self);let dst=out.get_mut(..cap).ok_or(::qsl::QslError::BufferTooSmall)?;let n=unsafe{{<Self as {encoder}>::serialize_into_unsafe(self,dst.as_mut_ptr())}};::qsl::validation::check_size(n,Self::MAX_DATA_SIZE)?;Ok(n)}}"));
+    ln(out,format!("/// Fallible owned output; prefer serialize_checked_to for prepared storage.
+pub fn serialize_checked(&self)->::qsl::QslResult<Vec<u8>>{{self.validate_values()?;let cap=<Self as {encoder}>::serialized_size(self);::qsl::validation::check_size(cap,Self::MAX_DATA_SIZE)?;let mut out=Vec::new();out.try_reserve_exact(cap).map_err(|_|::qsl::QslError::AllocationFailed)?;let n=unsafe{{<Self as {encoder}>::serialize_into_unsafe(self,out.as_mut_ptr())}};::qsl::validation::check_size(n,Self::MAX_DATA_SIZE)?;unsafe{{out.set_len(n);}}Ok(out)}}"));
     Ok(())
 }
 
 pub(super) fn values(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     // Nested if is valid in both Rust 2021 and 2024 consumer crates.
-    ln(out,"#[allow(unused_variables,clippy::manual_range_contains,clippy::absurd_extreme_comparisons,clippy::collapsible_if)] pub fn validate_values(&self)->::qsl::QslResult<()> {");
+    ln(out,"#[allow(unused_variables,unused_mut,clippy::manual_range_contains,clippy::absurd_extreme_comparisons,clippy::collapsible_if)] pub fn validate_values(&self)->::qsl::QslResult<()> {let mut budget=::qsl::validation::ValueBudget::new(Self::MAX_DATA_SIZE);");
     for f in &schema.fields {
         if f.optional {
             ln(
@@ -229,7 +243,7 @@ pub(super) fn values(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             } else {
                 bytes
             };
-            ln(out,format!("let bytes={bytes};if !({min}..={}).contains(&bytes.len()){{return Err(::qsl::QslError::InvalidValue);}}",max.unwrap_or(u32::MAX as usize)));
+            ln(out,format!("let bytes={bytes};budget.charge(bytes.len())?;if !({min}..={}).contains(&bytes.len()){{return Err(::qsl::QslError::InvalidValue);}}",max.unwrap_or(u32::MAX as usize)));
             if matches!(
                 f.data,
                 QslType::BinaryString { .. }
@@ -242,11 +256,25 @@ pub(super) fn values(schema: &QslSchema, out: &mut String) -> QslResult<()> {
                 );
             }
         } else {
+            if let QslType::Custom { rust_type, .. } = &f.data {
+                let size = if schema.compact() {
+                    "COMP_SIZE"
+                } else {
+                    "SIZE"
+                };
+                ln(
+                    out,
+                    format!("budget.charge(<{rust_type} as ::qsl::QslCustom>::{size})?;"),
+                );
+            } else if let Some(size) = f.data.fixed_wire_size()? {
+                ln(out, format!("budget.charge({size})?;"));
+            }
             match &f.data {
+            QslType::Custom{rust_type,..}=>ln(out,format!("<{rust_type} as ::qsl::QslCustom>::qsl_validate_values(value)?;")),
             QslType::RangedInteger{min,max,..}=>ln(out,format!("if !({min}i128..={max}i128).contains(&(*value as i128)){{return Err(::qsl::QslError::InvalidValue);}}")),
             QslType::Integer{min,..} if *min!=0=>ln(out,format!("if (*value as i128)<{min}i128{{return Err(::qsl::QslError::InvalidValue);}}")),
             QslType::Flags(bits) if *bits<64=>ln(out,format!("if (*value as u64)>={}u64{{return Err(::qsl::QslError::InvalidValue);}}",1u64<<*bits)),
-            QslType::Array(_,min)|QslType::RangedArray{min,..}=>{let max=if let QslType::RangedArray{max,..}=&f.data{*max}else{u32::MAX as usize};ln(out,format!("if !({min}..={max}).contains(&value.len()){{return Err(::qsl::QslError::InvalidValue);}}"));},
+            QslType::Array(_,min)|QslType::RangedArray{min,..}=>{ln(out,"budget.charge(value.len())?;");let max=if let QslType::RangedArray{max,..}=&f.data{*max}else{u32::MAX as usize};ln(out,format!("if !({min}..={max}).contains(&value.len()){{return Err(::qsl::QslError::InvalidValue);}}"));},
             QslType::FixedArray(_,n)=>ln(out,format!("if value.len()!={n}{{return Err(::qsl::QslError::InvalidValue);}}")),_=>{}
         }
         }

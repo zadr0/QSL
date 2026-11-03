@@ -11,7 +11,7 @@ def inline(s):
  s=html.escape(s);s=re.sub(r'`([^`]+)`',r'<code>\1</code>',s);s=re.sub(r'\*\*(.+?)\*\*',r'<strong>\1</strong>',s)
  def link(m):
   href=m[2]
-  if re.search(r'(guide|features|architecture|API|performance|opt-table-control|mathematics)\.(ru|en)\.md$',href):href=href[:-3]+'.html'
+  if re.search(r'(guide|features|architecture|API|performance|opt-table-control|mathematics|safety|schema-hashes)\.(ru|en)\.md$',href):href=href[:-3]+'.html'
   return '<a href="'+href+'">'+m[1]+'</a>'
  return re.sub(r'\[([^\]]+)\]\(([^)]+)\)',link,s)
 def render(source,prefix):
@@ -79,6 +79,8 @@ qps_extra='<div class="operand-group"><label><span data-t="qpsGroup"></span><inp
 body=re.sub(r'(<section id="qps-demo".*?)(</section>)',lambda m:m[1]+qps_extra+m[2],body,flags=re.S)
 events='<h3 data-t="eventGraph"></h3><div class="event-graph"><div class="event-node" data-event="0"><strong data-t="eventL0"></strong><code>I=0 · ∅</code></div><div class="event-node" data-event="1"><strong data-t="eventL1"></strong><code>I=1 · a / b</code></div><div class="event-node" data-event="2"><strong data-t="eventL2"></strong><code>I=2 · a + b</code></div></div><div id="event-bytes" class="wire-strip"></div><p class="note" data-t="eventWireNote"></p><p class="note" data-t="eventModel"></p>'
 body=body.replace('<div class="output" id="event-result">',events+'<div class="output" id="event-result">')
+notice='<div class="panel"><p class="locale" data-locale="ru"><strong>Безопасный API каждой схемы · MAX_DATA_SIZE = 65535 B</strong><br>Общий бюджет проверяется до создания значений; длина восстановления QPS — до записи в регион. <a href="safety.ru.html">Контракт и методы</a> · <a href="schema-hashes.ru.html">Строгий и лёгкий хэши</a></p><p class="locale" data-locale="en" hidden><strong>Checked APIs for every schema · MAX_DATA_SIZE = 65535 B</strong><br>Aggregate data is checked before value construction; QPS original length before restoration. <a href="safety.en.html">Contract and methods</a> · <a href="schema-hashes.en.html">Strict and light identities</a></p></div>'
+body=body.replace('<section id="full-guide">',notice+'<section id="full-guide">',1)
 body=body.replace('<section id="full-guide">','<section id="full-guide" class="reading-intro"><h3 data-t="guideRoute"></h3><p data-t="guideRouteText"></p>')
 # Initial explanatory copy is visible even before script execution.
 body=re.sub(r'(<([a-z0-9]+)\b[^>]*\bdata-t="([^"]+)"[^>]*>)(</\2>)',lambda m:m[1]+t(m[3])+m[4],body)
@@ -89,7 +91,7 @@ page=head+body+embed('feature-data',dashboard)+embed('api-data',json.loads((docs
 (docs/'index.html').write_text(page,encoding='utf-8',newline='\n')
 css=(docs/'assets/full.css').read_text();js=(docs/'assets/full.js').read_text();(docs/'QSL_standalone_RU_EN.html').write_text(page.replace('<link rel="stylesheet" href="assets/full.css">','<style>'+css+'</style>').replace('<script src="assets/full.js"></script>','<script>'+js+'</script>').replace('<link rel="stylesheet" href="assets/explorers.css">','<style>'+(docs/'assets/explorers.css').read_text()+'</style>').replace('<script src="assets/explorers.js"></script>','<script>'+(docs/'assets/explorers.js').read_text()+'</script>'),encoding='utf-8',newline='\n')
 for lang in ['ru','en']:
- for name in ['guide','features','architecture','API','performance','opt-table-control','mathematics']:
+ for name in ['guide','features','architecture','API','performance','opt-table-control','mathematics','safety','schema-hashes']:
   p=docs/f'{name}.{lang}.md'
   if not p.exists():continue
   content,_=render(p.read_text(encoding='utf-8'),name+'-'+lang);content=content.replace('<h2','<h1',1).replace('</h2>','</h1>',1);H=head.replace('lang="ru"',f'lang="{lang}"').replace('<title>QSL · '+t('project')+'</title>',f'<title>QSL · {name} · {lang.upper()}</title>');(docs/f'{name}.{lang}.html').write_text(H+'<main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a>'+content+'</main></body></html>',encoding='utf-8',newline='\n')

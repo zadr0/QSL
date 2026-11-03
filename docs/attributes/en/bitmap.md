@@ -1,6 +1,6 @@
 # `optionals=bitmap` — attribute specification
 
-**Status:** implemented. `[safety]` separately enables checked APIs; trusted methods retain their own preconditions.
+**Status:** implemented. Every schema has checked APIs; `[safety]` remains compatible; trusted methods retain their own preconditions.
 
 ## Syntax
 

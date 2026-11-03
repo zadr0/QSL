@@ -175,6 +175,7 @@ impl PayloadQuantPlan {
 /// The implementation writes only initialized scalar fields, inverts its exact
 /// operand codec, respects PADDING_BYTES, and checks the full numeric domain.
 pub unsafe trait QuantizedRecord: Serializable {
+    const MAX_DATA_SIZE: usize = crate::validation::DEFAULT_MAX_DATA_SIZE;
     const QUANTUM: usize;
     const PADDING_BYTES: usize;
     const MAX_QUANTIZED_BYTES: usize;
@@ -249,6 +250,7 @@ impl<T: QuantizedRecord> QuantizedOut<T> {
     pub fn encode(value: &T) -> QslResult<Self> {
         value.quant_validate_values()?;
         let expected = value.serialized_size();
+        crate::validation::check_size(expected, T::MAX_DATA_SIZE)?;
         let cap = expected
             .checked_add(T::PADDING_BYTES)
             .ok_or(QslError::LengthOverflow)?;
@@ -302,6 +304,7 @@ impl<T: QuantizedRecord, const CAP: usize, const N: usize> QuantizedRegions<T, C
     }
     pub fn try_encode(&'static self, value: &T) -> QslResult<QuantizedLease<T, CAP, N>> {
         value.quant_validate_values()?;
+        crate::validation::check_size(value.serialized_size(), T::MAX_DATA_SIZE)?;
         if value
             .serialized_size()
             .checked_add(T::PADDING_BYTES)

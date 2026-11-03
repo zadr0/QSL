@@ -24,12 +24,16 @@ pub struct DeqConfig {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct GenerationConfig {
+    pub use_hash: crate::SchemaHashAlgorithm,
+    pub max_data_size: usize,
     pub qsl_rt: bool,
     pub qsl_rt_default: usize,
 }
 impl Default for GenerationConfig {
     fn default() -> Self {
         Self {
+            use_hash: crate::SchemaHashAlgorithm::default(),
+            max_data_size: crate::validation::DEFAULT_MAX_DATA_SIZE,
             qsl_rt: false,
             qsl_rt_default: 16,
         }
@@ -62,6 +66,19 @@ pub fn parse_deq(source: &str) -> Result<DeqConfig, ParseError> {
                 return Err(parser.error("duplicate generation config"));
             }
             match name.as_str() {
+                "USE_HASH" => {
+                    result.generation.use_hash = parser
+                        .ident()?
+                        .parse()
+                        .map_err(|_| parser.error("USE_HASH expects xxHash or xxHash128"))?;
+                }
+                "MAX_DATA_SIZE" => {
+                    let n = parser.expr(&values)?;
+                    if n <= 0 || n > isize::MAX as i128 {
+                        return Err(parser.error("MAX_DATA_SIZE must be 1..isize::MAX bytes"));
+                    }
+                    result.generation.max_data_size = n as usize;
+                }
                 "QSL_RT" => {
                     result.generation.qsl_rt = match parser.ident()? {
                         "true" => true,
@@ -163,6 +180,8 @@ fn build_inputs(
                 return Err(format!("DEQ config `{key}` is defined more than once").into());
             }
             match key.as_str() {
+                "USE_HASH" => generation.use_hash = parsed.generation.use_hash,
+                "MAX_DATA_SIZE" => generation.max_data_size = parsed.generation.max_data_size,
                 "QSL_RT" => generation.qsl_rt = parsed.generation.qsl_rt,
                 "QSL_RT_DEFAULT" => generation.qsl_rt_default = parsed.generation.qsl_rt_default,
                 _ => unreachable!(),
@@ -228,6 +247,25 @@ mod tests {
             "!config QSL_RT = true;!config QSL_RT = false;",
         ] {
             assert!(parse_deq(s).is_err());
+        }
+    }
+    #[test]
+    fn maximum_data_size_has_a_safe_default_and_checked_arithmetic() {
+        assert_eq!(GenerationConfig::default().max_data_size, 65535);
+        assert_eq!(
+            parse_deq("!config MAX_DATA_SIZE = 1024 * 64 - 1;")
+                .unwrap()
+                .generation
+                .max_data_size,
+            65535
+        );
+        for source in [
+            "!config MAX_DATA_SIZE = 0;",
+            "!config MAX_DATA_SIZE = -1;",
+            "!config MAX_DATA_SIZE = true;",
+            "!config MAX_DATA_SIZE = 65535; !config MAX_DATA_SIZE = 8;",
+        ] {
+            assert!(parse_deq(source).is_err(), "{source}");
         }
     }
     #[test]

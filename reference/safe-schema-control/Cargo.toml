@@ -1,0 +1,8 @@
+[package]
+name = "qsl-safe-schema-control"
+version = "0.1.0"
+edition = "2021"
+[dependencies]
+qsl = { path = "../../qsl" }
+[build-dependencies]
+qsl = { path = "../../qsl" }

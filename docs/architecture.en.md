@@ -8,4 +8,6 @@ At runtime, the application selects ownership and regions, writes an agreed wire
 
 QPS transforms numeric operands and restores data exactly. opt_table derives events from length. The general byte envelope restores the inner frame before ordinary field offsets apply.
 
-The complete guide contains method contracts, every module, type mappings, option limits, storage costs and errors. The API index contains 600 public declarations for this snapshot; feature gates apply.
+The complete guide contains method contracts, every module, type mappings, option limits, storage costs and errors. The API index contains 624 public declarations for this snapshot; feature gates apply.
+
+Every schema generates checked methods. A native cursor validates the complete frame and aggregate budget before pointer decoding; QPS checks original length before restoration. [Contract](safety.en.md) · [Schema hashes](schema-hashes.en.md).

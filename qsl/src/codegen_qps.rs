@@ -110,7 +110,7 @@ pub(super) fn region_method(schema: &QslSchema, out: &mut String, slots: usize) 
         } else {
             "::qsl::Serializable"
         };
-        ln(out,format!("/// Encode into an exclusive static region; no heap allocation.\n/// A live lease keeps the bytes stable. Exhaustion returns PoolExhausted.\npub fn serialize(&self)->::qsl::QslResult<::qsl::rt::RegionLease<{cap},{slots}>>{{self.validate_values()?;let mut lease={}_RT_REGIONS.try_acquire()?;unsafe{{let n=<Self as {target}>::serialize_into_unsafe(self,lease.as_mut_ptr());lease.set_len(n);}}Ok(lease)}}",schema.name));
+        ln(out,format!("/// Encode into an exclusive static region; no heap allocation.\n/// A live lease keeps the bytes stable. Exhaustion returns PoolExhausted.\npub fn serialize(&self)->::qsl::QslResult<::qsl::rt::RegionLease<{cap},{slots}>>{{self.validate_values()?;let mut lease={}_RT_REGIONS.try_acquire()?;unsafe{{let n=<Self as {target}>::serialize_into_unsafe(self,lease.as_mut_ptr());::qsl::validation::check_size(n,Self::MAX_DATA_SIZE)?;lease.set_len(n);}}Ok(lease)}}",schema.name));
     }
     Ok(())
 }

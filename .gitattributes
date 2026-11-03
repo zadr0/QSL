@@ -9,3 +9,8 @@ docs/archive/before-full-guide-2026-11-02/** -text whitespace=-blank-at-eol,-bla
 reference/features/** -text
 reference/proofs/** -text
 reference/tools/*.ps1 -text
+
+# Preserve exact bytes of current source and reproducible checked fixtures.
+qsl/** -text whitespace=cr-at-eol
+reference/safe-schema-control/** -text whitespace=cr-at-eol
+reference/schema-hash-control/** -text whitespace=cr-at-eol

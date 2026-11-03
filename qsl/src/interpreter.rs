@@ -2394,6 +2394,7 @@ impl QslInterpreter {
     }
 
     fn generate_impl(&self, schema: &QslSchema, out: &mut String) -> QslResult<()> {
+        self.emit_schema_hashes(schema, out)?;
         let generated_start = out.len();
         let quant = crate::payload_quant::PayloadQuantPlan::analyze(schema)?;
         if quant.active {
@@ -2577,12 +2578,7 @@ impl QslInterpreter {
             let p = crate::static_index::PredictPlan::analyze(schema)?;
             ln(out,format!("pub const D_WORD_BYTES:usize=4;pub const D_USED_BITS:u32={};pub const Q_TABLE:usize={};",p.used_bits,p.quantum));
         }
-        if schema.flags & crate::FLAG_SAFETY != 0 {
-            validation_codegen::methods(schema, out)?;
-        } else if self.config.qsl_rt && qps_codegen::maximum_size(schema)?.is_some() {
-            // RT is opt-in and its safe writer must establish its capacity contract.
-            validation_codegen::values(schema, out)?;
-        }
+        validation_codegen::methods(schema, out)?;
         if self.config.qsl_rt {
             qps_codegen::region_method(schema, out, self.config.qsl_rt_default)?;
         }
@@ -2638,6 +2634,40 @@ impl QslInterpreter {
         Ok(())
     }
 
+    fn emit_schema_hashes(&self, schema: &QslSchema, out: &mut String) -> QslResult<()> {
+        let h = schema.hashes(self.config.use_hash)?;
+        let head = if schema.lifetime() {
+            format!("impl<'a> {}<'a>", schema.name)
+        } else {
+            format!("impl {}", schema.name)
+        };
+        ln(out, format!("{head} {{"));
+        ln(
+            out,
+            format!(
+                "pub const MAX_DATA_SIZE: usize = {};",
+                self.config.max_data_size
+            ),
+        );
+        ln(out, format!("pub const SCHEMA_HASHES: ::qsl::SchemaHashes = ::qsl::SchemaHashes {{ version: {}, algorithm: ::qsl::SchemaHashAlgorithm::{}, strict: 0x{}u128, light: 0x{}u128, complete: {} }};", h.version, h.algorithm.rust_variant(), h.strict_hex(), h.light_hex(), h.complete));
+        ln(
+            out,
+            "pub const SCHEMA_HASH_STRICT: u128 = Self::SCHEMA_HASHES.strict;",
+        );
+        ln(
+            out,
+            "pub const SCHEMA_HASH_LIGHT: u128 = Self::SCHEMA_HASHES.light;",
+        );
+        ln(out, "}");
+        let trait_head = if schema.lifetime() {
+            format!("impl<'a> ::qsl::SchemaIdentity for {}<'a>", schema.name)
+        } else {
+            format!("impl ::qsl::SchemaIdentity for {}", schema.name)
+        };
+        ln(out, format!("{trait_head} {{ const SCHEMA_HASHES: ::qsl::SchemaHashes = Self::SCHEMA_HASHES; }}"));
+        Ok(())
+    }
+
     fn generate_default_to(&self, schema: &QslSchema, out: &mut String) -> QslResult<()> {
         self.generate_impl(schema, out)
     }
@@ -2685,18 +2715,15 @@ impl QslInterpreter {
 /// Serializable wire format or infers optional presence. Safety schemas supply
 /// the validation proof needed before trusted restoration of owned/borrowed fields.
 fn emit_qps_bytes(s: &QslSchema, out: &mut String) -> QslResult<()> {
-    if s.flags & crate::FLAG_SAFETY == 0 {
-        return Ok(());
-    }
     let name = &s.name;
     if s.lifetime() {
-        ln(out,format!("unsafe impl<'a> ::qsl::qps_bytes::CheckedBorrowedRecord<'a> for {name}<'a> {{fn qps_validate_values(&self)->::qsl::QslResult<()>{{self.validate_values()}}fn qps_validate_wire(input:&[u8])->::qsl::QslResult<()>{{Self::validate(input)}}}}"));
+        ln(out,format!("unsafe impl<'a> ::qsl::qps_bytes::CheckedBorrowedRecord<'a> for {name}<'a> {{const MAX_DATA_SIZE:usize=Self::MAX_DATA_SIZE;fn qps_validate_values(&self)->::qsl::QslResult<()>{{self.validate_values()}}fn qps_validate_wire(input:&[u8])->::qsl::QslResult<()>{{Self::validate(input)}}}}"));
         if s.qps() {
             let q = s.quantum();
             ln(out,format!("impl<'a> {name}<'a> {{pub fn serialize_qps_to<'out>(&self,scratch:&mut[u8],out:&'out mut[u8])->::qsl::QslResult<::qsl::qps_bytes::ByteFrame<'out,{q}>>{{::qsl::qps_bytes::ByteQps::<{q}>::encode_borrowed_to(self,scratch,out)}}pub fn deserialize_qps(input:&[u8],restoration:&'a mut[u8])->::qsl::QslResult<Self>{{::qsl::qps_bytes::ByteQps::<{q}>::decode_borrowed(input,restoration)}}}}"));
         }
     } else {
-        ln(out,format!("unsafe impl ::qsl::qps_bytes::CheckedRecord for {name} {{fn qps_validate_values(&self)->::qsl::QslResult<()>{{self.validate_values()}}fn qps_validate_wire(input:&[u8])->::qsl::QslResult<()>{{Self::validate(input)}}}}"));
+        ln(out,format!("unsafe impl ::qsl::qps_bytes::CheckedRecord for {name} {{const MAX_DATA_SIZE:usize=Self::MAX_DATA_SIZE;fn qps_validate_values(&self)->::qsl::QslResult<()>{{self.validate_values()}}fn qps_validate_wire(input:&[u8])->::qsl::QslResult<()>{{Self::validate(input)}}}}"));
         if s.qps() {
             let q = s.quantum();
             ln(out,format!("impl {name} {{pub fn serialize_qps_to<'out>(&self,scratch:&mut[u8],out:&'out mut[u8])->::qsl::QslResult<::qsl::qps_bytes::ByteFrame<'out,{q}>>{{::qsl::qps_bytes::ByteQps::<{q}>::encode_record_to(self,scratch,out)}}pub fn deserialize_qps_into<'out>(input:&[u8],restoration:&mut[u8],out:&'out mut std::mem::MaybeUninit<Self>)->::qsl::QslResult<&'out mut Self>{{::qsl::qps_bytes::ByteQps::<{q}>::decode_record_into(input,restoration,out)}}}}"));
@@ -2709,20 +2736,17 @@ fn emit_qps_bytes(s: &QslSchema, out: &mut String) -> QslResult<()> {
 mod tests {
     use super::*;
     #[test]
-    fn additions_are_opt_in_and_field_order_is_mandatory() {
+    fn checked_api_is_universal_and_optimization_options_remain_explicit() {
         let s = crate::parse_qsl("&Legacy{u16 required;u8? optional;}")
             .unwrap()
             .remove(0);
         let generated = source(s);
-        for marker in [
-            "pub fn validate(",
-            "deserialize_checked",
-            "_OFFSET_TABLE",
-            "_RT_REGIONS",
-            "#[inline",
-        ] {
+        for marker in ["_OFFSET_TABLE", "_RT_REGIONS", "#[inline"] {
             assert!(!generated.contains(marker), "{marker}");
         }
+        assert!(generated.contains("pub fn validate("));
+        assert!(generated.contains("serialize_checked_to"));
+        assert!(generated.contains("deserialize_checked_into"));
         let s = crate::parse_qsl("&Checked[safety,inline=never]{u16 required;u8? optional;}")
             .unwrap()
             .remove(0);

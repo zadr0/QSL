@@ -281,6 +281,7 @@ impl<const Q: usize> ByteFrame<'_, Q> {
 /// complete size, initialization and non-overlap contracts. Generated safety
 /// schemas implement this trait; arbitrary validators cannot authorize unsafe reads.
 pub unsafe trait CheckedRecord: Serializable {
+    const MAX_DATA_SIZE: usize = crate::validation::DEFAULT_MAX_DATA_SIZE;
     fn qps_validate_values(&self) -> QslResult<()>;
     fn qps_validate_wire(input: &[u8]) -> QslResult<()>;
 }
@@ -288,6 +289,7 @@ pub unsafe trait CheckedRecord: Serializable {
 /// Validation must prove the exact borrowed representation and source lifetime
 /// required by BorrowSerializable. The restored region must outlive the value.
 pub unsafe trait CheckedBorrowedRecord<'a>: BorrowSerializable<'a> {
+    const MAX_DATA_SIZE: usize = crate::validation::DEFAULT_MAX_DATA_SIZE;
     fn qps_validate_values(&self) -> QslResult<()>;
     fn qps_validate_wire(input: &[u8]) -> QslResult<()>;
 }
@@ -398,7 +400,18 @@ impl<const Q: usize> ByteQps<Q> {
     /// Output may change before a malformed-input error is returned.
     #[allow(clippy::chunks_exact_to_as_chunks)]
     pub fn decode_to<'out>(input: &[u8], out: &'out mut [u8]) -> QslResult<&'out mut [u8]> {
+        Self::decode_to_with_limit(input, out, usize::MAX)
+    }
+    /// Bound both the envelope and restored frame before touching output.
+    #[allow(clippy::chunks_exact_to_as_chunks)]
+    pub fn decode_to_with_limit<'out>(
+        input: &[u8],
+        out: &'out mut [u8],
+        maximum: usize,
+    ) -> QslResult<&'out mut [u8]> {
+        crate::validation::check_size(input.len(), maximum)?;
         let (mode, original) = Self::inspect(input)?;
+        crate::validation::check_size(original, maximum)?;
         let out = out.get_mut(..original).ok_or(QslError::BufferTooSmall)?;
         if mode == ByteMode::Raw {
             out.copy_from_slice(&input[16..]);
@@ -462,15 +475,18 @@ impl<const Q: usize> ByteQps<Q> {
     ) -> QslResult<ByteFrame<'out, Q>> {
         value.qps_validate_values()?;
         let cap = value.serialized_size();
+        crate::validation::check_size(cap, T::MAX_DATA_SIZE)?;
         let scratch = scratch.get_mut(..cap).ok_or(QslError::BufferTooSmall)?;
         let n = unsafe { value.serialize_into_unsafe(scratch.as_mut_ptr()) };
-        Self::encode_to(&scratch[..n], out)
+        let frame = Self::encode_to(&scratch[..n], out)?;
+        crate::validation::check_size(frame.as_slice().len(), T::MAX_DATA_SIZE)?;
+        Ok(frame)
     }
     pub fn decode_borrowed<'a, T: CheckedBorrowedRecord<'a>>(
         input: &[u8],
         restoration: &'a mut [u8],
     ) -> QslResult<T> {
-        let raw = Self::decode_to(input, restoration)?;
+        let raw = Self::decode_to_with_limit(input, restoration, T::MAX_DATA_SIZE)?;
         T::qps_validate_wire(raw)?;
         Ok(unsafe { T::deserialize_borrowed_from_raw_parts(raw.as_ptr(), raw.len()) })
     }
@@ -481,16 +497,19 @@ impl<const Q: usize> ByteQps<Q> {
     ) -> QslResult<ByteFrame<'out, Q>> {
         value.qps_validate_values()?;
         let cap = value.serialized_size();
+        crate::validation::check_size(cap, T::MAX_DATA_SIZE)?;
         let scratch = scratch.get_mut(..cap).ok_or(QslError::BufferTooSmall)?;
         let n = unsafe { value.serialize_into_unsafe(scratch.as_mut_ptr()) };
-        Self::encode_to(&scratch[..n], out)
+        let frame = Self::encode_to(&scratch[..n], out)?;
+        crate::validation::check_size(frame.as_slice().len(), T::MAX_DATA_SIZE)?;
+        Ok(frame)
     }
     pub fn decode_record_into<'out, T: CheckedRecord>(
         input: &[u8],
         restoration: &mut [u8],
         out: &'out mut MaybeUninit<T>,
     ) -> QslResult<&'out mut T> {
-        let raw = Self::decode_to(input, restoration)?;
+        let raw = Self::decode_to_with_limit(input, restoration, T::MAX_DATA_SIZE)?;
         T::qps_validate_wire(raw)?;
         unsafe {
             T::deserialize_into(raw.as_ptr(), raw.len(), out.as_mut_ptr());

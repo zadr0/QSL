@@ -1,0 +1,5 @@
+&Packet[safety] {
+    u32 id;
+    str(1..100) name;
+    u8? status;
+}

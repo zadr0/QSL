@@ -19,6 +19,8 @@ pub enum QslError {
     InvalidSchema,
     InvalidPadding,
     PoolExhausted,
+    SizeLimitExceeded,
+    AllocationFailed,
 }
 
 impl std::fmt::Display for QslError {

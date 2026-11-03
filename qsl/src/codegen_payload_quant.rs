@@ -352,7 +352,7 @@ fn exact(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) {
     ln(out, "} }");
 }
 fn validation(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) -> QslResult<()> {
-    ln(out,"pub fn validate(input:&[u8])->::qsl::QslResult<()> {let mut c=::qsl::validation::ValidationCursor::new(input);");
+    ln(out,"pub fn validate(input:&[u8])->::qsl::QslResult<()> {let mut c=::qsl::validation::ValidationCursor::with_limit(input,Self::MAX_DATA_SIZE)?;");
     if p.header_bytes > 0 {
         ln(
             out,
@@ -374,7 +374,7 @@ fn validation(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) -> QslResul
             ln(out, format!("if (presence>>{ordinal})&1!=0 {{"));
             ordinal += 1;
         }
-        ln(out,format!("let code=c.bits({})?;let rank={};if rank>{}u64{{return Err(::qsl::QslError::InvalidValue);}}",f.bits,operands(f,p.quantum,true),f.max-f.min));
+        ln(out,format!("c.charge({})?;let code=c.bits({})?;let rank={};if rank>{}u64{{return Err(::qsl::QslError::InvalidValue);}}",f.native_bytes,f.bits,operands(f,p.quantum,true),f.max-f.min));
         if f.optional {
             ln(out, "}");
         }
@@ -467,23 +467,19 @@ pub(super) fn generate(
     }
     ln(out, "(bits+7)>>3 }");
     validation_codegen::values(s, out)?;
-    if s.flags & crate::FLAG_SAFETY != 0 {
-        validation(s, p, out)?;
-    }
+    validation(s, p, out)?;
     if i.config.qsl_rt {
         ln(out,format!("pub fn serialize(&self)->::qsl::QslResult<::qsl::QuantizedLease<Self,{},{}>>{{{name}_QUANT_REGIONS.try_encode(self)}}",p.max_bytes+p.padding_bytes,i.config.qsl_rt_default));
     } else {
         ln(out,"pub fn serialize(&self)->::qsl::QslResult<::qsl::QuantizedOut<Self>>{::qsl::QuantizedOut::encode(self)}");
     }
-    ln(out,"/// Reuse initialized storage. Validation and capacity checks precede the prepared kernel.\npub fn serialize_quantized_to<'out>(&self,out:&'out mut [u8])->::qsl::QslResult<::qsl::QuantizedFrame<'out,Self>> {self.validate_values()?;let len=self.__qsl_size();let end=len+Self::QUANT_PADDING_BYTES;let storage=out.get_mut(..end).ok_or(::qsl::QslError::BufferTooSmall)?;unsafe{self.__qsl_quant_write(storage);Ok(::qsl::QuantizedFrame::from_validated(storage,len))}}\n/// # Safety\n/// Input is valid and has len+QUANT_PADDING_BYTES initialized readable bytes; destination is disjoint and aligned.\n#[inline] pub unsafe fn deserialize_into<D: ::qsl::payload_quant::QuantizedDestination<Self>>(bytes:*const u8,len:usize,out:D){out.decode_padded(bytes,len);}");
+    ln(out,"/// Reuse initialized storage. Validation and capacity checks precede the prepared kernel.\npub fn serialize_quantized_to<'out>(&self,out:&'out mut [u8])->::qsl::QslResult<::qsl::QuantizedFrame<'out,Self>> {self.validate_values()?;let len=self.__qsl_size();::qsl::validation::check_size(len,Self::MAX_DATA_SIZE)?;let end=len+Self::QUANT_PADDING_BYTES;let storage=out.get_mut(..end).ok_or(::qsl::QslError::BufferTooSmall)?;unsafe{self.__qsl_quant_write(storage);Ok(::qsl::QuantizedFrame::from_validated(storage,len))}}\n/// # Safety\n/// Input is valid and has len+QUANT_PADDING_BYTES initialized readable bytes; destination is disjoint and aligned.\n#[inline] pub unsafe fn deserialize_into<D: ::qsl::payload_quant::QuantizedDestination<Self>>(bytes:*const u8,len:usize,out:D){out.decode_padded(bytes,len);}");
     exact(s, p, out);
     prepared(s, p, out);
     qps_codegen::callbacks(s, out)?;
     ln(out, "}");
     ln(out,format!("impl ::qsl::Serializable for {name} {{const OPTIONAL_FIELDS_COUNT:usize={};const SIZE_TAG:usize=0;fn get_size()->usize{{{}}}#[inline] fn serialized_size(&self)->usize{{self.__qsl_size()}}#[inline] unsafe fn serialize_unsafe(&self,to:*mut u8){{self.__qsl_write_unchecked(to);}}#[inline] unsafe fn serialize_into_unsafe(&self,to:*mut u8)->usize{{self.__qsl_write_unchecked(to)}}#[inline] unsafe fn deserialize_unsafe(bytes:*const u8)->Self{{Self::__qsl_read_unchecked(bytes)}}}}",s.optional_count(),p.min_bytes));
-    ln(out,format!("unsafe impl ::qsl::payload_quant::QuantizedRecord for {name} {{const QUANTUM:usize={};const PADDING_BYTES:usize={};const MAX_QUANTIZED_BYTES:usize={};fn quant_validate_values(&self)->::qsl::QslResult<()>{{self.validate_values()}}#[inline] unsafe fn quant_write_prepared(&self,out:*mut u8)->usize{{self.__qsl_quant_write(std::slice::from_raw_parts_mut(out,self.__qsl_size()+Self::QUANT_PADDING_BYTES))}}#[inline] unsafe fn quant_read_padded(bytes:*const u8,_len:usize,out:*mut Self){{Self::__qsl_quant_read(bytes,&mut *out.cast::<std::mem::MaybeUninit<Self>>());}}}}",p.quantum,p.padding_bytes,p.max_bytes));
-    if s.flags & crate::FLAG_SAFETY != 0 {
-        ln(out,format!("impl ::qsl::payload_quant::CheckedQuantizedRecord for {name}{{fn quant_validate(input:&[u8])->::qsl::QslResult<()>{{Self::validate(input)}}}}"));
-    }
+    ln(out,format!("unsafe impl ::qsl::payload_quant::QuantizedRecord for {name} {{const MAX_DATA_SIZE:usize=Self::MAX_DATA_SIZE;const QUANTUM:usize={};const PADDING_BYTES:usize={};const MAX_QUANTIZED_BYTES:usize={};fn quant_validate_values(&self)->::qsl::QslResult<()>{{self.validate_values()}}#[inline] unsafe fn quant_write_prepared(&self,out:*mut u8)->usize{{self.__qsl_quant_write(std::slice::from_raw_parts_mut(out,self.__qsl_size()+Self::QUANT_PADDING_BYTES))}}#[inline] unsafe fn quant_read_padded(bytes:*const u8,_len:usize,out:*mut Self){{Self::__qsl_quant_read(bytes,&mut *out.cast::<std::mem::MaybeUninit<Self>>());}}}}",p.quantum,p.padding_bytes,p.max_bytes));
+    ln(out,format!("impl ::qsl::payload_quant::CheckedQuantizedRecord for {name}{{fn quant_validate(input:&[u8])->::qsl::QslResult<()>{{Self::validate(input)}}}}"));
     Ok(())
 }

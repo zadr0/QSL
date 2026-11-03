@@ -23,14 +23,14 @@ QSL рассчитан на управляемый бинарный обмен: 
 ### Короткий пример
 
 ```qsl
-&User[safety] {
+&User {
     u64 id;
     str(1..100) name;
     u8? status;
 }
 ```
 
-Схема описывает запись пользователя: обязательный идентификатор, имя длиной от 1 до 100 **байтов UTF-8** и необязательный статус. По умолчанию этим полям соответствуют `u64`, `String` и `Option<u8>` в Rust. Атрибут `safety` добавляет API проверяемого чтения входных данных.
+Схема описывает запись пользователя: обязательный идентификатор, имя длиной от 1 до 100 **байтов UTF-8** и необязательный статус. По умолчанию этим полям соответствуют `u64`, `String` и `Option<u8>` в Rust. Безопасные методы доступны каждой схеме. `MAX_DATA_SIZE` по умолчанию равен 65535 байтам; проверяются кадр, восстановление QPS и суммарный объём значений. [Контракт и API](docs/safety.ru.md).
 
 **Обязательные поля всегда располагаются перед опциональными.** Дополнительные атрибуты и механики выбираются отдельно; для этой схемы не требуется включать сжатие, таблицы смещений или принудительный inline.
 
@@ -66,7 +66,7 @@ QSL рассчитан на управляемый бинарный обмен: 
 
 ### Содержимое репозитория
 
-В `qsl/src` размещены исходники сокращённой бета-версии. Рядом опубликованы документация QSL, результаты измерений и стенды для их воспроизведения. Для сборки стендов нужны соответствующие исходники `dev-qsl`; полный Cargo workspace в этом репозитории не опубликован. [Состояние реализации и проверок](SOURCE_AUDIT.md) отделяет готовые механизмы от планов. Согласование схем через QBProto и идентификатор R остаются планом развития.
+Крейт `qsl` содержит исходники, внутренние атрибутные макросы и Cargo-манифест; его можно собирать отдельно. Документация и стенды находятся в `docs` и `reference`. [Безопасные схемы](docs/safety.ru.md) · [Хэши](docs/schema-hashes.ru.md).
 
 ---
 
@@ -91,14 +91,14 @@ The developer maintains schema compatibility, valid sizes and memory lifetimes. 
 ### A small example
 
 ```qsl
-&User[safety] {
+&User {
     u64 id;
     str(1..100) name;
     u8? status;
 }
 ```
 
-This schema describes a user record: a required identifier, a name of 1 to 100 **UTF-8 bytes**, and an optional status. By default, the fields map to Rust `u64`, `String` and `Option<u8>`. The `safety` attribute adds APIs for checked decoding of input data.
+This schema describes a user record: a required identifier, a name of 1 to 100 **UTF-8 bytes**, and an optional status. By default, the fields map to Rust `u64`, `String` and `Option<u8>`. Every schema provides checked APIs. `MAX_DATA_SIZE` defaults to 65535 bytes, bounding frames, QPS restoration and aggregate values. [Contract and API](docs/safety.en.md).
 
 **Required fields must always precede optional fields.** Additional attributes and mechanisms are selected independently; this schema does not require compression, offset tables or forced inlining.
 
@@ -134,4 +134,4 @@ Each option must be assessed on a concrete schema. A smaller frame can take long
 
 ### Repository contents
 
-The `qsl/src` directory contains the shortened beta sources. The repository also publishes QSL documentation, measurement results and reproduction harnesses. Building the harnesses requires the corresponding `dev-qsl` sources; the complete Cargo workspace is not published here. [Implementation and validation status](SOURCE_AUDIT.md) distinguishes implemented mechanisms from plans. QBProto schema negotiation and the R identifier remain planned.
+The standalone `qsl` crate includes source, internal attribute macros and a Cargo manifest. Documentation and fixtures are under `docs` and `reference`. [Checked schemas](docs/safety.en.md) · [Hashes](docs/schema-hashes.en.md).

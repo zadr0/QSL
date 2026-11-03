@@ -1,7 +1,7 @@
 [
   {
     "module": "lib",
-    "path": "qsl-macros/src/lib.rs",
+    "path": "qsl/macros/src/lib.rs",
     "line": 22,
     "kind": "fn",
     "signature": "pub fn qsl_macro(args: TokenStream, item: TokenStream) -> TokenStream {",
@@ -9,7 +9,7 @@
   },
   {
     "module": "lib",
-    "path": "qsl-macros/src/lib.rs",
+    "path": "qsl/macros/src/lib.rs",
     "line": 26,
     "kind": "fn",
     "signature": "pub fn schem_macro(args: TokenStream, item: TokenStream) -> TokenStream {",
@@ -474,7 +474,7 @@
   {
     "module": "deq",
     "path": "qsl/src/deq.rs",
-    "line": 42,
+    "line": 46,
     "kind": "fn",
     "signature": "pub fn integer_values(&self) -> HashMap<String, i128> {",
     "doc": ""
@@ -482,7 +482,7 @@
   {
     "module": "deq",
     "path": "qsl/src/deq.rs",
-    "line": 50,
+    "line": 54,
     "kind": "fn",
     "signature": "pub fn parse_deq(source: &str) -> Result<DeqConfig, ParseError> {",
     "doc": ""
@@ -490,7 +490,7 @@
   {
     "module": "deq",
     "path": "qsl/src/deq.rs",
-    "line": 130,
+    "line": 147,
     "kind": "fn",
     "signature": "pub fn build_qsl_files( qsl_files: &[&str], deq_files: &[&str], out_dir: impl AsRef<Path>, ) -> Result<PathBuf, Box<dyn std::error::Error>> {",
     "doc": ""
@@ -498,7 +498,7 @@
   {
     "module": "deq",
     "path": "qsl/src/deq.rs",
-    "line": 138,
+    "line": 155,
     "kind": "fn",
     "signature": "pub fn build_qsl_files_with_rust( qsl_files: &[&str], deq_files: &[&str], rust_files: &[&str], out_dir: impl AsRef<Path>, ) -> Result<PathBuf, Box<dyn std::error::Error>> {",
     "doc": ""
@@ -610,7 +610,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2648,
+    "line": 2678,
     "kind": "fn",
     "signature": "pub fn generate_default(&mut self, schema: &QslSchema) -> QslResult<()> {",
     "doc": ""
@@ -618,7 +618,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2659,
+    "line": 2689,
     "kind": "fn",
     "signature": "pub fn generate_lifetime(&mut self, schema: &QslSchema) -> QslResult<()> {",
     "doc": ""
@@ -626,7 +626,7 @@
   {
     "module": "interpreter",
     "path": "qsl/src/interpreter.rs",
-    "line": 2673,
+    "line": 2703,
     "kind": "fn",
     "signature": "pub fn push(&self) -> std::io::Result<()> {",
     "doc": ""
@@ -658,7 +658,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 34,
+    "line": 36,
     "kind": "struct",
     "signature": "pub struct QslRawWriter {",
     "doc": ""
@@ -666,7 +666,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 42,
+    "line": 44,
     "kind": "fn",
     "signature": "pub unsafe fn new(ptr: *mut u8) -> Self {",
     "doc": ""
@@ -674,7 +674,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 49,
+    "line": 51,
     "kind": "fn",
     "signature": "pub fn from(out: &mut [u8]) -> Self {",
     "doc": ""
@@ -682,7 +682,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 59,
+    "line": 61,
     "kind": "fn",
     "signature": "pub unsafe fn write_u8(&mut self, value: u8) {",
     "doc": ""
@@ -690,7 +690,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 67,
+    "line": 69,
     "kind": "fn",
     "signature": "pub unsafe fn write_u16(&mut self, value: u16) {",
     "doc": ""
@@ -698,7 +698,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 75,
+    "line": 77,
     "kind": "fn",
     "signature": "pub unsafe fn write_u32(&mut self, value: u32) {",
     "doc": ""
@@ -706,7 +706,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 83,
+    "line": 85,
     "kind": "fn",
     "signature": "pub unsafe fn write_u64(&mut self, value: u64) {",
     "doc": ""
@@ -714,7 +714,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 91,
+    "line": 93,
     "kind": "fn",
     "signature": "pub unsafe fn write(&mut self, source: *const u8, len: usize) {",
     "doc": ""
@@ -722,7 +722,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 99,
+    "line": 101,
     "kind": "struct",
     "signature": "pub struct QslRawReader {",
     "doc": ""
@@ -730,7 +730,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 107,
+    "line": 109,
     "kind": "fn",
     "signature": "pub unsafe fn new(ptr: *const u8) -> Self {",
     "doc": ""
@@ -738,7 +738,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 113,
+    "line": 115,
     "kind": "fn",
     "signature": "pub fn from(input: &[u8]) -> Self {",
     "doc": ""
@@ -746,7 +746,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 122,
+    "line": 124,
     "kind": "fn",
     "signature": "pub unsafe fn read_u8(&mut self) -> u8 {",
     "doc": ""
@@ -754,7 +754,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 131,
+    "line": 133,
     "kind": "fn",
     "signature": "pub unsafe fn read_u16(&mut self) -> u16 {",
     "doc": ""
@@ -762,7 +762,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 140,
+    "line": 142,
     "kind": "fn",
     "signature": "pub unsafe fn read_u32(&mut self) -> u32 {",
     "doc": ""
@@ -770,7 +770,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 149,
+    "line": 151,
     "kind": "fn",
     "signature": "pub unsafe fn read_u64(&mut self) -> u64 {",
     "doc": ""
@@ -778,7 +778,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 157,
+    "line": 159,
     "kind": "fn",
     "signature": "pub unsafe fn take(&mut self, len: usize) -> *const u8 {",
     "doc": ""
@@ -786,7 +786,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 167,
+    "line": 169,
     "kind": "struct",
     "signature": "pub struct QslFastBitsReader {",
     "doc": ""
@@ -794,7 +794,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 178,
+    "line": 180,
     "kind": "fn",
     "signature": "pub unsafe fn read_inline_string_into_with<const MAX: usize, H: crate::StringHeader>( &mut self, out: *mut crate::InlineString<MAX>, ) {",
     "doc": ""
@@ -802,7 +802,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 189,
+    "line": 191,
     "kind": "fn",
     "signature": "pub unsafe fn read_raw_inline_string_into_with<const MAX: usize, H: crate::StringHeader>( &mut self, out: *mut crate::InlineString<MAX>, ) {",
     "doc": ""
@@ -810,7 +810,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 200,
+    "line": 202,
     "kind": "fn",
     "signature": "pub unsafe fn read_inline_string_with<const MAX: usize, H: crate::StringHeader>( &mut self, ) -> crate::InlineString<MAX> {",
     "doc": ""
@@ -818,7 +818,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 211,
+    "line": 213,
     "kind": "fn",
     "signature": "pub unsafe fn read_raw_inline_string_with<const MAX: usize, H: crate::StringHeader>( &mut self, ) -> crate::InlineString<MAX> {",
     "doc": ""
@@ -826,7 +826,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 222,
+    "line": 224,
     "kind": "fn",
     "signature": "pub fn as_ptr(&self) -> *const u8 {",
     "doc": ""
@@ -834,7 +834,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 230,
+    "line": 232,
     "kind": "fn",
     "signature": "pub unsafe fn read_raw_inline_string_into<const MAX: usize>( &mut self, output: *mut crate::InlineString<MAX>, ) {",
     "doc": ""
@@ -842,7 +842,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 242,
+    "line": 244,
     "kind": "fn",
     "signature": "pub unsafe fn read_inline_string_into<const MAX: usize>( &mut self, output: *mut crate::InlineString<MAX>, ) {",
     "doc": ""
@@ -850,7 +850,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 254,
+    "line": 256,
     "kind": "fn",
     "signature": "pub unsafe fn read_inline_string<const MAX: usize>(&mut self) -> crate::InlineString<MAX> {",
     "doc": ""
@@ -858,7 +858,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 265,
+    "line": 267,
     "kind": "fn",
     "signature": "pub unsafe fn new(ptr: *const u8) -> Self {",
     "doc": ""
@@ -866,7 +866,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 276,
+    "line": 278,
     "kind": "fn",
     "signature": "pub fn from(input: &[u8]) -> Self {",
     "doc": ""
@@ -874,7 +874,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 290,
+    "line": 292,
     "kind": "fn",
     "signature": "pub unsafe fn read_bits(&mut self, width: u32) -> u64 {",
     "doc": ""
@@ -882,7 +882,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 309,
+    "line": 311,
     "kind": "fn",
     "signature": "pub unsafe fn align(&mut self) {",
     "doc": ""
@@ -890,7 +890,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 318,
+    "line": 320,
     "kind": "fn",
     "signature": "pub unsafe fn read_exact(&mut self, len: usize) -> *const u8 {",
     "doc": ""
@@ -898,7 +898,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 330,
+    "line": 332,
     "kind": "fn",
     "signature": "pub unsafe fn read_u8(&mut self) -> u8 {",
     "doc": ""
@@ -906,7 +906,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 341,
+    "line": 343,
     "kind": "fn",
     "signature": "pub unsafe fn read_u16(&mut self) -> u16 {",
     "doc": ""
@@ -914,7 +914,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 352,
+    "line": 354,
     "kind": "fn",
     "signature": "pub unsafe fn read_u32(&mut self) -> u32 {",
     "doc": ""
@@ -922,7 +922,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 363,
+    "line": 365,
     "kind": "fn",
     "signature": "pub unsafe fn read_u64(&mut self) -> u64 {",
     "doc": ""
@@ -930,7 +930,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 373,
+    "line": 375,
     "kind": "fn",
     "signature": "pub unsafe fn read_i8(&mut self) -> i8 {",
     "doc": ""
@@ -938,7 +938,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 380,
+    "line": 382,
     "kind": "fn",
     "signature": "pub unsafe fn read_i16(&mut self) -> i16 {",
     "doc": ""
@@ -946,7 +946,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 387,
+    "line": 389,
     "kind": "fn",
     "signature": "pub unsafe fn read_i32(&mut self) -> i32 {",
     "doc": ""
@@ -954,7 +954,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 394,
+    "line": 396,
     "kind": "fn",
     "signature": "pub unsafe fn read_i64(&mut self) -> i64 {",
     "doc": ""
@@ -962,7 +962,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 406,
+    "line": 408,
     "kind": "struct",
     "signature": "pub struct QslUncheckedWriter {",
     "doc": ""
@@ -970,7 +970,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 416,
+    "line": 418,
     "kind": "fn",
     "signature": "pub unsafe fn write_inline_string_with<const MAX: usize, H: crate::StringHeader>( &mut self, value: &crate::InlineString<MAX>, ) {",
     "doc": ""
@@ -978,7 +978,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 427,
+    "line": 429,
     "kind": "fn",
     "signature": "pub fn as_mut_ptr(&self) -> *mut u8 {",
     "doc": ""
@@ -986,7 +986,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 434,
+    "line": 436,
     "kind": "fn",
     "signature": "pub unsafe fn write_inline_string<const MAX: usize>( &mut self, value: &crate::InlineString<MAX>, ) {",
     "doc": ""
@@ -994,7 +994,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 445,
+    "line": 447,
     "kind": "fn",
     "signature": "pub unsafe fn from_raw(ptr: *mut u8) -> Self {",
     "doc": ""
@@ -1002,7 +1002,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 456,
+    "line": 458,
     "kind": "fn",
     "signature": "pub fn from(out: &mut [u8]) -> Self {",
     "doc": ""
@@ -1010,7 +1010,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 468,
+    "line": 470,
     "kind": "fn",
     "signature": "pub unsafe fn write_bytes_unchecked(&mut self, bytes: &[u8]) {",
     "doc": ""
@@ -1018,7 +1018,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 478,
+    "line": 480,
     "kind": "fn",
     "signature": "pub unsafe fn write_ptr_unchecked(&mut self, source: *const u8, len: usize) {",
     "doc": ""
@@ -1026,7 +1026,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 488,
+    "line": 490,
     "kind": "fn",
     "signature": "pub unsafe fn write_zeros_unchecked(&mut self, count: usize) {",
     "doc": ""
@@ -1034,7 +1034,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 498,
+    "line": 500,
     "kind": "fn",
     "signature": "pub unsafe fn write_bits_unchecked(&mut self, value: u64, width: u32) {",
     "doc": ""
@@ -1042,7 +1042,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 515,
+    "line": 517,
     "kind": "fn",
     "signature": "pub unsafe fn flush_unchecked(&mut self) {",
     "doc": ""
@@ -1050,7 +1050,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 530,
+    "line": 532,
     "kind": "fn",
     "signature": "pub unsafe fn claim_bytes(&mut self, n: usize) -> *mut u8 {",
     "doc": ""
@@ -1058,7 +1058,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 541,
+    "line": 543,
     "kind": "fn",
     "signature": "pub unsafe fn write_bytes(&mut self, bytes: &[u8]) {",
     "doc": ""
@@ -1066,7 +1066,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 549,
+    "line": 551,
     "kind": "fn",
     "signature": "pub unsafe fn write_zeros(&mut self, n: usize) {",
     "doc": ""
@@ -1074,7 +1074,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 557,
+    "line": 559,
     "kind": "fn",
     "signature": "pub unsafe fn write_bits(&mut self, v: u64, width: u32) {",
     "doc": ""
@@ -1082,7 +1082,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 566,
+    "line": 568,
     "kind": "fn",
     "signature": "pub unsafe fn flush(&mut self) {",
     "doc": ""
@@ -1090,7 +1090,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 573,
+    "line": 575,
     "kind": "fn",
     "signature": "pub unsafe fn write_u8(&mut self, value: u8) {",
     "doc": ""
@@ -1098,7 +1098,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 583,
+    "line": 585,
     "kind": "fn",
     "signature": "pub unsafe fn write_u16(&mut self, value: u16) {",
     "doc": ""
@@ -1106,7 +1106,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 593,
+    "line": 595,
     "kind": "fn",
     "signature": "pub unsafe fn write_u32(&mut self, value: u32) {",
     "doc": ""
@@ -1114,7 +1114,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 603,
+    "line": 605,
     "kind": "fn",
     "signature": "pub unsafe fn write_u64(&mut self, value: u64) {",
     "doc": ""
@@ -1122,7 +1122,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 612,
+    "line": 614,
     "kind": "fn",
     "signature": "pub unsafe fn write_i8(&mut self, v: i8) {",
     "doc": ""
@@ -1130,7 +1130,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 619,
+    "line": 621,
     "kind": "fn",
     "signature": "pub unsafe fn write_i16(&mut self, v: i16) {",
     "doc": ""
@@ -1138,7 +1138,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 626,
+    "line": 628,
     "kind": "fn",
     "signature": "pub unsafe fn write_i32(&mut self, v: i32) {",
     "doc": ""
@@ -1146,7 +1146,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 633,
+    "line": 635,
     "kind": "fn",
     "signature": "pub unsafe fn write_i64(&mut self, v: i64) {",
     "doc": ""
@@ -1154,7 +1154,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 640,
+    "line": 642,
     "kind": "type",
     "signature": "pub type QslWriter = QslRawWriter;",
     "doc": ""
@@ -1162,7 +1162,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 641,
+    "line": 643,
     "kind": "type",
     "signature": "pub type QslReader = QslRawReader;",
     "doc": ""
@@ -1170,7 +1170,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 642,
+    "line": 644,
     "kind": "type",
     "signature": "pub type QslBitsWriter = QslUncheckedWriter;",
     "doc": ""
@@ -1178,7 +1178,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 643,
+    "line": 645,
     "kind": "type",
     "signature": "pub type QslBitsReader = QslFastBitsReader;",
     "doc": ""
@@ -1186,7 +1186,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 647,
+    "line": 649,
     "kind": "struct",
     "signature": "pub struct QslSizer {",
     "doc": ""
@@ -1194,7 +1194,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 654,
+    "line": 656,
     "kind": "fn",
     "signature": "pub fn bits(&mut self, n: usize) -> QslResult<()> {",
     "doc": ""
@@ -1202,7 +1202,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 664,
+    "line": 666,
     "kind": "fn",
     "signature": "pub fn align(&mut self) -> QslResult<()> {",
     "doc": ""
@@ -1210,7 +1210,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 672,
+    "line": 674,
     "kind": "fn",
     "signature": "pub fn bytes(&mut self, n: usize) -> QslResult<()> {",
     "doc": ""
@@ -1218,7 +1218,7 @@
   {
     "module": "io",
     "path": "qsl/src/io.rs",
-    "line": 678,
+    "line": 680,
     "kind": "fn",
     "signature": "pub fn finish(mut self) -> QslResult<usize> {",
     "doc": ""
@@ -2010,15 +2010,15 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 41,
+    "line": 40,
     "kind": "use",
-    "signature": "pub use qsl_macros::{qsl_macro, schem_macro};",
+    "signature": "pub use qsl_macros_impl::{qsl_macro, schem_macro};",
     "doc": ""
   },
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 42,
+    "line": 41,
     "kind": "mod",
     "signature": "pub mod length_graph;",
     "doc": ""
@@ -2026,7 +2026,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 43,
+    "line": 42,
     "kind": "mod",
     "signature": "pub mod static_optional;",
     "doc": ""
@@ -2034,7 +2034,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 44,
+    "line": 43,
     "kind": "mod",
     "signature": "pub mod validation;",
     "doc": ""
@@ -2042,7 +2042,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 45,
+    "line": 44,
     "kind": "use",
     "signature": "pub use analysis::*;",
     "doc": ""
@@ -2050,7 +2050,7 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 46,
+    "line": 45,
     "kind": "use",
     "signature": "pub use bit_io::*;",
     "doc": ""
@@ -2058,9 +2058,25 @@
   {
     "module": "lib",
     "path": "qsl/src/lib.rs",
-    "line": 50,
+    "line": 49,
     "kind": "mod",
     "signature": "pub mod native;",
+    "doc": ""
+  },
+  {
+    "module": "lib",
+    "path": "qsl/src/lib.rs",
+    "line": 51,
+    "kind": "mod",
+    "signature": "pub mod schema_hash;",
+    "doc": ""
+  },
+  {
+    "module": "lib",
+    "path": "qsl/src/lib.rs",
+    "line": 52,
+    "kind": "use",
+    "signature": "pub use schema_hash::{ SchemaHashAlgorithm, SchemaHashKind, SchemaHashes, SchemaIdentity, SCHEMA_HASH_VERSION, };",
     "doc": ""
   },
   {
@@ -2698,7 +2714,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 181,
+    "line": 182,
     "kind": "trait method",
     "signature": "fn quant_validate_values(&self) -> QslResult<()>;",
     "doc": ""
@@ -2706,7 +2722,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 185,
+    "line": 186,
     "kind": "trait method",
     "signature": "unsafe fn quant_write_prepared(&self, out: *mut u8) -> usize;",
     "doc": ""
@@ -2714,7 +2730,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 189,
+    "line": 190,
     "kind": "trait method",
     "signature": "unsafe fn quant_read_padded(bytes: *const u8, len: usize, out: *mut Self);",
     "doc": ""
@@ -2722,7 +2738,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 191,
+    "line": 192,
     "kind": "trait",
     "signature": "pub trait CheckedQuantizedRecord: QuantizedRecord {",
     "doc": ""
@@ -2730,7 +2746,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 192,
+    "line": 193,
     "kind": "trait method",
     "signature": "fn quant_validate(input: &[u8]) -> QslResult<()>;",
     "doc": ""
@@ -2738,7 +2754,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 195,
+    "line": 196,
     "kind": "struct",
     "signature": "pub struct QuantizedFrame<'a, T: QuantizedRecord> {",
     "doc": ""
@@ -2746,7 +2762,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 201,
+    "line": 202,
     "kind": "fn",
     "signature": "pub fn try_new(storage: &'a [u8], len: usize) -> QslResult<Self> {",
     "doc": ""
@@ -2754,7 +2770,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 218,
+    "line": 219,
     "kind": "fn",
     "signature": "pub unsafe fn from_validated(storage: &[u8], len: usize) -> QuantizedFrame<'_, T> {",
     "doc": ""
@@ -2762,7 +2778,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 225,
+    "line": 226,
     "kind": "fn",
     "signature": "pub fn as_slice(&self) -> &[u8] {",
     "doc": ""
@@ -2770,7 +2786,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 228,
+    "line": 229,
     "kind": "fn",
     "signature": "pub fn decode_into<'out>(&self, out: &'out mut std::mem::MaybeUninit<T>) -> &'out mut T {",
     "doc": ""
@@ -2778,7 +2794,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 234,
+    "line": 235,
     "kind": "fn",
     "signature": "pub fn decode_boxed(&self) -> Box<T> {",
     "doc": ""
@@ -2786,7 +2802,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 243,
+    "line": 244,
     "kind": "struct",
     "signature": "pub struct QuantizedOut<T: QuantizedRecord> {",
     "doc": ""
@@ -2794,7 +2810,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 249,
+    "line": 250,
     "kind": "fn",
     "signature": "pub fn encode(value: &T) -> QslResult<Self> {",
     "doc": ""
@@ -2802,7 +2818,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 264,
+    "line": 266,
     "kind": "fn",
     "signature": "pub fn as_slice(&self) -> &[u8] {",
     "doc": ""
@@ -2810,7 +2826,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 267,
+    "line": 269,
     "kind": "fn",
     "signature": "pub fn frame(&self) -> QuantizedFrame<'_, T> {",
     "doc": ""
@@ -2818,7 +2834,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 287,
+    "line": 289,
     "kind": "struct",
     "signature": "pub struct QuantizedRegions<T: QuantizedRecord, const CAP: usize, const N: usize> {",
     "doc": ""
@@ -2826,7 +2842,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 297,
+    "line": 299,
     "kind": "fn",
     "signature": "pub const fn new() -> Self {",
     "doc": ""
@@ -2834,7 +2850,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 303,
+    "line": 305,
     "kind": "fn",
     "signature": "pub fn try_encode(&'static self, value: &T) -> QslResult<QuantizedLease<T, CAP, N>> {",
     "doc": ""
@@ -2842,7 +2858,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 324,
+    "line": 327,
     "kind": "struct",
     "signature": "pub struct QuantizedLease<T: QuantizedRecord, const CAP: usize, const N: usize> {",
     "doc": ""
@@ -2850,7 +2866,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 330,
+    "line": 333,
     "kind": "fn",
     "signature": "pub fn as_slice(&self) -> &[u8] {",
     "doc": ""
@@ -2858,7 +2874,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 333,
+    "line": 336,
     "kind": "fn",
     "signature": "pub fn frame(&self) -> QuantizedFrame<'_, T> {",
     "doc": ""
@@ -2866,7 +2882,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 357,
+    "line": 360,
     "kind": "trait",
     "signature": "pub trait QuantizedDestination<T: QuantizedRecord> {",
     "doc": ""
@@ -2874,7 +2890,7 @@
   {
     "module": "payload_quant",
     "path": "qsl/src/payload_quant.rs",
-    "line": 361,
+    "line": 364,
     "kind": "trait method",
     "signature": "unsafe fn decode_padded(self, bytes: *const u8, len: usize);",
     "doc": ""
@@ -2994,7 +3010,7 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 284,
+    "line": 285,
     "kind": "trait method",
     "signature": "fn qps_validate_values(&self) -> QslResult<()>;",
     "doc": ""
@@ -3002,7 +3018,7 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 285,
+    "line": 286,
     "kind": "trait method",
     "signature": "fn qps_validate_wire(input: &[u8]) -> QslResult<()>;",
     "doc": ""
@@ -3010,7 +3026,7 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 290,
+    "line": 291,
     "kind": "trait",
     "signature": "pub unsafe trait CheckedBorrowedRecord<'a>: BorrowSerializable<'a> {",
     "doc": ""
@@ -3018,7 +3034,7 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 291,
+    "line": 293,
     "kind": "trait method",
     "signature": "fn qps_validate_values(&self) -> QslResult<()>;",
     "doc": ""
@@ -3026,7 +3042,7 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 292,
+    "line": 294,
     "kind": "trait method",
     "signature": "fn qps_validate_wire(input: &[u8]) -> QslResult<()>;",
     "doc": ""
@@ -3034,7 +3050,7 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 295,
+    "line": 297,
     "kind": "fn",
     "signature": "pub fn max_encoded_len(len: usize) -> QslResult<usize> {",
     "doc": ""
@@ -3042,7 +3058,7 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 300,
+    "line": 302,
     "kind": "fn",
     "signature": "pub fn inspect(input: &[u8]) -> QslResult<(ByteMode, usize)> {",
     "doc": ""
@@ -3050,7 +3066,7 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 329,
+    "line": 331,
     "kind": "fn",
     "signature": "pub fn encode_to<'out>(input: &[u8], out: &'out mut [u8]) -> QslResult<ByteFrame<'out, Q>> {",
     "doc": ""
@@ -3058,7 +3074,7 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 400,
+    "line": 402,
     "kind": "fn",
     "signature": "pub fn decode_to<'out>(input: &[u8], out: &'out mut [u8]) -> QslResult<&'out mut [u8]> {",
     "doc": ""
@@ -3066,7 +3082,15 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 458,
+    "line": 407,
+    "kind": "fn",
+    "signature": "pub fn decode_to_with_limit<'out>( input: &[u8], out: &'out mut [u8], maximum: usize, ) -> QslResult<&'out mut [u8]> {",
+    "doc": ""
+  },
+  {
+    "module": "qps_bytes",
+    "path": "qsl/src/qps_bytes.rs",
+    "line": 471,
     "kind": "fn",
     "signature": "pub fn encode_borrowed_to<'out, 'a, T: CheckedBorrowedRecord<'a>>( value: &T, scratch: &mut [u8], out: &'out mut [u8], ) -> QslResult<ByteFrame<'out, Q>> {",
     "doc": ""
@@ -3074,7 +3098,7 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 469,
+    "line": 485,
     "kind": "fn",
     "signature": "pub fn decode_borrowed<'a, T: CheckedBorrowedRecord<'a>>( input: &[u8], restoration: &'a mut [u8], ) -> QslResult<T> {",
     "doc": ""
@@ -3082,7 +3106,7 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 477,
+    "line": 493,
     "kind": "fn",
     "signature": "pub fn encode_record_to<'out, T: CheckedRecord>( value: &T, scratch: &mut [u8], out: &'out mut [u8], ) -> QslResult<ByteFrame<'out, Q>> {",
     "doc": ""
@@ -3090,7 +3114,7 @@
   {
     "module": "qps_bytes",
     "path": "qsl/src/qps_bytes.rs",
-    "line": 488,
+    "line": 507,
     "kind": "fn",
     "signature": "pub fn decode_record_into<'out, T: CheckedRecord>( input: &[u8], restoration: &mut [u8], out: &'out mut MaybeUninit<T>, ) -> QslResult<&'out mut T> {",
     "doc": ""
@@ -3189,6 +3213,102 @@
     "line": 354,
     "kind": "fn",
     "signature": "pub fn parse_qsl_with_rust( source: &str, constants: &HashMap<String, i128>, rust_sources: &[&str], ) -> Result<Vec<QslSchema>, MacroError> {",
+    "doc": ""
+  },
+  {
+    "module": "schema_hash",
+    "path": "qsl/src/schema_hash.rs",
+    "line": 7,
+    "kind": "const",
+    "signature": "pub const SCHEMA_HASH_VERSION: u16 = 1;",
+    "doc": ""
+  },
+  {
+    "module": "schema_hash",
+    "path": "qsl/src/schema_hash.rs",
+    "line": 11,
+    "kind": "enum",
+    "signature": "pub enum SchemaHashAlgorithm {",
+    "doc": ""
+  },
+  {
+    "module": "schema_hash",
+    "path": "qsl/src/schema_hash.rs",
+    "line": 19,
+    "kind": "fn",
+    "signature": "pub const fn bits(self) -> u32 {",
+    "doc": ""
+  },
+  {
+    "module": "schema_hash",
+    "path": "qsl/src/schema_hash.rs",
+    "line": 25,
+    "kind": "fn",
+    "signature": "pub const fn name(self) -> &'static str {",
+    "doc": ""
+  },
+  {
+    "module": "schema_hash",
+    "path": "qsl/src/schema_hash.rs",
+    "line": 31,
+    "kind": "fn",
+    "signature": "pub const fn rust_variant(self) -> &'static str {",
+    "doc": ""
+  },
+  {
+    "module": "schema_hash",
+    "path": "qsl/src/schema_hash.rs",
+    "line": 56,
+    "kind": "enum",
+    "signature": "pub enum SchemaHashKind {",
+    "doc": ""
+  },
+  {
+    "module": "schema_hash",
+    "path": "qsl/src/schema_hash.rs",
+    "line": 65,
+    "kind": "struct",
+    "signature": "pub struct SchemaHashes {",
+    "doc": ""
+  },
+  {
+    "module": "schema_hash",
+    "path": "qsl/src/schema_hash.rs",
+    "line": 75,
+    "kind": "fn",
+    "signature": "pub fn strict_hex(self) -> String {",
+    "doc": ""
+  },
+  {
+    "module": "schema_hash",
+    "path": "qsl/src/schema_hash.rs",
+    "line": 78,
+    "kind": "fn",
+    "signature": "pub fn light_hex(self) -> String {",
+    "doc": ""
+  },
+  {
+    "module": "schema_hash",
+    "path": "qsl/src/schema_hash.rs",
+    "line": 90,
+    "kind": "trait",
+    "signature": "pub trait SchemaIdentity {",
+    "doc": ""
+  },
+  {
+    "module": "schema_hash",
+    "path": "qsl/src/schema_hash.rs",
+    "line": 97,
+    "kind": "fn",
+    "signature": "pub fn hashes(&self, algorithm: SchemaHashAlgorithm) -> QslResult<SchemaHashes> {",
+    "doc": ""
+  },
+  {
+    "module": "schema_hash",
+    "path": "qsl/src/schema_hash.rs",
+    "line": 112,
+    "kind": "fn",
+    "signature": "pub fn hash_descriptor(&self, kind: SchemaHashKind) -> QslResult<Vec<u8>> {",
     "doc": ""
   },
   {
@@ -4402,7 +4522,15 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 50,
+    "line": 49,
+    "kind": "trait method",
+    "signature": "fn qsl_validate_values(&self) -> QslResult<()> {",
+    "doc": ""
+  },
+  {
+    "module": "types",
+    "path": "qsl/src/types.rs",
+    "line": 56,
     "kind": "trait method",
     "signature": "unsafe fn qsl_write_unchecked(&self, to: *mut u8);",
     "doc": ""
@@ -4410,7 +4538,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 55,
+    "line": 61,
     "kind": "trait method",
     "signature": "unsafe fn qsl_read_unchecked(from: *const u8) -> Self;",
     "doc": ""
@@ -4418,7 +4546,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 59,
+    "line": 65,
     "kind": "trait method",
     "signature": "fn qsl_size(&self) -> usize {",
     "doc": ""
@@ -4426,7 +4554,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 65,
+    "line": 71,
     "kind": "trait method",
     "signature": "fn qsl_comp_size(&self) -> usize {",
     "doc": ""
@@ -4434,7 +4562,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 72,
+    "line": 78,
     "kind": "trait method",
     "signature": "unsafe fn qsl_comp_write_unchecked(&self, to: *mut u8) {",
     "doc": ""
@@ -4442,7 +4570,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 79,
+    "line": 85,
     "kind": "trait method",
     "signature": "unsafe fn qsl_comp_read_unchecked(from: *const u8) -> Self {",
     "doc": ""
@@ -4450,7 +4578,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 85,
+    "line": 91,
     "kind": "enum",
     "signature": "pub enum QslType {",
     "doc": ""
@@ -4458,7 +4586,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 154,
+    "line": 160,
     "kind": "fn",
     "signature": "pub fn rank_bits(min: i128, max: i128) -> QslResult<usize> {",
     "doc": ""
@@ -4466,7 +4594,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 164,
+    "line": 170,
     "kind": "fn",
     "signature": "pub fn rank_width(&self, fallback: usize) -> QslResult<usize> {",
     "doc": ""
@@ -4474,7 +4602,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 174,
+    "line": 180,
     "kind": "fn",
     "signature": "pub fn rank_base(&self) -> i128 {",
     "doc": ""
@@ -4482,7 +4610,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 186,
+    "line": 192,
     "kind": "fn",
     "signature": "pub fn number16(signed: bool, min: usize) -> Self {",
     "doc": ""
@@ -4490,7 +4618,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 193,
+    "line": 199,
     "kind": "fn",
     "signature": "pub fn number32(signed: bool, min: usize) -> Self {",
     "doc": ""
@@ -4498,7 +4626,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 200,
+    "line": 206,
     "kind": "fn",
     "signature": "pub fn number64(signed: bool, min: usize) -> Self {",
     "doc": ""
@@ -4506,7 +4634,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 207,
+    "line": 213,
     "kind": "fn",
     "signature": "pub fn primitive(&self) -> QslResult<Option<&'static str>> {",
     "doc": ""
@@ -4514,7 +4642,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 235,
+    "line": 241,
     "kind": "fn",
     "signature": "pub fn rust_type(&self, borrowed: bool) -> QslResult<String> {",
     "doc": ""
@@ -4522,7 +4650,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 267,
+    "line": 273,
     "kind": "fn",
     "signature": "pub fn fixed_wire_size(&self) -> QslResult<Option<usize>> {",
     "doc": ""
@@ -4530,7 +4658,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 306,
+    "line": 312,
     "kind": "fn",
     "signature": "pub fn default_compact_bits(&self) -> QslResult<usize> {",
     "doc": ""
@@ -4538,7 +4666,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 324,
+    "line": 330,
     "kind": "fn",
     "signature": "pub fn validate(&self, borrowed: bool) -> QslResult<()> {",
     "doc": ""
@@ -4546,7 +4674,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 379,
+    "line": 385,
     "kind": "struct",
     "signature": "pub struct QslField {",
     "doc": ""
@@ -4554,7 +4682,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 393,
+    "line": 399,
     "kind": "struct",
     "signature": "pub struct QslSchema {",
     "doc": ""
@@ -4562,7 +4690,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 401,
+    "line": 407,
     "kind": "fn",
     "signature": "pub fn compact(&self) -> bool {",
     "doc": ""
@@ -4570,7 +4698,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 404,
+    "line": 410,
     "kind": "fn",
     "signature": "pub fn bitmap(&self) -> bool {",
     "doc": ""
@@ -4578,7 +4706,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 407,
+    "line": 413,
     "kind": "fn",
     "signature": "pub fn opt_table(&self) -> bool {",
     "doc": ""
@@ -4586,7 +4714,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 411,
+    "line": 417,
     "kind": "fn",
     "signature": "pub fn qps(&self) -> bool {",
     "doc": ""
@@ -4594,7 +4722,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 414,
+    "line": 420,
     "kind": "fn",
     "signature": "pub fn quantum(&self) -> usize {",
     "doc": ""
@@ -4602,7 +4730,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 417,
+    "line": 423,
     "kind": "fn",
     "signature": "pub fn quant_requested(&self) -> bool {",
     "doc": ""
@@ -4610,7 +4738,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 420,
+    "line": 426,
     "kind": "fn",
     "signature": "pub fn payload_quantum(&self) -> usize {",
     "doc": ""
@@ -4618,7 +4746,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 423,
+    "line": 429,
     "kind": "fn",
     "signature": "pub fn legacy_opt_table(&self) -> bool {",
     "doc": ""
@@ -4626,7 +4754,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 426,
+    "line": 432,
     "kind": "fn",
     "signature": "pub fn predict_seq(&self) -> bool {",
     "doc": ""
@@ -4634,7 +4762,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 432,
+    "line": 438,
     "kind": "fn",
     "signature": "pub fn state_bits(&self) -> bool {",
     "doc": ""
@@ -4642,7 +4770,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 435,
+    "line": 441,
     "kind": "fn",
     "signature": "pub fn state_bits_quantum(&self) -> usize {",
     "doc": ""
@@ -4650,7 +4778,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 438,
+    "line": 444,
     "kind": "fn",
     "signature": "pub fn predict_table(&self) -> bool {",
     "doc": ""
@@ -4658,7 +4786,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 441,
+    "line": 447,
     "kind": "fn",
     "signature": "pub fn sequential(&self) -> bool {",
     "doc": ""
@@ -4666,7 +4794,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 445,
+    "line": 451,
     "kind": "fn",
     "signature": "pub fn lifetime(&self) -> bool {",
     "doc": ""
@@ -4674,7 +4802,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 448,
+    "line": 454,
     "kind": "fn",
     "signature": "pub fn borrow_strings(&self) -> bool {",
     "doc": ""
@@ -4682,7 +4810,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 451,
+    "line": 457,
     "kind": "fn",
     "signature": "pub fn optional_count(&self) -> usize {",
     "doc": ""
@@ -4690,7 +4818,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 455,
+    "line": 461,
     "kind": "fn",
     "signature": "pub fn tag_bits(&self) -> usize {",
     "doc": ""
@@ -4698,7 +4826,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 463,
+    "line": 469,
     "kind": "fn",
     "signature": "pub fn count_bits(&self) -> usize {",
     "doc": ""
@@ -4706,7 +4834,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 472,
+    "line": 478,
     "kind": "fn",
     "signature": "pub fn bitmap_words(&self) -> usize {",
     "doc": ""
@@ -4714,7 +4842,7 @@
   {
     "module": "types",
     "path": "qsl/src/types.rs",
-    "line": 475,
+    "line": 481,
     "kind": "fn",
     "signature": "pub fn validate(&self) -> QslResult<()> {",
     "doc": ""
@@ -4723,6 +4851,46 @@
     "module": "validation",
     "path": "qsl/src/validation.rs",
     "line": 5,
+    "kind": "const",
+    "signature": "pub const DEFAULT_MAX_DATA_SIZE: usize = 65535;",
+    "doc": ""
+  },
+  {
+    "module": "validation",
+    "path": "qsl/src/validation.rs",
+    "line": 7,
+    "kind": "fn",
+    "signature": "pub fn check_size(size: usize, maximum: usize) -> QslResult<()> {",
+    "doc": ""
+  },
+  {
+    "module": "validation",
+    "path": "qsl/src/validation.rs",
+    "line": 16,
+    "kind": "struct",
+    "signature": "pub struct ValueBudget {",
+    "doc": ""
+  },
+  {
+    "module": "validation",
+    "path": "qsl/src/validation.rs",
+    "line": 20,
+    "kind": "fn",
+    "signature": "pub fn new(maximum: usize) -> Self {",
+    "doc": ""
+  },
+  {
+    "module": "validation",
+    "path": "qsl/src/validation.rs",
+    "line": 23,
+    "kind": "fn",
+    "signature": "pub fn charge(&mut self, bytes: usize) -> QslResult<()> {",
+    "doc": ""
+  },
+  {
+    "module": "validation",
+    "path": "qsl/src/validation.rs",
+    "line": 32,
     "kind": "struct",
     "signature": "pub struct ValidationCursor<'a> {",
     "doc": ""
@@ -4730,7 +4898,7 @@
   {
     "module": "validation",
     "path": "qsl/src/validation.rs",
-    "line": 10,
+    "line": 38,
     "kind": "fn",
     "signature": "pub fn new(input: &'a [u8]) -> Self {",
     "doc": ""
@@ -4738,41 +4906,17 @@
   {
     "module": "validation",
     "path": "qsl/src/validation.rs",
-    "line": 13,
+    "line": 46,
     "kind": "fn",
-    "signature": "pub fn bits(&mut self, width: usize) -> QslResult<u64> {",
+    "signature": "pub fn with_limit(input: &'a [u8], maximum: usize) -> QslResult<Self> {",
     "doc": ""
   },
   {
     "module": "validation",
     "path": "qsl/src/validation.rs",
-    "line": 31,
+    "line": 54,
     "kind": "fn",
-    "signature": "pub fn align(&mut self) -> QslResult<()> {",
-    "doc": ""
-  },
-  {
-    "module": "validation",
-    "path": "qsl/src/validation.rs",
-    "line": 38,
-    "kind": "fn",
-    "signature": "pub fn position(&self) -> usize {",
-    "doc": ""
-  },
-  {
-    "module": "validation",
-    "path": "qsl/src/validation.rs",
-    "line": 41,
-    "kind": "fn",
-    "signature": "pub fn bytes(&mut self, n: usize) -> QslResult<&'a [u8]> {",
-    "doc": ""
-  },
-  {
-    "module": "validation",
-    "path": "qsl/src/validation.rs",
-    "line": 49,
-    "kind": "fn",
-    "signature": "pub fn uint(&mut self, n: usize) -> QslResult<u64> {",
+    "signature": "pub fn charge(&mut self, bytes: usize) -> QslResult<()> {",
     "doc": ""
   },
   {
@@ -4780,13 +4924,61 @@
     "path": "qsl/src/validation.rs",
     "line": 57,
     "kind": "fn",
+    "signature": "pub fn payload(&mut self, bytes: usize) -> QslResult<&'a [u8]> {",
+    "doc": ""
+  },
+  {
+    "module": "validation",
+    "path": "qsl/src/validation.rs",
+    "line": 61,
+    "kind": "fn",
+    "signature": "pub fn bits(&mut self, width: usize) -> QslResult<u64> {",
+    "doc": ""
+  },
+  {
+    "module": "validation",
+    "path": "qsl/src/validation.rs",
+    "line": 86,
+    "kind": "fn",
+    "signature": "pub fn align(&mut self) -> QslResult<()> {",
+    "doc": ""
+  },
+  {
+    "module": "validation",
+    "path": "qsl/src/validation.rs",
+    "line": 93,
+    "kind": "fn",
+    "signature": "pub fn position(&self) -> usize {",
+    "doc": ""
+  },
+  {
+    "module": "validation",
+    "path": "qsl/src/validation.rs",
+    "line": 96,
+    "kind": "fn",
+    "signature": "pub fn bytes(&mut self, n: usize) -> QslResult<&'a [u8]> {",
+    "doc": ""
+  },
+  {
+    "module": "validation",
+    "path": "qsl/src/validation.rs",
+    "line": 104,
+    "kind": "fn",
+    "signature": "pub fn uint(&mut self, n: usize) -> QslResult<u64> {",
+    "doc": ""
+  },
+  {
+    "module": "validation",
+    "path": "qsl/src/validation.rs",
+    "line": 112,
+    "kind": "fn",
     "signature": "pub fn utf8(&mut self, n: usize, min: usize, max: usize) -> QslResult<()> {",
     "doc": ""
   },
   {
     "module": "validation",
     "path": "qsl/src/validation.rs",
-    "line": 64,
+    "line": 119,
     "kind": "fn",
     "signature": "pub fn finish(mut self) -> QslResult<()> {",
     "doc": ""
@@ -4794,7 +4986,7 @@
   {
     "module": "validation",
     "path": "qsl/src/validation.rs",
-    "line": 73,
+    "line": 128,
     "kind": "fn",
     "signature": "pub fn compressed<const MAX: usize>( &mut self, min: usize, raw_only: bool, fixed: bool, ) -> QslResult<()> {",
     "doc": ""

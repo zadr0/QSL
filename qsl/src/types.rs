@@ -44,6 +44,12 @@ pub trait QslCustom: Sized {
         Err(QslError::InvalidSchema)
     }
 
+    /// Validate a custom value before any checked generated encoder writes it.
+    /// The default refuses opaque codecs rather than authorizing unsafe I/O.
+    fn qsl_validate_values(&self) -> QslResult<()> {
+        Err(QslError::InvalidSchema)
+    }
+
     /// Constant-size normal codec. Use a raw pointer store only.
     /// # Safety
     /// `to` must point to `Self::SIZE` exclusively writable bytes.

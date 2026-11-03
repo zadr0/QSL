@@ -1,0 +1,1 @@
+!config USE_HASH = xxHash; // default; use xxHash128 for XXH3-128

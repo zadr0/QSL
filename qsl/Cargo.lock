@@ -15,13 +15,14 @@ dependencies = [
 name = "qsl"
 version = "0.1.0"
 dependencies = [
- "qsl-macros",
+ "qsl-macros-impl",
  "syn",
  "windows-sys",
+ "xxhash-rust",
 ]
 
 [[package]]
-name = "qsl-macros"
+name = "qsl-macros-impl"
 version = "0.1.0"
 
 [[package]]
@@ -54,3 +55,9 @@ checksum = "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc"
 dependencies = [
  "windows-link",
 ]
+
+[[package]]
+name = "xxhash-rust"
+version = "0.8.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fdd20c5420375476fbd4394763288da7eb0cc0b8c11deed431a91562af7335d3"

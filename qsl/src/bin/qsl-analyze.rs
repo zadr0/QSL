@@ -24,7 +24,7 @@ fn json(s: &str) -> String {
 fn main() {
     if std::env::args().any(|a| a == "--capabilities") {
         println!(
-            "{{\"editorBundle\":1,\"wireLayout\":1,\"generatedRust\":1,\"qpsCodecRevision\":2,\"qpsByteCodecRevision\":3,\"rustMacros\":{}}}",
+            "{{\"editorBundle\":1,\"wireLayout\":1,\"schemaHashVersion\":1,\"checkedSchemas\":1,\"generatedRust\":1,\"qpsCodecRevision\":2,\"qpsByteCodecRevision\":3,\"rustMacros\":{}}}",
             cfg!(feature = "rust-macros")
         );
         return;
@@ -52,6 +52,9 @@ fn main() {
         return;
     }
     let mut constants = HashMap::new();
+    let mut use_hash = qsl::SchemaHashAlgorithm::default();
+    let mut configured = std::collections::HashSet::new();
+    let mut maximum_data = qsl::validation::DEFAULT_MAX_DATA_SIZE;
     let mut rt = false;
     let mut slots = 16;
     let mut args = std::env::args().skip(1);
@@ -81,7 +84,22 @@ fn main() {
                     return;
                 }
             };
+            for key in &d.configured {
+                if !configured.insert(key.clone()) {
+                    println!(
+                        "{{\"ok\":false,\"offset\":0,\"message\":{}}}",
+                        json(&format!("DEQ config `{key}` is defined more than once"))
+                    );
+                    return;
+                }
+            }
             constants.extend(d.integer_values());
+            if d.configured.contains("MAX_DATA_SIZE") {
+                maximum_data = d.generation.max_data_size;
+            }
+            if d.configured.contains("USE_HASH") {
+                use_hash = d.generation.use_hash;
+            }
             if d.configured.contains("QSL_RT") {
                 rt = d.generation.qsl_rt;
             }
@@ -127,6 +145,8 @@ fn main() {
     };
     let generated = if std::env::args().any(|a| a == "--generate") {
         let mut g = qsl::QslInterpreter::new();
+        g.config.use_hash = use_hash;
+        g.config.max_data_size = maximum_data;
         g.config.qsl_rt = rt;
         g.config.qsl_rt_default = slots;
         g.generate(&schemas)
@@ -147,6 +167,17 @@ fn main() {
     #[cfg(not(feature = "rust-macros"))]
     let rust_names = Vec::<String>::new();
     for s in schemas {
+        let hashes = match s.hashes(use_hash) {
+            Ok(hashes) => hashes,
+            Err(error) => {
+                println!(
+                    "{{\"ok\":false,\"offset\":0,\"message\":{}}}",
+                    json(&format!("schema identity: {error}"))
+                );
+                return;
+            }
+        };
+        let hash_json = format!("\"hashes\":{{\"version\":{},\"algorithm\":{},\"bits\":{},\"strict\":{},\"light\":{},\"complete\":{}}}", hashes.version, json(hashes.algorithm.name()), hashes.algorithm.bits(), json(&hashes.strict_hex()), json(&hashes.light_hex()), hashes.complete);
         let quant =
             qsl::payload_quant::PayloadQuantPlan::analyze(&s).expect("validated payload plan");
         let padding = if quant.active { quant.padding_bytes } else { 0 };
@@ -194,7 +225,7 @@ fn main() {
         } else {
             "finite wire upper bound"
         };
-        let safety = s.flags & qsl::FLAG_SAFETY != 0;
+        let safety = true;
         let optional_tail = true;
         let structure_macro = s.flags & qsl::FLAG_MACRO != 0;
         let strings = s
@@ -266,7 +297,7 @@ fn main() {
             .and_then(|n| n.checked_add(qsl::qps_bytes::BYTE_FRAME_HEADER))
             .map_or("null".to_string(), |n| n.to_string());
         let payload=format!("\"qpsByteCodecRevision\":3,\"qpsByteHeader\":16,\"qpsByteMaximum\":{byte_maximum},\"qpsByteAPI\":{safety},\"stateBits\":{},\"stateBitsQuantum\":{},\"qpsCodecRevision\":2,\"payloadQuantRequested\":{},\"payloadQuantActive\":{},\"payloadQuantum\":{},\"payloadPadding\":{padding},\"payloadMaximum\":{},\"rawMaximum\":{},\"payloadReason\":{},\"staticOptional\":{},\"lengthGraph\":{length_events},\"predictSequenceHint\":{hint}",s.state_bits(),s.state_bits_quantum(),s.quant_requested(),quant.active,quant.quantum,quant.max_bytes,quant.raw_max_bytes.map_or("null".into(),|x|x.to_string()),json(quant.reason.unwrap_or("exact quotient and remainder; separate native restoration")),json(static_mode));
-        rows.push(format!("{{\"wireLayout\":{wire_layout},\"name\":{},\"maximum\":{},\"rtEligible\":{eligible},\"rtReason\":{},\"strings\":[{strings}],\"rtEnabled\":{},\"slots\":{slots},\"qps\":{},\"quantum\":{},\"dBits\":{bits},\"indexBytes\":{index},\"plainIndexBytes\":{plain},\"reason\":{},\"inline\":{},\"optionalCount\":{},\"fieldCount\":{},\"structureMacro\":{structure_macro},\"safety\":{safety},\"optionalTailRequired\":{optional_tail},\"suggestFixedPrefix\":{suggest},{payload}}}",json(&s.name),maximum.map_or("null".into(),|x|x.to_string()),json(rt_reason),rt&&eligible,s.qps(),if s.qps(){s.quantum()}else{s.state_bits_quantum()},json(reason),json(inline),s.optional_count(),s.fields.len()));
+        rows.push(format!("{{\"maxDataSize\":{maximum_data},{hash_json},\"wireLayout\":{wire_layout},\"name\":{},\"maximum\":{},\"rtEligible\":{eligible},\"rtReason\":{},\"strings\":[{strings}],\"rtEnabled\":{},\"slots\":{slots},\"qps\":{},\"quantum\":{},\"dBits\":{bits},\"indexBytes\":{index},\"plainIndexBytes\":{plain},\"reason\":{},\"inline\":{},\"optionalCount\":{},\"fieldCount\":{},\"structureMacro\":{structure_macro},\"safety\":{safety},\"optionalTailRequired\":{optional_tail},\"suggestFixedPrefix\":{suggest},{payload}}}",json(&s.name),maximum.map_or("null".into(),|x|x.to_string()),json(rt_reason),rt&&eligible,s.qps(),if s.qps(){s.quantum()}else{s.state_bits_quantum()},json(reason),json(inline),s.optional_count(),s.fields.len()));
     }
     println!(
         "{{\"ok\":true,\"generated\":{},\"rustMacros\":[{}],\"schemas\":[{}]}}",

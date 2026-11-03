@@ -8,7 +8,16 @@ Documentation was restored from snapshot `7724abc` alongside the shortened beta 
 
 Документация восстановлена из снимка `7724abc` рядом с сокращённой бетой `2e72ba3`. Исходники беты сохранены без изменений. Замеры относятся к указанным в них снимкам исходников.
 
-## Executed / Выполнено
+
+## Current checked implementation / Текущая проверяемая реализация
+
+The source update is based on the uploaded `c5077a8` tree. Every edited existing source was compared with its original base before replacement; unrelated uploaded files are retained. The standalone qsl crate now contains its internal attribute implementation under qsl/macros, schema identity generation and MAX_DATA_SIZE=65535. See [safety RU](docs/safety.ru.md), [EN](docs/safety.en.md), [new source manifest](reference/safety-source-manifest.json) and [reproduction fixture](reference/safe-schema-control/Cargo.toml).
+
+Обновление основано на загруженном дереве c5077a8. Посторонние файлы сохранены. Новые проверяемые методы доступны каждой схеме; safety оставлен для совместимости. Хэши вычисляются при анализе, лимит данных не меняет wire-format. Ни одно историческое измерение не объявляется замером новой проверки.
+
+Current verification: 77 unit tests; 10 serial native/IPC/socket; 2 byte vectors; 12 schema-hash tests; 2 compile-fail examples; 6 safety-fixture scenarios with 7200 malformed validator calls; 1 generated-hash fixture and 5 feature regressions. Strict core Clippy and analyzer release build passed. Standalone publication-tree tests and its safety fixture also passed. Zed 0.7.0: 27 Node/LSP tests, 8 Tree-sitter cases, strict WASM Clippy and release build passed. [Extension commit](https://github.com/zadr0/QSL-Extension/commit/fda10afeb74c8b272459cad70fc251a8fcebba3b). The declaration index now has 624 entries; its manifest is separate from benchmark manifests.
+
+## Measured-source verification / Проверки измеренного снимка
 
 - Core: 72 unit tests, 10 serial native/IPC/socket tests, 2 wire-vector tests and 2 compile-fail examples passed. Strict core Clippy and formatting passed.
 - Feature harness: 5 regression tests passed, covering ordinary/optional formats, Rust-template equivalence, whole-record restoration, validation and borrowed restoration lifetimes. Criterion test mode had validated the 95 main fixtures before measurement.
@@ -30,7 +39,7 @@ P=M/T uses original useful bytes. Borrow-view creation, prepared copies and new 
 
 ## Scope / Границы
 
-This GitHub repository distributes documentation and harnesses, not the complete Cargo workspace. Reproduction requires the matching local dev-qsl source tree. Local original/optimized executables and measured-source ZIP files are retained in dated docs/qsl-features folders. No crate release or publication of the engine source is implied.
+The qsl core now builds from its own Cargo manifest and internal macro dependency. Older benchmark harnesses still require their matching captured source tree. Local original/optimized executables and measured-source ZIP files are retained in dated docs/qsl-features folders. No crate release or publication of the engine source is implied.
 
 Локальная схема View намеренно некорректна и сохранена по прямому указанию. Сборка всего demo не объявляется успешной. Функции проверены изолированным корректным стендом. Native-тесты запускаются последовательно; это не заявление о стабильности исторически нестабильного параллельного socket-набора.
 
@@ -38,7 +47,7 @@ This GitHub repository distributes documentation and harnesses, not the complete
 
 Implemented: QSL/DEQ generation, string modes/LZ, scalar and general QPS, opt_table/predict_seq, checked APIs, Rust templates, RT, native Windows memory, sockets and IPC. QBProto handshake/R remains planned. Arbitrary custom unsafe code is outside the built-in validator guarantee. Outer QPS restores the entire inner frame before field offsets or inner lengths are used; the original outer length is not quantized.
 
-The public declaration index covers 600 explicit declarations/trait signatures outside comments and Rust string literals. Native and rust-macros feature gates still apply. Paths/lines refer to the current-implementation manifest. Earlier ASM wrappers refer only to their archived scalar snapshot; no whole-codec zero-branch or exact cycle-count claim is made.
+The current public declaration index covers 624 explicit declarations/trait signatures outside comments and Rust string literals. Native and rust-macros feature gates still apply. Current paths/lines refer to safety-source-manifest.json; measured snapshots retain their original manifests. Earlier ASM wrappers refer only to their archived scalar snapshot; no whole-codec zero-branch or exact cycle-count claim is made.
 
 Offline checks exercise every chart group/operation/metric, 200-point waveforms, RU/EN, numeric restoration, malformed model frames, API search and local links. Browser preview of local files was unavailable, so no visual browser-rendering verification is claimed. Older docs/data and archived pages remain explicitly historical.
 

@@ -37,8 +37,7 @@ pub mod rust_macro;
 pub mod schema_macro;
 #[cfg(feature = "rust-macros")]
 pub use deq::build_qsl_files_with_rust;
-#[cfg(feature = "rust-macros")]
-pub use qsl_macros::{qsl_macro, schem_macro};
+pub use qsl_macros_impl::{qsl_macro, schem_macro};
 pub mod length_graph;
 pub mod static_optional;
 pub mod validation;
@@ -48,3 +47,8 @@ pub use bit_io::*;
 /// Native Windows memory regions and direct blocking TCP.
 #[cfg(all(feature = "native", windows, target_has_atomic = "64"))]
 pub mod native;
+
+pub mod schema_hash;
+pub use schema_hash::{
+    SchemaHashAlgorithm, SchemaHashKind, SchemaHashes, SchemaIdentity, SCHEMA_HASH_VERSION,
+};
