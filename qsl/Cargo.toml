@@ -1,0 +1,17 @@
+[package]
+name = "qsl"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+native = ["dep:windows-sys"]
+diagnostics = []
+rust-macros = ["dep:syn", "dep:qsl-macros"]
+
+[dependencies]
+syn = { version = "=2.0.119", optional = true, default-features = false, features = ["full", "parsing"] }
+qsl-macros = { path = "../qsl-macros", optional = true }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "=0.61.2", optional = true, features = ["Win32_Foundation", "Win32_Security", "Win32_System_Memory", "Win32_System_SystemInformation", "Win32_System_IO", "Win32_Networking_WinSock"] }
