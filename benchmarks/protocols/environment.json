@@ -1,0 +1,42 @@
+{
+  "rust": "rustc 1.98.0 (88d9e12ae 2026-08-18)\r\nbinary: rustc\r\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\r\ncommit-date: 2026-08-18\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.98.0\r\nLLVM version: 22.1.8\r\n",
+  "cache": [
+    {
+      "Level": 3,
+      "InstalledSize": 256,
+      "CacheType": 5
+    },
+    {
+      "Level": 4,
+      "InstalledSize": 1024,
+      "CacheType": 5
+    },
+    {
+      "Level": 5,
+      "InstalledSize": 6144,
+      "CacheType": 5
+    }
+  ],
+  "powerPlan": "GUID схемы питания: 11111111-1111-1111-1111-111111111111  (Power Scheme)\r\n",
+  "os": {
+    "Caption": "Майкрософт Windows 11 Pro",
+    "Version": "10.0.26200",
+    "TotalVisibleMemorySize": 25110108
+  },
+  "processor": {
+    "Name": "Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz",
+    "NumberOfCores": 4,
+    "NumberOfLogicalProcessors": 4,
+    "MaxClockSpeed": 3001
+  },
+  "memory": [
+    {
+      "Capacity": 17179869184,
+      "Speed": 2133
+    },
+    {
+      "Capacity": 8589934592,
+      "Speed": 2133
+    }
+  ]
+}

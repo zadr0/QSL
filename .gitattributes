@@ -20,3 +20,11 @@ examples/performance/** -text whitespace=-blank-at-eol,-blank-at-eof
 examples/run-output.txt -text
 
 examples/tag-dispatch/** -text whitespace=-blank-at-eol,-blank-at-eof
+
+# Exact strict-comparison source and evidence bytes.
+benchmarks/protocols/** -text whitespace=cr-at-eol
+docs/protocols/** -text whitespace=cr-at-eol
+
+# Matplotlib SVG paths retain generated whitespace.
+benchmarks/protocols/report/*.svg -text whitespace=-blank-at-eol
+docs/protocols/report/*.svg -text whitespace=-blank-at-eol

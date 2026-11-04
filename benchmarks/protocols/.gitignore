@@ -1,0 +1,7 @@
+/target/
+/results/
+/tools/*.zip
+/tools/capnp/
+/tools/flatc/
+
+/report/preview-*.png

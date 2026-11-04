@@ -1,0 +1,7 @@
+syntax="proto3";
+package comparison;
+message Numeric {uint64 id=1;repeated uint32 values=2 [packed=true];optional uint32 a=3;optional uint32 b=4;}
+message Mixed {uint64 id=1;repeated uint32 values=2 [packed=true];string text=3;bytes data=4;optional uint32 a=5;optional uint32 b=6;}
+message MixedBatch {repeated Mixed records=1;}
+message Ack {fixed64 checksum=1;}
+service Exchange {rpc Submit(MixedBatch) returns (Ack);rpc Flow(stream MixedBatch) returns (stream Ack);}

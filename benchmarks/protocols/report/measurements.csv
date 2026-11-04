@@ -1,0 +1,2 @@
+case,profile,eligible,batch,mean_batch_ns,time_ns,low_ns,high_ns,useful_bytes,wire_bytes,p,sample_cv
+transport/mixed/request_ack/b4/protobuf_tcp,strict-native-2026-11-04,False,4,62515.10196730181,15628.775491825452,15522.287731497996,15752.083446869068,1884.5,1840.37109375,0.12057886435093253,0.040346892550562154

@@ -1,5 +1,7 @@
 # QSL
 
+[Strict comparison RU/EN — waiting for idle](benchmarks/protocols/README.md) · [Interactive protocol report](docs/protocols/report.html) · [Optimization candidates RU](benchmarks/protocols/OPTIMIZATION_CANDIDATES.ru.md) / [EN](benchmarks/protocols/OPTIMIZATION_CANDIDATES.en.md)
+
 [Examples RU/EN](examples/README.md) · [Fresh results](examples/PERFORMANCE.md) · [Interactive charts](examples/performance.html)
 
 [Русский](#ru) · [English](#en) · [Docs RU](docs/index.html?lang=ru) · [Docs EN](docs/index.html?lang=en)

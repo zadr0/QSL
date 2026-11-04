@@ -1,0 +1,26 @@
+[
+  {
+    "lineBytes": 64,
+    "type": 1,
+    "bytes": 32768,
+    "level": 1
+  },
+  {
+    "lineBytes": 64,
+    "type": 2,
+    "bytes": 32768,
+    "level": 1
+  },
+  {
+    "lineBytes": 64,
+    "type": 3,
+    "bytes": 262144,
+    "level": 2
+  },
+  {
+    "lineBytes": 64,
+    "type": 3,
+    "bytes": 6291456,
+    "level": 3
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "capnp_compiler": {
+    "version": "1.5.0",
+    "url": "https://capnproto.org/capnproto-c++-win32-1.5.0.zip",
+    "sha256": "21501909DC051347563D4E83394EB848204F558E959501C8061DBEAAF0651988"
+  },
+  "flatc": {
+    "version": "25.12.19",
+    "url": "https://github.com/google/flatbuffers/releases/download/v25.12.19/Windows.flatc.binary.zip",
+    "sha256": "FFF9445C9DB907227BC64B54CC98743084C4949282AA4E576CFF6A955724DDC8"
+  }
+}

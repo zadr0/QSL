@@ -1,0 +1,13 @@
+namespace bench;
+struct Values {
+v0:ushort;
+v1:ushort;
+v2:ushort;
+v3:ushort;
+v4:ushort;
+v5:ushort;
+v6:ushort;
+v7:ushort;
+}
+table Numeric {id:ulong;values:Values (required);a:ubyte=null;b:ushort=null;}
+table Mixed {id:ulong;values:Values (required);text:string (required);data:[ubyte] (required);a:ubyte=null;b:ushort=null;}

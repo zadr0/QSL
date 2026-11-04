@@ -1,0 +1,15 @@
+{
+  "protoc-bin-vendored": "3.3.0",
+  "prost": "0.14.4",
+  "capnp": "0.27.3",
+  "bincode": "2.0.1",
+  "capnpc": "0.27.0",
+  "criterion": "0.8.2",
+  "tokio-stream": "0.1.19",
+  "tonic-prost-build": "0.14.9",
+  "tonic-prost": "0.14.9",
+  "serde": "1.0.229",
+  "flatbuffers": "25.12.19",
+  "tokio": "1.54.1",
+  "tonic": "0.14.9"
+}
