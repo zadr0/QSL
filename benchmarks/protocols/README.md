@@ -4,6 +4,15 @@
 
 ## Русский
 
+**Текущий запуск: обычная фоновая нагрузка Windows.** Порог простоя 5% отключён по указанию пользователя. Шум записывается и отмечается в отчёте, сохраняя все проверки исходников, прогрев и лимит памяти. Старые отклонённые данные не переоцениваются. Команды без `-SkipIdleGate` сохраняют первоначальный строгий режим.
+
+```powershell
+pwsh -NoProfile -File tools/run.ps1 -SkipIdleGate -Output results/ambient-final
+pwsh -NoProfile -File tools/start-waiting.ps1 -SkipIdleGate -MaxHours 4
+```
+
+Выбрать одну команду: прямой проход или фоновый контроллер; не запускать их одновременно. Фоновый запуск сначала выполняет всю матрицу, затем повторяет только недостающие случаи. Два предварительных контрольных измерения не подменяют этот полный проход.
+
 Стенд сравнивает обмен одними и теми же ограниченными данными через QSL, Cap’n Proto, FlatBuffers, Protobuf/prost, Bincode и настоящий typed gRPC/HTTP2. Это сравнение подготовленных нативных API и выбранных схем на Windows x86-64, а не рейтинг настроек по умолчанию или универсальный прогноз для серверов. QSL показан в обычном и специализированном вариантах. Оптимизации движка из отдельного списка не внесены.
 
 **Numeric**: u64 id, восемь исходных u64 со значениями 0..4095, optional u8/u16. **Mixed**: те же значения, 1024 символа UTF-8 (1683 B) и массив 128 B. Все четыре сочетания optional-полей равномерно присутствуют в кольце из 1024 записей. Исходные полезные объёмы M: 73.5 / 1884.5 B на запись. P=M/T, B/ns. Wire-размер приведён отдельно.
@@ -45,6 +54,8 @@ python -B tools/build-report.py
 Для экспорта PNG/SVG нужен matplotlib; HTML/JSON/CSV формируются без него. Отчёт автономен: RU/EN, фильтры сценария/операции/batch, T/P/RAM/CPU, 200 точек Criterion, масштабирование batch, аллокации и отдельные RTT. Отклонённые данные скрыты по умолчанию. Все исходные выборки и причины отказа сохраняются в `report/raw.zip`. `report/data.json` определяет актуальную полноту: отсутствие принятого случая означает отсутствие результата, а не нулевое время.
 
 ## English
+
+**Current run: ordinary Windows background load.** The user waived the 5% pre-idle threshold. Add `-SkipIdleGate` to the direct runner or background launcher above, choosing one, not both. CPU/noise observations remain recorded and annotated; source validation, warmup, sample count and the memory cap remain enforced. Old rejected observations are not reclassified. Ambient and enforced-idle measurements are kept separate. The first ambient background pass reruns the full matrix, followed by retries of missing cases. Commands without this switch retain the original enforced-idle policy described below.
 
 This Windows x86-64 harness compares identical bounded values through native QSL, Cap’n Proto, FlatBuffers, Protobuf/prost, Bincode and typed gRPC/HTTP2. It measures prepared APIs with explicitly optimized schemas, not default settings or a universal server ranking. Both ordinary and specialized QSL are retained. No engine optimization from the candidate list is applied.
 

@@ -11,9 +11,12 @@ for m in sorted((root/'results').rglob('metrics.json')):
  before=directory.parent/'sources-before.json';after=directory.parent/'sources-after.json';source_ok=before.exists()and after.exists()and read(before)==read(after)
  parts=case.split('/');control=parts[0]=='control';batch=int(re.search(r'/b(\d+)',case)[1]);kind=parts[1]if not control else 'mixed'if 'consume'in parts else 'loop';operation=parts[2]if not control else parts[1];codec=parts[-1]if not control else '/'.join(parts[1:-1]);cm=read(directory/'case.json')if(directory/'case.json').exists()else{}
  est=read(estimate)['mean'];sample=read(estimate.parent/'sample.json');times=[t/n for t,n in zip(sample['times'],sample['iters'])]
- quality=bool(meta.get('metricsRevision',1)>=2 and meta.get('noiseAccepted')and source_ok and not meta.get('sampler')and meta['exitCode']==0 and meta.get('idleMaxPercent',100)<=5 and meta.get('idleSamples',0)>=3 and meta.get('warmupSeconds')==15 and meta.get('measurementSeconds')==10 and meta.get('samples')==200 and meta.get('confidence')==.99 and len(times)==200 and not any('collector' in x for x in directory.parts))
+ condition='ambient'if meta.get('idlePolicy')=='user_waived'and meta.get('idleGateEnforced')is False else'idle'
+ protocol_ok=bool(meta.get('metricsRevision',1)>=2 and source_ok and not meta.get('sampler')and meta['exitCode']==0 and meta.get('warmupSeconds')==15 and meta.get('measurementSeconds')==10 and meta.get('samples')==200 and meta.get('confidence')==.99 and len(times)==200 and not any('collector' in x for x in directory.parts))
+ quiet_ok=bool(meta.get('noiseAccepted')and meta.get('idleMaxPercent',100)<=5 and meta.get('idleSamples',0)>=3 and condition=='idle')
+ quality=protocol_ok and(condition=='ambient'or quiet_ok)
  useful=cm.get('useful_per_record');wire=cm.get('wire_total_for_fixture_ring',0)/cm.get('fixture_count',1)if cm else None
- r={'case':case,'layer':parts[0],'kind':kind,'operation':operation,'codec':codec,'batch':batch,'mean_batch_ns':est['point_estimate'],'low_batch_ns':est['confidence_interval']['lower_bound'],'high_batch_ns':est['confidence_interval']['upper_bound'],'time_ns':est['point_estimate']/batch,'low_ns':est['confidence_interval']['lower_bound']/batch,'high_ns':est['confidence_interval']['upper_bound']/batch,'useful_bytes':useful,'wire_bytes':wire,'p':useful*batch/est['point_estimate']if useful else None,'samples_batch_ns':times,'sample_cv':statistics.stdev(times)/statistics.mean(times)if len(times)>1 else 0,'eligible':quality,'source_ok':source_ok,'metrics':meta,'profile':directory.parent.name,'raw_directory':directory.relative_to(root).as_posix(),'wire_scope':'codec payload; HTTP2/TCP overhead excluded'if parts[0]=='transport'else'encoded record','instrumented':bool(meta.get('sampler'))}
+ r={'diagnostic_role':'collector_control'if any('collector'in x for x in directory.parts)else'primary','condition':condition,'noise_warning':not bool(meta.get('noiseAccepted')),'case':case,'layer':parts[0],'kind':kind,'operation':operation,'codec':codec,'batch':batch,'mean_batch_ns':est['point_estimate'],'low_batch_ns':est['confidence_interval']['lower_bound'],'high_batch_ns':est['confidence_interval']['upper_bound'],'time_ns':est['point_estimate']/batch,'low_ns':est['confidence_interval']['lower_bound']/batch,'high_ns':est['confidence_interval']['upper_bound']/batch,'useful_bytes':useful,'wire_bytes':wire,'p':useful*batch/est['point_estimate']if useful else None,'samples_batch_ns':times,'sample_cv':statistics.stdev(times)/statistics.mean(times)if len(times)>1 else 0,'eligible':quality,'source_ok':source_ok,'metrics':meta,'profile':directory.parent.name,'raw_directory':directory.relative_to(root).as_posix(),'wire_scope':'codec payload; HTTP2/TCP overhead excluded'if parts[0]=='transport'else'encoded record','instrumented':bool(meta.get('sampler'))}
  rows.append(r)
 for p in (root/'results').rglob('progress.json'):
  data=read(p);data=data if isinstance(data,list)else[data]
@@ -23,18 +26,24 @@ for p in (root/'results').rglob('progress.json'):
 binary=root/'target/release/deps'
 executables=list(binary.glob('comparison-*.exe')) if binary.exists()else []
 current_binary=hashlib.sha256(max(executables,key=lambda p:p.stat().st_mtime).read_bytes()).hexdigest().upper()if executables else next((r['metrics']['binarySha256']for r in reversed(rows)),None)
+run_files=list((root/'results').rglob('run.json'))
+current_policy=read(max(run_files,key=lambda p:p.stat().st_mtime)).get('policy','idle')if run_files else'idle'
 selected={}
 for r in rows:
- if r['metrics'].get('binarySha256')!=current_binary:continue
+ if r['metrics'].get('binarySha256')!=current_binary or r['condition']!=current_policy:continue
  old=selected.get(r['case'])
  if old is None or r['eligible']or not old['eligible']:selected[r['case']]=r
 allocation=next((read(p)for p in sorted((root/'results').rglob('data.json'))if p.parent.name.startswith('allocation')and p.stat().st_size>10),[])
 latency=next((read(p)for p in sorted((root/'results').rglob('data.json'))if p.parent.name.startswith('latency')and p.stat().st_size>10),None)
 for r in rows:
  r['alloc']=next((a for a in allocation if a['kind']==r['kind']and a['codec']==r['codec']and a['operation']==r['operation']and a['batch']==r['batch']),None)
-data={'status':'complete'if len([r for r in selected.values()if r['eligible']])==100 else'waiting_or_partial','binarySha256':current_binary,'generated_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'expected':100,'accepted':len([r for r in selected.values()if r['eligible']]),'rows':list(selected.values()),'observations':rows,'rejections':rejections,'allocations':allocation,'latency':latency,'environment':read(root/'environment.json'),'cache':read(root/'cache-cpuid.json'),'versions':read(root/'versions.json'),'matrix':read(root/'matrix.json')}
+idle_traces=[]
+for p in sorted((root/'results').rglob('idle.json')):
+ trace=read(p)
+ if trace:idle_traces.append({'profile':p.parent.parent.name,'case':p.parent.name,'samples':trace})
+data={'policy':current_policy,'idle_traces':idle_traces,'status':'complete'if len([r for r in selected.values()if r['eligible']])==100 else'waiting_or_partial','binarySha256':current_binary,'generated_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'expected':100,'accepted':len([r for r in selected.values()if r['eligible']]),'rows':list(selected.values()),'collector_controls':[r for r in rows if r['diagnostic_role']=='collector_control'],'observations':rows,'rejections':rejections,'allocations':allocation,'latency':latency,'environment':read(root/'environment.json'),'cache':read(root/'cache-cpuid.json'),'versions':read(root/'versions.json'),'matrix':read(root/'matrix.json')}
 (out/'data.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
-fields=['case','profile','eligible','batch','mean_batch_ns','time_ns','low_ns','high_ns','useful_bytes','wire_bytes','p','sample_cv']
+fields=['case','profile','condition','noise_warning','eligible','batch','mean_batch_ns','time_ns','low_ns','high_ns','useful_bytes','wire_bytes','p','sample_cv']
 with(out/'measurements.csv').open('w',encoding='utf-8',newline='')as f:
  w=csv.DictWriter(f,fieldnames=fields,extrasaction='ignore');w.writeheader();w.writerows(rows)
 with zipfile.ZipFile(out/'raw.zip','w',zipfile.ZIP_DEFLATED)as z:
@@ -51,10 +60,13 @@ for before in (root/'results').rglob('sources-before.json'):
  with zipfile.ZipFile(path,'w',zipfile.ZIP_DEFLATED)as z:
   for rel in source:
    p=(root/rel).resolve();assert p.is_relative_to(project);z.write(p,p.relative_to(project).as_posix())
+with zipfile.ZipFile(out/'raw.zip','a',zipfile.ZIP_DEFLATED)as z:
+ for p in out.glob('*-sources.zip'):z.write(p,'source-snapshots/'+p.name)
 html=(root/'tools/report-template.html').read_text(encoding='utf-8').replace('/*DATA*/',json.dumps(data,ensure_ascii=False,separators=(',',':')).replace('<',chr(92)+'u003c'))
 (root/'report.html').write_text(html,encoding='utf-8',newline='\n')
 text='# Сравнение протоколов / Protocol comparison\n\n'
-text+='Принято строгих случаев / qualified cases: '+str(data['accepted'])+' / 100.\n\n'
+text+='Получено проверенных случаев / validated cases: '+str(data['accepted'])+' / 100.\n\n'
+text+=('Условия: обычная фоновая нагрузка Windows; порог простоя отключён пользователем. Conditions: ordinary Windows background load; idle gate waived by user. Noise is annotated, not used to block execution.\n\n'if data['policy']=='ambient'else'Условия: строгий контроль простоя / Enforced idle policy.\n\n')
 text+='Не прошедшие качество данные сохраняются отдельно и не используются для вывода о быстродействии. Rejected observations are retained and excluded from performance conclusions.\n\n'
 text+='[Интерактивные графики / charts](report.html) · [Методика / method](METHOD.md) · [Кандидаты оптимизации](OPTIMIZATION_CANDIDATES.ru.md) · [Безопасность](SECURITY.ru.md)\n\n'
 text+='| Case | T / record, ns | 99% CI | P, B/ns | Peak commit, MiB |\n|---|---:|---:|---:|---:|\n'
@@ -71,9 +83,9 @@ try:
  for ax,(kind,op,batch)in zip(axes.flat,choices):
   chosen=[r for r in data['rows']if r['eligible']and r['layer']=='codec'and r['kind']==kind and r['operation']==op and r['batch']==batch]
   ax.set_title(f'{kind} / {op} / batch {batch}',loc='left')
-  if not chosen:ax.text(.5,.5,'No qualified observations',ha='center',va='center',transform=ax.transAxes);ax.set_axis_off();continue
+  if not chosen:ax.text(.5,.5,'No validated observations',ha='center',va='center',transform=ax.transAxes);ax.set_axis_off();continue
   labels=[r['codec']for r in chosen];values=[r['time_ns']for r in chosen];y=list(range(len(chosen)));ax.barh(y,values,color=['#135b6c'if'optimized'in r['codec']else'#68848b'for r in chosen]);ax.errorbar(values,y,xerr=[[r['time_ns']-r['low_ns']for r in chosen],[r['high_ns']-r['time_ns']for r in chosen]],fmt='none',color='#182c37',capsize=3);ax.set_yticks(y,labels);ax.invert_yaxis();ax.set_xlabel('ns / record, mean and marginal 99% CI')
- fig.suptitle('QSL · native prepared profiles · i5-7400 · accepted observations only',fontsize=14)
+ fig.suptitle('QSL · native prepared profiles · i5-7400 · '+data['policy']+' policy',fontsize=14)
  fig.savefig(out/'overview.png',dpi=160);fig.savefig(out/'overview.svg');plt.close(fig)
 except ImportError:pass
 files=[p for p in out.rglob('*')if p.is_file()and p.name!='SHA256SUMS.txt'and not p.name.startswith('preview-')]

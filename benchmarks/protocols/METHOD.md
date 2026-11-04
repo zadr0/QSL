@@ -1,5 +1,11 @@
 # Strict comparison protocol / Протокол сравнения
 
+## Current user-selected policy: ambient Windows / Текущий режим
+
+The user waived the 5% pre-idle threshold on 2026-11-04. Use `-SkipIdleGate`. Three pre-run CPU observations remain; they do not block execution. Boundary noise measurements, `noiseAccepted` and raw traces remain unchanged, but in this policy noise is annotated instead of rejecting a valid measurement. Source hashes, successful exit, 15 s warmup, 10 s measurement, 200 samples, 99% CI, no sampler and the 8 GiB JobObject cap still apply. Old failed measurements are not retroactively accepted. Ambient and enforced-idle rows are never pooled. The first ambient controller pass runs the complete deterministic matrix; later retries select only missing cases.
+
+Порог простоя отключён по указанию пользователя. В отчёте явно указан режим обычной фоновой нагрузки Windows. Показатели шума сохранены и не выдаются за простой. Предварительные контрольные два случая остаются отдельными наблюдениями; полный новый проход повторяет всю матрицу. Правила ниже описывают исходный режим с принудительным ожиданием простоя.
+
 Frozen matrix: prepared encode and checked full traversal, Numeric at batch 1; Mixed at batches 1/4/16/64. QSL default + schema-optimized QSL, Cap’n Proto, FlatBuffers, Protobuf/prost and Bincode 2.0.1. Separate loopback request/ack tests compare framed TCP codecs with native gRPC/HTTP2 via tonic. No k6.
 
 Every record has identical values, domains, optional states and UTF-8. Original useful bytes define M; P=M/T. Output wire size is separate. Verification touches every value and every text/data byte. Readers may borrow where the library supports it; output-ownership and allocation costs are reported explicitly. QSL trusted paths, if measured, are separate from checked paths.
@@ -23,3 +29,5 @@ Final timing builds use `-C target-cpu=native`, thin LTO and one codegen unit fo
 The common consumer touches every scalar and hashes every text/data byte using the same native XXH3 kernel; it is application consumption, not a metrics counter. Four consumer-only controls expose this common work separately. Neither loop nor consumer controls are subtracted from timings. The gRPC acknowledgement uses fixed64 for its full-width checksum.
 
 CPU metrics revision 2 separates known other-process CPU, unattributed system residual, DPC/ISR and system-wide context switches. Measurements are boundary-only. Network-induced kernel work is not automatically called foreign noise. Acceptance keeps the 5%-per-core pre-idle gate and 2% limits for other-process CPU and conservative residual after DPC/ISR; unavailable kernel counters keep the conservative raw residual. DPC attribution to individual drivers requires a separate trace and is not asserted by these counters. Unknown protected/transient processes are disclosed; this is bounded noise validation, not a guarantee of zero interrupts.
+
+All codecs are linked into one timing executable. Whole-case peak RAM therefore includes the shared harness and prepared fixture/encoded rings; it is not the isolated deployment footprint of an SDK. CPU core utilization is not cycles per record. The idle trace is collected before starting the measured process, not during its hot loop.

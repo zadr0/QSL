@@ -1,4 +1,4 @@
-param([int]$MaxHours=4,[string]$Python='python')
+param([int]$MaxHours=4,[string]$Python='python',[switch]$SkipIdleGate)
 $ErrorActionPreference='Stop'
 $project=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'));Set-Location -LiteralPath $project
 $start=[Diagnostics.Stopwatch]::StartNew();$limit=$MaxHours*3600;$stateFile=Join-Path $project 'results/background-state.json';$stop=Join-Path $project 'results/STOP';$pass=0
@@ -15,12 +15,13 @@ try{
   $report=Get-Content report/data.json -Raw|ConvertFrom-Json
   $done=@($report.rows|Where-Object{$_.eligible}|ForEach-Object{$_.case})
   $remaining=@($matrix.cases|Where-Object{$_ -notin $done})
+  if($SkipIdleGate -and $pass -eq 0){$remaining=@($matrix.cases)}
   if($remaining.Count -eq 0){break}
   $pass++;$output=Join-Path $project ('results/strict-wait-'+(Get-Date -Format 'yyyyMMdd-HHmmss')+'-p'+$pass)
   $filter='^('+((@($remaining|ForEach-Object{[Regex]::Escape($_)})) -join '|')+')$'
-  State 'waiting_or_measuring' ("Pass $pass; $($done.Count)/100 accepted. Idle gate and native benchmark run without GUI updates.")
+  State 'waiting_or_measuring' ("Pass $pass; $($done.Count)/100 accepted. Policy: $(if($SkipIdleGate){'ambient; idle gate disabled by user'}else{'idle gate enforced'}). No GUI updates during cases.")
   $seconds=[Math]::Max(1,[int]($limit-$start.Elapsed.TotalSeconds))
-  & pwsh -NoProfile -File (Join-Path $PSScriptRoot 'run.ps1') -Output $output -Filter $filter -IdleTimeoutSeconds 600 -MaxDurationSeconds $seconds -StopFile $stop
+  $runArgs=@('-NoProfile','-File',(Join-Path $PSScriptRoot 'run.ps1'),'-Output',$output,'-Filter',$filter,'-IdleTimeoutSeconds',600,'-MaxDurationSeconds',$seconds,'-StopFile',$stop);if($SkipIdleGate){$runArgs+='-SkipIdleGate'}; & pwsh @runArgs
   # A failed idle gate retains evidence and retries until the global deadline. No failed observation is silently accepted.
   & $Python -B tools/build-report.py
   if($LASTEXITCODE -ne 0){throw 'Report generation failed'}
@@ -30,8 +31,8 @@ try{
  $report=Get-Content report/data.json -Raw|ConvertFrom-Json
  if($report.accepted -eq $report.expected){
   State 'diagnostics' '100/100 qualified; collecting separate RTT and collector controls.'
-  & pwsh -NoProfile -File tools/probe.ps1 -Program latency_probe -Output ('results/latency-'+(Get-Date -Format 'yyyyMMdd-HHmmss'))
-  if(-not(Test-Path -LiteralPath $stop) -and $start.Elapsed.TotalSeconds -lt $limit){& pwsh -NoProfile -File tools/collector-control.ps1}
+  $probeArgs=@('-NoProfile','-File','tools/probe.ps1','-Program','latency_probe','-Output',('results/latency-'+(Get-Date -Format 'yyyyMMdd-HHmmss')));if($SkipIdleGate){$probeArgs+='-SkipIdleGate'};& pwsh @probeArgs
+  if(-not(Test-Path -LiteralPath $stop) -and $start.Elapsed.TotalSeconds -lt $limit){$controlArgs=@('-NoProfile','-File','tools/collector-control.ps1');if($SkipIdleGate){$controlArgs+='-SkipIdleGate'};& pwsh @controlArgs}
  }
  & $Python -B tools/build-report.py
  if($LASTEXITCODE -ne 0){throw 'Final report failed'}
