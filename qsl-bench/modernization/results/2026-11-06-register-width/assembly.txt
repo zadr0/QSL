@@ -1,0 +1,61 @@
+qsl_load_u8_probe:
+movzbl	(%rcx), %eax
+retq
+
+qsl_load_u16_probe:
+movzwl	(%rcx), %eax
+retq
+
+qsl_load_u32_probe:
+movzwl	(%rcx), %edx
+movzbl	2(%rcx), %eax
+shll	$16, %eax
+orl	%edx, %eax
+retq
+
+qsl_load_u64_probe:
+movl	(%rcx), %edx
+movzbl	4(%rcx), %eax
+shlq	$32, %rax
+orq	%rdx, %rax
+retq
+
+qsl_load_u128_probe:
+movq	(%rcx), %rax
+movzbl	8(%rcx), %edx
+retq
+
+qsl_modern_raw_probe:
+movq	(%rcx), %rax
+movups	8(%rcx), %xmm0
+movq	%rax, (%r8)
+movups	%xmm0, 8(%r8)
+retq
+
+qsl_modern_packed_probe:
+movl	(%rcx), %edx
+movzbl	4(%rcx), %eax
+shlq	$32, %rax
+orq	%rdx, %rax
+andl	$63, %edx
+shll	$4, %edx
+movq	%rax, %rcx
+shrq	$6, %rcx
+movl	%ecx, %r9d
+andl	$15, %r9d
+orq	%rdx, %r9
+movq	%r9, (%r8)
+andl	$240, %ecx
+movq	%rax, %rdx
+shrq	$14, %rdx
+movl	%edx, %r9d
+andl	$15, %r9d
+addq	%r9, %rcx
+addq	$-100, %rcx
+movq	%rcx, 8(%r8)
+andl	$65520, %edx
+shrq	$30, %rax
+andl	$15, %eax
+orq	%rdx, %rax
+movq	%rax, 16(%r8)
+retq

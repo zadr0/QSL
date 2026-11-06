@@ -25,7 +25,7 @@
   },
   {
     "path": "qsl/src/codegen_hybrid.rs",
-    "sha256": "64afc2fe84a7d64f063c86258deb56dcc516421a4fdf7f972d33e68dfe2193de"
+    "sha256": "1dccc9ec3aa76063ff041d597a41a08d344ab64e788c6e21cc34853bd6431265"
   },
   {
     "path": "qsl/src/codegen_length_graph.rs",
@@ -33,7 +33,7 @@
   },
   {
     "path": "qsl/src/codegen_payload_quant.rs",
-    "sha256": "f0ede2fcc51463e588dafbf09a24d4eb282401aa66bf65f64e635843d438d39c"
+    "sha256": "880207fb3cb297234be4f238083e77ad0f1c37e1a9893c1f2fd6853f73efc0df"
   },
   {
     "path": "qsl/src/codegen_qps.rs",
@@ -69,7 +69,7 @@
   },
   {
     "path": "qsl/src/interpreter.rs",
-    "sha256": "07877527395681db89b074cacd9ab787041363aa9e8b3a0ccabcdf938dd15c24"
+    "sha256": "1c3fab33787a76804cc3849fb4558e36066ff7419065d8607df10deaba69a4c1"
   },
   {
     "path": "qsl/src/io.rs",
@@ -89,7 +89,7 @@
   },
   {
     "path": "qsl/src/modernization.rs",
-    "sha256": "cf1345bf6a50e6c536455e3de3a31bcad4250483d19a1eee5bd68a1b124311c7"
+    "sha256": "fb9678643f980d315b7f1e6032daea58038a27111c74907df4b349c8f3298af6"
   },
   {
     "path": "qsl/src/optional.rs",
@@ -213,7 +213,7 @@
   },
   {
     "path": "qsl/tests/modernization/lib.rs",
-    "sha256": "ee2576ec1089b77fccde5af252e4fef507f1f255a610ca7300af2abc85a7e4f8"
+    "sha256": "4c01323cc71d94fcf4b600c425b2361960899799927eab16e2c374578e00470a"
   },
   {
     "path": "qsl/tests/modernization/models.rs",
@@ -241,7 +241,7 @@
   },
   {
     "path": "qsl/tests/modernization/schemas.qsl",
-    "sha256": "79bd1a56e960f5b983c680aef9a434df784347e634751b15f408e00b3c7947c1"
+    "sha256": "580d136387078768160d0082c664baf34c4f82ccce862b5654934ceadf7fc9d6"
   },
   {
     "path": "qsl/tests/optional-modes/before.qsl",
@@ -250,5 +250,9 @@
   {
     "path": "qsl/tests/optional-modes/modes.qsl",
     "sha256": "dfaf64a060db6b814b275bc678e9ed1e6c8ab74558b8a55254171fdd0f8d21a7"
+  },
+  {
+    "path": "qsl/tests/modernization/examples/native_api.rs",
+    "sha256": "bb77ec307e58f545af2da930f5f4ebb778142e25f908c7653b9d5c85091782f8"
   }
 ]

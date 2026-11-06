@@ -263,7 +263,7 @@ mod tests {
         check!(WideQ16);
     }
     #[test]
-    fn exact_nine_byte_load_at_protected_page_boundary() {
+    fn typed_exact_loads_at_protected_page_boundaries() {
         #[cfg(windows)]
         unsafe {
             #[link(name = "kernel32")]
@@ -281,13 +281,109 @@ mod tests {
             assert!(!mem.is_null());
             let mut old = 0;
             assert_ne!(VirtualProtect(mem.add(4096).cast(), 4096, 1, &mut old), 0);
-            let source = mem.add(4096 - 9);
-            std::ptr::copy_nonoverlapping([1u8, 2, 3, 4, 5, 6, 7, 8, 9].as_ptr(), source, 9);
-            assert_eq!(
-                qsl::modernization::load_exact::<9>(source),
-                0x090807060504030201
-            );
+            let bytes = [1u8, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+            macro_rules! check {
+                ($load:ident,$n:literal) => {{
+                    let source = mem.add(4096 - $n);
+                    std::ptr::copy_nonoverlapping(bytes.as_ptr(), source, $n);
+                    let mut expected = [0u8; 16];
+                    expected[..$n].copy_from_slice(&bytes[..$n]);
+                    assert_eq!(
+                        qsl::modernization::$load::<$n>(source) as u128,
+                        u128::from_le_bytes(expected)
+                    );
+                }};
+            }
+            check!(load_u8, 1);
+            check!(load_u16, 2);
+            check!(load_u32, 3);
+            check!(load_u32, 4);
+            check!(load_u64, 5);
+            check!(load_u64, 6);
+            check!(load_u64, 7);
+            check!(load_u64, 8);
+            check!(load_u128, 9);
+            check!(load_u128, 10);
+            check!(load_u128, 11);
+            check!(load_u128, 12);
+            check!(load_u128, 13);
+            check!(load_u128, 14);
+            check!(load_u128, 15);
+            check!(load_u128, 16);
             assert_ne!(VirtualFree(mem.cast(), 0, 0x8000), 0);
+        }
+    }
+    #[test]
+    fn typed_groups_restore_crossing_signed_fields_and_length_headers() {
+        for signed in [i64::MIN, -1, 0, i64::MAX] {
+            let x = RegisterCross {
+                head: u64::MAX,
+                middle: 0xFEDCBA98,
+                short: 0x8765,
+                byte: 0xF1,
+                crossing: signed,
+                tail: 0xE2,
+            };
+            let bytes = x.serialize_checked().unwrap();
+            let checked = RegisterCross::deserialize_checked(&bytes).unwrap();
+            let trusted = unsafe { RegisterCross::deserialize(&bytes) };
+            let mut out = std::mem::MaybeUninit::uninit();
+            unsafe {
+                RegisterCross::deserialize_into(bytes.as_ptr(), bytes.len(), out.as_mut_ptr());
+            }
+            let into = unsafe { out.assume_init() };
+            for decoded in [checked, trusted, into] {
+                assert_eq!(
+                    (
+                        decoded.head,
+                        decoded.middle,
+                        decoded.short,
+                        decoded.byte,
+                        decoded.crossing,
+                        decoded.tail
+                    ),
+                    (x.head, x.middle, x.short, x.byte, x.crossing, x.tail)
+                );
+            }
+        }
+        for len in [1, 255, 256, 1024] {
+            let x = HeaderCross {
+                head: u64::MAX,
+                middle: 0xFEDCBA98,
+                short: 0x8765,
+                byte: 0xF1,
+                text: "x".repeat(len),
+            };
+            let bytes = x.serialize_checked().unwrap();
+            let checked = HeaderCross::deserialize_checked(&bytes).unwrap();
+            let trusted = unsafe { HeaderCross::deserialize(&bytes) };
+            assert_eq!(checked.text, x.text);
+            assert_eq!(trusted.text, x.text);
+            assert_eq!(
+                (trusted.head, trusted.middle, trusted.short, trusted.byte),
+                (x.head, x.middle, x.short, x.byte)
+            );
+            assert!(HeaderCross::deserialize_checked(&bytes[..bytes.len() - 1]).is_err());
+        }
+    }
+    #[test]
+    fn typed_qps_windows_restore_full_u64_at_a_bit_offset() {
+        for wide in [None, Some(0), Some(1), Some(u64::MAX)] {
+            for small in [None, Some(0), Some(15)] {
+                let x = QpsCross::try_new(1, wide, small).unwrap();
+                let len = x.serialized_size();
+                let mut bytes = vec![0xA5; len + 16];
+                let frame = x.serialize_quantized_to(&mut bytes[..len]).unwrap();
+                let mut out = std::mem::MaybeUninit::uninit();
+                let decoded = frame.decode_into(&mut out);
+                assert_eq!(
+                    (decoded.bit, decoded.wide(), decoded.small()),
+                    (1, wide, small)
+                );
+                let checked = QpsCross::deserialize_checked(&bytes[..len]).unwrap();
+                assert_eq!((checked.wide(), checked.small()), (wide, small));
+                assert!(bytes[len..].iter().all(|&byte| byte == 0xA5));
+            }
         }
     }
     #[test]

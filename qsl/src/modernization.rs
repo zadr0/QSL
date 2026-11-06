@@ -11,15 +11,49 @@ pub struct SchemaOptions {
     pub cache_limit: Option<usize>,
     pub regions: Vec<NativeRegion>,
 }
-/// Zero-extend exactly N initialized bytes; N must not exceed 16.
+// Separate return types keep narrow loads narrow throughout generated kernels.
+macro_rules! exact_register_loaders {
+    ($(($name:ident, $word:ty, $bytes:literal)),* $(,)?) => {$(
+        /// Zero-extend exactly N little-endian input bytes into this register.
+        /// The width bound is checked at monomorphization, not on the hot path.
+        /// # Safety
+        /// source is non-null and addresses N initialized readable bytes.
+        #[inline]
+        pub unsafe fn $name<const N: usize>(source: *const u8) -> $word {
+            const { assert!(N <= $bytes, "exact load exceeds register width"); }
+            let mut word = [0u8; $bytes];
+            ptr::copy_nonoverlapping(source, word.as_mut_ptr(), N);
+            <$word>::from_le_bytes(word)
+        }
+    )*};
+}
+exact_register_loaders!(
+    (load_u8, u8, 1),
+    (load_u16, u16, 2),
+    (load_u32, u32, 4),
+    (load_u64, u64, 8),
+    (load_u128, u128, 16),
+);
+
+/// Legacy u128-result API. Generated kernels use the typed load_u* entry points.
 /// # Safety
-/// `source` points to N initialized readable bytes.
+/// source is non-null and addresses N initialized readable bytes; N <= 16.
 #[inline]
 pub unsafe fn load_exact<const N: usize>(source: *const u8) -> u128 {
-    assert!(N <= 16);
-    let mut word = [0u8; 16];
-    ptr::copy_nonoverlapping(source, word.as_mut_ptr(), N);
-    u128::from_le_bytes(word)
+    load_u128::<N>(source)
+}
+
+/// Smallest Rust word containing a compile-time byte window (zero uses u8).
+/// This function runs in the generator, never in a generated decoder.
+pub(crate) fn register_word(bytes: usize) -> QslResult<&'static str> {
+    Ok(match bytes {
+        0..=1 => "u8",
+        2 => "u16",
+        3..=4 => "u32",
+        5..=8 => "u64",
+        9..=16 => "u128",
+        _ => return Err(QslError::InvalidWidth),
+    })
 }
 /// Only the first len elements are initialized and dropped.
 #[repr(C)]
@@ -310,6 +344,59 @@ mod tests {
         for source in ["&A{u8? NATIVE_BYTES;}", "&A{u8? a;u8? set_a;}"] {
             assert!(crate::parse_qsl(source).is_err(), "{source}");
         }
+    }
+    #[test]
+    fn generated_registers_match_every_exact_window_width() {
+        for bytes in 1..=16 {
+            let fields = (0..bytes).map(|i| format!("u8 f{i};")).collect::<String>();
+            let schema = crate::parse_qsl(&format!("&Window[safety]{{{fields}}}")).unwrap();
+            let expected = register_word(bytes).unwrap();
+            let mut generator = crate::QslInterpreter::new();
+            generator.generate(&schema).unwrap();
+            let output = String::from_utf8(generator.output).unwrap();
+            assert!(
+                output.contains(&format!("__qsl_register_0_0:{expected}=")),
+                "{bytes}: {expected}"
+            );
+            assert!(
+                output.contains(&format!("load_{expected}::<{bytes}>")),
+                "{bytes}: {expected}"
+            );
+            assert!(!output.contains("::load_exact::"));
+            let groups = register_groups(&schema[0]).unwrap();
+            assert_eq!(groups[0].register_bits, bytes.next_power_of_two() * 8);
+        }
+        assert!(register_word(17).is_err());
+    }
+    #[test]
+    fn typed_loads_zero_extend_partial_unaligned_windows() {
+        let bytes = [0xA5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+        let source = unsafe { bytes.as_ptr().add(1) };
+        macro_rules! check {
+            ($load:ident,$ty:ty,$n:literal) => {
+                let result: $ty = unsafe { $load::<$n>(source) };
+                let mut expected = [0u8; 16];
+                expected[..$n].copy_from_slice(&bytes[1..1 + $n]);
+                assert_eq!(result as u128, u128::from_le_bytes(expected));
+            };
+        }
+        check!(load_u8, u8, 0);
+        check!(load_u8, u8, 1);
+        check!(load_u16, u16, 2);
+        check!(load_u32, u32, 3);
+        check!(load_u32, u32, 4);
+        check!(load_u64, u64, 5);
+        check!(load_u64, u64, 6);
+        check!(load_u64, u64, 7);
+        check!(load_u64, u64, 8);
+        check!(load_u128, u128, 9);
+        check!(load_u128, u128, 10);
+        check!(load_u128, u128, 11);
+        check!(load_u128, u128, 12);
+        check!(load_u128, u128, 13);
+        check!(load_u128, u128, 14);
+        check!(load_u128, u128, 15);
+        check!(load_u128, u128, 16);
     }
     #[test]
     fn exact_partial_register() {

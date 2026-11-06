@@ -1,0 +1,51 @@
+[
+  {
+    "name": "qsl_load_u8_probe",
+    "instructions": 2,
+    "calls": 0,
+    "jumps": 0,
+    "same_as_previous": false
+  },
+  {
+    "name": "qsl_load_u16_probe",
+    "instructions": 2,
+    "calls": 0,
+    "jumps": 0,
+    "same_as_previous": false
+  },
+  {
+    "name": "qsl_load_u32_probe",
+    "instructions": 5,
+    "calls": 0,
+    "jumps": 0,
+    "same_as_previous": false
+  },
+  {
+    "name": "qsl_load_u64_probe",
+    "instructions": 5,
+    "calls": 0,
+    "jumps": 0,
+    "same_as_previous": false
+  },
+  {
+    "name": "qsl_load_u128_probe",
+    "instructions": 3,
+    "calls": 0,
+    "jumps": 0,
+    "same_as_previous": false
+  },
+  {
+    "name": "qsl_modern_raw_probe",
+    "instructions": 5,
+    "calls": 0,
+    "jumps": 0,
+    "same_as_previous": true
+  },
+  {
+    "name": "qsl_modern_packed_probe",
+    "instructions": 26,
+    "calls": 0,
+    "jumps": 0,
+    "same_as_previous": true
+  }
+]

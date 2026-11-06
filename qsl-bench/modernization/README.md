@@ -27,3 +27,8 @@ The separate release probes contain 5 instructions for default and 26 for Q16; n
 [Interactive report](report.html) · [Machine data](results/2026-11-06/summary.json) · [CSV](results/2026-11-06/summary.csv) · [Assembly](results/2026-11-06/assembly.txt) · [Measured source manifest](results/2026-11-06/source-manifest.json)
 
 The source directory under results is the measured snapshot. Subsequent parser/linter diagnostics may change without changing the measured codec; the recorded binary hash is authoritative for this run.
+
+
+## Typed register correction / Исправление ширины
+
+[Two numerical reruns / Два повторных числовых замера](results/2026-11-06-register-width/README.md): explicit u8–u128 generated loads, five exact-read ASM probes, source/binary hashes. Default 2.788 ns; Q16 4.304 ns. No speedup is established; the measured decoder probes match the earlier instructions. The four-case table above retains its original snapshot.

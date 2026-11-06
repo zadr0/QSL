@@ -40,3 +40,7 @@
 &CountedRegion[safety]{#region(aggressive_transmutate = "CountedMeta");u64 id;u32 value;str(4) tag;#end_region;}
 
 &CopyFallback[transmutate,safety]{u8 tag;u64 id;}
+
+&RegisterCross[safety]{u64 head;u32 middle;u16 short;u8 byte;i64 crossing;u8 tail;}
+&HeaderCross[safety]{u64 head;u32 middle;u16 short;u8 byte;str(1..1024) text;}
+&QpsCross[qps,safety]{u8(0..1) bit;u64? wide;u64?(0..15) small;}

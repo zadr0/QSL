@@ -1173,7 +1173,8 @@ fn emit_register_group(
     let total = numeric + metadata;
     for (word, offset) in (0..total).step_by(16).enumerate() {
         let n = (total - offset).min(16);
-        ln(out,format!("let __qsl_register_{start}_{word}=unsafe{{::qsl::modernization::load_exact::<{n}>(({pointer}).add({offset}))}};"));
+        let ty = crate::modernization::register_word(n)?;
+        ln(out,format!("let __qsl_register_{start}_{word}:{ty}=unsafe{{::qsl::modernization::load_{ty}::<{n}>(({pointer}).add({offset}))}};"));
     }
     let mut offset = 0;
     for (j, f) in schema.fields[start..start + count].iter().enumerate() {
@@ -1181,8 +1182,12 @@ fn emit_register_group(
         let shift = (offset % 16) * 8;
         let n = sizes[j];
         let value = if offset % 16 + n > 16 {
+            // Merge in the field's unsigned type. The next window may be
+            // narrower than the preceding u128; never shift a narrow tail
+            // before widening it to the field's actual result width.
+            let merge = crate::modernization::register_word(n)?;
             format!(
-                "(__qsl_register_{start}_{word}>>{shift})|(__qsl_register_{start}_{}<<{})",
+                "((__qsl_register_{start}_{word}>>{shift})as {merge})|((__qsl_register_{start}_{} as {merge})<<{})",
                 word + 1,
                 128 - shift
             )
@@ -1198,7 +1203,7 @@ fn emit_register_group(
         let shift = numeric % 16 * 8;
         let expression = if numeric % 16 + metadata > 16 {
             format!(
-                "(__qsl_register_{start}_{word}>>{shift})|(__qsl_register_{start}_{}<<{})",
+                "((__qsl_register_{start}_{word}>>{shift})as u32)|((__qsl_register_{start}_{} as u32)<<{})",
                 word + 1,
                 128 - shift
             )

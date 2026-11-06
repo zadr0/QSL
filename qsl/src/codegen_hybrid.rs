@@ -106,7 +106,8 @@ pub(super) fn generate(
     let get_length = if h == 0 {
         format!("{n}")
     } else {
-        format!("::qsl::modernization::load_exact::<{h}>(bytes)as usize")
+        let word = crate::modernization::register_word(h)?;
+        format!("::qsl::modernization::load_{word}::<{h}>(bytes)as usize")
     };
     ln(out,format!("impl{lt} {target} for {name}{lt}{{const OPTIONAL_FIELDS_COUNT:usize={};const SIZE_TAG:usize=<{tail}{lt} as {target}>::SIZE_TAG;fn get_size()->usize{{{h}+{min}+<{tail}{lt} as {target}>::get_size()}}fn serialized_size(&self)->usize{{{h}+< {prefix} as ::qsl::Serializable>::serialized_size(&self.__qsl_prefix())+self.__qsl_with_tail(|tail|<{tail}{lt} as {target}>::serialized_size(tail))}}unsafe fn serialize_unsafe(&self,to:*mut u8){{self.serialize_into_unsafe(to);}}unsafe fn serialize_into_unsafe(&self,to:*mut u8)->usize{{let prefix=self.__qsl_prefix();let length=<{prefix} as ::qsl::Serializable>::serialized_size(&prefix);::qsl::modernization::store_word(to,length as u128,{h});<{prefix} as ::qsl::Serializable>::serialize_into_unsafe(&prefix,to.add({h}));{h}+length+self.__qsl_with_tail(|tail|<{tail}{lt} as {target}>::serialize_into_unsafe(tail,to.add({h}+length)))}}unsafe fn {method}(bytes:*const u8)->Self{{let length={get_length};let prefix=<{prefix} as ::qsl::Serializable>::deserialize_unsafe(bytes.add({h}));let tail=<{tail}{lt} as {target}>::{method}(bytes.add({h}+length));Self::__qsl_join(prefix,tail)}}unsafe fn {raw}(bytes:*const u8,len:usize)->Self{{let length={get_length};let prefix=<{prefix} as ::qsl::Serializable>::deserialize_unsafe(bytes.add({h}));let tail=<{tail}{lt} as {target}>::{raw}(bytes.add({h}+length),len-{h}-length);Self::__qsl_join(prefix,tail)}}}}",s.optional_count()));
     if i.config.qsl_rt {

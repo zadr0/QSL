@@ -1,0 +1,24 @@
+modernization_numeric_24_useful_bytes/default_deserialize_into
+                        time:   [2.7735 ns 2.7876 ns 2.8026 ns]
+                        thrpt:  [7.9753 GiB/s 8.0183 GiB/s 8.0590 GiB/s]
+Found 22 outliers among 200 measurements (11.00%)
+  12 (6.00%) low mild
+  6 (3.00%) high mild
+  4 (2.00%) high severe
+modernization_numeric_24_useful_bytes/Q16_prepared_decode_into
+                        time:   [4.2141 ns 4.3037 ns 4.4495 ns]
+                        thrpt:  [5.0234 GiB/s 5.1936 GiB/s 5.3040 GiB/s]
+Found 23 outliers among 200 measurements (11.50%)
+  11 (5.50%) low mild
+  7 (3.50%) high mild
+  5 (2.50%) high severe
+
+
+Benchmarking modernization_numeric_24_useful_bytes/default_deserialize_into
+Benchmarking modernization_numeric_24_useful_bytes/default_deserialize_into: Warming up for 15.000 s
+Benchmarking modernization_numeric_24_useful_bytes/default_deserialize_into: Collecting 200 samples in estimated 10.000 s (3.5B iterations)
+Benchmarking modernization_numeric_24_useful_bytes/default_deserialize_into: Analyzing
+Benchmarking modernization_numeric_24_useful_bytes/Q16_prepared_decode_into
+Benchmarking modernization_numeric_24_useful_bytes/Q16_prepared_decode_into: Warming up for 15.000 s
+Benchmarking modernization_numeric_24_useful_bytes/Q16_prepared_decode_into: Collecting 200 samples in estimated 10.000 s (2.3B iterations)
+Benchmarking modernization_numeric_24_useful_bytes/Q16_prepared_decode_into: Analyzing
