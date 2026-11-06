@@ -159,3 +159,14 @@ Callers guarantee a complete valid frame, valid values, a valid readable allocat
 REGION_N_COPY_COMPATIBLE, REGION_N_VIEW_COMPATIBLE, REGION_N_WIRE_COPY_COMPATIBLE and REGION_N_WIRE_VIEW_COMPATIBLE support strategy selection before a call. They describe layout compatibility, and the self-view flag also accounts for the next field's boundary. Actual address alignment and value validity remain caller obligations. Unchecked methods do not read these flags or assert their value.
 
 Existing safe entry points retain their behavior. Without safety, the legacy unsafe names deserialize_transmutate_copy and deserialize_overlay forward to the corresponding _unchecked methods. With safety, those legacy names remain checked Result APIs. The new explicit _unchecked names keep the same contract when the attribute changes.
+
+
+## Untrusted compressed-string lengths
+
+The QSL-LZ header counts packed bytes; it does not prove the restored string size. A shared checked run parser validates produced + count arithmetic, the actual destination/schema bound, readable literal/offset bytes and valid backward distances for every run. The actual count is then charged to the shared MAX_DATA_SIZE budget before reserve or writes. A header-derived size alone must never authorize an unchecked decode into a smaller allocation.
+
+For example, hex [84 00 41 FF 01] with MAX=100 declares four packed bytes but reconstructs 132 bytes: literal A followed by a 131-byte match. Checked decoding returns InvalidValue before writing that match. Truncated literals/offsets fail before heap reservation. Several restored strings exceeding the aggregate budget return SizeLimitExceeded. UTF-8 is validated before publishing a result.
+
+This protection covers validate, deserialize_checked and deserialize_checked_into for inline/String and the fixed LZ format. Errors do not publish a partial object into the caller's MaybeUninit. Unsafe decode_bounded/decode_into remain separate entry points without input validation; callers guarantee a complete valid stream and sufficient capacity.
+
+Regression cases include MAX+1 expansion, forged packed lengths, truncated runs, zero/out-of-history distances, the combined budget of two restored strings and an unchanged destination with canary bytes. Malformed first tokens also verify zero allocations.

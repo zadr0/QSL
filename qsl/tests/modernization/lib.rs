@@ -740,6 +740,165 @@ mod tests {
             value.serialize_checked().unwrap()
         );
     }
+    // Independent adversarial frame builder: one literal followed by legal
+    // distance-one tokens. decoded may deliberately exceed the schema maximum.
+    fn repeated_lz_frame(maximum: usize, decoded: usize, fixed: bool) -> Vec<u8> {
+        assert!(decoded > 0);
+        let width = if maximum <= 255 { 1 } else { 2 };
+        let mut packed = vec![0, b'A'];
+        let mut remaining = decoded - 1;
+        while remaining >= 4 {
+            let count = remaining.min(131);
+            packed.push(128 + (count - 4) as u8);
+            packed.push(1);
+            if width == 2 {
+                packed.push(0);
+            }
+            remaining -= count;
+        }
+        if remaining != 0 {
+            packed.push((remaining - 1) as u8);
+            packed.extend(std::iter::repeat_n(b'A', remaining));
+        }
+        let header = if maximum <= 127 {
+            1
+        } else if maximum <= 32767 {
+            2
+        } else {
+            4
+        };
+        let mut frame = if fixed {
+            let mut frame = vec![255];
+            frame.extend_from_slice(&(packed.len() as u16).to_le_bytes()[..width]);
+            frame
+        } else {
+            let word = (packed.len() as u32) | (1 << (header * 8 - 1));
+            word.to_le_bytes()[..header].to_vec()
+        };
+        frame.extend_from_slice(&packed);
+        frame
+    }
+
+    fn checked_error_preserves_destination<T>(
+        frame: &[u8],
+        decode: for<'input, 'out> fn(
+            &'input [u8],
+            &'out mut std::mem::MaybeUninit<T>,
+        ) -> qsl::QslResult<&'out mut T>,
+    ) {
+        #[repr(C)]
+        struct Guarded<T> {
+            before: [u8; 32],
+            output: std::mem::MaybeUninit<T>,
+            after: [u8; 32],
+        }
+        let mut target = Guarded {
+            before: [0xA5; 32],
+            output: std::mem::MaybeUninit::<T>::uninit(),
+            after: [0xA5; 32],
+        };
+        // Initialize bytes, not a T value. A failed checked decode must not
+        // publish a T or alter this destination; MaybeUninit does not drop T.
+        unsafe {
+            std::ptr::write_bytes(
+                target.output.as_mut_ptr().cast::<u8>(),
+                0xA5,
+                std::mem::size_of::<T>(),
+            );
+        }
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            decode(frame, &mut target.output).map(|_| ())
+        }));
+        assert!(matches!(result, Ok(Err(_))));
+        let bytes = unsafe {
+            std::slice::from_raw_parts(
+                target.output.as_ptr().cast::<u8>(),
+                std::mem::size_of::<T>(),
+            )
+        };
+        assert!(bytes.iter().all(|&byte| byte == 0xA5));
+        assert_eq!(target.before, [0xA5; 32]);
+        assert_eq!(target.after, [0xA5; 32]);
+    }
+
+    #[test]
+    fn forged_lz_lengths_cannot_expand_beyond_inline_or_heap_limits() {
+        macro_rules! check {
+            ($ty:ty,$maximum:literal,$fixed:literal) => {{
+                let valid = repeated_lz_frame($maximum, $maximum, $fixed);
+                assert_eq!(
+                    <$ty>::deserialize_checked(&valid).unwrap().text.len(),
+                    $maximum
+                );
+                <$ty>::validate(&valid).unwrap();
+                let overflow = repeated_lz_frame($maximum, $maximum + 1, $fixed);
+                assert!(matches!(
+                    <$ty>::validate(&overflow),
+                    Err(qsl::QslError::InvalidValue)
+                ));
+                assert!(matches!(
+                    <$ty>::deserialize_checked(&overflow),
+                    Err(qsl::QslError::InvalidValue)
+                ));
+                checked_error_preserves_destination(&overflow, <$ty>::deserialize_checked_into);
+                for end in 0..overflow.len() {
+                    assert!(<$ty>::deserialize_checked(&overflow[..end]).is_err());
+                }
+            }};
+        }
+        check!(TinyLz, 100, false);
+        check!(Compressed, 255, false);
+        check!(HeapLz, 1024, false);
+        check!(FixedLz, 100, true);
+        check!(HeapFixedLz, 1024, true);
+        // A tiny forged compressed span cannot authorize a larger literal run.
+        for frame in [&[0x81, 0x7F][..], &[0x84, 0, b'A', 0xFF, 1][..]] {
+            assert!(TinyLz::deserialize_checked(frame).is_err());
+            checked_error_preserves_destination(frame, TinyLz::deserialize_checked_into);
+        }
+        // The declared packed length exceeds the available input or schema.
+        for frame in [&[0x85, 0, b'A', 0xDF, 1][..], &[0xFF][..]] {
+            assert!(TinyLz::validate(frame).is_err());
+            checked_error_preserves_destination(frame, TinyLz::deserialize_checked_into);
+        }
+    }
+
+    #[test]
+    fn invalid_first_lz_token_is_rejected_before_heap_reservation() {
+        // Truncated literal, truncated distance, zero distance, missing history.
+        for frame in [
+            &[1, 0x80, 0x7F][..],
+            &[1, 0x80, 0xFF][..],
+            &[3, 0x80, 0x80, 0, 0][..],
+            &[3, 0x80, 0xFF, 1, 0][..],
+        ] {
+            let allocations = allocation_probe::count(|| {
+                assert!(HeapLz::deserialize_checked(frame).is_err());
+                assert!(HeapLz::validate(frame).is_err());
+            });
+            assert_eq!(allocations, 0);
+            checked_error_preserves_destination(frame, HeapLz::deserialize_checked_into);
+        }
+    }
+
+    #[test]
+    fn compressed_fields_share_the_actual_restoration_budget() {
+        let first = repeated_lz_frame(65535, 40000, false);
+        let second = repeated_lz_frame(65535, 40000, false);
+        let mut frame = first;
+        frame.extend_from_slice(&second);
+        assert!(frame.len() < TwoLz::MAX_DATA_SIZE);
+        assert!(matches!(
+            TwoLz::validate(&frame),
+            Err(qsl::QslError::SizeLimitExceeded)
+        ));
+        assert!(matches!(
+            TwoLz::deserialize_checked(&frame),
+            Err(qsl::QslError::SizeLimitExceeded)
+        ));
+        checked_error_preserves_destination(&frame, TwoLz::deserialize_checked_into);
+    }
+
     #[test]
     fn lz_remains_lossless() {
         let text = "abc".repeat(64);

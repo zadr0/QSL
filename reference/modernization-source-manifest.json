@@ -157,7 +157,7 @@
   },
   {
     "path": "qsl/src/validation.rs",
-    "sha256": "bfe2d5f5f253498e835134bd5c1cd890dc4c8806cf992a58a5ae5bf5f55115e4"
+    "sha256": "25e006a1389385679a8033e7f66f2ee0533ccacdf1da08cb2aff1f3ddcbc31e0"
   },
   {
     "path": "qsl/tests/native.rs",
@@ -213,7 +213,7 @@
   },
   {
     "path": "qsl/tests/modernization/lib.rs",
-    "sha256": "4c01323cc71d94fcf4b600c425b2361960899799927eab16e2c374578e00470a"
+    "sha256": "713a4ad223508da65b5b72902ba8feddce4c09c70a12b2d56ef867bcd0417f7a"
   },
   {
     "path": "qsl/tests/modernization/models.rs",
@@ -241,7 +241,7 @@
   },
   {
     "path": "qsl/tests/modernization/schemas.qsl",
-    "sha256": "580d136387078768160d0082c664baf34c4f82ccce862b5654934ceadf7fc9d6"
+    "sha256": "92a4f72df2123677c6c929ddbe9d0cf219a9df5a4c0bf21848f807cca5a36d5c"
   },
   {
     "path": "qsl/tests/optional-modes/before.qsl",

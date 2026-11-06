@@ -29,3 +29,6 @@ Trusted Serializable::serialize / BorrowSerializable::serialize trait methods ar
 
 
 The safety attribute does not disable unsafe reads. Native COPY/LIFETIME and region APIs always expose explicit _unchecked entry points without input validation, alongside checked methods. See the [unchecked API contract](modernization-2026-11-06/MODERNIZATION.en.md) for names and caller obligations.
+
+
+An input LZ block length does not authorize a decoded size. Each run is checked against actual restored bytes, destination capacity and shared MAX_DATA_SIZE before reserve/writes. Forged lengths, MAX+1 expansion, truncated literal/offset data and invalid backreferences are rejected; unchecked APIs remain separate.

@@ -1,5 +1,6 @@
-//! Safe, allocation-free wire validation. The trusted pointer decoder is called
-//! only after the complete frame has passed these schema-specific checks.
+//! Checked wire validation and single-pass materialization.
+//! Compressed output is bounded independently of the untrusted stored length.
+//! Heap restoration is fallible; trusted pointer APIs remain separate.
 use crate::{QslError, QslResult};
 
 pub const DEFAULT_MAX_DATA_SIZE: usize = 65535;
@@ -27,6 +28,67 @@ impl ValueBudget {
             .ok_or(QslError::SizeLimitExceeded)?;
         Ok(())
     }
+}
+
+/// A fully checked run. Parsing never writes to output or allocates.
+enum CompressedRun<'a> {
+    Literal(&'a [u8]),
+    Match { count: usize, distance: usize },
+}
+impl CompressedRun<'_> {
+    fn len(&self) -> usize {
+        match self {
+            Self::Literal(bytes) => bytes.len(),
+            Self::Match { count, .. } => *count,
+        }
+    }
+}
+
+/// The wire header bounds packed input only. Every run must independently fit
+/// the actual destination bound before any reserve, backreference or write.
+fn compressed_run<'a>(
+    packed: &'a [u8],
+    cursor: &mut usize,
+    produced: usize,
+    maximum: usize,
+    width: usize,
+) -> QslResult<Option<CompressedRun<'a>>> {
+    if *cursor == packed.len() {
+        return Ok(None);
+    }
+    let control = *packed.get(*cursor).ok_or(QslError::UnexpectedEof)?;
+    let payload = cursor.checked_add(1).ok_or(QslError::LengthOverflow)?;
+    let count = if control < 128 {
+        control as usize + 1
+    } else {
+        (control & 127) as usize + 4
+    };
+    let end = produced
+        .checked_add(count)
+        .ok_or(QslError::LengthOverflow)?;
+    if end > maximum {
+        return Err(QslError::InvalidValue);
+    }
+    let (next, run) = if control < 128 {
+        let next = payload.checked_add(count).ok_or(QslError::LengthOverflow)?;
+        let bytes = packed.get(payload..next).ok_or(QslError::UnexpectedEof)?;
+        (next, CompressedRun::Literal(bytes))
+    } else {
+        let next = payload.checked_add(width).ok_or(QslError::LengthOverflow)?;
+        let bytes = packed.get(payload..next).ok_or(QslError::UnexpectedEof)?;
+        let distance = bytes[0] as usize
+            + if width == 2 {
+                (bytes[1] as usize) << 8
+            } else {
+                0
+            };
+        if distance == 0 || distance > produced {
+            return Err(QslError::InvalidValue);
+        }
+        (next, CompressedRun::Match { count, distance })
+    };
+    *cursor = next;
+    Ok(Some(run))
 }
 
 pub struct ValidationCursor<'a> {
@@ -213,46 +275,19 @@ impl<'a> ValidationCursor<'a> {
         let packed = self.bytes(stored)?;
         let mut output = Vec::<u8>::new();
         let mut cursor = 0;
-        while cursor < packed.len() {
-            let control = packed[cursor];
-            cursor += 1;
-            let count = if control < 128 {
-                control as usize + 1
-            } else {
-                (control & 127) as usize + 4
-            };
-            let end = output
-                .len()
-                .checked_add(count)
-                .ok_or(QslError::LengthOverflow)?;
+        while let Some(run) = compressed_run(packed, &mut cursor, output.len(), MAX, width)? {
+            let count = run.len();
             self.charge(count)?;
-            if end > MAX {
-                return Err(QslError::InvalidValue);
-            }
             output
                 .try_reserve(count)
                 .map_err(|_| QslError::AllocationFailed)?;
-            if control < 128 {
-                let tail = cursor.checked_add(count).ok_or(QslError::LengthOverflow)?;
-                output.extend_from_slice(packed.get(cursor..tail).ok_or(QslError::UnexpectedEof)?);
-                cursor = tail;
-            } else {
-                let bytes = packed
-                    .get(cursor..cursor + width)
-                    .ok_or(QslError::UnexpectedEof)?;
-                let distance = bytes[0] as usize
-                    + if width == 2 {
-                        (bytes[1] as usize) << 8
-                    } else {
-                        0
-                    };
-                cursor += width;
-                if distance == 0 || distance > output.len() {
-                    return Err(QslError::InvalidValue);
-                }
-                for _ in 0..count {
-                    let b = output[output.len() - distance];
-                    output.push(b);
+            match run {
+                CompressedRun::Literal(bytes) => output.extend_from_slice(bytes),
+                CompressedRun::Match { count, distance } => {
+                    for _ in 0..count {
+                        let b = output[output.len() - distance];
+                        output.push(b);
+                    }
                 }
             }
         }
@@ -301,45 +336,21 @@ impl<'a> ValidationCursor<'a> {
         let packed = self.bytes(stored)?;
         let mut output = crate::InlineArray::<u8, MAX>::new();
         let mut cursor = 0;
-        while cursor < packed.len() {
-            let control = packed[cursor];
-            cursor += 1;
-            let count = if control < 128 {
-                control as usize + 1
-            } else {
-                (control & 127) as usize + 4
-            };
-            let end = output
-                .len()
-                .checked_add(count)
-                .ok_or(QslError::LengthOverflow)?;
-            self.charge(count)?;
-            if end > MAX {
-                return Err(QslError::InvalidValue);
-            }
-            if control < 128 {
-                let tail = cursor.checked_add(count).ok_or(QslError::LengthOverflow)?;
-                for &b in packed.get(cursor..tail).ok_or(QslError::UnexpectedEof)? {
-                    output.push(b)?;
+        while let Some(run) =
+            compressed_run(packed, &mut cursor, output.len(), output.capacity(), width)?
+        {
+            self.charge(run.len())?;
+            match run {
+                CompressedRun::Literal(bytes) => {
+                    for &b in bytes {
+                        output.push(b)?;
+                    }
                 }
-                cursor = tail;
-            } else {
-                let bytes = packed
-                    .get(cursor..cursor + width)
-                    .ok_or(QslError::UnexpectedEof)?;
-                let distance = bytes[0] as usize
-                    + if width == 2 {
-                        (bytes[1] as usize) << 8
-                    } else {
-                        0
-                    };
-                cursor += width;
-                if distance == 0 || distance > output.len() {
-                    return Err(QslError::InvalidValue);
-                }
-                for _ in 0..count {
-                    let b = output[output.len() - distance];
-                    output.push(b)?;
+                CompressedRun::Match { count, distance } => {
+                    for _ in 0..count {
+                        let b = output[output.len() - distance];
+                        output.push(b)?;
+                    }
                 }
             }
         }
@@ -389,6 +400,60 @@ mod tests {
             Err(QslError::SizeLimitExceeded)
         );
     }
+    #[test]
+    fn expanded_runs_check_destination_and_arithmetic_before_advancing() {
+        let mut cursor = 0;
+        assert!(matches!(
+            compressed_run(&[0, b'A'], &mut cursor, usize::MAX, usize::MAX, 1),
+            Err(QslError::LengthOverflow)
+        ));
+        assert_eq!(cursor, 0);
+        assert!(matches!(
+            compressed_run(&[0, b'A'], &mut cursor, 100, 100, 1),
+            Err(QslError::InvalidValue)
+        ));
+        assert_eq!(cursor, 0);
+        assert!(matches!(
+            compressed_run(&[0xFF, 1], &mut cursor, 1, 100, 1),
+            Err(QslError::InvalidValue)
+        ));
+        assert_eq!(cursor, 0);
+    }
+
+    #[test]
+    fn lz_budget_charges_expansion_instead_of_the_forged_stored_length() {
+        // Four compressed bytes reconstruct exactly 100 A bytes.
+        let frame = [0x84, 0, b'A', 0xDF, 1];
+        let mut exact = ValidationCursor::with_budget(&frame, frame.len(), 100).unwrap();
+        assert_eq!(
+            exact
+                .decode_compressed::<100>(0, false, false)
+                .unwrap()
+                .len(),
+            100
+        );
+        exact.finish().unwrap();
+        for budget in [0, 1, 4, 99] {
+            let mut inline = ValidationCursor::with_budget(&frame, frame.len(), budget).unwrap();
+            assert!(matches!(
+                inline.decode_compressed::<100>(0, false, false),
+                Err(QslError::SizeLimitExceeded)
+            ));
+            let mut heap = ValidationCursor::with_budget(&frame, frame.len(), budget).unwrap();
+            assert!(matches!(
+                heap.decode_compressed_owned::<100>(0, false, false),
+                Err(QslError::SizeLimitExceeded)
+            ));
+        }
+        // Encoded metadata fits, but the last token would reconstruct 132 B.
+        let forged = [0x84, 0, b'A', 0xFF, 1];
+        let mut c = ValidationCursor::new(&forged);
+        assert!(matches!(
+            c.decode_compressed::<100>(0, false, false),
+            Err(QslError::InvalidValue)
+        ));
+    }
+
     #[test]
     fn invalid_input_has_no_pointer_access_or_panic() {
         for n in 0..256 {

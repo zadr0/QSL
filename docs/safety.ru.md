@@ -29,3 +29,6 @@ Trusted trait-методы Serializable::serialize / BorrowSerializable::seriali
 
 
 Атрибут safety не отключает unsafe-чтение. Нативные COPY/LIFETIME и регионы всегда имеют явные методы _unchecked без валидации входа; checked-методы доступны параллельно. Полный перечень и обязанности вызывающего кода: [unchecked API](modernization-2026-11-06/MODERNIZATION.ru.md).
+
+
+Длина LZ-блока из входа не задаёт допустимый размер распаковки. Каждый токен проверяется по фактически восстановленным байтам, пределу destination и общему MAX_DATA_SIZE до reserve/записи. Поддельные длины, выход MAX+1, усечённые literal/offset и недопустимые ссылки отклоняются; unchecked API остаётся отдельным.

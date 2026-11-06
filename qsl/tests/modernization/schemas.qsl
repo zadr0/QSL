@@ -44,3 +44,8 @@
 &RegisterCross[safety]{u64 head;u32 middle;u16 short;u8 byte;i64 crossing;u8 tail;}
 &HeaderCross[safety]{u64 head;u32 middle;u16 short;u8 byte;str(1..1024) text;}
 &QpsCross[qps,safety]{u8(0..1) bit;u64? wide;u64?(0..15) small;}
+
+&TinyLz[safety]{str(3..100) text|decompress=true|;}
+&FixedLz[safety]{str(100) text|decompress=true|;}
+&HeapFixedLz[safety]{str(1024) text|decompress=true|;}
+&TwoLz[safety]{str(1..65535) first|decompress=true|;str(1..65535) second|decompress=true|;}

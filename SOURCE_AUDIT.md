@@ -6,8 +6,8 @@ Current implementation: typed exact-size register group reads (u8/u16/u32/u64/u1
 
 ## Evidence and scope
 
-- Windows 11 x86-64: 83 core unit tests, 10 native tests, 2 byte-QPS vectors, 12 schema-hash tests and 2 compile-fail documentation tests passed.
-- Modernization contracts: 30 tests and 5 compile-fail checks passed in debug and release. Includes protected-page 9-byte access, no private QPS tail, no-allocation checked inline read, malformed frames, native layout/UTF-8, nested regions, strict large-buffer fallbacks, cached-frame data limits, padding boundaries before neighboring fields, unsafe trusted-writer contracts, always-present unchecked native/region APIs, and an instrumented proof that unchecked regions bypass validators.
+- Windows 11 x86-64: 85 core unit tests, 10 native tests, 2 byte-QPS vectors, 12 schema-hash tests and 2 compile-fail documentation tests passed.
+- Modernization contracts: 33 tests and 5 compile-fail checks passed in debug and release. Includes protected-page 9-byte access, no private QPS tail, no-allocation checked inline read, malformed frames, native layout/UTF-8, nested regions, strict large-buffer fallbacks, cached-frame data limits, padding boundaries before neighboring fields, unsafe trusted-writer contracts, always-present unchecked native/region APIs, and an instrumented proof that unchecked regions bypass validators.
 - Six optional-mode compatibility tests pass against preserved before.rs golden code. Numeric/UTF-8 combined wire bytes and hash identities are retained.
 - Four example tests and all seven runnable examples pass. The RT example demonstrates blocking and resumption, not PoolExhausted from serialize().
 - Root, contract and examples pass Clippy with -D warnings. Root formatting check passes.
@@ -34,3 +34,10 @@ The ordinary reader's u128 result type and the analyzer's rounded registerBits a
 Ordinary generated groups, QPS prepared reads and hybrid-frame descriptors now use exact typed loaders. A 3-byte window returns u32; 5 bytes return u64; 9 bytes return u128 without a 16-byte input read. The legacy load_exact return type remains u128 for compatibility; generated kernels no longer call it. Crossing signed fields and length descriptors preserve their bit patterns. Unit tests cover all 1–16-byte windows; protected-page tests also pass in release. Zed native analyzer rebuilt; 32 server tests pass.
 
 [Two numerical reruns and five ASM probes](qsl-bench/modernization/results/2026-11-06-register-width/README.md) retain new raw samples and a 54-file measured-source snapshot. No speedup is established: default 2.788 ns and Q16 4.304 ns are about 4% above the earlier separate run; decoder inspection probes have identical instructions. These results do not replace the four-case historical table.
+
+
+## Checked LZ restoration bounds
+
+A shared checked token parser validates packed literal/offset reads, backward distances, checked decoded-length arithmetic and the actual output/schema bound before each run. Both heap and inline decoders charge actual restored bytes to the common budget before reserve or writes. Malformed first tokens now fail without heap allocation. Existing per-run decoded-size checks are retained and centralized; the packed header is never treated as proof of restored length.
+
+Adversarial tests cover variable and fixed LZ, inline/String storage, MAX+1 expansion, forged packed lengths, truncated inputs, invalid offsets and two 40000-byte strings whose combined restoration exceeds the default 65535-byte budget. Destination bytes and canaries remain unchanged on checked_into errors. Exact-limit frames still decode successfully. Invalid-frame tests invoke checked APIs only; unsafe string decoders retain their trusted-input contract. No new timing claims are made for this validation change.
