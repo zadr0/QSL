@@ -10,6 +10,15 @@
 //! #[repr(C,packed)]
 //! struct Bad { field: u32 }
 //! ```
+//! Even with safety enabled, native unchecked APIs require an unsafe call:
+//! ```compile_fail
+//! use qsl_modernization_contracts::CopyNative;
+//! let _ = CopyNative::deserialize_transmutate_copy_unchecked(&[0;16]);
+//! ```
+//! ```compile_fail
+//! use qsl_modernization_contracts::Region;
+//! let _ = Region::deserialize_region_0_view_unchecked(&[0;16]);
+//! ```
 include!("models.rs");
 include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
 /// The raw convenience writer has caller-enforced field/length invariants.
@@ -64,6 +73,20 @@ mod allocation_probe {
         f();
         drop(reset);
         COUNT.with(Cell::get)
+    }
+}
+#[cfg(test)]
+mod native_validation_probe {
+    use std::cell::Cell;
+    std::thread_local! {static CALLS:Cell<usize>=const{Cell::new(0)};}
+    pub fn record() {
+        CALLS.with(|n| n.set(n.get() + 1));
+    }
+    pub fn reset() {
+        CALLS.with(|n| n.set(0));
+    }
+    pub fn calls() -> usize {
+        CALLS.with(Cell::get)
     }
 }
 #[cfg(test)]
@@ -453,6 +476,130 @@ mod tests {
             assert_eq!(checked.decode_into(&mut out).c(), c);
         }
     }
+    #[test]
+    fn unchecked_native_methods_coexist_with_safety_and_legacy_names() {
+        let value = CopyNative {
+            id: 42,
+            value: 11,
+            tag: *b"utf8",
+        };
+        let bytes = value.serialize_checked().unwrap();
+        // Safety adds checked entry points without removing the trusted ones.
+        let x = unsafe { CopyNative::deserialize_transmutate_copy_unchecked(&bytes) };
+        assert_eq!((x.id, x.value, x.tag), (42, 11, *b"utf8"));
+        let x = unsafe { CopyTrusted::deserialize_transmutate_copy_unchecked(&bytes) };
+        assert_eq!((x.id, x.value, x.tag), (42, 11, *b"utf8"));
+        let x = unsafe { CopyTrusted::deserialize_transmutate_copy(&bytes) };
+        assert_eq!((x.id, x.value, x.tag), (42, 11, *b"utf8"));
+        let fallback = CopyFallback { tag: 1, id: 42 };
+        assert!(!std::hint::black_box(CopyFallback::NATIVE_WIRE_COMPATIBLE));
+        let packed = fallback.serialize_checked().unwrap();
+        assert_eq!(packed.len(), 9);
+        let x = unsafe { CopyFallback::deserialize_transmutate_copy_unchecked(&packed) };
+        assert_eq!((x.tag, x.id), (1, 42));
+        #[repr(align(8))]
+        struct Aligned([u8; 16]);
+        let mut input = Aligned([0; 16]);
+        input.0.copy_from_slice(&bytes);
+        let x = unsafe { Overlay::deserialize_overlay_unchecked(&input.0) };
+        assert_eq!(x as *const _ as *const u8, input.0.as_ptr());
+        assert_eq!((x.id, x.value, x.tag), (42, 11, *b"utf8"));
+        let x = unsafe { OverlayTrusted::deserialize_overlay_unchecked(&input.0) };
+        assert_eq!(x as *const _ as *const u8, input.0.as_ptr());
+        let x = unsafe { OverlayTrusted::deserialize_overlay(&input.0) };
+        assert_eq!(x as *const _ as *const u8, input.0.as_ptr());
+        // Existing general unsafe APIs are still independent of safety too.
+        let mut out = std::mem::MaybeUninit::<CopyNative>::uninit();
+        unsafe {
+            CopyNative::deserialize_into(bytes.as_ptr(), bytes.len(), out.as_mut_ptr());
+        }
+        assert_eq!(unsafe { out.assume_init() }.id, 42);
+    }
+
+    #[test]
+    fn unchecked_regions_do_not_invoke_native_validation() {
+        let value = CountedRegion {
+            id: 5,
+            value: 3,
+            tag: *b"abcd",
+        };
+        let bytes = value.serialize_checked().unwrap();
+        #[repr(align(8))]
+        struct Aligned([u8; 16]);
+        let mut input = Aligned([0; 16]);
+        input.0.copy_from_slice(&bytes);
+        assert!(std::hint::black_box(
+            CountedRegion::REGION_0_COPY_COMPATIBLE
+        ));
+        assert!(std::hint::black_box(
+            CountedRegion::REGION_0_VIEW_COMPATIBLE
+        ));
+        assert!(std::hint::black_box(
+            CountedRegion::REGION_0_WIRE_COPY_COMPATIBLE
+        ));
+        assert!(std::hint::black_box(
+            CountedRegion::REGION_0_WIRE_VIEW_COMPATIBLE
+        ));
+        native_validation_probe::reset();
+        let a = unsafe { value.region_0_copy_unchecked() };
+        let b = unsafe { value.region_0_view_unchecked() };
+        let c = unsafe { CountedRegion::deserialize_region_0_copy_unchecked(&input.0) };
+        let d = unsafe { CountedRegion::deserialize_region_0_view_unchecked(&input.0) };
+        for x in [&a, b, &c, d] {
+            assert_eq!((x.id, x.value, x.tag), (5, 3, *b"abcd"));
+        }
+        assert_eq!(
+            b as *const _ as *const u8,
+            std::ptr::addr_of!(value.id).cast()
+        );
+        assert_eq!(d as *const _ as *const u8, input.0.as_ptr());
+        assert_eq!(native_validation_probe::calls(), 0);
+        value.region_0_copy().unwrap();
+        value.region_0_view().unwrap();
+        CountedRegion::deserialize_region_0_copy(&input.0).unwrap();
+        CountedRegion::deserialize_region_0_view(&input.0).unwrap();
+        assert_eq!(native_validation_probe::calls(), 4);
+        input.0[12] = 255;
+        assert!(CountedRegion::deserialize_region_0_copy(&input.0).is_err());
+        assert!(CountedRegion::deserialize_region_0_view(&input.0).is_err());
+    }
+
+    #[test]
+    fn unchecked_regions_are_available_without_safety() {
+        let value = RegionTrusted {
+            id: 7,
+            value: 3,
+            tag: *b"abcd",
+        };
+        #[repr(align(8))]
+        struct Aligned([u8; 16]);
+        let mut input = Aligned([0; 16]);
+        unsafe {
+            value.serialize_into_unsafe(input.0.as_mut_ptr());
+        }
+        let a = unsafe { value.region_0_copy_unchecked() };
+        let b = unsafe { value.region_0_view_unchecked() };
+        let c = unsafe { RegionTrusted::deserialize_region_0_copy_unchecked(&input.0) };
+        let d = unsafe { RegionTrusted::deserialize_region_0_view_unchecked(&input.0) };
+        for x in [&a, b, &c, d] {
+            assert_eq!((x.id, x.value, x.tag), (7, 3, *b"abcd"));
+        }
+        // An incompatible VIEW does not disable the leaf-wise COPY path.
+        let padded = PaddedNeighbor {
+            meta_id: 7,
+            meta_value: 3,
+            neighbor: 99,
+        };
+        assert!(!std::hint::black_box(
+            PaddedNeighbor::REGION_0_VIEW_COMPATIBLE
+        ));
+        assert!(std::hint::black_box(
+            PaddedNeighbor::REGION_0_COPY_COMPATIBLE
+        ));
+        let copied = unsafe { padded.region_0_copy_unchecked() };
+        assert_eq!((copied.id, copied.value), (7, 3));
+    }
+
     #[test]
     fn native_copy_and_overlay_validate_before_exposing_values() {
         let value = CopyNative {

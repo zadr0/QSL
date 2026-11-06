@@ -69,7 +69,7 @@
   },
   {
     "path": "qsl/src/interpreter.rs",
-    "sha256": "eb31acdb17c33240f436c919b1f5bb1f86622f1d8f4b90641981dddc2ed27f96"
+    "sha256": "07877527395681db89b074cacd9ab787041363aa9e8b3a0ccabcdf938dd15c24"
   },
   {
     "path": "qsl/src/io.rs",
@@ -89,7 +89,7 @@
   },
   {
     "path": "qsl/src/modernization.rs",
-    "sha256": "cdccbda45af59f71516c9ee6f85aa4a5073c27d4eb6e767d95a9ea337fa52beb"
+    "sha256": "cf1345bf6a50e6c536455e3de3a31bcad4250483d19a1eee5bd68a1b124311c7"
   },
   {
     "path": "qsl/src/optional.rs",
@@ -213,11 +213,11 @@
   },
   {
     "path": "qsl/tests/modernization/lib.rs",
-    "sha256": "38163526066fe2520cd73c575725be267799943ca3982e8bafdd13debefb5a17"
+    "sha256": "ee2576ec1089b77fccde5af252e4fef507f1f255a610ca7300af2abc85a7e4f8"
   },
   {
     "path": "qsl/tests/modernization/models.rs",
-    "sha256": "6c5c68636240c45ca5f3b2195dd6180c1efd9ac5098dd120ae2a7b12a7035038"
+    "sha256": "25c8bfaf94cf0d539c3c253a253165b4e508dea6716cd7af7793119687c09daf"
   },
   {
     "path": "qsl/tests/optional-modes/before.rs",
@@ -238,5 +238,17 @@
   {
     "path": "qsl/tests/optional-modes/lib.rs",
     "sha256": "2d3c32e33ba493620c7148a274345aa64b9ef28cae7f124d64c6f98ec3056bd3"
+  },
+  {
+    "path": "qsl/tests/modernization/schemas.qsl",
+    "sha256": "79bd1a56e960f5b983c680aef9a434df784347e634751b15f408e00b3c7947c1"
+  },
+  {
+    "path": "qsl/tests/optional-modes/before.qsl",
+    "sha256": "cff6f272f6e14ae82b77acac4baef7bc368655bbe537552e6acf9adcd03c44c6"
+  },
+  {
+    "path": "qsl/tests/optional-modes/modes.qsl",
+    "sha256": "dfaf64a060db6b814b275bc678e9ed1e6c8ab74558b8a55254171fdd0f8d21a7"
   }
 ]

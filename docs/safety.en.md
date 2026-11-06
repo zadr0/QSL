@@ -26,3 +26,6 @@ QPS packs scalar numeric fields only. Generated prepared reads require no privat
 [Full contract, errors, native COPY/LIFETIME and migration](modernization-2026-11-06/MODERNIZATION.en.md).
 
 Trusted Serializable::serialize / BorrowSerializable::serialize trait methods are now unsafe. Callers must establish their preconditions. Generated RT/QPS serialize() methods remain safe Result APIs with value validation; use serialize_checked for general safe output.
+
+
+The safety attribute does not disable unsafe reads. Native COPY/LIFETIME and region APIs always expose explicit _unchecked entry points without input validation, alongside checked methods. See the [unchecked API contract](modernization-2026-11-06/MODERNIZATION.en.md) for names and caller obligations.

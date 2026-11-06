@@ -42,7 +42,7 @@ New generated string paths contain no `Utf8Guard`/`Utf8CopyGuard` object. `binar
 
 ## Exact register reads
 
-Consecutive required numeric fields are grouped automatically. Useful bytes are split into chunks of at most 16; the last logical container uses the nearest 8/16/32/64/128-bit width. A 25-byte group becomes 16 + 9 bytes: the last 128-bit logical container contains exactly 9 input bytes, with local zeroes above them. `u128` does not imply a single x86-64 hardware register.
+Consecutive required numeric fields are grouped automatically into chunks of at most 16 useful bytes. Ordinary groups currently call load_exact::<N>(), returning u128 with local zeroes above the N input bytes. The analyzer's registerBits rounds the logical width to 8/16/32/64/128 bits; it does not prove that the ordinary reader generates the corresponding minimum-width Rust integer type. A 25-byte group reads 16 + 9 bytes exactly. Concrete bit-reader/writer specializations have their own widths, and LLVM chooses physical instructions. A u128 does not imply one x86-64 hardware register.
 
 Dynamic string/array contents terminate a group. A raw string's fixed length descriptor may join the preceding numeric group: `u64` plus a one-byte descriptor reads exactly 9 B, without requiring 16 readable bytes. Ordinary optional values with unknown offsets are not grouped this way. Static tables still select state and readers in combined modes.
 
@@ -135,3 +135,25 @@ Verification commands and four narrow Criterion cases live in `qsl/tests/moderni
 Serializable::serialize and BorrowSerializable::serialize are now unsafe trait methods: callers guarantee domains, exact lengths and an aggregate encoded size fitting isize::MAX. Use serialize_checked / serialize_checked_to for safe writing. Generated RT/QPS serialize() methods remain safe Result APIs with value validation. This is an explicit API migration, independent of the safety decoding attribute.
 
 region_N_view() additionally checks that the entire native target, including trailing padding, ends before the next parent field. Matching initialized leaves alone is insufficient: an overlay must not cover a neighbor. Leaf-wise COPY remains available when padding layouts differ.
+
+
+## Unchecked APIs remain independent of safety
+
+The safety attribute adds checked entry points without disabling direct unsafe access. General Serializable::deserialize, deserialize_from_raw_parts and deserialize_into, together with their borrowed equivalents, remain unsafe and do not invoke a validation pre-pass.
+
+| Mode | Always available unsafe entry point |
+|---|---|
+| Native COPY | deserialize_transmutate_copy_unchecked(input) → Self |
+| Native LIFETIME | deserialize_overlay_unchecked(input) → &Self |
+| Region COPY from an object | region_N_copy_unchecked(&self) → Native |
+| Region view from an object | region_N_view_unchecked(&self) → &Native |
+| Region COPY from wire | deserialize_region_N_copy_unchecked(input) → Native |
+| Region view from wire | deserialize_region_N_view_unchecked(input) → &Native |
+
+Names are generated when the corresponding schema mechanism is enabled; region methods exist for every region N. These methods do not check lengths, alignment, UTF-8, domains or MAX_DATA_SIZE, and do not call the NativeField validator. COPY transfers initialized leaves without reading padding as data. Selecting native COPY versus ordinary decoding through NATIVE_WIRE_COMPATIBLE is a type constant, not input validation. predict_seq still uses length to choose a state: unchecked removes validation, not computations necessary to interpret the format.
+
+Callers guarantee a complete valid frame, valid values, a valid readable allocation and compatible layout. Views additionally require alignment, immutable storage and a lifetime covering the returned reference; a native view must not cover a neighboring field. Wire-region APIs take the region bytes only, not the parent frame.
+
+REGION_N_COPY_COMPATIBLE, REGION_N_VIEW_COMPATIBLE, REGION_N_WIRE_COPY_COMPATIBLE and REGION_N_WIRE_VIEW_COMPATIBLE support strategy selection before a call. They describe layout compatibility, and the self-view flag also accounts for the next field's boundary. Actual address alignment and value validity remain caller obligations. Unchecked methods do not read these flags or assert their value.
+
+Existing safe entry points retain their behavior. Without safety, the legacy unsafe names deserialize_transmutate_copy and deserialize_overlay forward to the corresponding _unchecked methods. With safety, those legacy names remain checked Result APIs. The new explicit _unchecked names keep the same contract when the attribute changes.

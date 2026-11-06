@@ -753,7 +753,9 @@ pub fn validate_options(s: &QslSchema) -> Result<(), String> {
         "try_new",
         "deserialize_into",
         "deserialize_overlay",
+        "deserialize_overlay_unchecked",
         "deserialize_transmutate_copy",
+        "deserialize_transmutate_copy_unchecked",
         "serialize_cached",
         "serialize_quantized_to",
         "serialize_qps_to",
@@ -792,6 +794,13 @@ pub fn validate_options(s: &QslSchema) -> Result<(), String> {
         for method in ["copy", "view"] {
             names.insert(format!("region_{i}_{method}"));
             names.insert(format!("deserialize_region_{i}_{method}"));
+            names.insert(format!("region_{i}_{method}_unchecked"));
+            names.insert(format!("deserialize_region_{i}_{method}_unchecked"));
+            names.insert(format!("REGION_{i}_{}_COMPATIBLE", method.to_uppercase()));
+            names.insert(format!(
+                "REGION_{i}_WIRE_{}_COMPATIBLE",
+                method.to_uppercase()
+            ));
         }
     }
     for f in &s.fields {

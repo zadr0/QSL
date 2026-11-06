@@ -33,3 +33,10 @@
 &LargeCache[safety,loyal_cache]{str(1..65535) text;}
 
 &PaddedNeighbor[safety]{PaddedMeta meta;u8 neighbor;}
+
+&CopyTrusted[transmutate]{u64 id;u32 value;str(4) tag;}
+&OverlayTrusted[transmutate,lifetime]{u64 id;u32 value;str(4) tag;}
+&RegionTrusted{#region(aggressive_transmutate = "Meta");u64 id;u32 value;str(4) tag;#end_region;}
+&CountedRegion[safety]{#region(aggressive_transmutate = "CountedMeta");u64 id;u32 value;str(4) tag;#end_region;}
+
+&CopyFallback[transmutate,safety]{u8 tag;u64 id;}

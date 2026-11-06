@@ -3333,6 +3333,16 @@ fn emit_memory_contract(s: &QslSchema, overlay: bool, out: &mut String) -> QslRe
             .map_or("std::mem::size_of::<Self>()".into(), |f| {
                 format!("std::mem::offset_of!(Self,{})", f.name)
             });
+        // These are type/layout facts, not per-call input validation. Unchecked
+        // entry points deliberately leave their enforcement to the caller.
+        ln(out,format!("pub const REGION_{region_index}_COPY_COMPATIBLE:bool={expected}.same_fields(&{native_layout});"));
+        ln(out,format!("pub const REGION_{region_index}_VIEW_COMPATIBLE:bool={{let start=std::mem::offset_of!(Self,{first});{expected}.compatible(&{native_layout})&&match start.checked_add(std::mem::size_of::<{native}>()){{Some(end)=>end<=std::mem::size_of::<Self>()&&end<={region_boundary},None=>false}}}};"));
+        ln(out,format!("pub const REGION_{region_index}_WIRE_COPY_COMPATIBLE:bool=cfg!(target_endian=\"little\")&&{expected_wire}.same_fields(&{native_layout});"));
+        ln(out,format!("pub const REGION_{region_index}_WIRE_VIEW_COMPATIBLE:bool=cfg!(target_endian=\"little\")&&{expected_wire}.compatible(&{native_layout})&&{wire_bytes}==std::mem::size_of::<{native}>();"));
+        ln(out,format!("/// # Safety\n/// REGION_{region_index}_COPY_COMPATIBLE must be true. All source leaves must form a valid {native}, including its value invariants. No validation is performed.\npub unsafe fn region_{region_index}_copy_unchecked(&self)->{native}{{let source_layout={expected};let target_layout={native_layout};let mut out=std::mem::MaybeUninit::<{native}>::uninit();let source=std::ptr::addr_of!(self.{first}).cast::<u8>();for i in 0..source_layout.count{{let a=source_layout.fields.get_unchecked(i);let b=target_layout.fields.get_unchecked(i);std::ptr::copy_nonoverlapping(source.add(a.offset),out.as_mut_ptr().cast::<u8>().add(b.offset),a.bytes);}}out.assume_init()}}"));
+        ln(out,format!("/// # Safety\n/// REGION_{region_index}_VIEW_COMPATIBLE must be true. The source must be aligned for {native}, its leaves must form a valid {native}, and storage must remain immutable for the borrow. No validation is performed.\npub unsafe fn region_{region_index}_view_unchecked(&self)->&{native}{{&*std::ptr::addr_of!(self.{first}).cast::<{native}>()}}"));
+        ln(out,format!("/// # Safety\n/// REGION_{region_index}_WIRE_COPY_COMPATIBLE must be true. Input must contain the complete {wire_bytes}-byte region in wire layout, with valid schema and {native} values. Pass region bytes, not the parent frame. No validation is performed.\npub unsafe fn deserialize_region_{region_index}_copy_unchecked(input:&[u8])->{native}{{let source_layout={expected_wire};let target_layout={native_layout};let mut out=std::mem::MaybeUninit::<{native}>::uninit();for i in 0..source_layout.count{{let a=source_layout.fields.get_unchecked(i);let b=target_layout.fields.get_unchecked(i);std::ptr::copy_nonoverlapping(input.as_ptr().add(a.offset),out.as_mut_ptr().cast::<u8>().add(b.offset),a.bytes);}}out.assume_init()}}"));
+        ln(out,format!("/// # Safety\n/// REGION_{region_index}_WIRE_VIEW_COMPATIBLE must be true. Input must contain the complete {wire_bytes}-byte region, be aligned for {native}, and hold valid schema and {native} values. Storage must remain immutable for the borrow. No validation is performed.\npub unsafe fn deserialize_region_{region_index}_view_unchecked(input:&[u8])->&{native}{{&*input.as_ptr().cast::<{native}>()}}"));
         let check=format!("if !{expected}.compatible(&{native_layout}){{return Err(::qsl::QslError::InvalidSchema)}}let start=std::mem::offset_of!(Self,{first});if start.checked_add(std::mem::size_of::<{native}>()).is_none_or(|n|n>std::mem::size_of::<Self>()||n>{region_boundary}){{return Err(::qsl::QslError::BufferTooSmall)}}let source=std::ptr::addr_of!(self.{first}).cast::<u8>();unsafe{{<{native} as ::qsl::modernization::NativeField>::validate_native_fields(source)?;}}");
         ln(out,format!("pub fn region_{region_index}_copy(&self)->::qsl::QslResult<{native}>{{let source_layout={expected};let target_layout={native_layout};if !source_layout.same_fields(&target_layout){{return Err(::qsl::QslError::InvalidSchema)}}let mut out=std::mem::MaybeUninit::<{native}>::uninit();let source=std::ptr::addr_of!(self.{first}).cast::<u8>();unsafe{{for i in 0..source_layout.count{{let a=source_layout.fields[i];let b=target_layout.fields[i];std::ptr::copy_nonoverlapping(source.add(a.offset),out.as_mut_ptr().cast::<u8>().add(b.offset),a.bytes);}}<{native} as ::qsl::modernization::NativeField>::validate_native_fields(out.as_ptr().cast())?;Ok(out.assume_init())}}}}"));
         ln(out,format!("pub fn region_{region_index}_view(&self)->::qsl::QslResult<&{native}>{{{check}if source.align_offset(std::mem::align_of::<{native}>())!=0{{return Err(::qsl::QslError::InvalidValue)}}Ok(unsafe{{&*source.cast::<{native}>()}})}}"));
@@ -3369,6 +3379,11 @@ fn emit_memory_contract(s: &QslSchema, overlay: bool, out: &mut String) -> QslRe
                 conditions.join("&&")
             ),
         );
+        if overlay {
+            ln(out,"/// # Safety\n/// Input contains a complete aligned, schema-valid native representation. Storage must remain immutable for the borrow. No validation is performed.\npub unsafe fn deserialize_overlay_unchecked(input:&[u8])->&Self{&*input.as_ptr().cast::<Self>()}");
+        } else {
+            ln(out,format!("/// # Safety\n/// Input contains one complete schema-valid wire representation. No input validation is performed; native-layout selection is a type constant.\npub unsafe fn deserialize_transmutate_copy_unchecked(input:&[u8])->Self{{if !Self::NATIVE_WIRE_COMPATIBLE{{return <Self as ::qsl::Serializable>::deserialize(input)}}let mut out=std::mem::MaybeUninit::<Self>::uninit();std::ptr::copy_nonoverlapping(input.as_ptr(),out.as_mut_ptr().cast::<u8>(),{bound});out.assume_init()}}"));
+        }
         if s.flags & crate::FLAG_SAFETY != 0 {
             if overlay {
                 ln(out,"pub fn deserialize_checked(input:&[u8])->::qsl::QslResult<&Self>{Self::deserialize_overlay(input)}");
@@ -3377,9 +3392,9 @@ fn emit_memory_contract(s: &QslSchema, overlay: bool, out: &mut String) -> QslRe
                 ln(out,format!("pub fn deserialize_transmutate_copy(input:&[u8])->::qsl::QslResult<Self>{{if !Self::NATIVE_WIRE_COMPATIBLE{{return Self::__qsl_read_checked(input)}}if input.len()!={bound}{{return Err(::qsl::QslError::InvalidValue)}}let mut out=std::mem::MaybeUninit::<Self>::uninit();unsafe{{std::ptr::copy_nonoverlapping(input.as_ptr(),out.as_mut_ptr().cast::<u8>(),{bound});let prepared=std::slice::from_raw_parts(out.as_ptr().cast::<u8>(),{bound});Self::validate(prepared)?;Ok(out.assume_init())}}}}"));
             }
         } else if overlay {
-            ln(out,"/// # Safety\n/// Complete aligned, schema-valid native representation; source remains immutable for the borrow.\npub unsafe fn deserialize_overlay(input:&[u8])->&Self{&*input.as_ptr().cast::<Self>()}");
+            ln(out,"/// # Safety\n/// Same contract as deserialize_overlay_unchecked. Kept as the legacy unchecked name when safety is disabled.\npub unsafe fn deserialize_overlay(input:&[u8])->&Self{Self::deserialize_overlay_unchecked(input)}");
         } else {
-            ln(out,format!("/// # Safety\n/// Input contains one complete schema-valid representation.\npub unsafe fn deserialize_transmutate_copy(input:&[u8])->Self{{if !Self::NATIVE_WIRE_COMPATIBLE{{return <Self as ::qsl::Serializable>::deserialize(input)}}let mut out=std::mem::MaybeUninit::<Self>::uninit();std::ptr::copy_nonoverlapping(input.as_ptr(),out.as_mut_ptr().cast::<u8>(),{bound});out.assume_init()}}"));
+            ln(out,"/// # Safety\n/// Same contract as deserialize_transmutate_copy_unchecked. Kept as the legacy unchecked name when safety is disabled.\npub unsafe fn deserialize_transmutate_copy(input:&[u8])->Self{Self::deserialize_transmutate_copy_unchecked(input)}");
         }
     }
     ln(out, "}");

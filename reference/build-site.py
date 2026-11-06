@@ -11,7 +11,7 @@ def inline(s):
  s=html.escape(s);s=re.sub(r'`([^`]+)`',r'<code>\1</code>',s);s=re.sub(r'\*\*(.+?)\*\*',r'<strong>\1</strong>',s)
  def link(m):
   href=m[2]
-  if re.search(r'(guide|features|architecture|API|performance|opt-table-control|mathematics|safety|schema-hashes|examples|optional-modes)\.(ru|en)\.md$',href):href=href[:-3]+'.html'
+  if re.search(r'(guide|features|architecture|API|performance|opt-table-control|mathematics|safety|schema-hashes|examples|optional-modes|MODERNIZATION)\.(ru|en)\.md$',href):href=href[:-3]+'.html'
   return '<a href="'+href+'">'+m[1]+'</a>'
  return re.sub(r'\[([^\]]+)\]\(([^)]+)\)',link,s)
 def render(source,prefix):
@@ -103,3 +103,17 @@ for lang in ['ru','en']:
   if not p.exists():continue
   content,_=render(p.read_text(encoding='utf-8'),name+'-'+lang);content=content.replace('<h2','<h1',1).replace('</h2>','</h1>',1);H=head.replace('lang="ru"',f'lang="{lang}"').replace('<title>QSL · '+t('project')+'</title>',f'<title>QSL · {name} · {lang.upper()}</title>');(docs/f'{name}.{lang}.html').write_text(H+'<main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a>'+content+'</main></body></html>',encoding='utf-8',newline='\n')
 print('Full QSL HTML built with measured samples, region explorer, length graph, guide and API')
+
+# Keep the nested current implementation contract reproducible with the site.
+for lang in ["ru", "en"]:
+ p=docs/"modernization-2026-11-06"/f"MODERNIZATION.{lang}.md"
+ content,_=render(p.read_text(encoding="utf-8"),"modern-"+lang)
+ content=content.replace("<h2","<h1",1).replace("</h2>","</h1>",1)
+ title="QSL · Modernization · "+lang.upper()
+ H=head.replace('lang="ru"',f'lang="{lang}"').replace(
+  "<title>QSL · "+t("project")+"</title>","<title>"+title+"</title>"
+ ).replace('href="assets/','href="../assets/')
+ p.with_suffix(".html").write_text(
+  H+'<main class="book" style="max-width:1120px;padding:25px;margin:auto">'
+  +'<a href="../index.html">QSL</a>'+content+"</main></body></html>",
+  encoding="utf-8",newline="\n")

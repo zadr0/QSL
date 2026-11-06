@@ -26,3 +26,6 @@ QPS работает только с самостоятельными число
 [Полный контракт, ошибки, native COPY/LIFETIME и миграция](modernization-2026-11-06/MODERNIZATION.ru.md).
 
 Trusted trait-методы Serializable::serialize / BorrowSerializable::serialize теперь unsafe. Их предусловия должны выполняться вызывающим кодом. Сгенерированные RT/QPS serialize() остаются безопасными Result-методами с проверкой значений; для общего безопасного выхода используйте serialize_checked.
+
+
+Атрибут safety не отключает unsafe-чтение. Нативные COPY/LIFETIME и регионы всегда имеют явные методы _unchecked без валидации входа; checked-методы доступны параллельно. Полный перечень и обязанности вызывающего кода: [unchecked API](modernization-2026-11-06/MODERNIZATION.ru.md).

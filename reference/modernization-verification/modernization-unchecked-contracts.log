@@ -1,0 +1,47 @@
+   Compiling qsl-modernization-contracts v0.0.0 (C:\Users\Guild\Desktop\dev-qsl\qsl\tests\modernization)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.97s
+     Running unittests lib.rs (.optimization/modernization-contract-target\debug\deps\qsl_modernization_contracts-2716e21ec08196bf.exe)
+
+running 28 tests
+test tests::checked_stack_read_allocates_nothing ... ok
+test tests::compact_numeric_arrays_respect_bit_alignment ... ok
+test tests::exact_nine_byte_load_at_protected_page_boundary ... ok
+test tests::fixed_and_inline_lifetime_strings_borrow_input ... ok
+test tests::length_graph_materializes_stack_strings ... ok
+test tests::lifetime_native_array_is_owned_but_raw_text_is_borrowed ... ok
+test tests::lz_remains_lossless ... ok
+test tests::malformed_length_does_not_publish_partial_output ... ok
+test tests::mixed_qps_only_packs_scalars ... ok
+test tests::native_copy_and_overlay_validate_before_exposing_values ... ok
+test tests::native_object_sizes_match_the_editor_target ... ok
+test tests::native_regions_and_proven_cache ... ok
+test tests::native_view_padding_cannot_cover_a_neighbor ... ok
+test tests::nested_native_regions_reconstruct_padding_safely ... ok
+test tests::niches_restore_signed_and_zero_without_collision ... ok
+test tests::numeric_arrays_use_element_widths ... ok
+test tests::optional_scalar_prefix_preserves_exact_states ... ok
+test tests::ordinary_table_and_full_bitmap_keep_all_states ... ok
+test tests::proven_cache_capacity_does_not_disable_frame_limit ... ok
+test tests::quantized_frames_require_no_private_padding ... ok
+test tests::stack_owned_and_plain_have_identical_wire_and_checked_values ... ok
+test tests::strict_stack_limit_preserves_large_string_codecs ... ok
+test tests::unchecked_native_methods_coexist_with_safety_and_legacy_names ... ok
+test tests::unchecked_regions_are_available_without_safety ... ok
+test tests::unchecked_regions_do_not_invoke_native_validation ... ok
+test tests::wide_quantization_all_quanta_are_exact_and_unpadded ... ok
+test tests::corrupted_frames_never_panic ... ok
+test tests::region_slots_wait_and_resume_without_lost_wakeup ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+   Doc-tests qsl_modernization_contracts
+
+running 5 tests
+test lib.rs - (line 14) - compile fail ... ok
+test lib.rs - (line 8) - compile fail ... ok
+test lib.rs - (line 18) - compile fail ... ok
+test lib.rs - (line 3) - compile fail ... ok
+test lib.rs - TrustedWriterContract (line 26) - compile fail ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s
+
