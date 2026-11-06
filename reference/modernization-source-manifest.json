@@ -89,7 +89,7 @@
   },
   {
     "path": "qsl/src/modernization.rs",
-    "sha256": "fb9678643f980d315b7f1e6032daea58038a27111c74907df4b349c8f3298af6"
+    "sha256": "e7cd745c8dec52a73281417dc0f5f49a2c958f9fb7459b29cef732e1e0634943"
   },
   {
     "path": "qsl/src/optional.rs",

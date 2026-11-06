@@ -1059,7 +1059,7 @@ pub unsafe trait NativeField: Copy {
         unsafe { Self::validate_native_fields(bytes.as_ptr()) }
     }
     /// # Safety
-    /// Source covers size_of::<Self>() allocated bytes; every non-padding field is initialized.
+    /// Source covers `size_of::<Self>()` allocated bytes; every non-padding field is initialized.
     unsafe fn validate_native_fields(address: *const u8) -> QslResult<()>;
 }
 macro_rules! native_integer{($($t:ty=>$kind:expr),*)=>{$(unsafe impl NativeField for $t{const NATIVE_LAYOUT:NativeLayout=NativeLayout::leaf(std::mem::size_of::<Self>(),$kind,1);unsafe fn validate_native_fields(_address:*const u8)->QslResult<()>{Ok(())}})*};}

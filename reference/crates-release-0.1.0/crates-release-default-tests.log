@@ -1,0 +1,131 @@
+   Compiling qsl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.48s
+     Running unittests src\lib.rs (.optimization/modernization-public-target\debug\deps\qsl-8292237bc580379c.exe)
+
+running 78 tests
+test analysis::tests::bit_windows_and_byte_barriers_select_minimal_registers ... ok
+test compat::tests::retains_old_number_shape_and_negative_minimum ... ok
+test bit_io::tests::every_register_matches_legacy_wire_and_exact_tail ... ok
+test deq::tests::arithmetic_precedence_is_shared_with_qsl ... ok
+test deq::tests::checks_types_and_duplicates ... ok
+test deq::tests::generation_configs_are_explicit_and_bounded ... ok
+test deq::tests::maximum_data_size_has_a_safe_default_and_checked_arithmetic ... ok
+test deq::tests::rejects_untyped_or_build_directives ... ok
+test deq::tests::typed_constants_and_dependencies ... ok
+test interpreter::tests::fixed_compact_layout_precomputes_packing ... ok
+test interpreter::tests::borrowed_generation_keeps_string_in_input_buffer ... ok
+test interpreter::tests::checked_decoding_is_opt_in_and_optimization_options_remain_explicit ... ok
+test interpreter::tests::fixed_lengths_are_constant_folded ... ok
+test interpreter::tests::fixed_normal_layout_generates_literal_offsets ... ok
+test interpreter::tests::generator_emits_default_only_for_explicit_numeric_attribute ... ok
+test interpreter::tests::native_string_headers_are_selected_while_generating ... ok
+test interpreter::tests::no_duplicate_optional_tags ... ok
+test interpreter::tests::optional_bitmap_uses_msb_first_u32 ... ok
+test interpreter::tests::required_fields_never_have_tags ... ok
+test interpreter::tests::tags_use_three_bits_when_max_tag_is_eight ... ok
+test io::tests::bitmap_msb_in_u32_le ... ok
+test io::tests::primary_io_is_pointer_only_and_branchless_at_source_level ... ok
+test io::tests::raw_pointer_primitives_work_from_unaligned_addresses ... ok
+test length_graph::tests::many_equal_scalars_need_no_exponential_state_enumeration ... ok
+test length_graph::tests::string_ranges_force_some_fields_without_erasing_ambiguity ... ok
+test length_graph::tests::two_equal_scalars_form_three_events ... ok
+test modernization::tests::arrays_use_native_data_bytes_for_the_strict_limit ... ok
+test modernization::tests::drops_only_initialized ... ok
+test modernization::tests::exact_partial_register ... ok
+test modernization::tests::optional_accessor_collisions_are_rejected ... ok
+test modernization::tests::typed_loads_zero_extend_partial_unaligned_windows ... ok
+test parser::copy_guard_tests::guard_is_owned_and_view_is_explicitly_borrowed ... ok
+test parser::fixed_utf8_tests::fixed_byte_representation_includes_equal_bounds_and_guard_modifiers ... ok
+test parser::lowlevel_tests::binary_and_sequence_modifiers_are_validated ... ok
+test modernization::tests::generated_registers_match_every_exact_window_width ... ok
+test parser::tests::assigns_tags_in_field_order_and_preserves_defaults ... ok
+test parser::tests::compressed_strings_require_finite_byte_bounds_and_boolean_attribute ... ok
+test parser::tests::negative_range_and_multischema ... ok
+test parser::tests::qsl_extension_form_and_constant_folding ... ok
+test parser::tests::rejects_invalid_tag_and_missing_bracket ... ok
+test parser_util::tests::block_offsets_are_absolute ... ok
+test parser_util::tests::inclusive_range_bits ... ok
+test parser_util::tests::overflow_checks ... ok
+test parser_util::tests::parser_no_longer_maps_u32_to_u64 ... ok
+test qps::tests::default_quantum_is_sixteen ... ok
+test qps::tests::prediction_is_separately_selected ... ok
+test qps::tests::quant_alias_and_raw_fallback_are_explicit ... ok
+test qps::tests::required_only_qps_is_not_a_predictor ... ok
+test qps_bytes::tests::malformed_headers_widths_lengths_and_values_are_rejected ... ok
+test qps_bytes::tests::portable_and_cpu_kernels_are_identical ... ok
+test qps_bytes::tests::mutated_frames_never_panic_and_never_return_truncated_data ... ok
+test qps_bytes::tests::strings_arrays_and_high_bases_are_exact ... ok
+test rt::tests::leases_are_exclusive_and_exhaustion_is_recoverable ... ok
+test schema_macro::tests::cycles_collisions_group_presence_and_expanded_order_are_errors ... ok
+test schema_macro::tests::nested_forward_and_repeated_macros_flatten_with_fresh_tags ... ok
+test qps_bytes::tests::all_quantums_restore_all_byte_values_and_tails ... ok
+test schema_macro::tests::nested_lifetime_modes_are_checked_after_expansion ... ok
+test static_index::tests::bit_capacity_and_unsupported_layouts_are_explicit ... ok
+test static_index::tests::collisions_and_zero_presence_are_counted ... ok
+test schema_macro::tests::shared_empty_macro_dag_is_expanded_once_per_definition ... ok
+test static_index::tests::exact_states_including_empty_are_exhaustive ... ok
+test strings::budget_probe_tests::long_uniform_prefix_with_mixed_tail_uses_fast_raw_fallback ... ok
+test strings::guard_validation_tests::checked_guard_matches_std_at_vector_boundaries_and_invalid_suffixes ... ok
+test strings::native_header_tests::native_headers_match_compatible_frames_at_every_width_boundary ... ok
+test strings::tests::exact_reconstruction_and_nonexpansion_for_every_length ... ok
+test strings::tests::adversarial_prefixes_controls_and_long_match_boundaries_roundtrip ... ok
+test strings::tests::repeated_bytes_really_use_backward_matches ... ok
+test strings::tests::fixed_utf8_frames_always_fit_the_original_array ... ok
+test strings::tests::utf8_and_control_bytes_have_no_reserved_literal_collisions ... ok
+test strings::uniform_bulk_tests::bulk_uniform_tokens_match_the_existing_wire_at_tail_boundaries ... ok
+test types::tests::widths ... ok
+test static_index::tests::exact_quantums_and_rejected_derivatives ... ok
+test validation::tests::budgets_fail_on_sum_and_declared_lengths_before_data_access ... ok
+test validation::tests::expanded_runs_check_destination_and_arithmetic_before_advancing ... ok
+test validation::tests::invalid_input_has_no_pointer_access_or_panic ... ok
+test validation::tests::lz_budget_charges_expansion_instead_of_the_forged_stored_length ... ok
+test validation::tests::native_bit_windows_match_a_bit_oracle_at_every_offset_and_width ... ok
+test rt::tests::concurrent_leases_keep_bytes_until_drop ... ok
+
+test result: ok. 78 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.38s
+
+     Running unittests src\bin\qsl-analyze.rs (.optimization/modernization-public-target\debug\deps\qsl_analyze-08975e8ec6630d1f.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\native.rs (.optimization/modernization-public-target\debug\deps\native-3c62a86d1f94db65.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\qps_bytes_vectors.rs (.optimization/modernization-public-target\debug\deps\qps_bytes_vectors-26c7f4910d6c9289.exe)
+
+running 2 tests
+test every_quantum_preserves_high_constant_base ... ok
+test qps_byte_frame_has_unquantized_length_and_exact_group_words ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\schema_hash.rs (.optimization/modernization-public-target\debug\deps\schema_hash-3ff732a1da4478a2.exe)
+
+running 11 tests
+test canonical_v1_golden_hashes_are_stable_for_both_algorithms ... ok
+test codegen_policies_and_initializers_do_not_change_hashes ... ok
+test constants_are_hashed_after_evaluation_not_by_identifier ... ok
+test changes_to_data_domains_order_and_wire_modes_change_both_hashes ... ok
+test descriptor_has_explicit_version_domain_and_little_endian_lengths ... ok
+test opaque_custom_codec_is_never_claimed_complete ... ok
+test deq_hash_selection_is_validated_and_merged_independently ... ok
+test qps_aliases_are_canonical_and_quantums_are_distinct ... ok
+test strict_names_and_light_wire_identity_are_separate ... ok
+test tag_dispatch_preserves_default_identity_and_prediction_is_distinct ... ok
+test native_bridge_agrees_with_generation_across_processes_and_rejects_duplicate_config ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+   Doc-tests qsl
+
+running 2 tests
+test src\lib.rs - (line 46) ... ignored
+test src\lib.rs - (line 56) ... ignored
+
+test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
