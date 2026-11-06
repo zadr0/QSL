@@ -1,0 +1,7 @@
+{
+  "before_sha256": "a61bef05339fc82102ec980b03830b0e3e47001e6e5e790286c4a27bd3138d10",
+  "after_sha256": "a61bef05339fc82102ec980b03830b0e3e47001e6e5e790286c4a27bd3138d10",
+  "byte_identical": true,
+  "fixture": "qsl/tests/modernization",
+  "claim": "Compiler restructuring does not change the complete fixture generated Rust. No runtime performance claim."
+}

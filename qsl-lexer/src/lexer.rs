@@ -1,0 +1,261 @@
+//! Borrowed QSL/DEQ lexical scanning; independent of schemas and Rust emission.
+use std::fmt;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ParseError {
+    pub offset: usize,
+    pub message: String,
+}
+
+impl fmt::Display for ParseError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "QSL at byte {}: {}", self.offset, self.message)
+    }
+}
+impl std::error::Error for ParseError {}
+
+impl ParseError {
+    /// Byte offsets are suitable for the existing `qsl_error` source highlighter.
+    pub fn span(&self) -> (usize, usize) {
+        (self.offset, self.offset.saturating_add(1))
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct Lexer<'a> {
+    pub(crate) source: &'a str,
+    pub(crate) pos: usize,
+}
+
+impl<'a> Lexer<'a> {
+    pub fn new(source: &'a str) -> Self {
+        Self { source, pos: 0 }
+    }
+    pub(crate) fn bytes(&self) -> &[u8] {
+        self.source.as_bytes()
+    }
+    pub(crate) fn error(&self, message: impl Into<String>) -> ParseError {
+        ParseError {
+            offset: self.pos,
+            message: message.into(),
+        }
+    }
+    pub(crate) fn skip_trivia(&mut self) -> Result<(), ParseError> {
+        loop {
+            while self.pos < self.bytes().len() && self.bytes()[self.pos].is_ascii_whitespace() {
+                self.pos += 1;
+            }
+            let rest = &self.source[self.pos..];
+            if rest.starts_with("//") {
+                self.pos += rest.find('\n').unwrap_or(rest.len());
+            } else if let Some(comment) = rest.strip_prefix("/*") {
+                let end = comment
+                    .find("*/")
+                    .ok_or_else(|| self.error("unclosed comment"))?;
+                self.pos += end + 4;
+            } else {
+                return Ok(());
+            }
+        }
+    }
+    pub(crate) fn eat(&mut self, token: &str) -> Result<bool, ParseError> {
+        self.skip_trivia()?;
+        if self.source[self.pos..].starts_with(token) {
+            self.pos += token.len();
+            Ok(true)
+        } else {
+            Ok(false)
+        }
+    }
+    pub(crate) fn expect(&mut self, token: &str) -> Result<(), ParseError> {
+        if self.eat(token)? {
+            Ok(())
+        } else {
+            Err(self.error(format!("expected `{token}`")))
+        }
+    }
+    pub(crate) fn ident(&mut self) -> Result<&'a str, ParseError> {
+        self.skip_trivia()?;
+        let start = self.pos;
+        let b = self.source.as_bytes();
+        if b.get(start)
+            .is_none_or(|c| !c.is_ascii_alphabetic() && *c != b'_')
+        {
+            return Err(self.error("expected identifier"));
+        }
+        self.pos += 1;
+        while self.pos < b.len() && (b[self.pos].is_ascii_alphanumeric() || b[self.pos] == b'_') {
+            self.pos += 1;
+        }
+        Ok(&self.source[start..self.pos])
+    }
+    pub(crate) fn eof(&mut self) -> Result<bool, ParseError> {
+        self.skip_trivia()?;
+        Ok(self.pos == self.bytes().len())
+    }
+    pub(crate) fn number(&mut self) -> Result<i128, ParseError> {
+        self.skip_trivia()?;
+        let b = self.source.as_bytes();
+        let start = self.pos;
+        let radix = if b.get(start) == Some(&b'0')
+            && b.get(start + 1).is_some_and(|x| *x == b'x' || *x == b'X')
+        {
+            self.pos += 2;
+            16
+        } else if b.get(start) == Some(&b'0')
+            && b.get(start + 1).is_some_and(|x| *x == b'b' || *x == b'B')
+        {
+            self.pos += 2;
+            2
+        } else {
+            10
+        };
+        let digit_start = self.pos;
+        let mut result = 0i128;
+        while let Some(&ch) = b.get(self.pos) {
+            if ch == b'_' {
+                self.pos += 1;
+                continue;
+            }
+            let digit = match ch {
+                b'0'..=b'9' => ch - b'0',
+                b'a'..=b'f' => ch - b'a' + 10,
+                b'A'..=b'F' => ch - b'A' + 10,
+                _ => break,
+            };
+            if digit as u32 >= radix {
+                break;
+            }
+            result = result
+                .checked_mul(radix as i128)
+                .and_then(|v| v.checked_add(digit as i128))
+                .ok_or_else(|| self.error("integer overflow"))?;
+            self.pos += 1;
+        }
+        if self.pos == digit_start
+            || self.source[digit_start..self.pos]
+                .bytes()
+                .all(|b| b == b'_')
+        {
+            return Err(self.error("expected numeric literal"));
+        }
+        Ok(result)
+    }
+}
+
+/// A borrowed lexical token. Spans use source byte offsets.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Token<'a> {
+    pub kind: TokenKind,
+    pub text: &'a str,
+    pub span: std::ops::Range<usize>,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum TokenKind {
+    Identifier,
+    Integer(i128),
+    Symbol,
+}
+impl<'a> Lexer<'a> {
+    /// Current source byte offset. No Rust code is generated by the lexer.
+    pub fn byte_offset(&self) -> usize {
+        self.pos
+    }
+    pub fn next_token(&mut self) -> Result<Option<Token<'a>>, ParseError> {
+        self.skip_trivia()?;
+        let start = self.pos;
+        let Some(&first) = self.bytes().get(start) else {
+            return Ok(None);
+        };
+        let kind = if first.is_ascii_alphabetic() || first == b'_' {
+            self.ident()?;
+            TokenKind::Identifier
+        } else if first.is_ascii_digit() {
+            TokenKind::Integer(self.number()?)
+        } else if self.source[start..].starts_with("..") {
+            self.pos += 2;
+            TokenKind::Symbol
+        } else if b"&[]{}():,;?\"|=#!+-*/%<>.".contains(&first) {
+            self.pos += 1;
+            TokenKind::Symbol
+        } else {
+            return Err(self.error("unexpected character"));
+        };
+        Ok(Some(Token {
+            kind,
+            text: &self.source[start..self.pos],
+            span: start..self.pos,
+        }))
+    }
+}
+impl<'a> Iterator for Lexer<'a> {
+    type Item = Result<Token<'a>, ParseError>;
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.next_token() {
+            Ok(Some(token)) => Some(Ok(token)),
+            Ok(None) => None,
+            Err(error) => {
+                self.pos = self.source.len();
+                Some(Err(error))
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn borrowed_tokens_keep_absolute_byte_spans_and_longest_symbols() {
+        let source = "/* Привет */ &User { u8(1..100) value; // tail\n }";
+        let tokens = Lexer::new(source).collect::<Result<Vec<_>, _>>().unwrap();
+        assert_eq!(
+            tokens.iter().map(|t| t.text).collect::<Vec<_>>(),
+            ["&", "User", "{", "u8", "(", "1", "..", "100", ")", "value", ";", "}"]
+        );
+        for token in &tokens {
+            assert_eq!(&source[token.span.clone()], token.text);
+            assert_eq!(token.text.as_ptr(), source[token.span.start..].as_ptr());
+        }
+        assert_eq!(tokens[0].span.start, source.find('&').unwrap());
+        assert_eq!(tokens[5].kind, TokenKind::Integer(1));
+        assert_eq!(tokens[7].kind, TokenKind::Integer(100));
+    }
+    #[test]
+    fn constants_and_region_delimiters_are_lexical_data() {
+        let source =
+            "!define N: usize = 0x10 + 0b10 * 1_024; #region(aggressive_transmutate = \"Meta\");";
+        let tokens = Lexer::new(source).collect::<Result<Vec<_>, _>>().unwrap();
+        assert_eq!(
+            tokens
+                .iter()
+                .filter_map(|t| match t.kind {
+                    TokenKind::Integer(n) => Some(n),
+                    _ => None,
+                })
+                .collect::<Vec<_>>(),
+            [16, 2, 1024]
+        );
+        assert_eq!(tokens.iter().filter(|t| t.text == "\"").count(), 2);
+        assert!(tokens
+            .iter()
+            .any(|t| t.text == "Meta" && t.kind == TokenKind::Identifier));
+    }
+    #[test]
+    fn errors_preserve_offsets_and_stop_iteration() {
+        for source in [
+            "/* unclosed",
+            "0x_",
+            "@",
+            "170141183460469231731687303715884105728",
+        ] {
+            let mut lexer = Lexer::new(source);
+            let error = lexer.next().unwrap().unwrap_err();
+            assert!(error.offset <= source.len());
+            assert!(lexer.next().is_none());
+        }
+        let mut lexer = Lexer::new(" ");
+        assert!(lexer.next_token().unwrap().is_none());
+        assert_eq!(lexer.byte_offset(), 1);
+    }
+}

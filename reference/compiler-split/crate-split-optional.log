@@ -1,0 +1,26 @@
+     Locking 2 packages to latest compatible versions
+      Adding qsl-interpreter v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\qsl-interpreter)
+      Adding qsl-lexer v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\qsl-lexer)
+   Compiling qsl-lexer v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\qsl-lexer)
+   Compiling qsl-interpreter v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\qsl-interpreter)
+   Compiling qsl v0.1.1 (C:\Users\Guild\Desktop\dev-qsl\qsl)
+   Compiling qsl-optional-modes-control v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\qsl\tests\optional-modes)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.88s
+     Running unittests lib.rs (.optimization/modernization-optional-target\debug\deps\qsl_optional_modes_control-3cef1058fd751373.exe)
+
+running 6 tests
+test tests::descriptor_dispatch_and_scalar_qps_remain_exact ... ok
+test tests::fallback_directory_borrowed_empty_and_custom_fields ... ok
+test tests::old_combined_numeric_bytes_and_hashes_are_preserved ... ok
+test tests::strings_and_ambiguous_lengths_restore_and_match_old_format ... ok
+test tests::tag_table_uses_schema_tags_and_preserves_default_bytes ... ok
+test tests::checked_dispatch_never_panics_on_corrupt_input ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+   Doc-tests qsl_optional_modes_control
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

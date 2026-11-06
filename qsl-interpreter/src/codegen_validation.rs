@@ -45,7 +45,7 @@ pub(super) fn methods(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     values(schema, out)?;
     checked_codegen::callbacks(schema, out)?;
     body(schema, out, false)?;
-    if schema.flags & crate::FLAG_SAFETY != 0 && !schema.options.native_overlay {
+    if schema.flags & crate::FLAG_SAFETY != 0 && !schema.options.native_overlay() {
         body(schema, out, true)?;
     }
     finish(schema, out)

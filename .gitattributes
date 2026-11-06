@@ -40,3 +40,15 @@ docs/archive/before-modernization-2026-11-06/** -text whitespace=-blank-at-eol,-
 reference/crates-release-0.1.0/** -text whitespace=cr-at-eol,-blank-at-eof
 
 reference/crates-release-0.1.1/** -text whitespace=cr-at-eol,-blank-at-eof
+
+reference/frontend-refactor/** -text whitespace=cr-at-eol,-blank-at-eof
+
+qsl-lexer/** -text whitespace=cr-at-eol
+
+qsl-interpreter/** -text whitespace=cr-at-eol
+
+examples/compiler-pipeline/** -text whitespace=cr-at-eol
+
+reference/compiler-split/** -text whitespace=cr-at-eol,-blank-at-eof
+
+reference/crates-release-0.1.2/** -text whitespace=cr-at-eol,-blank-at-eof

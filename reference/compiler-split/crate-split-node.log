@@ -1,0 +1,40 @@
+✔ RU/EN catalogs translate diagnostics, preserving technical tokens (3.859ms)
+✔ native wire layout distinguishes fixed/dynamic offsets and never invents sizeof (211.2165ms)
+✔ LSP ru: inlays, compact field hover, outline, completions and live diagnostics (473.8609ms)
+✔ LSP en: inlays, compact field hover, outline, completions and live diagnostics (357.9432ms)
+✔ LSP commands open complete event/layout tables and actual generated Rust (302.5012ms)
+✔ LSP partial edits and constant definition navigation use UTF-16 positions (212.0336ms)
+✔ macro field hover includes every expanded field instead of only its first child (31.9051ms)
+✔ whole-payload QPS is separate from scalar layout and emits a single-u8 warning (30.3965ms)
+✔ native schema hashes: names, storage, config and layout inspector (95.9841ms)
+✔ native modernization: strict inline limits, object memory and exact register windows (24.739ms)
+✔ native recovery keeps valid schemas visible beside multiple errors (24.4512ms)
+✔ QPS mixes only scalar prefixes and always leaves lengths native (46.0219ms)
+✔ native Rust regions accept primitive arrays and reject incompatible repr (46.5533ms)
+✔ DEQ RT config and invalid limits (3.4836ms)
+✔ optional tail constraint and advisory wire migration (1.3908ms)
+✔ exact quantum plans, pool bounds, inline modes (5.3182ms)
+✔ compression and field modifiers are retained (1.1217ms)
+✔ macro marking belongs to Rust declarations (0.4223ms)
+✔ an old or incompatible native bridge leaves a labelled advisory plan (82.9057ms)
+✔ opt_table dispatch is independent of length prediction and legacy directories (0.6809ms)
+✔ length graph distinguishes equal scalars and forced string presence (2.1931ms)
+✔ exact numerical payload plans retain both operands and show raw fallback (1.6223ms)
+✔ native payload and static graph plans match the generator (142.3723ms)
+✔ native generator plans agree with advisory quantum analysis (303.6506ms)
+✔ native analysis uses unsaved DEQ values and rejects invalid config (135.9219ms)
+✔ native editor expands nested macros from unsaved neighboring files (176.3218ms)
+✔ LSP stdio: diagnostics, hover and optional-tail quickfix (143.0185ms)
+✔ QPS is operand compression and does not require optional fields (0.8166ms)
+✔ native QPS expands the screenshot's Rust template before optional analysis (115.0615ms)
+✔ schema hash config validation and bilingual completions (1.2236ms)
+✔ checked deserialization is opt-in and maximum data config is bounded (0.4171ms)
+✔ native and advisory distinguish tag-only and combined optional modes (142.4046ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1976.5556

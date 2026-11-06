@@ -1,0 +1,24 @@
+[package]
+name = "qsl-interpreter"
+version = "0.1.0"
+description = "Rust code generation and build-script integration for QSL schemas."
+edition = "2021"
+rust-version = "1.98"
+license = "MIT"
+authors = ["Arsa"]
+repository = "https://github.com/zadr0/QSL"
+documentation = "https://docs.rs/qsl-interpreter"
+publish = ["crates-io"]
+readme = "README.md"
+keywords = ["serialization", "binary", "schema", "codegen"]
+categories = ["encoding"]
+include = ["src/**", "tests/**", "Cargo.toml", "Cargo.lock", "README.md", "LICENSE"]
+
+[package.metadata.docs.rs]
+all-features = true
+
+[features]
+default = []
+rust-macros = ["qsl-lexer/rust-macros"]
+[dependencies]
+qsl-lexer = { version = "=0.1.0", path = "../qsl-lexer" }

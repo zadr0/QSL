@@ -3,7 +3,7 @@
 //! Heap restoration is fallible; trusted pointer APIs remain separate.
 use crate::{QslError, QslResult};
 
-pub const DEFAULT_MAX_DATA_SIZE: usize = 65535;
+pub use qsl_lexer::config::DEFAULT_MAX_DATA_SIZE;
 
 pub fn check_size(size: usize, maximum: usize) -> QslResult<()> {
     if size > maximum || size > isize::MAX as usize {

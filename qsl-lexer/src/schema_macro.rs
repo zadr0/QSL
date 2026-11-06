@@ -274,13 +274,6 @@ mod tests {
                 ("extra", 5)
             ]
         );
-        let mut gen = QslInterpreter::new();
-        gen.generate(&schemas).unwrap();
-        let rust = String::from_utf8(gen.output).unwrap();
-        assert!(rust.contains("pub struct Meta"));
-        assert!(rust.contains("pub struct Base"));
-        assert!(rust.contains("pub first_base_id: u64"));
-        assert!(!rust.contains("pub first: Meta"));
     }
     #[test]
     fn cycles_collisions_group_presence_and_expanded_order_are_errors() {

@@ -21,10 +21,10 @@ QSL рассчитан на внутренние протоколы, IPC, тел
 
 ```toml
 [dependencies]
-qsl = "=0.1.1"
+qsl = "=0.1.2"
 
 [build-dependencies]
-qsl = "=0.1.1"
+qsl = "=0.1.2"
 ```
 
 ### 2. user.qsl

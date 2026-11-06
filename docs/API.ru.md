@@ -7,7 +7,7 @@ Trusted trait-методы Serializable::serialize / BorrowSerializable::seriali
 
 [English](API.en.md) · [Архитектура](architecture.ru.md)
 
-Найдено 625 явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Видимость feature native/Windows и rust-macros сохраняется; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из [manifest](../reference/optional-modes-source-manifest.json). Исходники и Cargo-манифест крейта находятся в qsl.
+Исторический индекс до разделения крейтов компилятора: 625 публичных объявлений и сигнатур trait. Физические пути и номера строк ниже относятся к тому снимку. Новые крейты и сборщик описаны в [актуальной архитектуре](architecture.ru.md). Это source-index, а не отражение всех платформенных export-символов. Видимость feature native/Windows и rust-macros сохраняется; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из [manifest](../reference/optional-modes-source-manifest.json). Исходники и Cargo-манифест крейта находятся в qsl.
 
 ## qsl/macros/src/lib.rs
 

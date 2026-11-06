@@ -6,7 +6,7 @@ Current implementation: typed exact-size register group reads (u8/u16/u32/u64/u1
 
 ## Evidence and scope
 
-- Windows 11 x86-64: 85 core unit tests, 10 native tests, 2 byte-QPS vectors, 12 schema-hash tests and 2 compile-fail documentation tests passed.
+- Windows 11 x86-64: 91 core unit tests, 10 native tests, 2 byte-QPS vectors, 12 schema-hash tests and 2 compile-fail documentation tests passed.
 - Modernization contracts: 33 tests and 5 compile-fail checks passed in debug and release. Includes protected-page 9-byte access, no private QPS tail, no-allocation checked inline read, malformed frames, native layout/UTF-8, nested regions, strict large-buffer fallbacks, cached-frame data limits, padding boundaries before neighboring fields, unsafe trusted-writer contracts, always-present unchecked native/region APIs, and an instrumented proof that unchecked regions bypass validators.
 - Six optional-mode compatibility tests pass against preserved before.rs golden code. Numeric/UTF-8 combined wire bytes and hash identities are retained.
 - Four example tests and all seven runnable examples pass. The RT example demonstrates blocking and resumption, not PoolExhausted from serialize().
@@ -51,3 +51,27 @@ and build dependencies, and release links in both HTML entry points. Recorded
 measurements retain their original sources. The crate archive was built with
 all features; the quick start and full-feature core tests pass. Local links in
 the generated guide pages and the language of the packaged README were checked.
+
+
+## Compiler crates and shared builder (development sources)
+
+qsl-lexer owns scanning, parsing, schema collection and shared analysis.
+qsl-interpreter consumes the collection and performs Rust-target lowering.
+qsl retains physical runtime operations and compatibility re-exports.
+The frontend has no dependency on the runtime or either backend.
+
+QslSchemaBuilder adapts the prototype's collection idea to current QSL/DEQ.
+SchemaBackend has associated output/error types; InterpreterBuilderExt selects
+Rust generation. AnalyzedModule aliases the same collection. Reuse with a
+second test backend and after a Rust-target failure is tested. LLVM is planned,
+not implemented; Rust custom codecs require explicit per-target ABI support.
+
+Verification: 42 frontend unit tests, 19 Rust-backend unit tests, 37 runtime unit
+tests, 24 runtime integration tests, 33 contract tests plus 5 compile-fail cases,
+6 optional-mode tests and 32 editor tests pass. Crate doc tests and the separate
+compiler-pipeline example pass. Clippy for all three crates passes with warnings
+denied. Exact generated-source equivalence is recorded under
+reference/compiler-split/generation-equivalence.json. The updated source
+manifest covers all three crates. No new benchmark or speedup claim is added.
+The release candidate is qsl 0.1.2 with qsl-lexer/qsl-interpreter 0.1.0.
+Registry publication and package-consumer checks are recorded separately.

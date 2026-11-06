@@ -1,155 +1,18 @@
 //! QSL source parser. Expensive work (ranges, constants, flags) happens at build time.
 //! The public `QslSchema`/`QslField` data model is not modified.
 
+pub(crate) use crate::lexer::Lexer as Cursor;
+pub use crate::lexer::ParseError;
 use crate::{
     QslField, QslSchema, QslType, FLAG_ALIGNMENT, FLAG_COMPACT, FLAG_FIELD_BORROW, FLAG_INLINE,
     FLAG_INLINE_ALWAYS, FLAG_INLINE_NEVER, FLAG_LIFETIME, FLAG_OPTIONAL_BITMAP, FLAG_OPT_TABLE,
     FLAG_PREDICT_SEQ, FLAG_SAFETY, FLAG_STATE_BITS, STATE_BITS_QUANTUM_SHIFT,
 };
 use std::collections::HashMap;
-use std::fmt;
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ParseError {
-    pub offset: usize,
-    pub message: String,
-}
-
-impl fmt::Display for ParseError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "QSL at byte {}: {}", self.offset, self.message)
-    }
-}
-impl std::error::Error for ParseError {}
-
-impl ParseError {
-    /// Byte offsets are suitable for the existing `qsl_error` source highlighter.
-    pub fn span(&self) -> (usize, usize) {
-        (self.offset, self.offset.saturating_add(1))
-    }
-}
-
-pub(crate) struct Cursor<'a> {
-    pub(crate) source: &'a str,
-    pub(crate) pos: usize,
-}
 
 impl<'a> Cursor<'a> {
-    pub(crate) fn new(source: &'a str) -> Self {
-        Self { source, pos: 0 }
-    }
-    fn bytes(&self) -> &[u8] {
-        self.source.as_bytes()
-    }
-    pub(crate) fn error(&self, message: impl Into<String>) -> ParseError {
-        ParseError {
-            offset: self.pos,
-            message: message.into(),
-        }
-    }
-    pub(crate) fn skip(&mut self) -> Result<(), ParseError> {
-        loop {
-            while self.pos < self.bytes().len() && self.bytes()[self.pos].is_ascii_whitespace() {
-                self.pos += 1;
-            }
-            let rest = &self.source[self.pos..];
-            if rest.starts_with("//") {
-                self.pos += rest.find('\n').unwrap_or(rest.len());
-            } else if let Some(comment) = rest.strip_prefix("/*") {
-                let end = comment
-                    .find("*/")
-                    .ok_or_else(|| self.error("unclosed comment"))?;
-                self.pos += end + 4;
-            } else {
-                return Ok(());
-            }
-        }
-    }
-    pub(crate) fn eat(&mut self, token: &str) -> Result<bool, ParseError> {
-        self.skip()?;
-        if self.source[self.pos..].starts_with(token) {
-            self.pos += token.len();
-            Ok(true)
-        } else {
-            Ok(false)
-        }
-    }
-    pub(crate) fn expect(&mut self, token: &str) -> Result<(), ParseError> {
-        if self.eat(token)? {
-            Ok(())
-        } else {
-            Err(self.error(format!("expected `{token}`")))
-        }
-    }
-    pub(crate) fn ident(&mut self) -> Result<&'a str, ParseError> {
-        self.skip()?;
-        let start = self.pos;
-        let b = self.source.as_bytes();
-        if b.get(start)
-            .is_none_or(|c| !c.is_ascii_alphabetic() && *c != b'_')
-        {
-            return Err(self.error("expected identifier"));
-        }
-        self.pos += 1;
-        while self.pos < b.len() && (b[self.pos].is_ascii_alphanumeric() || b[self.pos] == b'_') {
-            self.pos += 1;
-        }
-        Ok(&self.source[start..self.pos])
-    }
-    pub(crate) fn eof(&mut self) -> Result<bool, ParseError> {
-        self.skip()?;
-        Ok(self.pos == self.bytes().len())
-    }
-    fn number(&mut self) -> Result<i128, ParseError> {
-        self.skip()?;
-        let b = self.source.as_bytes();
-        let start = self.pos;
-        let radix = if b.get(start) == Some(&b'0')
-            && b.get(start + 1).is_some_and(|x| *x == b'x' || *x == b'X')
-        {
-            self.pos += 2;
-            16
-        } else if b.get(start) == Some(&b'0')
-            && b.get(start + 1).is_some_and(|x| *x == b'b' || *x == b'B')
-        {
-            self.pos += 2;
-            2
-        } else {
-            10
-        };
-        let digit_start = self.pos;
-        let mut result = 0i128;
-        while let Some(&ch) = b.get(self.pos) {
-            if ch == b'_' {
-                self.pos += 1;
-                continue;
-            }
-            let digit = match ch {
-                b'0'..=b'9' => ch - b'0',
-                b'a'..=b'f' => ch - b'a' + 10,
-                b'A'..=b'F' => ch - b'A' + 10,
-                _ => break,
-            };
-            if digit as u32 >= radix {
-                break;
-            }
-            result = result
-                .checked_mul(radix as i128)
-                .and_then(|v| v.checked_add(digit as i128))
-                .ok_or_else(|| self.error("integer overflow"))?;
-            self.pos += 1;
-        }
-        if self.pos == digit_start
-            || self.source[digit_start..self.pos]
-                .bytes()
-                .all(|b| b == b'_')
-        {
-            return Err(self.error("expected numeric literal"));
-        }
-        Ok(result)
-    }
     pub(crate) fn atom(&mut self, defs: &HashMap<String, i128>) -> Result<i128, ParseError> {
-        self.skip()?;
+        self.skip_trivia()?;
         if self.eat("-")? {
             return self
                 .atom(defs)?
@@ -255,7 +118,8 @@ pub fn parse_qsl_with_constants(
         message: e.to_string(),
     })
 }
-pub(crate) fn parse_qsl_raw_with_constants(
+#[doc(hidden)]
+pub fn parse_qsl_raw_with_constants(
     source: &str,
     globals: &HashMap<String, i128>,
 ) -> Result<Vec<QslSchema>, ParseError> {
@@ -419,7 +283,7 @@ pub(crate) fn parse_qsl_raw_with_constants(
             let range = if p.eat("(")? {
                 let min = p.expr(&defs)?;
                 let max = if p.eat("..")? {
-                    p.skip()?;
+                    p.skip_trivia()?;
                     if p.source[p.pos..].starts_with(')') {
                         let top = primitive(&ty_name)
                             .and_then(|t| t.fixed_wire_size().ok().flatten())

@@ -5,9 +5,9 @@ edition = "2021"
 publish = false
 
 [dependencies]
-qsl = { version = "=0.1.1", path = "../../qsl" }
+qsl = { version = "=0.1.2", path = "../../qsl" }
 
 [build-dependencies]
-qsl = { version = "=0.1.1", path = "../../qsl" }
+qsl = { version = "=0.1.2", path = "../../qsl" }
 
 [workspace]

@@ -1,0 +1,10 @@
+[package]
+name = "qsl-compiler-pipeline"
+version = "0.0.0"
+edition = "2021"
+publish = false
+[dependencies]
+qsl = { path = "../../qsl" }
+[build-dependencies]
+qsl-interpreter = { path = "../../qsl-interpreter" }
+[workspace]

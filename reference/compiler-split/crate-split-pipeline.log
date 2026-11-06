@@ -1,0 +1,7 @@
+   Compiling qsl-lexer v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\qsl-lexer)
+   Compiling qsl-interpreter v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\qsl-interpreter)
+   Compiling qsl v0.1.1 (C:\Users\Guild\Desktop\dev-qsl\qsl)
+   Compiling qsl-compiler-pipeline v0.0.0 (C:\Users\Guild\Desktop\dev-qsl\examples\compiler-pipeline)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.39s
+     Running `.optimization/pipeline-target\debug\qsl-compiler-pipeline.exe`
+Separate compiler crates: 17 wire bytes, checked round-trip passed

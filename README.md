@@ -6,6 +6,8 @@
 
 ## Русский
 
+Рабочие исходники разделены на `qsl-lexer` и `qsl-interpreter`. Один `QslSchemaBuilder` собирает схемы; `builder.use_interpreter()` выбирает Rust-генератор через трейт. Архитектура предусматривает отдельный LLVM-компилятор. [Архитектура RU](docs/architecture.ru.md) · [Пример build.rs](examples/compiler-pipeline/). Обновление входит в qsl 0.1.2; крейты компилятора имеют версию 0.1.0.
+
 QSL — язык описания данных и генератор специализированного Rust-кода для бинарного обмена. Исходная задача — обмен заранее описанными данными. Обе стороны знают поля, порядок, диапазоны и кодеки до запуска приложения.
 
 Схема анализируется при сборке. QSL рассчитывает границы, битовые ширины, регистровые группы, таблицы и идентичность формата, затем генерирует конкретные методы. Значения и длины могут меняться в runtime; разбор самой схемы в горячий путь не входит.
@@ -14,10 +16,10 @@ QSL — язык описания данных и генератор специ�
 
 ```toml
 [dependencies]
-qsl = "=0.1.1"
+qsl = "=0.1.2"
 
 [build-dependencies]
-qsl = "=0.1.1"
+qsl = "=0.1.2"
 ```
 
 [Быстрый старт из четырёх файлов](docs/quickstart.ru.md). QSL нужен в build.rs для генерации и в приложении для исполнения.
@@ -60,6 +62,8 @@ QSL рассчитан на управляемый обмен между сог�
 
 ## English
 
+Development sources are split into `qsl-lexer` and `qsl-interpreter`. One `QslSchemaBuilder` collects schemas; `builder.use_interpreter()` selects Rust generation through a trait. A separate LLVM backend can implement the same contract. [Architecture EN](docs/architecture.en.md) · [Build-script example](examples/compiler-pipeline/). The split ships in qsl 0.1.2; the compiler crates are version 0.1.0.
+
 QSL is a data-description language and a specialized Rust code generator for binary exchange. Its original task is exchanging data described in advance. Both peers know field order, domains and codecs before application startup.
 
 At build time QSL analyzes bounds, bit widths, register groups, tables and wire identities, then emits concrete methods. Runtime values and lengths remain dynamic; schema interpretation is outside the hot path.
@@ -68,10 +72,10 @@ At build time QSL analyzes bounds, bit widths, register groups, tables and wire 
 
 ```toml
 [dependencies]
-qsl = "=0.1.1"
+qsl = "=0.1.2"
 
 [build-dependencies]
-qsl = "=0.1.1"
+qsl = "=0.1.2"
 ```
 
 [Four-file quick start](docs/quickstart.en.md). Both dependencies are required: build.rs generates the codec and the application uses it.

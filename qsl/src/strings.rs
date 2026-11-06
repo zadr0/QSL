@@ -8,11 +8,7 @@
 
 use std::{fmt, mem::MaybeUninit, ptr, slice, str};
 
-/// Strings shorter than this are copied raw, without a compression probe.
-pub const STRING_COMPRESSION_MIN_BYTES: usize = 32;
-/// Encoder policy revision; frames remain readable by the QSL-LZ v1 decoder.
-/// Pin this along with the schema when comparing bytes across encoder versions.
-pub const STRING_ENCODER_REVISION: u8 = 2;
+pub use qsl_lexer::wire::{STRING_COMPRESSION_MIN_BYTES, STRING_ENCODER_REVISION};
 const MIN_MATCH: usize = 4;
 const MAX_MATCH: usize = 131;
 
@@ -70,13 +66,7 @@ impl<const MAX: usize> InlineString<MAX> {
     /// Maximum decoded UTF-8 byte count, fixed by the schema.
     pub const MAX_BYTES: usize = MAX;
     /// Length and mode share a word: 1 byte through MAX=127, then 2 or 4.
-    pub const HEADER_BYTES: usize = if MAX <= 127 {
-        1
-    } else if MAX <= 32767 {
-        2
-    } else {
-        4
-    };
+    pub const HEADER_BYTES: usize = qsl_lexer::wire::inline_string_header_bytes(MAX);
     /// Width of each backward distance; match lengths use the control byte.
     pub const OFFSET_BYTES: usize = if MAX <= 255 { 1 } else { 2 };
 

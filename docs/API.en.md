@@ -7,7 +7,7 @@ Trusted Serializable::serialize / BorrowSerializable::serialize trait methods ar
 
 [Русский](API.ru.md) · [Architecture](architecture.en.md)
 
-625 explicitly public declarations and trait method signatures from current sources. This is a source index, not reflection of every platform export. native/Windows and rust-macros feature gates still apply; generator string literals are excluded. Paths/lines refer to the local snapshot in the [manifest](../reference/optional-modes-source-manifest.json). The crate source and Cargo manifest are under qsl.
+Historical source index before the compiler-crate split: 625 public declarations and trait signatures. Physical source paths and line numbers below belong to that snapshot; see [current compiler architecture](architecture.en.md) for the new crates and builder API. This is a source index, not reflection of every platform export. native/Windows and rust-macros feature gates still apply; generator string literals are excluded. Paths/lines refer to the local snapshot in the [manifest](../reference/optional-modes-source-manifest.json). The crate source and Cargo manifest are under qsl.
 
 ## qsl/macros/src/lib.rs
 

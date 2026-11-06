@@ -7,3 +7,9 @@
 /proofs/.lake/
 
 /examples/target/
+
+/qsl-lexer/target/
+
+/qsl-interpreter/target/
+
+/examples/compiler-pipeline/target/

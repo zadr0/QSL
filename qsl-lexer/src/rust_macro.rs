@@ -434,12 +434,6 @@ mod tests {
                 ("extra", 5)
             ]
         );
-        let mut gen = crate::QslInterpreter::new();
-        gen.generate(&s).unwrap();
-        let generated = String::from_utf8(gen.output).unwrap();
-        assert!(generated.contains("pub first_base_id: u64"));
-        assert!(!generated.contains("pub struct Meta"));
-        assert!(!generated.contains("pub first: Meta"));
         assert!(crate::parse_qsl("&Meta[macro]{u64 id;}").is_err());
     }
     #[test]

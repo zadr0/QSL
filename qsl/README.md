@@ -20,10 +20,10 @@ and build dependencies.
 
 ```toml
 [dependencies]
-qsl = "=0.1.1"
+qsl = "=0.1.2"
 
 [build-dependencies]
-qsl = "=0.1.1"
+qsl = "=0.1.2"
 ```
 
 ### 2. user.qsl
@@ -123,3 +123,24 @@ During the 0.1 series, coordinate API and wire choices explicitly.
 · [Source](https://github.com/zadr0/QSL)
 
 [MIT license](https://github.com/zadr0/QSL/blob/main/LICENSE).
+
+
+## Compiler crates in 0.1.2
+
+The compiler is separated into `qsl-lexer` (source collection and analysis) and `qsl-interpreter` (Rust generation). `qsl` retains runtime I/O and compatible public imports. The facade is released as qsl 0.1.2; the standalone compiler crates start at version 0.1.0.
+
+One `QslSchemaBuilder` owns the schemas and DEQ settings. Backends borrow this data through `SchemaBackend`; each backend owns its output and error types. Import the extension trait to choose Rust generation:
+
+```rust
+use qsl::prelude::*;
+let builder = QslSchemaBuilder::from_source("&Packet[safety]{u64 id;}")?;
+let rust = builder.use_interpreter()?;
+assert!(String::from_utf8(rust)?.contains("pub struct Packet"));
+# Ok::<(), Box<dyn std::error::Error>>(())
+```
+
+For files, `build_qsl_schem("schemas")?` collects sorted QSL/DEQ files without generating code. `QslSchemaBuilder::from_files` accepts explicit paths; `from_files_with_rust` adds explicit Rust template paths. `use_interpenter()` is a spelling-compatible alias.
+
+The shared schema collection stays unchanged. Rust storage and overlay lowering belong to the Rust backend. A future LLVM crate can implement the same backend trait and add `use_llvm()` independently. LLVM generation is not implemented, and Rust-specific custom codecs require an explicit target ABI mapping.
+
+Existing `QslInterpreter::generate`, `generate_parsed`, `prepare_schemas`, `generate_prepared`, `build_qsl_files`, error types and import paths remain available. `AnalyzedModule` names the same collection as `QslSchemaBuilder`. The parser shares `Lexer`'s scanner, and `PreparedModule` describes Rust-target preparation.

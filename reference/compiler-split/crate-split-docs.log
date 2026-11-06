@@ -1,0 +1,15 @@
+   Compiling qsl-lexer v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\qsl-lexer)
+   Compiling qsl-interpreter v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\qsl-interpreter)
+   Compiling qsl v0.1.1 (C:\Users\Guild\Desktop\dev-qsl\qsl)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.49s
+   Doc-tests qsl
+
+running 5 tests
+test src\lib.rs - (line 40) ... ignored
+test src\lib.rs - (line 50) ... ignored
+test src\native\memory.rs - native::memory::NativeRegion (line 43) - compile fail ... ok
+test src\native\memory.rs - native::memory::NativeRegion (line 51) - compile fail ... ok
+test src\lib.rs - (line 134) ... ok
+
+test result: ok. 3 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.67s
+
