@@ -3,7 +3,15 @@ name = "qsl-macros-impl"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-publish = false
+rust-version = "1.98"
+authors = ["Arsa"]
+description = "Procedural attributes re-exported by the qsl binary schema crate."
+repository = "https://github.com/zadr0/QSL"
+readme = "README.md"
+keywords = ["qsl", "proc-macro", "serialization"]
+categories = ["development-tools::procedural-macro-helpers"]
+publish = ["crates-io"]
+include = ["src/**", "Cargo.toml", "Cargo.lock", "README.md", "LICENSE"]
 [lib]
 proc-macro = true
 

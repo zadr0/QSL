@@ -1,5 +1,7 @@
 # QSL
 
+[Краткий курс RU/EN и первый запуск](qsl/README.md)
+
 [English](README.en.md)
 
 ## Русский

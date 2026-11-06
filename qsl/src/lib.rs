@@ -1,4 +1,4 @@
-//! Deterministic, schema-driven QSL binary serialization.
+#![doc = include_str!("../README.md")]
 pub mod compat;
 pub mod deq;
 pub mod interpreter;

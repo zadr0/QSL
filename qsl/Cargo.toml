@@ -3,6 +3,19 @@ name = "qsl"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
+rust-version = "1.98"
+authors = ["Arsa"]
+description = "Schema-driven binary serialization and Rust code generation for explicit data layouts."
+repository = "https://github.com/zadr0/QSL"
+documentation = "https://docs.rs/qsl"
+readme = "README.md"
+keywords = ["serialization", "binary", "schema", "codegen", "protocol"]
+categories = ["encoding"]
+publish = ["crates-io"]
+include = ["src/**", "tests/*.rs", "Cargo.toml", "Cargo.lock", "README.md", "LICENSE", "CHANGELOG.md"]
+
+[package.metadata.docs.rs]
+all-features = true
 
 [features]
 default = []
@@ -13,7 +26,7 @@ rust-macros = ["dep:syn"]
 [dependencies]
 xxhash-rust = { version = "=0.8.15", default-features = false, features = ["xxh3"] }
 syn = { version = "=2.0.119", optional = true, default-features = false, features = ["full", "parsing"] }
-qsl-macros-impl = { path = "macros" }
+qsl-macros-impl = { version = "=0.1.0", path = "macros" }
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "=0.61.2", optional = true, features = ["Win32_Foundation", "Win32_Security", "Win32_System_Memory", "Win32_System_SystemInformation", "Win32_System_IO", "Win32_Networking_WinSock"] }

@@ -1,5 +1,7 @@
 # QSL
 
+[Short RU/EN course and first run](qsl/README.md)
+
 [Русский](README.ru.md)
 
 ## English

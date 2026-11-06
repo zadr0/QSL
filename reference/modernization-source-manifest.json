@@ -5,11 +5,11 @@
   },
   {
     "path": "qsl/Cargo.toml",
-    "sha256": "38775500b476c1a32db942c7b4ec20f83696ec45b1c80bb62a5648ded7f87797"
+    "sha256": "8ac58df59006f1b5577bf4eb04a4b4ade66fa77ef0122e6e8575dee9453f6d75"
   },
   {
     "path": "qsl/macros/Cargo.toml",
-    "sha256": "15d7fb5f8ec5744d30a0ce70964af312dbf49394d99e1cb40b6ebb0fde53bfda"
+    "sha256": "af0b640a34bea379e55b90af960178548f0013397bd2cb5aad0035aa86c88ed6"
   },
   {
     "path": "qsl/src/analysis.rs",
@@ -85,7 +85,7 @@
   },
   {
     "path": "qsl/src/lib.rs",
-    "sha256": "9761cd246b4dd16103f039d993ca343039b3bae7727e677fa809509e8dc8ba7b"
+    "sha256": "817357e5b9fc023110192c104c4fe06c87f818ab3100b8c8c1839465437099d0"
   },
   {
     "path": "qsl/src/modernization.rs",
@@ -254,5 +254,25 @@
   {
     "path": "qsl/tests/modernization/examples/native_api.rs",
     "sha256": "bb77ec307e58f545af2da930f5f4ebb778142e25f908c7653b9d5c85091782f8"
+  },
+  {
+    "path": "qsl/README.md",
+    "sha256": "614e8ff819d1232b718962373004c38b2eb8f24054a2dcceee8bc35d092af9d2"
+  },
+  {
+    "path": "qsl/LICENSE",
+    "sha256": "2935073a1e4c522237737a3b30b717c2a13d74c5f5c39724fc4cc2a2582a0db6"
+  },
+  {
+    "path": "qsl/CHANGELOG.md",
+    "sha256": "87d9ee70742afb9dcc9aa37a18c42e40323a32f943d789acdcef4924fe06e084"
+  },
+  {
+    "path": "qsl/macros/README.md",
+    "sha256": "cf6c33c71e2e010f4b0167c25edf149aad45717ce5dfdd5246dfd01bcbd9f5f4"
+  },
+  {
+    "path": "qsl/macros/LICENSE",
+    "sha256": "2935073a1e4c522237737a3b30b717c2a13d74c5f5c39724fc4cc2a2582a0db6"
   }
 ]

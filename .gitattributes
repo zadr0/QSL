@@ -35,3 +35,6 @@ qsl-bench/modernization/** -text whitespace=cr-at-eol
 qsl-bench/modernization/results/** -text whitespace=-blank-at-eol,-blank-at-eof
 reference/modernization-verification/** -text whitespace=cr-at-eol,-blank-at-eof
 docs/archive/before-modernization-2026-11-06/** -text whitespace=-blank-at-eol,-blank-at-eof
+
+# Preserve exact package-verification output, including terminal blank lines.
+reference/crates-release-0.1.0/** -text whitespace=cr-at-eol,-blank-at-eof

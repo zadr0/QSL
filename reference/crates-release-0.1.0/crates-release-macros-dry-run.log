@@ -1,0 +1,9 @@
+    Updating crates.io index
+   Packaging qsl-macros-impl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl\macros)
+    Updating crates.io index
+    Packaged 7 files, 9.0KiB (3.7KiB compressed)
+   Verifying qsl-macros-impl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl\macros)
+   Compiling qsl-macros-impl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\crates-release-target\package\qsl-macros-impl-0.1.0)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.10s
+   Uploading qsl-macros-impl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl\macros)
+warning: aborting upload due to dry run

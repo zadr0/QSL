@@ -1,0 +1,14 @@
+    Updating crates.io index
+     Locking 7 packages to latest compatible versions
+      Adding xxhash-rust v0.8.15 (available: v0.8.19)
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling xxhash-rust v0.8.15
+   Compiling syn v2.0.119
+   Compiling qsl-macros-impl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl\macros)
+   Compiling qsl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+   Compiling qsl-quickstart v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\examples\quickstart)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 30.46s
+     Running `.optimization/crates-release-target\debug\qsl-quickstart.exe`
+42: Ada (15 bytes)
