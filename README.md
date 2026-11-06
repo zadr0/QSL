@@ -85,3 +85,5 @@ Wire changes require coordinated peers. Strict and light hashes are computed dur
 [Contract and migration EN](docs/modernization-2026-11-06/MODERNIZATION.en.md) · [Complete guide](docs/guide.en.html) · [Runnable examples](examples/README.md) · [Focused measurements and charts](qsl-bench/modernization/report.html)
 
 Fresh run, 1024 UTF-8 scalars / 2048 B: String 130.38 ns, inline string 63.20 ns; the 25 ns target was not achieved. Numeric record: default 2.68 ns / 24 B, Q16 4.15 ns / 5 B. These are trusted reads without validation. The report retains 99% intervals, outliers and source snapshots. The protocol comparison remains a historical **16/100** result, not a completed full pass.
+
+Лицензия: [MIT](LICENSE).

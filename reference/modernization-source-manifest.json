@@ -5,11 +5,11 @@
   },
   {
     "path": "qsl/Cargo.toml",
-    "sha256": "8d6b2e1be9dbaeaad1adb48e85d32c061ca0792570f83c612706eb530e6c7da1"
+    "sha256": "38775500b476c1a32db942c7b4ec20f83696ec45b1c80bb62a5648ded7f87797"
   },
   {
     "path": "qsl/macros/Cargo.toml",
-    "sha256": "2e903450b92fd496091b545a71aef34a06cb27fa860915008488943bb761ea38"
+    "sha256": "15d7fb5f8ec5744d30a0ce70964af312dbf49394d99e1cb40b6ebb0fde53bfda"
   },
   {
     "path": "qsl/src/analysis.rs",
