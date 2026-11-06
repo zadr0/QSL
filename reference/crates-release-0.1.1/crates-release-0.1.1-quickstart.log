@@ -1,0 +1,5 @@
+   Compiling qsl v0.1.1 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+   Compiling qsl-quickstart v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\examples\quickstart)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 17.28s
+     Running `.optimization/crates-release-target\debug\qsl-quickstart.exe`
+42: Ada (15 bytes)

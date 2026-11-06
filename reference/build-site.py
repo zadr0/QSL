@@ -11,7 +11,7 @@ def inline(s):
  s=html.escape(s);s=re.sub(r'`([^`]+)`',r'<code>\1</code>',s);s=re.sub(r'\*\*(.+?)\*\*',r'<strong>\1</strong>',s)
  def link(m):
   href=m[2]
-  if re.search(r'(guide|features|architecture|API|performance|opt-table-control|mathematics|safety|schema-hashes|examples|optional-modes|MODERNIZATION)\.(ru|en)\.md$',href):href=href[:-3]+'.html'
+  if re.search(r'(guide|features|architecture|API|performance|opt-table-control|mathematics|safety|schema-hashes|examples|optional-modes|MODERNIZATION|quickstart)\.(ru|en)\.md$',href):href=href[:-3]+'.html'
   return '<a href="'+href+'">'+m[1]+'</a>'
  return re.sub(r'\[([^\]]+)\]\(([^)]+)\)',link,s)
 def render(source,prefix):
@@ -86,8 +86,11 @@ body=body.replace('<section id="full-guide">',modes_notice+'<section id="full-gu
 body=body.replace('<section id="full-guide">',examples_notice+'<section id="full-guide">',1)
 body=body.replace('<section id="full-guide">',notice+'<section id="full-guide">',1)
 body=body.replace('<section id="full-guide">','<section id="full-guide" class="reading-intro"><h3 data-t="guideRoute"></h3><p data-t="guideRouteText"></p>')
-modern_notice='<section class="panel"><h2>QSL · 06.11.2026</h2><p class="locale" data-locale="ru"><strong>Строгий STACK_LIMIT · однопроходное checked-чтение · native COPY/LIFETIME</strong><br>QPS — только самостоятельные числа; строки и длины не квантуются. <a href="modernization-2026-11-06/MODERNIZATION.ru.html">Новый контракт и миграция</a> · <a href="../qsl-bench/modernization/report.html">4 свежих Criterion-случая и кардиограммы</a>. Старые таблицы ниже сохраняют свои снимки.</p><p class="locale" data-locale="en" hidden><strong>Strict STACK_LIMIT · single-pass checked reads · native COPY/LIFETIME</strong><br>QPS packs scalar numbers only; strings and lengths are not quantized. <a href="modernization-2026-11-06/MODERNIZATION.en.html">Current contract and migration</a> · <a href="../qsl-bench/modernization/report.html">4 fresh Criterion cases and sample traces</a>. Historical tables below retain their snapshots.</p></section>'
+modern_notice='<section class="panel"><h2>QSL · 06.11.2026</h2><p class="locale" data-locale="ru"><strong>Строгий STACK_LIMIT · однопроходное checked-чтение · native COPY/LIFETIME</strong><br>QPS — только самостоятельные числа; строки и длины не квантуются. <a href="modernization-2026-11-06/MODERNIZATION.ru.html">Новый контракт и миграция</a> · <a href="../qsl-bench/modernization/report.html">4 Criterion-случая от 6 ноября и кардиограммы</a>. Старые таблицы ниже сохраняют свои снимки.</p><p class="locale" data-locale="en" hidden><strong>Strict STACK_LIMIT · single-pass checked reads · native COPY/LIFETIME</strong><br>QPS packs scalar numbers only; strings and lengths are not quantized. <a href="modernization-2026-11-06/MODERNIZATION.en.html">Current contract and migration</a> · <a href="../qsl-bench/modernization/report.html">4 Criterion cases from November 6 and sample traces</a>. Historical tables below retain their snapshots.</p></section>'
 body=body.replace('<section id="overview"',modern_notice+'<section id="overview"',1)
+release_notice='<section class="panel"><h2>QSL 0.1.1</h2><p class="locale" data-locale="ru">Пакет на crates.io · Rust 1.98+. <a href="quickstart.ru.html">Установка и первый запуск</a> · <a href="https://crates.io/crates/qsl">crates.io</a>. Документация пакета — на английском, руководство проекта доступно на RU/EN.</p><p class="locale" data-locale="en" hidden>Available on crates.io · Rust 1.98+. <a href="quickstart.en.html">Installation and first run</a> · <a href="https://crates.io/crates/qsl">crates.io</a>. Package documentation is English; repository guides are available in RU/EN.</p></section>'
+body=body.replace(modern_notice,release_notice+modern_notice,1)
+
 
 # Initial explanatory copy is visible even before script execution.
 body=re.sub(r'(<([a-z0-9]+)\b[^>]*\bdata-t="([^"]+)"[^>]*>)(</\2>)',lambda m:m[1]+t(m[3])+m[4],body)
@@ -98,7 +101,7 @@ page=head+body+embed('feature-data',dashboard)+embed('api-data',json.loads((docs
 (docs/'index.html').write_text(page,encoding='utf-8',newline='\n')
 css=(docs/'assets/full.css').read_text();js=(docs/'assets/full.js').read_text();(docs/'QSL_standalone_RU_EN.html').write_text(page.replace('<link rel="stylesheet" href="assets/full.css">','<style>'+css+'</style>').replace('<script src="assets/full.js"></script>','<script>'+js+'</script>').replace('<link rel="stylesheet" href="assets/explorers.css">','<style>'+(docs/'assets/explorers.css').read_text()+'</style>').replace('<script src="assets/explorers.js"></script>','<script>'+(docs/'assets/explorers.js').read_text()+'</script>'),encoding='utf-8',newline='\n')
 for lang in ['ru','en']:
- for name in ['guide','features','architecture','API','performance','opt-table-control','mathematics','safety','schema-hashes','examples','optional-modes']:
+ for name in ['guide','features','architecture','API','performance','opt-table-control','mathematics','safety','schema-hashes','examples','optional-modes','quickstart']:
   p=docs/f'{name}.{lang}.md'
   if not p.exists():continue
   content,_=render(p.read_text(encoding='utf-8'),name+'-'+lang);content=content.replace('<h2','<h1',1).replace('</h2>','</h1>',1);H=head.replace('lang="ru"',f'lang="{lang}"').replace('<title>QSL · '+t('project')+'</title>',f'<title>QSL · {name} · {lang.upper()}</title>');(docs/f'{name}.{lang}.html').write_text(H+'<main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a>'+content+'</main></body></html>',encoding='utf-8',newline='\n')

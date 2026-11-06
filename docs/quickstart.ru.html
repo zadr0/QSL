@@ -1,0 +1,45 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><title>QSL · quickstart · RU</title><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css"></head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="quickstart-ru-1">QSL: быстрый старт</h1>
+<p><a href="quickstart.ru.html">Русский</a> · <a href="quickstart.en.html">English</a></p>
+<p>QSL — язык описания данных и генератор специализированного Rust-кода для бинарного обмена. Стороны заранее согласуют поля, порядок, диапазоны, длины и кодеки. При сборке анализ схемы превращает эти условия в конкретные структуры и методы.</p>
+<p>QSL рассчитан на внутренние протоколы, IPC, телеметрию и повторяющиеся записи с известным форматом. Разработчик задаёт ограничения памяти, владение и проверку входа; приложение организует согласование версий, маршрутизацию и TLS.</p>
+<h2 id="quickstart-ru-2">Первый запуск</h2>
+<p>Нужен Rust 1.98 или новее. Релиз проверяется на Windows 11 x86-64. Создайте приложение через cargo new qsl-demo и добавьте четыре файла. В Cargo.toml сохраните секцию package, созданную Cargo. Версия qsl в зависимостях приложения и сборки должна совпадать.</p>
+<h3 id="quickstart-ru-3">1. Cargo.toml</h3>
+<pre><code>[dependencies]
+qsl = &quot;=0.1.1&quot;
+
+[build-dependencies]
+qsl = &quot;=0.1.1&quot;</code></pre>
+<h3 id="quickstart-ru-4">2. user.qsl</h3>
+<pre><code>&amp;User[safety] {
+    u64 id;
+    str(1..100) name;
+}</code></pre>
+<h3 id="quickstart-ru-5">3. build.rs</h3>
+<pre><code>fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let out = std::path::PathBuf::from(std::env::var_os(&quot;OUT_DIR&quot;).unwrap());
+    qsl::build_qsl_files(&amp;[&quot;user.qsl&quot;], &amp;[], out)?;
+    Ok(())
+}</code></pre>
+<h3 id="quickstart-ru-6">4. src/main.rs</h3>
+<pre><code>include!(concat!(env!(&quot;OUT_DIR&quot;), &quot;/qsl_gen.rs&quot;));
+
+fn main() -&gt; qsl::QslResult&lt;()&gt; {
+    let user = User {
+        id: 42,
+        name: &quot;Ada&quot;.into(),
+    };
+    let bytes = user.serialize_checked()?;
+    let restored = User::deserialize_checked(&amp;bytes)?;
+    assert_eq!((restored.id, restored.name.as_str()), (42, &quot;Ada&quot;));
+    println!(&quot;{}: {} ({} bytes)&quot;, restored.id, restored.name, bytes.len());
+    Ok(())
+}</code></pre>
+<p>Выполните cargo run. Ожидаемый вывод:</p>
+<pre><code>42: Ada (15 bytes)</code></pre>
+<p>Схема описывает u64 и String длиной 1–100 байтов UTF-8. build.rs создаёт qsl_gen.rs в OUT_DIR, приложение подключает сгенерированный тип и вызывает его проверенные методы.</p>
+<h2 id="quickstart-ru-7">Основные правила</h2>
+<ul><li>Обязательные поля располагаются перед опциональными.</li><li>Длины строк измеряются в байтах UTF-8, массивов — в элементах.</li><li>safety включает checked-чтение. Unsafe API требует корректного кадра и памяти.</li><li>MAX_DATA_SIZE по умолчанию равен 65535 B полезных данных и ограничивает входной кадр.</li><li>STACK_LIMIT — 256 B данных на встроенный буфер. Большие обычные COPY-строки и</li></ul>
+<p>  массивы используют String/Vec; фиксированному Transmutate нужен достаточный лимит.</p>
+<ul><li>Сжатый размер не доказывает длину результата: LZ проверяет каждый выходной токен.</li><li>qps упаковывает числа без потерь; строки, массивы и длины сохраняют свои кодеки.</li><li>predict_seq вычисляет индекс по длине, opt_table выбирает читателя по тегу.</li><li>Атрибуты опциональны; ограничения порядка полей обязательны.</li></ul>
+<p><a href="guide.ru.html">Полное руководство</a> · <a href="architecture.ru.html">Архитектура</a> · <a href="safety.ru.html">Проверка входа</a> · <a href="../examples/README.md">Примеры</a> · <a href="https://crates.io/crates/qsl">qsl на crates.io</a>.</p></main></body></html>

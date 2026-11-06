@@ -41,3 +41,13 @@ Ordinary generated groups, QPS prepared reads and hybrid-frame descriptors now u
 A shared checked token parser validates packed literal/offset reads, backward distances, checked decoded-length arithmetic and the actual output/schema bound before each run. Both heap and inline decoders charge actual restored bytes to the common budget before reserve or writes. Malformed first tokens now fail without heap allocation. Existing per-run decoded-size checks are retained and centralized; the packed header is never treated as proof of restored length.
 
 Adversarial tests cover variable and fixed LZ, inline/String storage, MAX+1 expansion, forged packed lengths, truncated inputs, invalid offsets and two 40000-byte strings whose combined restoration exceeds the default 65535-byte budget. Destination bytes and canaries remain unchanged on checked_into errors. Exact-limit frames still decode successfully. Invalid-frame tests invoke checked APIs only; unsafe string decoders retain their trusted-input contract. No new timing claims are made for this validation change.
+
+
+## Crates.io documentation
+
+The 0.1.1 package has an English-only README and API landing page. The repository
+has separate RU/EN quick starts, matching installation versions in application
+and build dependencies, and release links in both HTML entry points. Recorded
+measurements retain their original sources. The crate archive was built with
+all features; the quick start and full-feature core tests pass. Local links in
+the generated guide pages and the language of the packaged README were checked.

@@ -1,0 +1,6 @@
+    Blocking waiting for file lock on package cache
+   Compiling qsl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\crates-release-target\package\qsl-0.1.0)
+   Compiling qsl-registry-smoke v0.0.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\crates-release-consumer)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 22.55s
+     Running `.optimization/crates-release-target\debug\qsl-registry-smoke.exe`
+42: Ada (15 bytes)

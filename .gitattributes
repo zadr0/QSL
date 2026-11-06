@@ -38,3 +38,5 @@ docs/archive/before-modernization-2026-11-06/** -text whitespace=-blank-at-eol,-
 
 # Preserve exact package-verification output, including terminal blank lines.
 reference/crates-release-0.1.0/** -text whitespace=cr-at-eol,-blank-at-eof
+
+reference/crates-release-0.1.1/** -text whitespace=cr-at-eol,-blank-at-eof

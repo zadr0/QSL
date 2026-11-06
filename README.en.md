@@ -1,6 +1,6 @@
 # QSL
 
-[Short RU/EN course and first run](qsl/README.md)
+[English quick start](docs/quickstart.en.md) · [Russian quick start](docs/quickstart.ru.md)
 
 [Русский](README.ru.md)
 
@@ -9,6 +9,18 @@
 QSL is a data-description language and a specialized Rust code generator for binary exchange. Its original task is exchanging data described in advance. Both peers know field order, domains and codecs before application startup.
 
 At build time QSL analyzes bounds, bit widths, register groups, tables and wire identities, then emits concrete methods. Runtime values and lengths remain dynamic; schema interpretation is outside the hot path.
+
+### Installation
+
+```toml
+[dependencies]
+qsl = "=0.1.1"
+
+[build-dependencies]
+qsl = "=0.1.1"
+```
+
+[Four-file quick start](docs/quickstart.en.md). Both dependencies are required: build.rs generates the codec and the application uses it.
 
 ### Where it fits
 
@@ -44,6 +56,6 @@ Wire changes require coordinated peers. Strict and light hashes are computed dur
 
 [Contract and migration EN](docs/modernization-2026-11-06/MODERNIZATION.en.md) · [Complete guide](docs/guide.en.html) · [Runnable examples](examples/README.md) · [Focused measurements and charts](qsl-bench/modernization/report.html)
 
-Fresh run, 1024 UTF-8 scalars / 2048 B: String 130.38 ns, inline string 63.20 ns; the 25 ns target was not achieved. Numeric record: default 2.68 ns / 24 B, Q16 4.15 ns / 5 B. These are trusted reads without validation. The report retains 99% intervals, outliers and source snapshots. The protocol comparison remains a historical **16/100** result, not a completed full pass.
+Recorded November 6 runs: String 130.38 ns and inline ownership 63.20 ns for 2048 UTF-8 bytes; the 25 ns target was not met. Numerical rerun: default 2.788 ns / 24 B and Q16 4.304 ns / 5 B; no speedup was established. [Snapshots and intervals](qsl-bench/modernization/results/2026-11-06-register-width/README.md) belong to their measured sources. The protocol comparison remains a historical 16/100 result.
 
 License: [MIT](LICENSE).

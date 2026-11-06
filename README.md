@@ -1,6 +1,6 @@
 # QSL
 
-[Краткий курс RU/EN и первый запуск](qsl/README.md)
+[Быстрый старт RU](docs/quickstart.ru.md) · [Quick start EN](docs/quickstart.en.md)
 
 [Русский](#русский) · [English](#english) · [Interactive documentation](docs/index.html)
 
@@ -9,6 +9,18 @@
 QSL — язык описания данных и генератор специализированного Rust-кода для бинарного обмена. Исходная задача — обмен заранее описанными данными. Обе стороны знают поля, порядок, диапазоны и кодеки до запуска приложения.
 
 Схема анализируется при сборке. QSL рассчитывает границы, битовые ширины, регистровые группы, таблицы и идентичность формата, затем генерирует конкретные методы. Значения и длины могут меняться в runtime; разбор самой схемы в горячий путь не входит.
+
+### Установка
+
+```toml
+[dependencies]
+qsl = "=0.1.1"
+
+[build-dependencies]
+qsl = "=0.1.1"
+```
+
+[Быстрый старт из четырёх файлов](docs/quickstart.ru.md). QSL нужен в build.rs для генерации и в приложении для исполнения.
 
 ### Где он применим
 
@@ -44,13 +56,25 @@ QSL рассчитан на управляемый обмен между сог�
 
 [Контракт и переход RU](docs/modernization-2026-11-06/MODERNIZATION.ru.md) · [Полное руководство](docs/guide.ru.html) · [Рабочие примеры](examples/README.md) · [Точечные замеры с графиками](qsl-bench/modernization/report.html)
 
-Свежий проход: 1024 UTF-8 символа / 2048 B — String 130,38 нс, встроенная строка 63,20 нс. Порог 25 нс не достигнут. Числовая запись — default 2,68 нс / 24 B, Q16 4,15 нс / 5 B. Это trusted-чтение без валидации; интервалы 99%, выбросы и исходники сохранены в отчёте. Сравнение протоколов остаётся историческим результатом **16/100**, а не завершённым тестом.
+Сохранённые замеры 6 ноября: String 130,38 нс и встроенная строка 63,20 нс для 2048 B UTF-8; цель 25 нс не достигнута. Числовой перепрогон: default 2,788 нс / 24 B и Q16 4,304 нс / 5 B; ускорение не подтверждено. [Снимки и интервалы](qsl-bench/modernization/results/2026-11-06-register-width/README.md) относятся к измеренным исходникам. Сравнение протоколов — исторические 16/100.
 
 ## English
 
 QSL is a data-description language and a specialized Rust code generator for binary exchange. Its original task is exchanging data described in advance. Both peers know field order, domains and codecs before application startup.
 
 At build time QSL analyzes bounds, bit widths, register groups, tables and wire identities, then emits concrete methods. Runtime values and lengths remain dynamic; schema interpretation is outside the hot path.
+
+### Installation
+
+```toml
+[dependencies]
+qsl = "=0.1.1"
+
+[build-dependencies]
+qsl = "=0.1.1"
+```
+
+[Four-file quick start](docs/quickstart.en.md). Both dependencies are required: build.rs generates the codec and the application uses it.
 
 ### Where it fits
 
@@ -86,6 +110,6 @@ Wire changes require coordinated peers. Strict and light hashes are computed dur
 
 [Contract and migration EN](docs/modernization-2026-11-06/MODERNIZATION.en.md) · [Complete guide](docs/guide.en.html) · [Runnable examples](examples/README.md) · [Focused measurements and charts](qsl-bench/modernization/report.html)
 
-Fresh run, 1024 UTF-8 scalars / 2048 B: String 130.38 ns, inline string 63.20 ns; the 25 ns target was not achieved. Numeric record: default 2.68 ns / 24 B, Q16 4.15 ns / 5 B. These are trusted reads without validation. The report retains 99% intervals, outliers and source snapshots. The protocol comparison remains a historical **16/100** result, not a completed full pass.
+Recorded November 6 runs: String 130.38 ns and inline ownership 63.20 ns for 2048 UTF-8 bytes; the 25 ns target was not met. Numerical rerun: default 2.788 ns / 24 B and Q16 4.304 ns / 5 B; no speedup was established. [Snapshots and intervals](qsl-bench/modernization/results/2026-11-06-register-width/README.md) belong to their measured sources. The protocol comparison remains a historical 16/100 result.
 
 Лицензия: [MIT](LICENSE).

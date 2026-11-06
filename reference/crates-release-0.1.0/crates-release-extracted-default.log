@@ -1,0 +1,12 @@
+    Updating crates.io index
+    Blocking waiting for file lock on package cache
+     Locking 9 packages to latest compatible versions
+      Adding xxhash-rust v0.8.15 (available: v0.8.19)
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling qsl-macros-impl v0.1.0
+   Compiling qsl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\crates-release-target\package\qsl-0.1.0)
+   Compiling qsl-registry-smoke v0.0.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\crates-release-consumer)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 21.25s
+     Running `.optimization/crates-release-target\debug\qsl-registry-smoke.exe`
+42: Ada (15 bytes)

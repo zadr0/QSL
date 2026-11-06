@@ -1,0 +1,12 @@
+    Updating crates.io index
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Packaging qsl v0.1.1 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+    Updating crates.io index
+    Blocking waiting for file lock on package cache
+    Packaged 55 files, 769.6KiB (163.8KiB compressed)
+   Verifying qsl v0.1.1 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+   Compiling qsl v0.1.1 (C:\Users\Guild\Desktop\dev-qsl\.optimization\crates-release-target\package\qsl-0.1.1)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 23.64s
+   Uploading qsl v0.1.1 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+warning: aborting upload due to dry run

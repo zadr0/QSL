@@ -1,11 +1,11 @@
 [
   {
     "path": "qsl/Cargo.lock",
-    "sha256": "69a1d258eb349c6e4eb6759c4d8880780d1a03708a3ad997ff64a1b2b71d75f4"
+    "sha256": "52b3eff8e2ae4c8e9c13d200649ea970a7cef17cdae9de775c5851b15ddfa63d"
   },
   {
     "path": "qsl/Cargo.toml",
-    "sha256": "8ac58df59006f1b5577bf4eb04a4b4ade66fa77ef0122e6e8575dee9453f6d75"
+    "sha256": "96a1957ebf8feeaac968700a63fba78a440b1091711af28934abb35c5f554fe1"
   },
   {
     "path": "qsl/macros/Cargo.toml",
@@ -205,7 +205,7 @@
   },
   {
     "path": "qsl/tests/modernization/Cargo.lock",
-    "sha256": "1e09e80e6edc1d136a1a6468bd38492802d618b1c74cf5746268c48f4b2fadd2"
+    "sha256": "688edbe389a7696c1daffd1c2a60dd88e9bbf09526a042dbe1d88ef543038515"
   },
   {
     "path": "qsl/tests/modernization/Cargo.toml",
@@ -229,7 +229,7 @@
   },
   {
     "path": "qsl/tests/optional-modes/Cargo.lock",
-    "sha256": "c462eec489a32158ed1445c751bef0b8d42d67c6b6f9f1fbf5392ca1e602a550"
+    "sha256": "24ab84f027dc636eedb496e6b9cb0927bd7868646e564cf54fd27ed32c92c3a5"
   },
   {
     "path": "qsl/tests/optional-modes/Cargo.toml",
@@ -257,7 +257,7 @@
   },
   {
     "path": "qsl/README.md",
-    "sha256": "614e8ff819d1232b718962373004c38b2eb8f24054a2dcceee8bc35d092af9d2"
+    "sha256": "3b7abc967c3e066c28c8e4dec41519701ec9f1151e6f2092364c415ea1fcd742"
   },
   {
     "path": "qsl/LICENSE",
@@ -265,7 +265,7 @@
   },
   {
     "path": "qsl/CHANGELOG.md",
-    "sha256": "87d9ee70742afb9dcc9aa37a18c42e40323a32f943d789acdcef4924fe06e084"
+    "sha256": "f8e01b04ed928667ccc18e127bfb692fc244cbe5012c29990c514a82b7306021"
   },
   {
     "path": "qsl/macros/README.md",

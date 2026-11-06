@@ -1,7 +1,7 @@
 
 Trusted Serializable::serialize / BorrowSerializable::serialize trait methods are now unsafe. Callers must establish their preconditions. Generated RT/QPS serialize() methods remain safe Result APIs with value validation; use serialize_checked for general safe output.
 
-> **2026-11-06 contract:** [strict STACK_LIMIT, opt-in Safety, scalar-only QPS and native COPY/LIFETIME](modernization-2026-11-06/MODERNIZATION.en.md). [Four fresh measurements](../qsl-bench/modernization/report.html). Historical timing tables retain their original snapshots.
+> **2026-11-06 contract:** [strict STACK_LIMIT, opt-in Safety, scalar-only QPS and native COPY/LIFETIME](modernization-2026-11-06/MODERNIZATION.en.md). [Four measured cases from November 6](../qsl-bench/modernization/report.html). Historical timing tables retain their original snapshots.
 
 # QSL. Complete project guide
 
@@ -20,6 +20,18 @@ QSL is a codec constructor shaped by the project's conditions. Developers establ
 Additional mechanisms and attributes are opt-in. Field order is always mandatory: required fields first, optional fields last. Changing order, ranges, codec, quantum or configuration may change wire format. Both peers must agree on the representation.
 
 Schema QPS packs scalar numeric fields only; strings, arrays and lengths are not quantized. The scalar specialization packs statically bounded numeric ranks. Length prediction belongs to predict_seq; opt_table selects a reader by tag. Quantization itself does not determine which fields are present.
+
+## Package installation
+
+```toml
+[dependencies]
+qsl = "=0.1.1"
+
+[build-dependencies]
+qsl = "=0.1.1"
+```
+
+[Four-file quick start](quickstart.en.md). Both dependencies are required: build.rs generates the codec and the application uses it.
 
 ## Minimal integration
 
@@ -380,6 +392,6 @@ File and socket operations also use std::io::Error. Schema validation does not a
 
 ## Executable examples
 
-[Seven programs and commands](../examples/README.md) · [39 fresh measurements](examples.en.md) · [Charts and waveforms](../examples/performance.html). Timings retain their explicit source snapshots; historical tables are not replaced.
+[Seven programs and commands](../examples/README.md) · [39 historical measurements](examples.en.md) · [Charts and waveforms](../examples/performance.html). Timings retain their explicit source snapshots; historical tables are not replaced.
 
 Standalone tag dispatch inherits `optional_count * tag_bits <= 64`; compact and bitmap cannot be combined with opt_table. A wider optional tail needs a compatible combined/state_bits/legacy layout within that layout’s own limits.
