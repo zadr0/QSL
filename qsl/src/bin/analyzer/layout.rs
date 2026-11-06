@@ -8,6 +8,28 @@ fn add(a: Option<usize>, b: Option<usize>) -> Option<usize> {
     a?.checked_add(b?)
 }
 fn bounds(t: &QslType, raw: bool) -> (Option<usize>, Option<usize>) {
+    if let QslType::Array(e, min)
+    | QslType::RangedArray {
+        element: e, min, ..
+    } = t
+    {
+        let unit = e.fixed_wire_size().ok().flatten();
+        let low = unit
+            .and_then(|n| n.checked_mul(*min))
+            .and_then(|n| n.checked_add(4))
+            .and_then(|n| n.checked_mul(8));
+        let max = if let QslType::RangedArray { max, .. } = t {
+            Some(*max)
+        } else {
+            None
+        };
+        let high = unit
+            .zip(max)
+            .and_then(|(n, m)| n.checked_mul(m))
+            .and_then(|n| n.checked_add(4))
+            .and_then(|n| n.checked_mul(8));
+        return (low, high);
+    }
     let string = match t {
         QslType::String(min) => (*min, None, 4),
         QslType::RangedString { min, max } => (*min, Some(*max), 4),
@@ -31,6 +53,7 @@ fn bounds(t: &QslType, raw: bool) -> (Option<usize>, Option<usize>) {
                 qsl::interpreter::schema_maximum_size(&QslSchema {
                     name: "EditorField".into(),
                     fields: vec![qsl::QslField {
+                        storage: Default::default(),
                         name: "value".into(),
                         data: t.clone(),
                         tag: 1,
@@ -63,6 +86,9 @@ fn bounds(t: &QslType, raw: bool) -> (Option<usize>, Option<usize>) {
     )
 }
 pub(super) fn describe(s: &QslSchema) -> String {
+    if let Ok(Some(p)) = qsl::hybrid::HybridPlan::analyze(s) {
+        return hybrid(s, &p);
+    }
     let quant = qsl::payload_quant::PayloadQuantPlan::analyze(s).ok();
     let packed = quant.as_ref().is_some_and(|q| q.active);
     let graph = if s.predicted_opt_table() && !packed {
@@ -118,9 +144,7 @@ pub(super) fn describe(s: &QslSchema) -> String {
         } else {
             bounds(&f.data, f.optional && (raw || s.state_bits()))
         };
-        let ty = f
-            .data
-            .rust_type(s.borrow_strings())
+        let ty = qsl::modernization::field_rust_type(f, s.borrow_strings())
             .unwrap_or_else(|_| "?".into());
         let ty = if f.optional {
             format!("Option<{ty}>")
@@ -142,4 +166,86 @@ pub(super) fn describe(s: &QslSchema) -> String {
         });
     }
     format!("{{\"unit\":{},\"headerMinBits\":{},\"headerMaxBits\":{},\"minimumBytes\":{},\"nativeSize\":null,\"fields\":[{}]}}",json(if packed||s.compact(){"bit"}else{"byte"}),align(hmin),align(hmax),number(low.map(|n|n.div_ceil(8))),rows.join(","))
+}
+
+fn hybrid(s: &QslSchema, p: &qsl::hybrid::HybridPlan) -> String {
+    let q = qsl::payload_quant::PayloadQuantPlan::analyze(&p.prefix).unwrap();
+    let h = (p.length_header + q.header_bytes) * 8;
+    let (mut low, mut high) = (Some(h), Some(h));
+    let mut rows = Vec::new();
+    let row = |f: &qsl::QslField,
+               min: Option<usize>,
+               max: Option<usize>,
+               low: Option<usize>,
+               high: Option<usize>,
+               expr: &str| {
+        let ty = qsl::modernization::field_rust_type(f, s.borrow_strings()).unwrap_or("?".into());
+        let ty = if f.optional {
+            format!("Option<{ty}>")
+        } else {
+            ty
+        };
+        format!("{{\"name\":{},\"rustType\":{},\"optional\":{},\"tag\":{},\"minBits\":{},\"maxBits\":{},\"offsetMinBits\":{},\"offsetMaxBits\":{},\"offsetExpr\":{}}}",json(&f.name),json(&ty),f.optional,f.tag,number(min),number(max),number(low),number(high),json(expr))
+    };
+    for (f, qf) in p.prefix.fields.iter().zip(&q.fields) {
+        rows.push(row(
+            f,
+            Some(qf.bits),
+            Some(qf.bits),
+            low,
+            high,
+            "QPS prefix presence + prior scalar bits",
+        ));
+        if !f.optional {
+            low = add(low, Some(qf.bits))
+        }
+        high = add(high, Some(qf.bits));
+    }
+    let tail = &p.tail;
+    let optional = tail.optional_count();
+    let graph = if tail.predicted_opt_table() {
+        qsl::static_optional::StaticOptionalPlan::analyze(tail).ok()
+    } else {
+        None
+    };
+    let (hmin, hmax) = if let Some(g) = &graph {
+        (g.header_bytes() * 8, g.header_bytes() * 8)
+    } else if tail.state_bits() {
+        (32, 32)
+    } else if tail.predict_seq() {
+        (0, 0)
+    } else if tail.legacy_opt_table() {
+        ((1 + 4 * optional) * 8, (1 + 4 * optional) * 8)
+    } else if tail.bitmap() {
+        (tail.bitmap_words() * 32, tail.bitmap_words() * 32)
+    } else if optional == 1 {
+        (8, 8)
+    } else if optional > 1 {
+        (
+            tail.count_bits().div_ceil(8) * 8,
+            (tail.count_bits() + optional * tail.tag_bits()).div_ceil(8) * 8,
+        )
+    } else {
+        (0, 0)
+    };
+    low = Some((p.length_header + p.prefix_minimum) * 8 + hmin);
+    high = Some((p.length_header + p.prefix_bytes) * 8 + hmax);
+    let raw = matches!(
+        graph.as_ref().map(|g| &g.presence),
+        Some(qsl::static_optional::StaticPresence::Graph(_))
+    );
+    for f in &tail.fields {
+        let (min, max) = bounds(&f.data, f.optional && (raw || tail.state_bits()));
+        rows.push(row(
+            f,
+            min,
+            max,
+            low,
+            high,
+            "native prefix length + tail metadata + prior tail fields",
+        ));
+        low = add(low, if f.optional { Some(0) } else { min });
+        high = add(high, max);
+    }
+    format!("{{\"unit\":\"bit\",\"headerMinBits\":{h},\"headerMaxBits\":{h},\"minimumBytes\":{},\"nativeSize\":null,\"scalarPrefix\":true,\"fields\":[{}]}}",number(low.map(|n|n.div_ceil(8))),rows.join(","))
 }

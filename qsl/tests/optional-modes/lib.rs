@@ -34,24 +34,27 @@ mod tests {
         for m in 0..4 {
             let a = (m & 1 != 0).then_some(11);
             let b = (m & 2 != 0).then_some(22);
-            let d = PairDefault { id: 42, a, b }.serialize_checked().unwrap();
-            let t = PairTag { id: 42, a, b }.serialize_checked().unwrap();
+            let d = PairDefault::try_new(42, a, b)
+                .unwrap()
+                .serialize_checked()
+                .unwrap();
+            let t = PairTag::try_new(42, a, b)
+                .unwrap()
+                .serialize_checked()
+                .unwrap();
             assert_eq!(d, t);
             let x = PairTag::deserialize_checked(&d).unwrap();
-            assert_eq!((x.id, x.a, x.b), (42, a, b));
+            assert_eq!((x.id, x.a(), x.b()), (42, a, b));
             assert_eq!(PairTag::SCHEMA_HASH_LIGHT, PairDefault::SCHEMA_HASH_LIGHT);
         }
         // Required tag is not an optional ordinal. It has no callable table entry.
-        assert!(PairTag_OPT_TABLE[0].is_none());
-        assert!(PairTag_OPT_TABLE[1].is_some());
-        assert!(PairTag_OPT_TABLE[2].is_some());
-        let mut invalid = PairTag {
-            id: 42,
-            a: Some(1),
-            b: None,
-        }
-        .serialize_checked()
-        .unwrap();
+        assert!(__QslFields_PairTag_OPT_TABLE[0].is_none());
+        assert!(__QslFields_PairTag_OPT_TABLE[1].is_some());
+        assert!(__QslFields_PairTag_OPT_TABLE[2].is_some());
+        let mut invalid = PairTag::try_new(42, Some(1), None)
+            .unwrap()
+            .serialize_checked()
+            .unwrap();
         invalid[0] = 1;
         assert!(PairTag::deserialize_checked(&invalid).is_err());
     }
@@ -64,26 +67,30 @@ mod tests {
             let old = before::Unique { id: 42, a, b, c }
                 .serialize_checked()
                 .unwrap();
-            let both = Unique { id: 42, a, b, c }.serialize_checked().unwrap();
+            let both = Unique::try_new(42, a, b, c)
+                .unwrap()
+                .serialize_checked()
+                .unwrap();
             assert_eq!(old, both);
             assert_eq!(before::Unique::SCHEMA_HASHES, Unique::SCHEMA_HASHES);
             let x = Unique::deserialize_checked(&old).unwrap();
-            assert_eq!((x.a, x.b, x.c), (a, b, c));
-            let seq = UniquePredict { id: 42, a, b, c }
+            assert_eq!((x.a(), x.b(), x.c()), (a, b, c));
+            let seq = UniquePredict::try_new(42, a, b, c)
+                .unwrap()
                 .serialize_checked()
                 .unwrap();
             assert_eq!(seq, both);
             let x = UniquePredict::deserialize_checked(&seq).unwrap();
-            assert_eq!((x.a, x.b, x.c), (a, b, c));
+            assert_eq!((x.a(), x.b(), x.c()), (a, b, c));
         }
         for m in 0..4 {
             let a = (m & 1 != 0).then_some(8);
             let b = (m & 2 != 0).then_some(9);
             let old = before::Pair { id: 5, a, b }.serialize_checked().unwrap();
-            let now = Pair { id: 5, a, b }.serialize_checked().unwrap();
+            let now = Pair::try_new(5, a, b).unwrap().serialize_checked().unwrap();
             assert_eq!(old, now);
             let x = Pair::deserialize_checked(&old).unwrap();
-            assert_eq!((x.a, x.b), (a, b));
+            assert_eq!((x.a(), x.b()), (a, b));
         }
     }
     #[test]
@@ -149,41 +156,37 @@ mod tests {
                 }
                 .serialize_checked()
                 .unwrap();
-                let now = Fallback {
-                    id: 5,
-                    data: data.clone(),
-                    flag,
-                }
-                .serialize_checked()
-                .unwrap();
+                let now = Fallback::try_new(5, data.clone(), flag)
+                    .unwrap()
+                    .serialize_checked()
+                    .unwrap();
                 assert_eq!(old, now);
                 let x = Fallback::deserialize_checked(&old).unwrap();
-                assert_eq!((x.data, x.flag), (data.clone(), flag));
+                assert_eq!((x.data.as_ref(), x.flag()), (data.as_ref(), flag));
             }
         }
         for text in [None, Some(b"".as_slice()), Some("Рад".as_bytes())] {
             for flag in [None, Some(9)] {
-                let bytes = BorrowedTag { id: 7, text, flag }
+                let bytes = BorrowedTag::try_new(7, text, flag)
+                    .unwrap()
                     .serialize_checked()
                     .unwrap();
                 let x = BorrowedTag::deserialize_checked(&bytes).unwrap();
-                assert_eq!((x.text, x.flag), (text, flag));
+                assert_eq!((x.text, x.flag()), (text, flag));
                 if text != Some(b"") {
-                    let bytes = BorrowedBoth { id: 7, text, flag }
+                    let bytes = BorrowedBoth::try_new(7, text, flag)
+                        .unwrap()
                         .serialize_checked()
                         .unwrap();
                     let x = BorrowedBoth::deserialize_checked(&bytes).unwrap();
-                    assert_eq!((x.text, x.flag), (text, flag));
+                    assert_eq!((x.text, x.flag()), (text, flag));
                 }
             }
         }
-        let empty = ZeroTag {
-            id: 3,
-            empty: Some([]),
-            flag: None,
-        }
-        .serialize_checked()
-        .unwrap();
+        let empty = ZeroTag::try_new(3, Some([]), None)
+            .unwrap()
+            .serialize_checked()
+            .unwrap();
         assert_eq!(
             ZeroTag::deserialize_checked(&empty).unwrap().empty,
             Some([])
@@ -205,22 +208,22 @@ mod tests {
     fn descriptor_dispatch_and_scalar_qps_remain_exact() {
         for a in [None, Some(7)] {
             for text in [None, Some("abc")] {
-                let b = StateTag {
-                    id: 5,
-                    a,
-                    text: text.map(str::to_owned),
-                }
-                .serialize_checked()
-                .unwrap();
+                let b = StateTag::try_new(5, a, text.map(str::to_owned))
+                    .unwrap()
+                    .serialize_checked()
+                    .unwrap();
                 let x = StateTag::deserialize_checked(&b).unwrap();
-                assert_eq!((x.id, x.a, x.text.as_deref()), (5, a, text));
+                assert_eq!((x.id, x.a(), x.text.as_deref()), (5, a, text));
             }
         }
         for a in [None, Some(7)] {
             for b in [None, Some(9)] {
-                let bytes = PackedTag { id: 3, a, b }.serialize_checked().unwrap();
+                let bytes = PackedTag::try_new(3, a, b)
+                    .unwrap()
+                    .serialize_checked()
+                    .unwrap();
                 let x = PackedTag::deserialize_checked(&bytes).unwrap();
-                assert_eq!((x.id, x.a, x.b), (3, a, b));
+                assert_eq!((x.id, x.a(), x.b()), (3, a, b));
             }
         }
     }
@@ -242,22 +245,15 @@ mod tests {
                 assert!(result.is_ok(), "length={len}, seed={seed}");
             }
         }
-        let good = LimitTag {
-            id: 4,
-            a: Some(6),
-            b: Some(7),
-        }
-        .serialize_checked()
-        .unwrap();
-        let mut out = std::mem::MaybeUninit::new(LimitTag {
-            id: 1,
-            a: None,
-            b: None,
-        });
+        let good = LimitTag::try_new(4, Some(6), Some(7))
+            .unwrap()
+            .serialize_checked()
+            .unwrap();
+        let mut out = std::mem::MaybeUninit::new(LimitTag::try_new(1, None, None).unwrap());
         let mut bad = good.clone();
         bad[1] = 255;
         assert!(LimitTag::deserialize_checked_into(&bad, &mut out).is_err());
         let out = unsafe { out.assume_init() };
-        assert_eq!((out.id, out.a, out.b), (1, None, None));
+        assert_eq!((out.id, out.a(), out.b()), (1, None, None));
     }
 }

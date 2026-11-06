@@ -1,68 +1,23 @@
-# Current source and claim audit / Аудит текущего снимка
+# QSL modernization verification · 2026-11-06
 
-Date / Дата: 2026-11-03. Scalar QPS revision 2, general byte envelope QPB3 revision 3. QPS is exact operand compression; predict_seq infers presence from length and opt_table selects readers by tag. Both are optional; required fields must precede optional fields.
+[RU contract](docs/modernization-2026-11-06/MODERNIZATION.ru.md) · [EN contract](docs/modernization-2026-11-06/MODERNIZATION.en.md) · [Four-case report](qsl-bench/modernization/report.html)
 
-## Restoration / Восстановление
+Current implementation: exact register groups; strict per-buffer STACK_LIMIT; initialized-prefix owned storage; single-pass opt-in checked decoding; separate native COPY/overlay and nested regions; native optional niches/ranks/shared bitmap; scalar-only QPS with exact reads; per-schema blocking RT pools; compile-time cache capacity.
 
-Documentation was restored from snapshot `7724abc` alongside the shortened beta uploaded in `2e72ba3`. The beta files are preserved unchanged. Existing measurements describe their recorded source manifests; the uploaded beta has not been rebenchmarked during recovery.
+## Evidence and scope
 
-Документация восстановлена из снимка `7724abc` рядом с сокращённой бетой `2e72ba3`. Исходники беты сохранены без изменений. Замеры относятся к указанным в них снимкам исходников.
+- Windows 11 x86-64: 81 core unit tests, 10 native tests, 2 byte-QPS vectors, 12 schema-hash tests and 2 compile-fail documentation tests passed.
+- Modernization contracts: 25 tests and 3 compile-fail checks passed. Includes protected-page 9-byte access, no private QPS tail, no-allocation checked inline read, malformed frames, native layout/UTF-8, nested regions, strict large-buffer fallbacks, cached-frame data limits, padding boundaries before neighboring fields, and unsafe trusted-writer contracts.
+- Six optional-mode compatibility tests pass against preserved before.rs golden code. Numeric/UTF-8 combined wire bytes and hash identities are retained.
+- Four example tests and all seven runnable examples pass. The RT example demonstrates blocking and resumption, not PoolExhausted from serialize().
+- Root, contract and examples pass Clippy with -D warnings. Root formatting check passes.
+- Zed server: 32 RU/EN/native/LSP tests pass. Tree-sitter: 10 corpus cases pass. Extension release and Clippy target wasm32-wasip2.
+- Lean4.35 verifies QPS.lean and Modernization.lean. Arithmetic models exclude Rust provenance/aliasing, atomic memory-order verification, LLVM and OS wait primitives.
+- Benchmark source/binary SHA-256, raw Criterion samples, confidence intervals, settings and assembly are retained. Eight GiB Job Object was attached before fixture preparation. No hot metrics sampler. The earlier 5% idle gate was waived; ambient noise is not represented as absent.
+- String's 25 ns target was not achieved. Q16 saves wire but reads slower than default for the measured numerical schema. No broad protocol matrix was rerun.
 
+Linux/macOS wait behavior is source-inspected, not runtime-tested here. Browser visual QA is not claimed; the standalone report is checked through offline DOM events, all 4×2 case/metric combinations, 200 sample points and finite coordinates.
 
-## Current checked implementation / Текущая проверяемая реализация
+[Current source manifest](reference/modernization-source-manifest.json) differs intentionally from [measured source snapshot](qsl-bench/modernization/results/2026-11-06/source-manifest.json): subsequent parser/linter and validation-contract corrections do not rewrite recorded timing evidence.
 
-The source update is based on the uploaded `c5077a8` tree. Every edited existing source was compared with its original base before replacement; unrelated uploaded files are retained. The standalone qsl crate now contains its internal attribute implementation under qsl/macros, schema identity generation and MAX_DATA_SIZE=65535. See [safety RU](docs/safety.ru.md), [EN](docs/safety.en.md), [new source manifest](reference/safety-source-manifest.json) and [reproduction fixture](reference/safe-schema-control/Cargo.toml).
-
-Обновление основано на загруженном дереве c5077a8. Посторонние файлы сохранены. Новые проверяемые методы доступны каждой схеме; safety оставлен для совместимости. Хэши вычисляются при анализе, лимит данных не меняет wire-format. Ни одно историческое измерение не объявляется замером новой проверки.
-
-Current verification: 77 unit tests; 10 serial native/IPC/socket; 2 byte vectors; 12 schema-hash tests; 2 compile-fail examples; 6 safety-fixture scenarios with 7200 malformed validator calls; 1 generated-hash fixture and 5 feature regressions. Strict core Clippy and analyzer release build passed. Standalone publication-tree tests and its safety fixture also passed. Zed 0.7.0: 27 Node/LSP tests, 8 Tree-sitter cases, strict WASM Clippy and release build passed. [Extension commit](https://github.com/zadr0/QSL-Extension/commit/fda10afeb74c8b272459cad70fc251a8fcebba3b). The declaration index now has 624 entries; its manifest is separate from benchmark manifests.
-
-## Measured-source verification / Проверки измеренного снимка
-
-- Core: 72 unit tests, 10 serial native/IPC/socket tests, 2 wire-vector tests and 2 compile-fail examples passed. Strict core Clippy and formatting passed.
-- Feature harness: 5 regression tests passed, covering ordinary/optional formats, Rust-template equivalence, whole-record restoration, validation and borrowed restoration lifetimes. Criterion test mode had validated the 95 main fixtures before measurement.
-- Optimized kernel: portable/BMI2 equivalence for Q2/Q4/Q8/Q16 and all B=0..8 widths; high bases, tails, exact slices, malformed frames and unchanged golden wire vectors are tested.
-- Lean 4.35: 22 arithmetic theorems checked without sorry. This is not a proof of the Rust compiler, full decoder or IPC protocol.
-- Extension 0.6.0: 24 Node/LSP tests, 6 Tree-sitter corpus cases, formatting, strict wasm32-wasip2 Clippy and release WASM build passed. RU/EN; scalar/general distinction; no false optional-field requirement for QPS; single-u8 compression warning.
-
-[Extension 0.6.0 source](https://github.com/zadr0/QSL-Extension/commit/eff7c3f84af326b190f7b563fdcc54ffa24bcc11).
-
-## Measurement provenance / Происхождение замеров
-
-The initial 95 main cases and 8 focused UTF-8/whole-record cases use their captured November 2 sources. A register/BMI2 optimization changed only qsl/src/qps_bytes.rs among measured runtime sources. The 14 byte cases and 8 UTF-8 cases were remeasured sequentially on November 3. There are **103 distinct cases and 125 fresh measurement observations**, not 125 distinct scenarios. The other 81 rows retain the original snapshot. Each row records profile/source_manifest; the initial 22 results remain historical groups, alongside the earlier 24 scalar/N controls. No samples from different binaries are pooled.
-
-Criterion 0.8.2; warm-up 15 s per case; measurement 10 s; 200 samples; 99% CI. Windows 11 x86-64, i5-7400, RAM 24 GiB / 2133 MHz; Rust 1.98.0 / LLVM 22.1.8; CPU mask 0x4 and above-normal measuring-thread priority. The OS was not isolated. An 8 GiB Job Object bounds the measured process and descendants, not compilation. Peak job commit in the optimized runs: 7.02 MiB and 8.35 MiB. No k6 or competing codec was run.
-
-[Initial source manifest](reference/features-source-manifest.json) · [Initial UTF-8](reference/qps-utf8-source-manifest.json) · [Optimized byte kernel](reference/qps-words-source-manifest.json) · [Optimized UTF-8](reference/qps-utf8-words-source-manifest.json) · [Current implementation](reference/current-implementation-manifest.json) · [Measurements](docs/data/features.json) · [Report EN](docs/features.en.md) · [RU](docs/features.ru.md).
-
-P=M/T uses original useful bytes. Borrow-view creation, prepared copies and new owned objects have different output contracts. Sample waveforms show batch means, not individual-call p99 or network latency. The general codec exceeds the requested overhead/25 ns targets; those targets are not declared achieved. Packed frames must be strictly shorter than source, including their header. Explicit raw fallback costs 16 B and is shown in wire results.
-
-## Scope / Границы
-
-The qsl core now builds from its own Cargo manifest and internal macro dependency. Older benchmark harnesses still require their matching captured source tree. Local original/optimized executables and measured-source ZIP files are retained in dated docs/qsl-features folders. No crate release or publication of the engine source is implied.
-
-Локальная схема View намеренно некорректна и сохранена по прямому указанию. Сборка всего demo не объявляется успешной. Функции проверены изолированным корректным стендом. Native-тесты запускаются последовательно; это не заявление о стабильности исторически нестабильного параллельного socket-набора.
-
-## Implementation and claims / Реализация и утверждения
-
-Implemented: QSL/DEQ generation, string modes/LZ, scalar and general QPS, opt_table/predict_seq, checked APIs, Rust templates, RT, native Windows memory, sockets and IPC. QBProto handshake/R remains planned. Arbitrary custom unsafe code is outside the built-in validator guarantee. Outer QPS restores the entire inner frame before field offsets or inner lengths are used; the original outer length is not quantized.
-
-The current public declaration index covers 624 explicit declarations/trait signatures outside comments and Rust string literals. Native and rust-macros feature gates still apply. Current paths/lines refer to safety-source-manifest.json; measured snapshots retain their original manifests. Earlier ASM wrappers refer only to their archived scalar snapshot; no whole-codec zero-branch or exact cycle-count claim is made.
-
-Offline checks exercise every chart group/operation/metric, 200-point waveforms, RU/EN, numeric restoration, malformed model frames, API search and local links. Browser preview of local files was unavailable, so no visual browser-rendering verification is claimed. Older docs/data and archived pages remain explicitly historical.
-
-## Documentation workbench / Мастерская документации
-
-The bilingual introduction is fully present in README.md. The documentation now includes an explicit scope/constraint explorer, build/runtime stages, a numeric wire-layout model, a string-memory explorer using existing measurements, actual optional-state frames and QPS group operands/restoration. No new timing data or performance estimates were introduced for these interface changes.
-
-[Reference vectors](docs/data/explorer-vectors.json) cover 32 generated dense records in three formats, four optional states and three malformed-frame errors. UI byte models are checked against these native Rust results. Model limits are labelled beside the controls; the browser is not presented as the native QSL generator. [Reference harness](reference/docs-lab/README.md).
-
-## Examples measurement / Замер примеров — 2026-11-04
-
-Seven executable examples and one Criterion suite are under examples/. There are 39 measured operations: 35 main cases plus four focused true-LZ controls after the phrase set selected raw fallback. Two source profiles remain explicit per row; codec-source hashes match and matched groups use one executable. No duplicate cases are pooled. [Results](examples/PERFORMANCE.md) · [Interactive report](examples/performance.html) · [Exact sources and raw samples](examples/performance/measurements.json).
-
-15 s warm-up, 10 s measurement, 200 samples, 99% CI; i5-7400, 24 GiB / 2133 MHz, Windows 11 Pro 10.0.26200, Rust 1.98.0 / LLVM 22.1.8. CPU mask 0x4, above-normal measuring thread. Both runs completed in an 8 GiB JobObject; maximum reported peak job memory was 16.20 MiB. This is a job-memory reading, not a claim of process RSS isolation.
-
-Validated: four example regression tests; all seven release programs; strict example Clippy and formatting; every Criterion fixture before timing. The report checks source SHA-256 before/after and the archived source bytes, 200 samples and 99% CI. Interactive checks cover every group, operation, contract, P/T, RU/EN and waveform. PNG/SVG were exported with Matplotlib; the PNG was visually inspected. Historical measurement tables remain unchanged.
-
-Current optional-mode separation: [source manifest](reference/optional-modes-source-manifest.json); old measured archives remain unchanged. predict_seq owns length inference; opt_table dispatches readers by schema tags.
+Historical protocol comparison remains 16/100 qualified observations. Historical feature/example datasets retain their original source snapshots. They are not fresh results for this generated API.

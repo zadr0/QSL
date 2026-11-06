@@ -1,0 +1,17 @@
+{
+  "confidence": 0.99,
+  "limitGiB": 8,
+  "exitCode": 0,
+  "peakJobBytes": 14475264.0,
+  "measurementSeconds": 10,
+  "hotMetricsSampler": false,
+  "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)\r\nbinary: rustc\r\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\r\ncommit-date: 2026-08-18\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.98.0\r\nLLVM version: 22.1.8\r\n",
+  "samples": 200,
+  "binarySha256": "6E9B5AAB35955C4A9B052ABE9E0195BCCB747ABA32A930FFEDAA7D7338EC0239",
+  "ring": 1024,
+  "warmupSeconds": 15,
+  "numericUsefulBytes": 24,
+  "stringUsefulBytes": 2048,
+  "stringUtf8Scalars": 1024,
+  "idlePolicy": "user_waived_5_percent"
+}

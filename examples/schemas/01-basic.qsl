@@ -1,4 +1,4 @@
-&Numbers {
+&Numbers[safety] {
     u64(0..15) f0;
     u64(0..15) f1;
     u64(0..15) f2;
@@ -9,7 +9,7 @@
     u64(0..15) f7;
 }
 
-&CompactNumbers[compact] {
+&CompactNumbers[compact,safety] {
     u64(0..15) f0;
     u64(0..15) f1;
     u64(0..15) f2;
@@ -20,7 +20,7 @@
     u64(0..15) f7;
 }
 
-&PackedNumbers[qps] {
+&PackedNumbers[qps,safety] {
     u64(0..15) f0;
     u64(0..15) f1;
     u64(0..15) f2;

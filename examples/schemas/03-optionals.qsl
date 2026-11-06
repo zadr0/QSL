@@ -1,49 +1,40 @@
-&Optional1Default {
+&Optional1Default[safety] {
     u32 id;
     u8? f0;
 }
 
-&Optional1Table[opt_table] {
+&Optional1Table[opt_table,safety] {
     u32 id;
     u8? f0;
 }
 
-&Optional2Default {
-    u32 id;
-    u8? f0;
-    u8? f1;
-}
-
-&Optional2Table[opt_table] {
+&Optional2Default[safety] {
     u32 id;
     u8? f0;
     u8? f1;
 }
 
-&Optional3Default {
+&Optional2Table[opt_table,safety] {
     u32 id;
     u8? f0;
     u8? f1;
-    u8? f2;
 }
 
-&Optional3Table[opt_table] {
+&Optional3Default[safety] {
     u32 id;
     u8? f0;
     u8? f1;
     u8? f2;
 }
 
-&Optional5Default {
+&Optional3Table[opt_table,safety] {
     u32 id;
     u8? f0;
     u8? f1;
     u8? f2;
-    u8? f3;
-    u8? f4;
 }
 
-&Optional5Table[opt_table] {
+&Optional5Default[safety] {
     u32 id;
     u8? f0;
     u8? f1;
@@ -52,7 +43,16 @@
     u8? f4;
 }
 
-&Optional10Default {
+&Optional5Table[opt_table,safety] {
+    u32 id;
+    u8? f0;
+    u8? f1;
+    u8? f2;
+    u8? f3;
+    u8? f4;
+}
+
+&Optional10Default[safety] {
     u32 id;
     u8? f0;
     u8? f1;
@@ -66,7 +66,7 @@
     u8? f9;
 }
 
-&Optional10Table[opt_table] {
+&Optional10Table[opt_table,safety] {
     u32 id;
     u8? f0;
     u8? f1;

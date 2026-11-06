@@ -1,3 +1,5 @@
+> **Контракт 06.11.2026:** [строгий STACK_LIMIT, Safety opt-in, QPS только для чисел, native COPY/LIFETIME](modernization-2026-11-06/MODERNIZATION.ru.md). [Четыре свежих замера](../qsl-bench/modernization/report.html). Таблицы старых измерений сохраняют исходные версии.
+
 # Опциональные поля: длина и теги
 
 ## predict_seq: индекс по длине

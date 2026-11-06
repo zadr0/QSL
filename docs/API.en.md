@@ -1,3 +1,8 @@
+
+Trusted Serializable::serialize / BorrowSerializable::serialize trait methods are now unsafe. Callers must establish their preconditions. Generated RT/QPS serialize() methods remain safe Result APIs with value validation; use serialize_checked for general safe output.
+
+> **2026-11-06 contract:** [strict STACK_LIMIT, opt-in Safety, scalar-only QPS and native COPY/LIFETIME](modernization-2026-11-06/MODERNIZATION.en.md). [Four fresh measurements](../qsl-bench/modernization/report.html). Historical timing tables retain their original snapshots.
+
 # Public declaration index
 
 [Русский](API.ru.md) · [Architecture](architecture.en.md)
@@ -2569,13 +2574,13 @@ fn serialized_size(&self) -> usize;
 `qsl/src/serialize.rs:21`
 
 ```rust
-fn serialize(&self) -> SerOut {
+unsafe fn serialize(&self) -> SerOut {
 ```
 
 `qsl/src/serialize.rs:35`
 
 ```rust
-fn serialize(&self) -> Vec<u8> {
+unsafe fn serialize(&self) -> Vec<u8> {
 ```
 
 `qsl/src/serialize.rs:48`
@@ -2659,13 +2664,13 @@ fn serialized_size(&self) -> usize;
 `qsl/src/serialize.rs:141`
 
 ```rust
-fn serialize(&self) -> SerOut {
+unsafe fn serialize(&self) -> SerOut {
 ```
 
 `qsl/src/serialize.rs:153`
 
 ```rust
-fn serialize(&self) -> Vec<u8> {
+unsafe fn serialize(&self) -> Vec<u8> {
 ```
 
 `qsl/src/serialize.rs:165`

@@ -5,3 +5,7 @@ edition = "2021"
 publish = false
 [lib]
 proc-macro = true
+
+[dependencies]
+syn = { version="=2.0.119", default-features=false, features=["full","parsing","printing","proc-macro"] }
+quote="=1.0.47"

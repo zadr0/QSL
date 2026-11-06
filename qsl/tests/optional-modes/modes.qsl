@@ -2,18 +2,18 @@
 &Unique[predict_seq,opt_table,safety]{u32 id;u8? a;u16? b;u32? c;}
 &Text[predict_seq,opt_table,safety]{u32 id;str?(3..33) name;str?(1..255) description;}
 &Fallback[predict_seq,opt_table,safety]{u32 id;array<u8>?(0..16) data;u8? flag;}
-&PairDefault{u32 id;u8? a;u8? b;}
-&PairTag[opt_table]{u32 id;u8? a;u8? b;}
-&UniquePredict[predict_seq]{u32 id;u8? a;u16? b;u32? c;}
-&TextDefault{u32 id;str?(3..33) name;str?(1..255) description;}
-&TextTag[opt_table]{u32 id;str?(3..33) name;str?(1..255) description;}
-&BorrowedTag[opt_table]{u32 id;str?(0..64) text|binary_opt=true|;u8? flag;}
-&BorrowedBoth[predict_seq,opt_table]{u32 id;str?(1..64) text|binary_opt=true|;u8? flag;}
-&ZeroTag[opt_table]{u32 id;str?(0) empty;u8? flag;}
-&LimitTag[opt_table]{u32(0..7) id;u8?(0..7) a;u8?(0..7) b;}
-&EmptyTag[opt_table]{u32 id;}
-&CustomTag[opt_table]{Tiny required;Tiny? extra;}
-&StateTag[state_bits,opt_table]{u32 id;u8? a;str?(1..8) text;}
-&PackedTag[qps,opt_table]{u64(0..15) id;u64?(0..15) a;u64?(0..15) b;}
+&PairDefault[safety]{u32 id;u8? a;u8? b;}
+&PairTag[opt_table,safety]{u32 id;u8? a;u8? b;}
+&UniquePredict[predict_seq,safety]{u32 id;u8? a;u16? b;u32? c;}
+&TextDefault[safety]{u32 id;str?(3..33) name;str?(1..255) description;}
+&TextTag[opt_table,safety]{u32 id;str?(3..33) name;str?(1..255) description;}
+&BorrowedTag[opt_table,safety]{u32 id;str?(0..64) text|binary_opt=true|;u8? flag;}
+&BorrowedBoth[predict_seq,opt_table,safety]{u32 id;str?(1..64) text|binary_opt=true|;u8? flag;}
+&ZeroTag[opt_table,safety]{u32 id;str?(0) empty;u8? flag;}
+&LimitTag[opt_table,safety]{u32(0..7) id;u8?(0..7) a;u8?(0..7) b;}
+&EmptyTag[opt_table,safety]{u32 id;}
+&CustomTag[opt_table,safety]{Tiny required;Tiny? extra;}
+&StateTag[state_bits,opt_table,safety]{u32 id;u8? a;str?(1..8) text;}
+&PackedTag[qps,opt_table,safety]{u64(0..15) id;u64?(0..15) a;u64?(0..15) b;}
 
-&EmptyBoth[predict_seq,opt_table]{u32 id;}
+&EmptyBoth[predict_seq,opt_table,safety]{u32 id;}

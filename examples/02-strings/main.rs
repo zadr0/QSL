@@ -5,16 +5,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let bytes = plain.serialize_checked()?;
     let borrowed = BorrowedText::deserialize_checked(&bytes)?;
     let guard = GuardText::deserialize_checked(&bytes)?;
-    let inline = InlineText {
-        text: inline(&text)?,
-    }
-    .serialize_checked()?;
-    let compressed = CompressedText {
-        text: qsl_examples::inline(&text)?,
-    }
-    .serialize_checked()?;
+    let inline = InlineText { text: text.clone() }.serialize_checked()?;
+    let compressed = CompressedText { text: text.clone() }.serialize_checked()?;
     println!(
-        "{} UTF-8 characters = {} bytes; String/borrow/guard frame={} B; inline={} B; LZ={} B",
+        "{} UTF-8 characters = {} bytes; String/borrow/COPY frame={} B; inline={} B; LZ={} B",
         text.chars().count(),
         text.len(),
         bytes.len(),
@@ -24,7 +18,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("The phrase selected LZ raw fallback: the 2-byte difference is a length header, not compression.");
     let uniform = uniform_texts().remove(0);
     let packed = CompressedText {
-        text: qsl_examples::inline(&uniform)?,
+        text: uniform.clone(),
     }
     .serialize_checked()?;
     println!(
@@ -33,7 +27,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         packed.len()
     );
     println!(
-        "borrowed={} chars, copied guard={} bytes; fixed string Rust type: [u8; 4]",
+        "borrowed={} chars, COPY String={} bytes; fixed string Rust type: [u8; 4]",
         borrowed.text.chars().count(),
         guard.text.len()
     );

@@ -1,0 +1,47 @@
+{
+  "qsl_modern_raw_probe": {
+    "instructionCount": 5,
+    "conditionalJumps": [],
+    "calls": [],
+    "instructions": [
+      "movq\t(%rcx), %rax",
+      "movups\t8(%rcx), %xmm0",
+      "movq\t%rax, (%r8)",
+      "movups\t%xmm0, 8(%r8)",
+      "retq"
+    ]
+  },
+  "qsl_modern_packed_probe": {
+    "instructionCount": 26,
+    "conditionalJumps": [],
+    "calls": [],
+    "instructions": [
+      "movl\t(%rcx), %edx",
+      "movzbl\t4(%rcx), %eax",
+      "shlq\t$32, %rax",
+      "orq\t%rdx, %rax",
+      "andl\t$63, %edx",
+      "shll\t$4, %edx",
+      "movq\t%rax, %rcx",
+      "shrq\t$6, %rcx",
+      "movl\t%ecx, %r9d",
+      "andl\t$15, %r9d",
+      "orq\t%rdx, %r9",
+      "movq\t%r9, (%r8)",
+      "andl\t$240, %ecx",
+      "movq\t%rax, %rdx",
+      "shrq\t$14, %rdx",
+      "movl\t%edx, %r9d",
+      "andl\t$15, %r9d",
+      "addq\t%r9, %rcx",
+      "addq\t$-100, %rcx",
+      "movq\t%rcx, 8(%r8)",
+      "andl\t$65520, %edx",
+      "shrq\t$30, %rax",
+      "andl\t$15, %eax",
+      "orq\t%rdx, %rax",
+      "movq\t%rax, 16(%r8)",
+      "retq"
+    ]
+  }
+}

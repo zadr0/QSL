@@ -1,3 +1,5 @@
+> Historical snapshot / Исторический снимок API. [Current focused results](../qsl-bench/modernization/report.html).
+
 # Производительность примеров / Example performance
 
 > Уточнение режимов: `opt_table` в этом измеренном профиле — прежняя смешанная реализация. Её wire-формат сохраняет `[predict_seq,opt_table]`. Новый отдельный `[opt_table]` — диспетчеризация по тегам; прежнее ускорение к нему не относится. / Mode correction: measured `opt_table` is the former mixed implementation, whose wire format is retained by `[predict_seq,opt_table]`. New standalone `[opt_table]` is tag dispatch; the old speedup does not describe it.

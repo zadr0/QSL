@@ -124,7 +124,13 @@ impl QslIoPlan {
                     let start = b.offsets;
                     let old_read = b.read;
                     let old_write = b.write;
-                    b.choices((0..=n).map(|count| count * schema.tag_bits()));
+                    if n * schema.tag_bits() <= 64 {
+                        b.choices((0..=n).map(|count| count * schema.tag_bits()));
+                    } else {
+                        for _ in 0..n {
+                            b.choices([0, schema.tag_bits()]);
+                        }
+                    }
                     let reader_max = b.read;
                     b.offsets = start;
                     b.read = old_read;
@@ -159,7 +165,7 @@ impl QslIoPlan {
                     | QslType::BinaryString { .. }
                     | QslType::GuardString { .. }
                     | QslType::CopyGuardString { .. }
-            ) || matches!(&field.data, QslType::Array(element, _) | QslType::RangedArray {element, ..} if matches!(element.as_ref(), QslType::Byte));
+            ) || matches!(&field.data, QslType::Array(element, _) | QslType::RangedArray {element, ..} if element.fixed_wire_size().ok().flatten().is_some());
             let native = schema.compact()
                 && (rank || length)
                 && before == 1
@@ -187,6 +193,7 @@ impl QslIoPlan {
         if b.blocks.is_empty() || fields.last().is_some_and(|&index| index == b.blocks.len()) {
             b.end_block()?;
         }
+        if schema.compact() && schema.fields.iter().any(|f|matches!(&f.data,QslType::Array(e,_)|QslType::FixedArray(e,_)|QslType::RangedArray{element:e,..} if !matches!(e.as_ref(),QslType::Byte))){for block in &mut b.blocks{block.reader=BitRegister::U128;block.writer=BitRegister::U128;}}
         Ok(Self {
             blocks: b.blocks,
             field_blocks: fields,

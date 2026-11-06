@@ -1,4 +1,4 @@
-&RtNumbers {
+&RtNumbers[safety] {
     u64(0..15) f0;
     u64(0..15) f1;
     u64(0..15) f2;

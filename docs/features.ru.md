@@ -1,3 +1,5 @@
+> **Контракт 06.11.2026:** [строгий STACK_LIMIT, Safety opt-in, QPS только для чисел, native COPY/LIFETIME](modernization-2026-11-06/MODERNIZATION.ru.md). [Четыре свежих замера](../qsl-bench/modernization/report.html). Таблицы старых измерений сохраняют исходные версии.
+
 # Основные возможности QSL: замеры
 
 > Исторический профиль: подпись `opt_table` здесь обозначает прежний смешанный граф длин. Его формат сохраняет `[predict_seq,opt_table]`; новый отдельный `[opt_table]` выбирает читателя по тегу. [Разделение и переход](optional-modes.ru.md).

@@ -1,3 +1,3 @@
 # safety
 
-Compatibility attribute. Every schema now generates checked methods without it. [Shared cursor, aggregate limit and full contract](../../safety.en.md).
+[safety] enables single-pass checked deserialization; without it no checked decoder is generated. [Contract](../../safety.en.md).

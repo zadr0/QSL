@@ -1,6 +1,8 @@
 //! Native editor bridge: the exact parser and analysis used by code generation.
 #[path = "analyzer/layout.rs"]
 mod editor_layout;
+#[path = "analyzer/memory.rs"]
+mod editor_memory;
 use std::{
     collections::HashMap,
     io::{self, Read},
@@ -24,7 +26,7 @@ fn json(s: &str) -> String {
 fn main() {
     if std::env::args().any(|a| a == "--capabilities") {
         println!(
-            "{{\"editorBundle\":1,\"wireLayout\":1,\"schemaHashVersion\":1,\"checkedSchemas\":1,\"optionalModes\":2,\"generatedRust\":1,\"qpsCodecRevision\":2,\"qpsByteCodecRevision\":3,\"rustMacros\":{}}}",
+            "{{\"editorBundle\":1,\"wireLayout\":1,\"schemaHashVersion\":1,\"checkedSchemas\":1,\"optionalModes\":2,\"generatedRust\":1,\"memoryLayout\":1,\"safetyOptIn\":1,\"qpsCodecRevision\":2,\"qpsByteCodecRevision\":3,\"rustMacros\":{}}}",
             cfg!(feature = "rust-macros")
         );
         return;
@@ -57,6 +59,7 @@ fn main() {
     let mut maximum_data = qsl::validation::DEFAULT_MAX_DATA_SIZE;
     let mut rt = false;
     let mut slots = 16;
+    let mut stack_limit = 256;
     let mut args = std::env::args().skip(1);
     while let Some(path) = args.next() {
         if path == "--editor-bundle" || path == "--generate" {
@@ -94,6 +97,9 @@ fn main() {
                 }
             }
             constants.extend(d.integer_values());
+            if d.configured.contains("STACK_LIMIT") {
+                stack_limit = d.generation.stack_limit;
+            }
             if d.configured.contains("MAX_DATA_SIZE") {
                 maximum_data = d.generation.max_data_size;
             }
@@ -132,15 +138,61 @@ fn main() {
                 .into(),
         })
     };
+    let mut diagnostics = Vec::<qsl::ParseError>::new();
     let schemas = match parsed {
         Ok(s) => s,
         Err(e) => {
-            println!(
-                "{{\"ok\":false,\"offset\":{},\"message\":{}}}",
-                e.offset,
-                json(&e.message)
-            );
-            return;
+            if std::env::args().any(|a| a == "--editor-bundle") {
+                let mut recovered = Vec::new();
+                let mut names = std::collections::HashSet::new();
+                for (start, end) in editor_spans(&source) {
+                    #[cfg(feature = "rust-macros")]
+                    let result = if rust_sources.is_empty() {
+                        qsl::parse_qsl_with_constants(&source[start..end], &constants)
+                    } else {
+                        qsl::rust_macro::parse_qsl_with_rust(
+                            &source[start..end],
+                            &constants,
+                            &rust_sources.iter().map(String::as_str).collect::<Vec<_>>(),
+                        )
+                        .map_err(|e| qsl::ParseError {
+                            offset: 0,
+                            message: e.to_string(),
+                        })
+                    };
+                    #[cfg(not(feature = "rust-macros"))]
+                    let result = qsl::parse_qsl_with_constants(&source[start..end], &constants);
+                    match result {
+                        Ok(schemas) => {
+                            for s in schemas {
+                                if names.insert(s.name.clone()) {
+                                    recovered.push(s)
+                                } else {
+                                    diagnostics.push(qsl::ParseError {
+                                        offset: start,
+                                        message: format!("duplicate schema `{}`", s.name),
+                                    })
+                                }
+                            }
+                        }
+                        Err(mut error) => {
+                            error.offset = error.offset.saturating_add(start);
+                            diagnostics.push(error)
+                        }
+                    }
+                }
+                if !diagnostics.iter().any(|d| d.message == e.message) {
+                    diagnostics.push(e)
+                }
+                recovered
+            } else {
+                println!(
+                    "{{\"ok\":false,\"offset\":{},\"message\":{}}}",
+                    e.offset,
+                    json(&e.message)
+                );
+                return;
+            }
         }
     };
     let generated = if std::env::args().any(|a| a == "--generate") {
@@ -149,6 +201,7 @@ fn main() {
         g.config.max_data_size = maximum_data;
         g.config.qsl_rt = rt;
         g.config.qsl_rt_default = slots;
+        g.config.stack_limit = stack_limit;
         g.generate(&schemas)
             .ok()
             .and_then(|_| String::from_utf8(g.output).ok())
@@ -167,6 +220,28 @@ fn main() {
     #[cfg(not(feature = "rust-macros"))]
     let rust_names = Vec::<String>::new();
     for s in schemas {
+        let mut s = s;
+        if let Err(message) = qsl::modernization::check_storage_limit(&s, stack_limit) {
+            diagnostics.push(qsl::ParseError {
+                offset: 0,
+                message: format!("{}: {message}", s.name),
+            });
+            continue;
+        }
+        if s.options.transmutate && s.borrow_strings() {
+            s.flags &= !(qsl::FLAG_LIFETIME | qsl::FLAG_FIELD_BORROW);
+        }
+        let s = match qsl::modernization::lower_storage(&s, stack_limit) {
+            Ok(s) => s,
+            Err(e) => {
+                diagnostics.push(qsl::ParseError {
+                    offset: 0,
+                    message: format!("{}: {e}", s.name),
+                });
+                continue;
+            }
+        };
+        let slots = s.options.slots.unwrap_or(slots);
         let hashes = match s.hashes(use_hash) {
             Ok(hashes) => hashes,
             Err(error) => {
@@ -180,6 +255,7 @@ fn main() {
         let hash_json = format!("\"hashes\":{{\"version\":{},\"algorithm\":{},\"bits\":{},\"strict\":{},\"light\":{},\"complete\":{}}}", hashes.version, json(hashes.algorithm.name()), hashes.algorithm.bits(), json(&hashes.strict_hex()), json(&hashes.light_hex()), hashes.complete);
         let quant =
             qsl::payload_quant::PayloadQuantPlan::analyze(&s).expect("validated payload plan");
+        let hybrid = qsl::hybrid::HybridPlan::analyze(&s).expect("validated scalar prefix");
         let padding = if quant.active { quant.padding_bytes } else { 0 };
         let maximum = qsl::interpreter::schema_maximum_size(&s).ok().flatten();
         let eligible = maximum.is_some_and(|n| {
@@ -225,7 +301,7 @@ fn main() {
         } else {
             "finite wire upper bound"
         };
-        let safety = true;
+        let safety = s.flags & qsl::FLAG_SAFETY != 0;
         let optional_tail = true;
         let structure_macro = s.flags & qsl::FLAG_MACRO != 0;
         let strings = s
@@ -296,17 +372,55 @@ fn main() {
             "null".into()
         };
         let wire_layout = editor_layout::describe(&s);
+        let hybrid_json=hybrid.as_ref().map_or("null".into(),|p|format!("{{\"minimumBytes\":{},\"maximumBytes\":{},\"lengthHeaderBytes\":{},\"fieldCount\":{}}}",p.prefix_minimum,p.prefix_bytes,p.length_header,p.prefix.fields.len()));
+        let byte_api = safety
+            && s.fields.iter().all(|f| {
+                matches!(
+                    f.data,
+                    qsl::QslType::Byte
+                        | qsl::QslType::Integer { .. }
+                        | qsl::QslType::RangedInteger { .. }
+                        | qsl::QslType::Flags(_)
+                )
+            });
+        let memory = editor_memory::describe(&s);
+        let groups=qsl::modernization::register_groups(&s).unwrap_or_default().iter().map(|g|format!("{{\"firstField\":{},\"fieldCount\":{},\"wireOffset\":{},\"readBytes\":{},\"registerBits\":{},\"metadataBytes\":{}}}",g.first,g.fields,g.offset.map_or("null".into(),|n|n.to_string()),g.bytes,g.register_bits,g.metadata_bytes)).collect::<Vec<_>>().join(",");
+        let regions = s
+            .options
+            .regions
+            .iter()
+            .map(|r| {
+                format!(
+                    "{{\"type\":{},\"firstField\":{},\"endField\":{}}}",
+                    json(&r.rust_type),
+                    r.start,
+                    r.end
+                )
+            })
+            .collect::<Vec<_>>()
+            .join(",");
         let prediction = s.predict_seq();
         let dispatch = s.opt_table() && !quant.active;
         let hint = false;
         let byte_maximum = maximum
             .and_then(|n| n.checked_add(qsl::qps_bytes::BYTE_FRAME_HEADER))
             .map_or("null".to_string(), |n| n.to_string());
-        let payload=format!("\"qpsByteCodecRevision\":3,\"qpsByteHeader\":16,\"qpsByteMaximum\":{byte_maximum},\"qpsByteAPI\":{safety},\"stateBits\":{},\"stateBitsQuantum\":{},\"qpsCodecRevision\":2,\"payloadQuantRequested\":{},\"payloadQuantActive\":{},\"payloadQuantum\":{},\"payloadPadding\":{padding},\"payloadMaximum\":{},\"rawMaximum\":{},\"payloadReason\":{},\"staticOptional\":{},\"lengthGraph\":{length_events},\"predictSequenceHint\":{hint},\"predictSequence\":{prediction},\"tagDispatch\":{dispatch}",s.state_bits(),s.state_bits_quantum(),s.quant_requested(),quant.active,quant.quantum,quant.max_bytes,quant.raw_max_bytes.map_or("null".into(),|x|x.to_string()),json(quant.reason.unwrap_or("exact quotient and remainder; separate native restoration")),json(static_mode));
-        rows.push(format!("{{\"maxDataSize\":{maximum_data},{hash_json},\"wireLayout\":{wire_layout},\"name\":{},\"maximum\":{},\"rtEligible\":{eligible},\"rtReason\":{},\"strings\":[{strings}],\"rtEnabled\":{},\"slots\":{slots},\"qps\":{},\"quantum\":{},\"dBits\":{bits},\"indexBytes\":{index},\"plainIndexBytes\":{plain},\"reason\":{},\"inline\":{},\"optionalCount\":{},\"fieldCount\":{},\"structureMacro\":{structure_macro},\"safety\":{safety},\"optionalTailRequired\":{optional_tail},\"suggestFixedPrefix\":{suggest},{payload}}}",json(&s.name),maximum.map_or("null".into(),|x|x.to_string()),json(rt_reason),rt&&eligible,s.qps(),if s.qps(){s.quantum()}else{s.state_bits_quantum()},json(reason),json(inline),s.optional_count(),s.fields.len()));
+        let payload=format!("\"qpsByteCodecRevision\":3,\"qpsByteHeader\":16,\"qpsByteMaximum\":{byte_maximum},\"qpsByteAPI\":{byte_api},\"scalarPrefix\":{hybrid_json},\"stateBits\":{},\"stateBitsQuantum\":{},\"qpsCodecRevision\":2,\"payloadQuantRequested\":{},\"payloadQuantActive\":{},\"payloadQuantum\":{},\"payloadPadding\":{padding},\"payloadMaximum\":{},\"rawMaximum\":{},\"payloadReason\":{},\"staticOptional\":{},\"lengthGraph\":{length_events},\"predictSequenceHint\":{hint},\"predictSequence\":{prediction},\"tagDispatch\":{dispatch}",s.state_bits(),s.state_bits_quantum(),s.quant_requested(),quant.active,quant.quantum,quant.max_bytes,quant.raw_max_bytes.map_or("null".into(),|x|x.to_string()),json(quant.reason.unwrap_or("exact quotient and remainder; separate native restoration")),json(static_mode));
+        rows.push(format!("{{\"maxDataSize\":{maximum_data},{hash_json},\"wireLayout\":{wire_layout},\"memory\":{memory},\"registerGroups\":[{groups}],\"nativeRegions\":[{regions}],\"stackLimit\":{stack_limit},\"name\":{},\"maximum\":{},\"rtEligible\":{eligible},\"rtReason\":{},\"strings\":[{strings}],\"rtEnabled\":{},\"slots\":{slots},\"qps\":{},\"quantum\":{},\"dBits\":{bits},\"indexBytes\":{index},\"plainIndexBytes\":{plain},\"reason\":{},\"inline\":{},\"optionalCount\":{},\"fieldCount\":{},\"structureMacro\":{structure_macro},\"safety\":{safety},\"optionalTailRequired\":{optional_tail},\"suggestFixedPrefix\":{suggest},{payload}}}",json(&s.name),maximum.map_or("null".into(),|x|x.to_string()),json(rt_reason),rt&&eligible,s.qps(),if s.qps(){s.quantum()}else{s.state_bits_quantum()},json(reason),json(inline),s.optional_count(),s.fields.len()));
     }
+    let diagnostic_json = diagnostics
+        .iter()
+        .map(|e| {
+            format!(
+                "{{\"offset\":{},\"message\":{}}}",
+                e.offset,
+                json(&e.message)
+            )
+        })
+        .collect::<Vec<_>>()
+        .join(",");
     println!(
-        "{{\"ok\":true,\"generated\":{},\"rustMacros\":[{}],\"schemas\":[{}]}}",
+        "{{\"ok\":true,\"diagnostics\":[{diagnostic_json}],\"generated\":{},\"rustMacros\":[{}],\"schemas\":[{}]}}",
         generated.as_ref().map_or("null".into(), |s| json(s)),
         rust_names
             .iter()
@@ -362,4 +476,64 @@ fn read_bundle(source: &mut String, rust: &mut Vec<String>) -> io::Result<()> {
         return Err(io::ErrorKind::InvalidData.into());
     }
     Ok(())
+}
+
+/// Recovery is editor-only; normal builds continue to reject the entire source.
+fn editor_spans(source: &str) -> Vec<(usize, usize)> {
+    let b = source.as_bytes();
+    let mut out = Vec::new();
+    let mut start = None;
+    let mut i = 0;
+    let mut depth = 0;
+    while i < b.len() {
+        if b[i..].starts_with(b"//") {
+            while i < b.len() && b[i] != b'\n' {
+                i += 1
+            }
+            continue;
+        }
+        if b[i..].starts_with(b"/*") {
+            i += 2;
+            while i + 1 < b.len() && !b[i..].starts_with(b"*/") {
+                i += 1
+            }
+            i = (i + 2).min(b.len());
+            continue;
+        }
+        if b[i] == b'"' {
+            i += 1;
+            while i < b.len() {
+                if b[i] == b'\\' {
+                    i = (i + 2).min(b.len())
+                } else if b[i] == b'"' {
+                    i += 1;
+                    break;
+                } else {
+                    i += 1
+                }
+            }
+            continue;
+        }
+        if b[i] == b'&' {
+            if let Some(s) = start.take() {
+                out.push((s, i))
+            }
+            start = Some(i);
+            depth = 0;
+        } else if b[i] == b'{' {
+            depth += 1;
+        } else if b[i] == b'}' && depth > 0 {
+            depth -= 1;
+            if depth == 0 {
+                if let Some(s) = start.take() {
+                    out.push((s, i + 1))
+                }
+            }
+        }
+        i += 1;
+    }
+    if let Some(s) = start {
+        out.push((s, b.len()))
+    }
+    out
 }

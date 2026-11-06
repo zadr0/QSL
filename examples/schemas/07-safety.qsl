@@ -1,1 +1,1 @@
-&Bounded { u8(1..3) kind; str(1..100) name; }
+&Bounded[safety] { u8(1..3) kind; str(1..100) name; }

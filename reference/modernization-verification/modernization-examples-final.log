@@ -1,0 +1,17 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.37s
+     Running unittests lib.rs (.optimization/modernization-examples-target\debug\deps\qsl_examples-6cab7254106873dd.exe)
+
+running 4 tests
+test tests::scalar_prefix_and_error_checks ... ok
+test tests::raw_compact_qps_and_rt_are_exact ... ok
+test uniform_utf8_really_uses_lz_instead_of_a_shorter_raw_header ... ok
+test tests::every_text_mode_restores_the_same_utf8 ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+   Doc-tests qsl_examples
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

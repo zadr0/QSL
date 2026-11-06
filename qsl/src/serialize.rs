@@ -17,8 +17,9 @@ pub trait Serializable: Sized {
     /// Allocate the final buffer once and write directly through its pointer.
     /// # Safety
     /// Every field must satisfy its declared QSL range and exact-length contract.
+    /// The combined encoded size must fit isize::MAX.
     #[cfg(feature = "native")]
-    fn serialize(&self) -> SerOut {
+    unsafe fn serialize(&self) -> SerOut {
         let mut out = unsafe { SerOut::uninit(self.serialized_size()) };
         unsafe {
             let written = self.serialize_into_unsafe(out.as_mut_ptr());
@@ -31,8 +32,9 @@ pub trait Serializable: Sized {
     /// Each encoded byte is initialized by the writer, avoiding a zero-fill pass.
     /// # Safety
     /// Every field must satisfy its declared QSL range and exact-length contract.
+    /// The combined encoded size must fit isize::MAX.
     #[cfg(not(feature = "native"))]
-    fn serialize(&self) -> Vec<u8> {
+    unsafe fn serialize(&self) -> Vec<u8> {
         let len = self.serialized_size();
         let mut out = Vec::with_capacity(len);
         unsafe {
@@ -137,8 +139,9 @@ pub trait BorrowSerializable<'a>: Sized {
     /// Allocate once and encode borrowed fields without a zero-fill pass.
     /// # Safety
     /// Values must satisfy all QSL bounds and exact byte lengths.
+    /// The combined encoded size must fit isize::MAX.
     #[cfg(feature = "native")]
-    fn serialize(&self) -> SerOut {
+    unsafe fn serialize(&self) -> SerOut {
         let mut out = unsafe { SerOut::uninit(self.serialized_size()) };
         unsafe {
             let written = self.serialize_into_unsafe(out.as_mut_ptr());
@@ -150,7 +153,8 @@ pub trait BorrowSerializable<'a>: Sized {
     /// Allocate once and encode into bytes initialized by the generated writer.
     /// # Safety
     /// Values must satisfy all QSL bounds and exact byte lengths.
-    fn serialize(&self) -> Vec<u8> {
+    /// The combined encoded size must fit isize::MAX.
+    unsafe fn serialize(&self) -> Vec<u8> {
         let len = self.serialized_size();
         let mut out = Vec::with_capacity(len);
         unsafe {

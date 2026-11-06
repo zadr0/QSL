@@ -112,11 +112,11 @@ fn chunks(f: &QuantField) -> Vec<(usize, usize)> {
         .collect()
 }
 fn packed_word(p: &PayloadQuantPlan) -> Option<usize> {
-    // The private tail already exists. A whole-register operation is legal
-    // only if even the shortest frame has initialized capacity for that word.
-    [1, 2, 4, 8, 16]
-        .into_iter()
-        .find(|&bytes| bytes >= p.max_bytes && bytes <= p.min_bytes + p.padding_bytes)
+    if p.max_bytes <= 16 && p.max_bytes.saturating_sub(p.min_bytes) <= 1 {
+        Some(p.max_bytes.max(1).next_power_of_two())
+    } else {
+        None
+    }
 }
 fn prepared_word_write(s: &QslSchema, p: &PayloadQuantPlan, bytes: usize, out: &mut String) {
     let word = format!("u{}", bytes * 8);
@@ -138,11 +138,18 @@ fn prepared_word_write(s: &QslSchema, p: &PayloadQuantPlan, bytes: usize, out: &
             ordinal += 1;
         }
     }
-    ln(out,format!("output.as_mut_ptr().cast::<{word}>().write_unaligned(packed.to_le());self.__qsl_size()}}"));
+    ln(out,format!("let length=self.__qsl_size();std::ptr::copy_nonoverlapping(packed.to_le_bytes().as_ptr(),output.as_mut_ptr(),{});",p.min_bytes));
+    if p.max_bytes > p.min_bytes {
+        ln(out,format!("let mut scratch=std::mem::MaybeUninit::<u8>::uninit();let destination=::qsl::payload_quant::selected_address(std::hint::select_unpredictable(length>{0},output.as_mut_ptr().add({0}),scratch.as_mut_ptr()));destination.cast_mut().write((packed>>{1})as u8);",p.min_bytes,p.min_bytes*8));
+    }
+    ln(out, "length}");
 }
 fn prepared_word_read(s: &QslSchema, p: &PayloadQuantPlan, bytes: usize, out: &mut String) {
     let word = format!("u{}", bytes * 8);
-    ln(out,format!("#[inline] unsafe fn __qsl_quant_read(bytes:*const u8,output:&mut std::mem::MaybeUninit<Self>){{let out=output.as_mut_ptr();let packed=<{word}>::from_le(bytes.cast::<{word}>().read_unaligned());let presence=(packed as u64)&{}u64;",mask(p.header_bytes*8)));
+    ln(out,format!("#[inline] unsafe fn __qsl_quant_read(bytes:*const u8,output:&mut std::mem::MaybeUninit<Self>){{let out=output.as_mut_ptr();let mut packed=::qsl::modernization::load_exact::<{}>(bytes)as {word};let presence=(packed as u64)&{}u64;",p.min_bytes,mask(p.header_bytes*8)));
+    if p.max_bytes > p.min_bytes {
+        ln(out,format!("let length=(Self::__qsl_quant_offset_{}(presence)+7)>>3;let source=::qsl::payload_quant::selected_address(std::hint::select_unpredictable(length>{},bytes.add({}),::qsl::modernization::ZERO_WORD.as_ptr()));packed|=(source.read()as {word})<<{};",p.fields.len(),p.min_bytes,p.min_bytes,p.min_bytes*8));
+    }
     let mut ordinal = 0;
     for f in &p.fields {
         let code = if f.bits == 0 {
@@ -202,16 +209,10 @@ fn prepared(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) {
     }
 }
 fn reader_word(p: &PayloadQuantPlan) -> Option<usize> {
-    // Variable optional prefixes made a u128 aggregate reader slower on the
-    // measured target. Keep field addressing there, independently of writing.
-    if p.fields.iter().any(|f| f.optional && f.bits != 0) {
-        None
-    } else {
-        packed_word(p)
-    }
+    packed_word(p)
 }
 fn prepared_field_write(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) {
-    ln(out,"/// # Safety\n/// Values are valid; output is exclusive, initialized, disjoint and includes QUANT_PADDING_BYTES.\n#[inline] unsafe fn __qsl_quant_write(&self,output:&mut [u8])->usize {let to=output.as_mut_ptr();");
+    ln(out,"/// # Safety\n/// Values are valid; output is exclusive, initialized, disjoint and includes QUANT_PADDING_BYTES.\n#[inline] unsafe fn __qsl_quant_write(&self,output:&mut [u8])->usize {let to=output.as_mut_ptr();std::ptr::write_bytes(to,0,self.__qsl_size());");
     ln(out, format!("let presence={};", presence(s)));
     if p.header_bytes > 0 {
         ln(
@@ -237,7 +238,7 @@ fn prepared_field_write(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) {
         for (start, width) in chunks(f) {
             // Absent fields select the native minimum, hence code==0. A full
             // Boolean mask is cheaper than u128 multiplication by 0/1 on x64.
-            ln(out,format!("let at=bit+{start}*p;let shift=at&7;let address=to.add(at>>3).cast::<{word}>();let old=<{word}>::from_le(address.read_unaligned());let active=(({} as {word})<<shift)&(0 as {word}).wrapping_sub(p as {word});let value=(((code>>{start})&{}u64) as {word})<<shift;address.write_unaligned(((old & !active)|value).to_le());",mask(width),mask(width)));
+            ln(out,format!("let at=bit+{start}*p;let shift=at&7;let count=(shift+{width}*p+7)>>3;let address=to.add(at>>3);let old=::qsl::modernization::load_word(address,count) as {word};let active=(({} as {word})<<shift)&(0 as {word}).wrapping_sub(p as {word});let value=(((code>>{start})&{}u64) as {word})<<shift;::qsl::modernization::store_word(address,((old & !active)|value) as u128,count);",mask(width),mask(width)));
         }
         ln(out, "}");
     }
@@ -248,10 +249,7 @@ fn prepared_field_write(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) {
             p.fields.len()
         ),
     );
-    ln(
-        out,
-        "*to.add(bit>>3)&=((1u16<<(bit&7))-1) as u8;(bit+7)>>3 }",
-    );
+    ln(out, "(bit+7)>>3 }");
 }
 fn prepared_field_read(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) {
     ln(out,"/// # Safety\n/// Input is validated and includes initialized padding; output is disjoint, aligned storage.\n#[inline] unsafe fn __qsl_quant_read(bytes:*const u8,output:&mut std::mem::MaybeUninit<Self>) {let out=output.as_mut_ptr();");
@@ -269,9 +267,20 @@ fn prepared_field_read(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) {
         if f.optional {
             ordinal += 1;
         }
-        let word = format!("u{}", f.word_bytes * 8);
         for (start, width) in chunks(f) {
-            ln(out,format!("let at=bit+{start}*p;let word=<{word}>::from_le(bytes.add(at>>3).cast::<{word}>().read_unaligned());code|=(((word as u128>>(at&7))&{}u128) as u64)<<{start};",mask(width)));
+            let minimum = (width + 7) >> 3;
+            let maximum = (width + f.max_start + 7) >> 3;
+            ln(out,format!("let at=bit+{start}*p;let count=((at&7)+{width}*p+7)>>3;let source=::qsl::payload_quant::selected_address(std::hint::select_unpredictable(p!=0,bytes.add(at>>3),::qsl::modernization::ZERO_WORD.as_ptr()));let mut word=::qsl::modernization::load_exact::<{minimum}>(source)as u128;"));
+            if maximum > minimum {
+                ln(out,format!("let extra=::qsl::payload_quant::selected_address(std::hint::select_unpredictable(count>{minimum},source.add({minimum}),::qsl::modernization::ZERO_WORD.as_ptr()));word|=(extra.read()as u128)<<{};",minimum*8));
+            }
+            ln(
+                out,
+                format!(
+                    "code|=(((word>>(at&7))&{}u128)as u64)<<{start};",
+                    mask(width)
+                ),
+            );
         }
         ln(
             out,
@@ -352,32 +361,54 @@ fn exact(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) {
     ln(out, "} }");
 }
 fn validation(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) -> QslResult<()> {
-    ln(out,"pub fn validate(input:&[u8])->::qsl::QslResult<()> {let mut c=::qsl::validation::ValidationCursor::with_limit(input,Self::MAX_DATA_SIZE)?;");
-    if p.header_bytes > 0 {
-        ln(
-            out,
-            format!("let presence=c.bits({})?;", p.header_bytes * 8),
-        );
-    } else {
-        ln(out, "let presence=0u64;");
-    }
-    let n = s.optional_count();
-    if n < 64 {
-        ln(
-            out,
-            format!("if presence>>{n}!=0{{return Err(::qsl::QslError::InvalidValue);}}"),
-        );
-    }
-    let mut ordinal = 0;
-    for f in &p.fields {
-        if f.optional {
-            ln(out, format!("if (presence>>{ordinal})&1!=0 {{"));
-            ordinal += 1;
+    for capture in [false, true] {
+        if capture && s.flags & crate::FLAG_SAFETY == 0 {
+            continue;
         }
-        ln(out,format!("c.charge({})?;let code=c.bits({})?;let rank={};if rank>{}u64{{return Err(::qsl::QslError::InvalidValue);}}",f.native_bytes,f.bits,operands(f,p.quantum,true),f.max-f.min));
-        if f.optional {
-            ln(out, "}");
+        if capture {
+            ln(out,"fn __qsl_read_checked(input:&[u8])->::qsl::QslResult<Self>{let mut c=::qsl::validation::ValidationCursor::with_limit(input,Self::MAX_DATA_SIZE)?;");
+        } else {
+            ln(out,"pub fn validate(input:&[u8])->::qsl::QslResult<()>{let mut c=::qsl::validation::ValidationCursor::with_limit(input,Self::MAX_DATA_SIZE)?;");
         }
+        if p.header_bytes > 0 {
+            ln(
+                out,
+                format!("let presence=c.bits({})?;", p.header_bytes * 8),
+            );
+        } else {
+            ln(out, "let presence=0u64;");
+        }
+        let n = s.optional_count();
+        if n < 64 {
+            ln(
+                out,
+                format!("if presence>>{n}!=0{{return Err(::qsl::QslError::InvalidValue)}}"),
+            );
+        }
+        let mut ordinal = 0;
+        for f in &p.fields {
+            let present = if f.optional {
+                let expr = format!("((presence>>{ordinal})&1)as usize");
+                ordinal += 1;
+                expr
+            } else {
+                "1usize".into()
+            };
+            ln(out,format!("let p={present};c.charge({}*p)?;let code=c.bits({}*p)?;let rank={};if rank>{}u64{{return Err(::qsl::QslError::InvalidValue)}}",f.native_bytes,f.bits,operands(f,p.quantum,true),f.max-f.min));
+            if capture {
+                let source = &s.fields[f.index];
+                let value = format!("((rank as i128)+({}i128))as {}", f.min, f.rust_type);
+                ln(
+                    out,
+                    if f.optional {
+                        format!("let field_{}=(p!=0).then_some({value});", source.tag)
+                    } else {
+                        format!("let field_{}={value};", source.tag)
+                    },
+                );
+            }
+        }
+        checked_codegen::complete(s, out, capture)?;
     }
     validation_codegen::finish(s, out)
 }
@@ -417,7 +448,7 @@ pub(super) fn generate(
     }
     if i.config.qsl_rt {
         let cap = p.max_bytes + p.padding_bytes;
-        let slots = i.config.qsl_rt_default;
+        let slots = s.options.slots.unwrap_or(i.config.qsl_rt_default);
         if cap.checked_mul(slots).is_none_or(|n| n > 64 * 1024 * 1024) {
             return Err(QslError::InvalidSchema);
         }
@@ -468,7 +499,7 @@ pub(super) fn generate(
     validation_codegen::values(s, out)?;
     validation(s, p, out)?;
     if i.config.qsl_rt {
-        ln(out,format!("pub fn serialize(&self)->::qsl::QslResult<::qsl::QuantizedLease<Self,{},{}>>{{{name}_QUANT_REGIONS.try_encode(self)}}",p.max_bytes+p.padding_bytes,i.config.qsl_rt_default));
+        ln(out,format!("pub fn serialize(&self)->::qsl::QslResult<::qsl::QuantizedLease<Self,{},{}>>{{{name}_QUANT_REGIONS.encode(self)}}",p.max_bytes+p.padding_bytes,s.options.slots.unwrap_or(i.config.qsl_rt_default)));
     } else {
         ln(out,"pub fn serialize(&self)->::qsl::QslResult<::qsl::QuantizedOut<Self>>{::qsl::QuantizedOut::encode(self)}");
     }
@@ -479,6 +510,8 @@ pub(super) fn generate(
     ln(out, "}");
     ln(out,format!("impl ::qsl::Serializable for {name} {{const OPTIONAL_FIELDS_COUNT:usize={};const SIZE_TAG:usize=0;fn get_size()->usize{{{}}}#[inline] fn serialized_size(&self)->usize{{self.__qsl_size()}}#[inline] unsafe fn serialize_unsafe(&self,to:*mut u8){{self.__qsl_write_unchecked(to);}}#[inline] unsafe fn serialize_into_unsafe(&self,to:*mut u8)->usize{{self.__qsl_write_unchecked(to)}}#[inline] unsafe fn deserialize_unsafe(bytes:*const u8)->Self{{Self::__qsl_read_unchecked(bytes)}}}}",s.optional_count(),p.min_bytes));
     ln(out,format!("unsafe impl ::qsl::payload_quant::QuantizedRecord for {name} {{const MAX_DATA_SIZE:usize=Self::MAX_DATA_SIZE;const QUANTUM:usize={};const PADDING_BYTES:usize={};const MAX_QUANTIZED_BYTES:usize={};fn quant_validate_values(&self)->::qsl::QslResult<()>{{self.validate_values()}}#[inline] unsafe fn quant_write_prepared(&self,out:*mut u8)->usize{{self.__qsl_quant_write(std::slice::from_raw_parts_mut(out,self.__qsl_size()+Self::QUANT_PADDING_BYTES))}}#[inline] unsafe fn quant_read_padded(bytes:*const u8,_len:usize,out:*mut Self){{Self::__qsl_quant_read(bytes,&mut *out.cast::<std::mem::MaybeUninit<Self>>());}}}}",p.quantum,p.padding_bytes,p.max_bytes));
-    ln(out,format!("impl ::qsl::payload_quant::CheckedQuantizedRecord for {name}{{fn quant_validate(input:&[u8])->::qsl::QslResult<()>{{Self::validate(input)}}}}"));
+    if s.flags & crate::FLAG_SAFETY != 0 {
+        ln(out,format!("impl ::qsl::payload_quant::CheckedQuantizedRecord for {name}{{fn quant_validate(input:&[u8])->::qsl::QslResult<()>{{Self::validate(input)}}}}"));
+    }
     Ok(())
 }

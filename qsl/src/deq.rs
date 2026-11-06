@@ -28,6 +28,7 @@ pub struct GenerationConfig {
     pub max_data_size: usize,
     pub qsl_rt: bool,
     pub qsl_rt_default: usize,
+    pub stack_limit: usize,
 }
 impl Default for GenerationConfig {
     fn default() -> Self {
@@ -36,6 +37,7 @@ impl Default for GenerationConfig {
             max_data_size: crate::validation::DEFAULT_MAX_DATA_SIZE,
             qsl_rt: false,
             qsl_rt_default: 16,
+            stack_limit: 256,
         }
     }
 }
@@ -85,6 +87,13 @@ pub fn parse_deq(source: &str) -> Result<DeqConfig, ParseError> {
                         "false" => false,
                         _ => return Err(parser.error("QSL_RT expects true or false")),
                     }
+                }
+                "STACK_LIMIT" => {
+                    let n = parser.expr(&values)?;
+                    if n < 0 || n > u32::MAX as i128 {
+                        return Err(parser.error("STACK_LIMIT must be 0..u32::MAX bytes"));
+                    }
+                    result.generation.stack_limit = n as usize;
                 }
                 "QSL_RT_DEFAULT" => {
                     let n = parser.expr(&values)?;
@@ -184,6 +193,7 @@ fn build_inputs(
                 "MAX_DATA_SIZE" => generation.max_data_size = parsed.generation.max_data_size,
                 "QSL_RT" => generation.qsl_rt = parsed.generation.qsl_rt,
                 "QSL_RT_DEFAULT" => generation.qsl_rt_default = parsed.generation.qsl_rt_default,
+                "STACK_LIMIT" => generation.stack_limit = parsed.generation.stack_limit,
                 _ => unreachable!(),
             }
         }

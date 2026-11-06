@@ -282,7 +282,10 @@ fn descriptor(schema: &QslSchema, kind: SchemaHashKind) -> QslResult<(Vec<u8>, b
     // Effective format, not a raw bit-mask of source attributes. predict_seq
     // controls length inference; opt_table alone only dispatches readers. Q_table quantum
     // changes the static lookup representation, never the wire bytes.
-    let mode = if quant.active {
+    let hybrid = crate::hybrid::HybridPlan::analyze(schema)?;
+    let mode = if hybrid.is_some() {
+        7
+    } else if quant.active {
         6
     } else if schema.predicted_opt_table() {
         3
@@ -298,6 +301,12 @@ fn descriptor(schema: &QslSchema, kind: SchemaHashKind) -> QslResult<(Vec<u8>, b
         0
     };
     d.byte(mode);
+    if let Some(h) = &hybrid {
+        d.size(h.prefix.fields.len())?;
+        d.size(h.prefix_bytes)?;
+        d.size(h.length_header)?;
+        d.size(schema.quantum())?;
+    }
     d.byte(u8::from(schema.qps()));
     if schema.qps() {
         d.size(schema.quantum())?;
@@ -322,7 +331,15 @@ fn descriptor(schema: &QslSchema, kind: SchemaHashKind) -> QslResult<(Vec<u8>, b
         if schema.compact() {
             d.size(field.data.rank_width(field.bits)?)?;
         }
-        d.ty(&field.data, schema.compact() || quant.active, 0)?;
+        d.ty(
+            &field.data,
+            schema.compact()
+                || quant.active
+                || hybrid
+                    .as_ref()
+                    .is_some_and(|h| h.prefix.fields.iter().any(|f| f.tag == field.tag)),
+            0,
+        )?;
     }
     Ok((d.bytes, d.complete))
 }

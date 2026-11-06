@@ -1,0 +1,44 @@
+   Compiling qsl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\qsl)
+   Compiling qsl-examples v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\examples)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.93s
+     Running `.optimization/modernization-examples-target\debug\examples\basic.exe`
+8 ranged u64 values: raw=64 B, compact=4 B, QPS=4 B; restored f0=3, f7=10
+   Compiling qsl-examples v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\examples)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.58s
+     Running `.optimization/modernization-examples-target\debug\examples\strings.exe`
+1024 UTF-8 characters = 1683 bytes; String/borrow/COPY frame=1687 B; inline=1685 B; LZ=1685 B
+The phrase selected LZ raw fallback: the 2-byte difference is a length header, not compression.
+Uniform UTF-8 control: 2048 useful B -> 55 LZ wire B
+borrowed=1024 chars, COPY String=1683 bytes; fixed string Rust type: [u8; 4]
+   Compiling qsl-examples v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\examples)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running `.optimization/modernization-examples-target\debug\examples\optionals.exe`
+mask=000: default=5 B, opt_table=5 B; bytes=[00, 2a, 00, 00, 00]
+mask=001: default=6 B, opt_table=6 B; bytes=[05, 2a, 00, 00, 00, 0b]
+mask=010: default=6 B, opt_table=6 B; bytes=[09, 2a, 00, 00, 00, 16]
+mask=011: default=7 B, opt_table=7 B; bytes=[26, 2a, 00, 00, 00, 0b, 16]
+mask=100: default=6 B, opt_table=6 B; bytes=[0d, 2a, 00, 00, 00, 21]
+mask=101: default=7 B, opt_table=7 B; bytes=[36, 2a, 00, 00, 00, 0b, 21]
+mask=110: default=7 B, opt_table=7 B; bytes=[3a, 2a, 00, 00, 00, 16, 21]
+mask=111: default=8 B, opt_table=8 B; bytes=[e7, 2a, 00, 00, 00, 0b, 16, 21]
+   Compiling qsl-examples v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\examples)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.52s
+     Running `.optimization/modernization-examples-target\debug\examples\qps.exe`
+Scalar Q16: 64 useful B -> 4 wire B
+Mixed Q16: 16 scalar B -> 1 B; string length stays 4 B, string stays 1024 B; frame=1029 B
+   Compiling qsl-examples v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\examples)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running `.optimization/modernization-examples-target\debug\examples\rt.exe`
+16 live RT leases; the 17th waits for release
+   Compiling qsl-examples v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\examples)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
+     Running `.optimization/modernization-examples-target\debug\examples\macros.exe`
+Rust Trace stays nested; generated fields: trace_header_id, trace_kind, status
+7 B; xxHash strict=bf995918935836d1, light=dc0cb40655d973ce; computed during analysis
+   Compiling qsl-examples v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\examples)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.53s
+     Running `.optimization/modernization-examples-target\debug\examples\safety.exe`
+MAX_DATA_SIZE=65535 B
+invalid numeric domain: QSL error: InvalidValue
+forged u32::MAX string length: QSL error: UnexpectedEof
+invalid UTF-8: QSL error: InvalidUtf8

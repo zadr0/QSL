@@ -4,6 +4,14 @@ use crate::static_index::PredictPlan;
 /// Finite wire upper bound. An unbounded string/array or unknown custom size
 /// cannot receive static RT storage. This is a build-time calculation only.
 pub(crate) fn maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {
+    if let Some(p) = crate::hybrid::HybridPlan::analyze(schema)? {
+        return maximum_size(&p.tail)?
+            .map(|n| {
+                n.checked_add(p.prefix_bytes + p.length_header)
+                    .ok_or(QslError::LengthOverflow)
+            })
+            .transpose();
+    }
     let quant = crate::payload_quant::PayloadQuantPlan::analyze(schema)?;
     if quant.active {
         return Ok(Some(quant.max_bytes));
@@ -58,13 +66,16 @@ pub(crate) fn maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {
         } else {
             match &f.data {
                 QslType::Array(_, _) => return Ok(None),
-                QslType::RangedArray { max, .. } => {
+                QslType::RangedArray { element, max, .. } => {
                     if schema.compact() {
                         s.bits(f.data.rank_width(f.bits)?)?;
                     } else {
                         s.bytes(4)?;
                     }
-                    s.bytes(*max)?;
+                    s.bytes(
+                        max.checked_mul(element.fixed_wire_size()?.ok_or(QslError::InvalidSchema)?)
+                            .ok_or(QslError::LengthOverflow)?,
+                    )?;
                 }
                 QslType::Custom {
                     fixed_wire_size: None,
@@ -94,6 +105,7 @@ pub(crate) fn maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {
     Ok(Some(s.finish()?))
 }
 pub(super) fn region_static(schema: &QslSchema, out: &mut String, slots: usize) -> QslResult<()> {
+    let slots = schema.options.slots.unwrap_or(slots);
     if let Some(cap) = maximum_size(schema)? {
         if cap.checked_mul(slots).is_none_or(|n| n > 64 * 1024 * 1024) {
             return Err(QslError::InvalidSchema);
@@ -103,13 +115,14 @@ pub(super) fn region_static(schema: &QslSchema, out: &mut String, slots: usize) 
     Ok(())
 }
 pub(super) fn region_method(schema: &QslSchema, out: &mut String, slots: usize) -> QslResult<()> {
+    let slots = schema.options.slots.unwrap_or(slots);
     if let Some(cap) = maximum_size(schema)? {
         let target = if schema.lifetime() {
             "::qsl::BorrowSerializable<'a>"
         } else {
             "::qsl::Serializable"
         };
-        ln(out,format!("/// Encode into an exclusive static region; no heap allocation.\n/// A live lease keeps the bytes stable. Exhaustion returns PoolExhausted.\npub fn serialize(&self)->::qsl::QslResult<::qsl::rt::RegionLease<{cap},{slots}>>{{self.validate_values()?;let mut lease={}_RT_REGIONS.try_acquire()?;unsafe{{let n=<Self as {target}>::serialize_into_unsafe(self,lease.as_mut_ptr());::qsl::validation::check_size(n,Self::MAX_DATA_SIZE)?;lease.set_len(n);}}Ok(lease)}}",schema.name));
+        ln(out,format!("/// Encode into an exclusive static region; no heap allocation.\n/// A live lease keeps the bytes stable. Waits for a free slot.\npub fn serialize(&self)->::qsl::QslResult<::qsl::rt::RegionLease<{cap},{slots}>>{{self.validate_values()?;let mut lease={}_RT_REGIONS.acquire();unsafe{{let n=<Self as {target}>::serialize_into_unsafe(self,lease.as_mut_ptr());::qsl::validation::check_size(n,Self::MAX_DATA_SIZE)?;lease.set_len(n);}}Ok(lease)}}",schema.name));
     }
     Ok(())
 }
@@ -195,16 +208,9 @@ pub(super) fn callbacks(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     for f in schema.fields.iter().filter(|f| f.optional) {
         ln(out,format!("/// # Safety\n/// Input is a validated field; out points to an initialized, disjoint Self.\n#[allow(dead_code)] unsafe fn __qsl_read_{}(bytes:*const u8,out:*mut Self,len:usize)->usize{{let mut reader=::qsl::QslByteReader::new(bytes);let _=len;",f.name));
         if (schema.state_bits() || graph_raw) && variable(&f.data) {
-            raw_read(&f.data, out, "value", "len", schema.borrow_strings())?;
+            raw_read_stored(f, out, "value", "len", schema.borrow_strings())?;
         } else {
-            emit_unchecked_value(
-                &f.data,
-                out,
-                "value",
-                f.bits,
-                false,
-                schema.borrow_strings(),
-            )?;
+            emit_stored_value(f, out, "value", f.bits, false, schema.borrow_strings())?;
         }
         ln(
             out,
@@ -227,6 +233,30 @@ pub(super) fn variable(ty: &QslType) -> bool {
             | QslType::GuardString { .. }
             | QslType::CopyGuardString { .. }
     )
+}
+pub(super) fn raw_read_stored(
+    f: &QslField,
+    out: &mut String,
+    name: &str,
+    len: &str,
+    borrowed: bool,
+) -> QslResult<()> {
+    use crate::modernization::StorageKind;
+    match f.storage {
+        StorageKind::HeapString => {
+            ln(out,format!("let bytes=std::slice::from_raw_parts(reader.read_exact({len}),{len});let {name}=String::from_utf8_unchecked(bytes.to_vec());"));
+            Ok(())
+        }
+        StorageKind::StackString(n) => {
+            ln(out,format!("let text=std::str::from_utf8_unchecked(std::slice::from_raw_parts(reader.read_exact({len}),{len}));let {name}=::qsl::StackString::<{n}>::try_from_str(text).unwrap_unchecked();"));
+            Ok(())
+        }
+        StorageKind::StrView => {
+            ln(out,format!("let {name}=std::str::from_utf8_unchecked(std::slice::from_raw_parts(reader.read_exact({len}),{len}));"));
+            Ok(())
+        }
+        _ => raw_read(&f.data, out, name, len, borrowed),
+    }
 }
 pub(super) fn raw_read(
     ty: &QslType,
@@ -277,7 +307,7 @@ pub(super) fn size(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             ln(out, format!("n+=({expr}).len();"));
         } else {
             ln(out, "let mut __qsl_bits=0usize;");
-            emit_size_field(&f.data, out, &expr, f.bits, false)?;
+            emit_size_stored(f, out, &expr, f.bits, false)?;
             ln(out, "n+=(__qsl_bits+7)>>3;");
         }
         if f.optional {
@@ -339,7 +369,7 @@ pub(super) fn write(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             };
             ln(out, format!("writer.write_bytes_unchecked({bytes});"));
         } else {
-            fast_type_write(&f.data, out, &expr, f.bits, false)?;
+            fast_stored_write(f, out, &expr, f.bits, false)?;
         }
         if f.optional {
             ln(out, "}");
@@ -367,8 +397,8 @@ pub(super) fn read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
         .enumerate()
         .filter(|(_, f)| !f.optional)
     {
-        emit_unchecked_value(
-            &f.data,
+        emit_stored_value(
+            f,
             out,
             &format!("field_{i}"),
             f.bits,
@@ -431,16 +461,9 @@ pub(super) fn read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
         );
         if variable(&f.data) {
             ln(out, format!("let length=(code as usize-1)+{};", c.min));
-            raw_read(&f.data, out, "value", "length", schema.borrow_strings())?;
+            raw_read_stored(f, out, "value", "length", schema.borrow_strings())?;
         } else {
-            emit_unchecked_value(
-                &f.data,
-                out,
-                "value",
-                f.bits,
-                false,
-                schema.borrow_strings(),
-            )?;
+            emit_stored_value(f, out, "value", f.bits, false, schema.borrow_strings())?;
         }
         ln(out, "Some(value)}else{None};");
     }

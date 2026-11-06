@@ -62,7 +62,7 @@ string_header!(u32);
 /// The QSL field's minimum remains a caller precondition of unchecked encoding.
 #[repr(C)]
 pub struct InlineString<const MAX: usize> {
-    len: u16,
+    len: u32,
     bytes: [MaybeUninit<u8>; MAX],
 }
 
@@ -102,7 +102,7 @@ impl<const MAX: usize> InlineString<MAX> {
             result.bytes.as_mut_ptr().cast(),
             value.len(),
         );
-        result.len = value.len() as u16;
+        result.len = value.len() as u32;
         result
     }
 
@@ -117,7 +117,7 @@ impl<const MAX: usize> InlineString<MAX> {
             value.bytes[index] = MaybeUninit::new(b' ');
             index += 1;
         }
-        value.len = LEN as u16;
+        value.len = LEN as u32;
         value
     }
 
@@ -189,7 +189,7 @@ impl<const MAX: usize> InlineString<MAX> {
     #[inline(always)]
     pub unsafe fn decode_into(input: *const u8, output: *mut Self) -> usize {
         let (len, used) = decode_bounded::<MAX>(input, ptr::addr_of_mut!((*output).bytes).cast());
-        ptr::addr_of_mut!((*output).len).write(len as u16);
+        ptr::addr_of_mut!((*output).len).write(len as u32);
         used
     }
 
@@ -200,7 +200,7 @@ impl<const MAX: usize> InlineString<MAX> {
     pub unsafe fn decode_into_with<H: StringHeader>(input: *const u8, output: *mut Self) -> usize {
         let (len, used) =
             decode_bounded_with::<MAX, H>(input, ptr::addr_of_mut!((*output).bytes).cast());
-        ptr::addr_of_mut!((*output).len).write(len as u16);
+        ptr::addr_of_mut!((*output).len).write(len as u32);
         used
     }
 
@@ -221,7 +221,7 @@ impl<const MAX: usize> InlineString<MAX> {
             ptr::addr_of_mut!((*output).bytes).cast(),
             len,
         );
-        ptr::addr_of_mut!((*output).len).write(len as u16);
+        ptr::addr_of_mut!((*output).len).write(len as u32);
         H::BYTES + len
     }
 
@@ -257,7 +257,7 @@ impl<const MAX: usize> InlineString<MAX> {
             ptr::addr_of_mut!((*output).bytes).cast(),
             len,
         );
-        ptr::addr_of_mut!((*output).len).write(len as u16);
+        ptr::addr_of_mut!((*output).len).write(len as u32);
         Self::HEADER_BYTES + len
     }
 

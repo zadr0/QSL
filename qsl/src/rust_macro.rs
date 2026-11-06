@@ -189,9 +189,35 @@ fn field_type(
                 "only shared str and [u8] references are supported in Rust schema macros".into(),
             )),
         },
-        Type::Array(a) if matches!(a.elem.as_ref(),Type::Path(p) if p.path.is_ident("u8")) => Ok(
-            QslType::FixedArray(Box::new(QslType::Byte), integer(&a.len)?),
-        ),
+        Type::Array(a) => {
+            let mut element_optional = false;
+            let mut element_borrow = false;
+            let mut element_str = false;
+            let mut element_owned = false;
+            let element = field_type(
+                &a.elem,
+                names,
+                &mut element_optional,
+                &mut element_borrow,
+                &mut element_str,
+                &mut element_owned,
+            )?;
+            if element_optional
+                || element_borrow
+                || !matches!(
+                    element,
+                    QslType::Byte
+                        | QslType::Integer { .. }
+                        | QslType::RangedInteger { .. }
+                        | QslType::Flags(_)
+                )
+            {
+                return Err(MacroError(
+                    "Rust schema arrays require fixed primitive numeric elements".into(),
+                ));
+            }
+            Ok(QslType::FixedArray(Box::new(element), integer(&a.len)?))
+        }
         _ => Err(MacroError(
             "unsupported Rust field type in schema macro".into(),
         )),
@@ -214,15 +240,22 @@ pub fn parse_rust_macros(sources: &[&str]) -> Result<Vec<QslSchema>, MacroError>
     }
     let mut result = Vec::new();
     for def in defs {
-        if def
-            .attrs
-            .iter()
-            .any(|a| marked(std::slice::from_ref(a)) && !matches!(a.meta, syn::Meta::Path(_)))
-        {
-            return Err(MacroError(format!(
-                "{}: qsl_macro/schem_macro take no arguments",
-                def.ident
-            )));
+        let mut native = false;
+        for attr in def.attrs.iter().filter(|a| marked(std::slice::from_ref(a))) {
+            if !matches!(attr.meta, syn::Meta::Path(_)) {
+                let mode = attr
+                    .parse_args::<syn::Ident>()
+                    .map_err(|_| MacroError("expected aggressive_transmutate".into()))?;
+                if mode != "aggressive_transmutate" {
+                    return Err(MacroError("expected aggressive_transmutate".into()));
+                }
+                native = true;
+            }
+        }
+        if native {
+            for attr in def.attrs.iter().filter(|a| a.path().is_ident("repr")) {
+                attr.parse_nested_meta(|meta|{if meta.path.is_ident("C"){Ok(())}else if meta.path.is_ident("align"){let content;syn::parenthesized!(content in meta.input);let value:syn::LitInt=content.parse()?;let n=value.base10_parse::<usize>()?;if !n.is_power_of_two(){return Err(meta.error("native alignment must be a power of two"))}Ok(())}else{Err(meta.error("aggressive_transmutate requires repr(C), optionally with align(N); packed/Rust/transparent are incompatible"))}}).map_err(|e|MacroError(format!("{}: {e}",def.ident)))?;
+            }
         }
         if def
             .attrs
@@ -269,7 +302,7 @@ pub fn parse_rust_macros(sources: &[&str]) -> Result<Vec<QslSchema>, MacroError>
             }
             let name = f.ident.expect("named field").to_string();
             let mut optional = false;
-            let data = field_type(
+            let mut data = field_type(
                 &f.ty,
                 &names,
                 &mut optional,
@@ -278,8 +311,14 @@ pub fn parse_rust_macros(sources: &[&str]) -> Result<Vec<QslSchema>, MacroError>
                 &mut owned_str,
             )
             .map_err(|e| MacroError(format!("{}::{name}: {e}", schema.name)))?;
+            if native {
+                if let QslType::InlineRawString { max, .. } = data {
+                    data = QslType::FixedString(max);
+                }
+            }
             let bits = data.default_compact_bits()?;
             schema.fields.push(QslField {
+                storage: Default::default(),
                 name,
                 optional,
                 bits,
@@ -295,6 +334,16 @@ pub fn parse_rust_macros(sources: &[&str]) -> Result<Vec<QslSchema>, MacroError>
             schema.flags |= FLAG_LIFETIME;
         } else if borrow {
             schema.flags |= FLAG_FIELD_BORROW;
+        }
+        if native {
+            schema
+                .options
+                .regions
+                .push(crate::modernization::NativeRegion {
+                    rust_type: schema.name.clone(),
+                    start: 0,
+                    end: schema.fields.len(),
+                });
         }
         schema.max_tag = schema.fields.len();
         result.push(schema);

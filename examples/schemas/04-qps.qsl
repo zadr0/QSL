@@ -1,1 +1,3 @@
-&WholeText[qps] { str(1..4096) text; }
+&WholeText[qps,safety] { str(1..4096) text; }
+
+&MixedMessage[qps,safety]{u64(0..15) a;u64(0..15) b;str(1..4096) text;}

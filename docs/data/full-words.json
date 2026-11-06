@@ -100,8 +100,8 @@
     "P = M / T; M is original useful bytes, T is ns per operation. Wire size and capacity are separate."
   ],
   "compareNote": [
-    "Сравнение имеет смысл внутри одного сценария. Borrow создаёт представление payload и обращается к меньшему числу физических байтов; новое владеющее значение выполняет другую работу.",
-    "Compare within one scenario. Borrowing creates a payload view and touches fewer physical bytes; a new owned value performs different work."
+    "Ниже — исторические профили с указанными исходниками. Текущий контракт меняет native storage и checked API; свежие четыре случая доступны по ссылке выше.",
+    "Below are historical profiles with source snapshots. The current contract changes native storage and checked APIs; use the link above for four fresh cases."
   ],
   "mode": [
     "Режим",
@@ -192,8 +192,8 @@
     "Raw samples for the selected mode"
   ],
   "qpsNote": [
-    "QPS сжимает операнды и восстанавливает байты. Присутствие полей он не предиктует. Здесь показан общий byte-envelope QPB3; числовая специализация имеет отдельный формат.",
-    "QPS compresses operands and restores bytes; it does not predict field presence. This explorer shows the general QPB3 byte envelope; scalar specialization has a distinct format."
+    "Демонстрация legacy runtime ByteQps. Это отдельный формат, а не квантование строк новым генератором: схемный QPS работает только с самостоятельными числами.",
+    "Legacy runtime ByteQps demonstration. This is a separate format, not string quantization by the new generator: schema QPS operates on scalar numbers only."
   ],
   "text": [
     "Текст UTF-8",

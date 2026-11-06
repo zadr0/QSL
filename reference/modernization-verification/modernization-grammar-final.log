@@ -1,0 +1,15 @@
+  config:
+      1. ✓ DEQ RT configuration
+      2. ✓ QPS and inline attributes, exact UTF-8 range
+      3. ✓ Nonquantized table and expression bounds
+      4. ✓ References to Rust templates keep schema attributes separate
+      5. ✓ Independent exact payload and static optional graph attributes
+      6. ✓ Required-only QPS defaults and explicit legacy state bits
+      7. ✓ Schema hash configuration
+      8. ✓ Aggregate data limit
+  modernization:
+      9. ✓ Native regions and open scalar bounds
+     10. ✓ Stack policy configuration
+
+Total parses: 10; successful parses: 10; failed parses: 0; success percentage: 100.00%; average speed: 4297 bytes/ms
+

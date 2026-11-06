@@ -28,3 +28,10 @@ docs/protocols/** -text whitespace=cr-at-eol
 # Matplotlib SVG paths retain generated whitespace.
 benchmarks/protocols/report/*.svg -text whitespace=-blank-at-eol
 docs/protocols/report/*.svg -text whitespace=-blank-at-eol
+
+
+# Preserve this run's source hashes, Criterion samples and verification bytes.
+qsl-bench/modernization/** -text whitespace=cr-at-eol
+qsl-bench/modernization/results/** -text whitespace=-blank-at-eol,-blank-at-eof
+reference/modernization-verification/** -text whitespace=cr-at-eol,-blank-at-eof
+docs/archive/before-modernization-2026-11-06/** -text whitespace=-blank-at-eol,-blank-at-eof

@@ -44,16 +44,53 @@ impl<'a> ValidationCursor<'a> {
     }
     /// Reject an oversized frame before examining fields or restoring values.
     pub fn with_limit(input: &'a [u8], maximum: usize) -> QslResult<Self> {
-        check_size(input.len(), maximum)?;
+        Self::with_budget(input, maximum, maximum)
+    }
+    pub fn with_budget(
+        input: &'a [u8],
+        maximum_frame: usize,
+        decoded_budget: usize,
+    ) -> QslResult<Self> {
+        check_size(input.len(), maximum_frame)?;
         Ok(Self {
             input,
             bit: 0,
-            budget: ValueBudget::new(maximum),
+            budget: ValueBudget::new(decoded_budget),
         })
     }
     pub fn charge(&mut self, bytes: usize) -> QslResult<()> {
         self.budget.charge(bytes)
     }
+    pub fn check_values(&self, bytes: usize, bits: usize) -> QslResult<()> {
+        if bytes > self.budget.remaining {
+            return Err(QslError::SizeLimitExceeded);
+        }
+        if self
+            .bit
+            .checked_add(bits)
+            .is_none_or(|n| n > self.input.len().saturating_mul(8))
+        {
+            return Err(QslError::UnexpectedEof);
+        }
+        Ok(())
+    }
+    pub fn check_allocation(&mut self, bytes: usize) -> QslResult<()> {
+        self.align()?;
+        if bytes > self.budget.remaining {
+            return Err(QslError::SizeLimitExceeded);
+        }
+        if bytes > self.input.len() - self.position() {
+            return Err(QslError::UnexpectedEof);
+        }
+        Ok(())
+    }
+    pub fn text(&mut self, n: usize, min: usize, max: usize) -> QslResult<&'a str> {
+        if n < min || n > max {
+            return Err(QslError::InvalidValue);
+        }
+        std::str::from_utf8(self.payload(n)?).map_err(|_| QslError::InvalidUtf8)
+    }
+
     pub fn payload(&mut self, bytes: usize) -> QslResult<&'a [u8]> {
         self.charge(bytes)?;
         self.bytes(bytes)
@@ -69,16 +106,13 @@ impl<'a> ValidationCursor<'a> {
         if end > self.input.len().saturating_mul(8) {
             return Err(QslError::UnexpectedEof);
         }
-        if width == 0 {
-            return Ok(0);
-        }
         let start = self.bit >> 3;
         let shift = self.bit & 7;
         let count = (shift + width + 7) >> 3;
         let mut word = [0u8; 16];
         word[..count].copy_from_slice(&self.input[start..start + count]);
         let value = (u128::from_le_bytes(word) >> shift) as u64;
-        let mask = u64::MAX >> (64 - width);
+        let mask = ((1u128 << width) - 1) as u64;
         let value = value & mask;
         self.bit = end;
         Ok(value)
@@ -131,10 +165,23 @@ impl<'a> ValidationCursor<'a> {
         raw_only: bool,
         fixed: bool,
     ) -> QslResult<()> {
+        self.decode_compressed::<MAX>(min, raw_only, fixed)
+            .map(|_| ())
+    }
+    /// Heap fallback for a string above STACK_LIMIT. Growth is fallible and
+    /// charged before every decoded run; the resulting Vec becomes String.
+    pub fn decode_compressed_owned<const MAX: usize>(
+        &mut self,
+        min: usize,
+        raw_only: bool,
+        fixed: bool,
+    ) -> QslResult<String> {
         let width = if MAX <= 255 { 1 } else { 2 };
         let (stored, compressed, prefix) = if fixed {
             self.align()?;
-            if MAX > 0 && self.input.get(self.position()) == Some(&255) {
+            if MAX >= crate::STRING_COMPRESSION_MIN_BYTES
+                && self.input.get(self.position()) == Some(&255)
+            {
                 self.bytes(1)?;
                 (self.uint(width)? as usize, true, 1 + width)
             } else {
@@ -153,15 +200,19 @@ impl<'a> ValidationCursor<'a> {
             ((word & (flag - 1)) as usize, word & flag != 0, header)
         };
         if !compressed {
-            return self.utf8(stored, if fixed { MAX } else { min }, MAX);
+            let text = self.text(stored, if fixed { MAX } else { min }, MAX)?;
+            let mut out = String::new();
+            out.try_reserve_exact(text.len())
+                .map_err(|_| QslError::AllocationFailed)?;
+            out.push_str(text);
+            return Ok(out);
         }
         if raw_only || stored > MAX {
             return Err(QslError::InvalidValue);
         }
         let packed = self.bytes(stored)?;
-        let mut output = [0u8; MAX];
-        let mut produced = 0usize;
-        let mut cursor = 0usize;
+        let mut output = Vec::<u8>::new();
+        let mut cursor = 0;
         while cursor < packed.len() {
             let control = packed[cursor];
             cursor += 1;
@@ -170,17 +221,20 @@ impl<'a> ValidationCursor<'a> {
             } else {
                 (control & 127) as usize + 4
             };
-            let end = produced
+            let end = output
+                .len()
                 .checked_add(count)
                 .ok_or(QslError::LengthOverflow)?;
             self.charge(count)?;
             if end > MAX {
                 return Err(QslError::InvalidValue);
             }
+            output
+                .try_reserve(count)
+                .map_err(|_| QslError::AllocationFailed)?;
             if control < 128 {
                 let tail = cursor.checked_add(count).ok_or(QslError::LengthOverflow)?;
-                output[produced..end]
-                    .copy_from_slice(packed.get(cursor..tail).ok_or(QslError::UnexpectedEof)?);
+                output.extend_from_slice(packed.get(cursor..tail).ok_or(QslError::UnexpectedEof)?);
                 cursor = tail;
             } else {
                 let bytes = packed
@@ -193,20 +247,107 @@ impl<'a> ValidationCursor<'a> {
                         0
                     };
                 cursor += width;
-                if distance == 0 || distance > produced {
+                if distance == 0 || distance > output.len() {
                     return Err(QslError::InvalidValue);
                 }
-                for i in produced..end {
-                    output[i] = output[i - distance];
+                for _ in 0..count {
+                    let b = output[output.len() - distance];
+                    output.push(b);
                 }
             }
-            produced = end;
         }
-        if produced < min || (fixed && produced != MAX) || prefix + stored >= produced {
+        if output.len() < min || (fixed && output.len() != MAX) || prefix + stored >= output.len() {
             return Err(QslError::InvalidValue);
         }
-        std::str::from_utf8(&output[..produced]).map_err(|_| QslError::InvalidUtf8)?;
-        Ok(())
+        String::from_utf8(output).map_err(|_| QslError::InvalidUtf8)
+    }
+    /// Decode once into initialized-prefix storage, validating before exposing UTF-8.
+    pub fn decode_compressed<const MAX: usize>(
+        &mut self,
+        min: usize,
+        raw_only: bool,
+        fixed: bool,
+    ) -> QslResult<crate::InlineString<MAX>> {
+        let width = if MAX <= 255 { 1 } else { 2 };
+        let (stored, compressed, prefix) = if fixed {
+            self.align()?;
+            if MAX >= crate::STRING_COMPRESSION_MIN_BYTES
+                && self.input.get(self.position()) == Some(&255)
+            {
+                self.bytes(1)?;
+                (self.uint(width)? as usize, true, 1 + width)
+            } else {
+                (MAX, false, 0)
+            }
+        } else {
+            let header = if MAX <= 127 {
+                1
+            } else if MAX <= 32767 {
+                2
+            } else {
+                4
+            };
+            let word = self.uint(header)? as u32;
+            let flag = 1u32 << (header * 8 - 1);
+            ((word & (flag - 1)) as usize, word & flag != 0, header)
+        };
+        if !compressed {
+            let text = self.text(stored, if fixed { MAX } else { min }, MAX)?;
+            return Ok(unsafe { crate::InlineString::from_str_unchecked(text) });
+        }
+        if raw_only || stored > MAX {
+            return Err(QslError::InvalidValue);
+        }
+        let packed = self.bytes(stored)?;
+        let mut output = crate::InlineArray::<u8, MAX>::new();
+        let mut cursor = 0;
+        while cursor < packed.len() {
+            let control = packed[cursor];
+            cursor += 1;
+            let count = if control < 128 {
+                control as usize + 1
+            } else {
+                (control & 127) as usize + 4
+            };
+            let end = output
+                .len()
+                .checked_add(count)
+                .ok_or(QslError::LengthOverflow)?;
+            self.charge(count)?;
+            if end > MAX {
+                return Err(QslError::InvalidValue);
+            }
+            if control < 128 {
+                let tail = cursor.checked_add(count).ok_or(QslError::LengthOverflow)?;
+                for &b in packed.get(cursor..tail).ok_or(QslError::UnexpectedEof)? {
+                    output.push(b)?;
+                }
+                cursor = tail;
+            } else {
+                let bytes = packed
+                    .get(cursor..cursor + width)
+                    .ok_or(QslError::UnexpectedEof)?;
+                let distance = bytes[0] as usize
+                    + if width == 2 {
+                        (bytes[1] as usize) << 8
+                    } else {
+                        0
+                    };
+                cursor += width;
+                if distance == 0 || distance > output.len() {
+                    return Err(QslError::InvalidValue);
+                }
+                for _ in 0..count {
+                    let b = output[output.len() - distance];
+                    output.push(b)?;
+                }
+            }
+        }
+        if output.len() < min || (fixed && output.len() != MAX) || prefix + stored >= output.len() {
+            return Err(QslError::InvalidValue);
+        }
+        let text = std::str::from_utf8(&output).map_err(|_| QslError::InvalidUtf8)?;
+        Ok(unsafe { crate::InlineString::from_str_unchecked(text) })
     }
 }
 

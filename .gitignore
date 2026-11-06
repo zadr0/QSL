@@ -1,3 +1,9 @@
 
 /qsl/target/
 /reference/*/target/
+
+/qsl-bench/modernization/target/
+
+/proofs/.lake/
+
+/examples/target/

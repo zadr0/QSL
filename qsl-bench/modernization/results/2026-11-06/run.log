@@ -1,0 +1,47 @@
+modernization_string_1024_utf8_scalars/String_deserialize_into
+                        time:   [122.15 ns 130.38 ns 140.37 ns]
+                        thrpt:  [13.588 GiB/s 14.630 GiB/s 15.614 GiB/s]
+Found 30 outliers among 200 measurements (15.00%)
+  9 (4.50%) low mild
+  10 (5.00%) high mild
+  11 (5.50%) high severe
+modernization_string_1024_utf8_scalars/Stack_deserialize_into
+                        time:   [62.554 ns 63.202 ns 63.893 ns]
+                        thrpt:  [29.852 GiB/s 30.178 GiB/s 30.491 GiB/s]
+Found 15 outliers among 200 measurements (7.50%)
+  6 (3.00%) low mild
+  5 (2.50%) high mild
+  4 (2.00%) high severe
+
+modernization_numeric_24_useful_bytes/default_deserialize_into
+                        time:   [2.6666 ns 2.6792 ns 2.6927 ns]
+                        thrpt:  [8.3009 GiB/s 8.3426 GiB/s 8.3820 GiB/s]
+Found 20 outliers among 200 measurements (10.00%)
+  13 (6.50%) low mild
+  4 (2.00%) high mild
+  3 (1.50%) high severe
+modernization_numeric_24_useful_bytes/Q16_prepared_decode_into
+                        time:   [4.0820 ns 4.1467 ns 4.2281 ns]
+                        thrpt:  [5.2865 GiB/s 5.3902 GiB/s 5.4756 GiB/s]
+Found 23 outliers among 200 measurements (11.50%)
+  9 (4.50%) low mild
+  2 (1.00%) high mild
+  12 (6.00%) high severe
+
+
+Benchmarking modernization_string_1024_utf8_scalars/String_deserialize_into
+Benchmarking modernization_string_1024_utf8_scalars/String_deserialize_into: Warming up for 15.000 s
+Benchmarking modernization_string_1024_utf8_scalars/String_deserialize_into: Collecting 200 samples in estimated 10.002 s (76M iterations)
+Benchmarking modernization_string_1024_utf8_scalars/String_deserialize_into: Analyzing
+Benchmarking modernization_string_1024_utf8_scalars/Stack_deserialize_into
+Benchmarking modernization_string_1024_utf8_scalars/Stack_deserialize_into: Warming up for 15.000 s
+Benchmarking modernization_string_1024_utf8_scalars/Stack_deserialize_into: Collecting 200 samples in estimated 10.001 s (123M iterations)
+Benchmarking modernization_string_1024_utf8_scalars/Stack_deserialize_into: Analyzing
+Benchmarking modernization_numeric_24_useful_bytes/default_deserialize_into
+Benchmarking modernization_numeric_24_useful_bytes/default_deserialize_into: Warming up for 15.000 s
+Benchmarking modernization_numeric_24_useful_bytes/default_deserialize_into: Collecting 200 samples in estimated 10.000 s (3.6B iterations)
+Benchmarking modernization_numeric_24_useful_bytes/default_deserialize_into: Analyzing
+Benchmarking modernization_numeric_24_useful_bytes/Q16_prepared_decode_into
+Benchmarking modernization_numeric_24_useful_bytes/Q16_prepared_decode_into: Warming up for 15.000 s
+Benchmarking modernization_numeric_24_useful_bytes/Q16_prepared_decode_into: Collecting 200 samples in estimated 10.000 s (2.4B iterations)
+Benchmarking modernization_numeric_24_useful_bytes/Q16_prepared_decode_into: Analyzing

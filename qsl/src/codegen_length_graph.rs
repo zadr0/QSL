@@ -125,7 +125,7 @@ pub(super) fn size(s: &QslSchema, p: &LengthGraph, out: &mut String) -> QslResul
     );
     for f in s.fields.iter().filter(|f| !f.optional) {
         ln(out, "let mut __qsl_bits=0usize;");
-        emit_size_field(&f.data, out, &format!("&self.{}", f.name), f.bits, false)?;
+        emit_size_stored(f, out, &format!("&self.{}", f.name), f.bits, false)?;
         ln(out, "n+=(__qsl_bits+7)>>3;");
     }
     for (f, d) in s.fields.iter().filter(|f| f.optional).zip(&p.fields) {
@@ -171,7 +171,7 @@ pub(super) fn write(s: &QslSchema, p: &LengthGraph, out: &mut String) -> QslResu
         }
     }
     for f in s.fields.iter().filter(|f| !f.optional) {
-        fast_type_write(&f.data, out, &format!("&self.{}", f.name), f.bits, false)?;
+        fast_stored_write(f, out, &format!("&self.{}", f.name), f.bits, false)?;
     }
     for (f, d) in s.fields.iter().filter(|f| f.optional).zip(&p.fields) {
         if optional_scalar_write(f, out)? {
@@ -191,7 +191,7 @@ pub(super) fn write(s: &QslSchema, p: &LengthGraph, out: &mut String) -> QslResu
                 },
             );
         } else {
-            fast_type_write(&f.data, out, "value", f.bits, false)?;
+            fast_stored_write(f, out, "value", f.bits, false)?;
         }
         ln(out, "}");
     }
@@ -212,16 +212,7 @@ fn fixed_tail(p: &LengthGraph, j: usize) -> String {
 }
 pub(super) fn read(s: &QslSchema, p: &LengthGraph, out: &mut String) -> QslResult<()> {
     ln(out,format!("#[inline] unsafe fn __qsl_read_sized(bytes:*const u8,len:usize)->Self{{let mut reader=::qsl::QslByteReader::new(bytes.add({}));",p.metadata_bytes));
-    for (i, f) in s.fields.iter().enumerate().filter(|(_, f)| !f.optional) {
-        emit_unchecked_value(
-            &f.data,
-            out,
-            &format!("field_{i}"),
-            f.bits,
-            false,
-            s.borrow_strings(),
-        )?;
-    }
+    emit_required_values(s, out)?;
     ln(out,"let payload=reader.as_ptr();let i=len-payload.offset_from(bytes)as usize;let event=Self::__qsl_event_index(i);");
     let powers = p.tag_bytes == 0
         && p.fields
@@ -297,12 +288,17 @@ pub(super) fn read(s: &QslSchema, p: &LengthGraph, out: &mut String) -> QslResul
     ln(out, "result}");
     Ok(())
 }
-pub(super) fn validation(s: &QslSchema, p: &LengthGraph, out: &mut String) -> QslResult<()> {
+pub(super) fn validation(
+    s: &QslSchema,
+    p: &LengthGraph,
+    out: &mut String,
+    capture: bool,
+) -> QslResult<()> {
     ln(
         out,
         format!("let explicit=c.uint({})?;let _=explicit;", p.tag_bytes),
     );
-    if p.tag_bytes > 0 {
+    if p.tag_bytes > 0 && p.fields.len() < 64 {
         ln(
             out,
             format!(
@@ -316,15 +312,16 @@ pub(super) fn validation(s: &QslSchema, p: &LengthGraph, out: &mut String) -> Qs
             ln(out, format!("let length_{j}=c.uint({bytes})? as usize;"));
         }
     }
-    for f in s.fields.iter().filter(|f| !f.optional) {
-        validation_codegen::field(&f.data, out, f.bits, false)?;
-    }
+    checked_codegen::required(s, out, capture)?;
     ln(out,format!("let i=input.len()-c.position();if i>{}{{return Err(::qsl::QslError::InvalidValue);}}let event=Self::__qsl_event_index(i);let point={}_CRITICAL_POINTS.get(event).ok_or(::qsl::QslError::InvalidValue)?;if !point.4{{return Err(::qsl::QslError::InvalidValue);}}",p.max_payload,s.name));
     // With no tag region, point.2 is the complete mask, not a wire value.
     if p.tag_bytes == 0 {
         ln(out, "let presence=point.2;");
     } else {
         ln(out,"if explicit&point.2!=point.2||explicit&!point.3!=0{return Err(::qsl::QslError::InvalidValue);}let presence=point.2|(explicit&(point.3^point.2));");
+    }
+    if capture {
+        checked_codegen::begin_result(s, out);
     }
     for (j, (f, d)) in s
         .fields
@@ -343,11 +340,32 @@ pub(super) fn validation(s: &QslSchema, p: &LengthGraph, out: &mut String) -> Qs
             } else {
                 format!("(input.len()-c.position()).checked_sub({}).ok_or(::qsl::QslError::UnexpectedEof)?",fixed_tail(p,j))
             };
-            ln(out, format!("c.utf8({length},{},{})?;", d.min, d.max));
+            if capture {
+                checked_codegen::dispatch(out, &(f.tag - 1).to_string(), &length);
+            } else {
+                checked_codegen::field(
+                    f,
+                    out,
+                    f.bits,
+                    false,
+                    s.borrow_strings(),
+                    false,
+                    Some(&length),
+                )?;
+            }
         } else {
-            validation_codegen::field(&f.data, out, f.bits, false)?;
+            if capture {
+                checked_codegen::dispatch(out, &(f.tag - 1).to_string(), "0");
+            } else {
+                checked_codegen::field(f, out, f.bits, false, s.borrow_strings(), false, None)?;
+            }
         }
         ln(out, "}");
     }
-    validation_codegen::finish(s, out)
+    if capture {
+        ln(out, "c.finish()?;Ok(result)}");
+        Ok(())
+    } else {
+        checked_codegen::complete(s, out, false)
+    }
 }

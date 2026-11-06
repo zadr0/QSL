@@ -109,6 +109,7 @@ impl TryFrom<&ParserQslSchema> for QslSchema {
         for (index, f) in source.fields.iter().enumerate() {
             let tag = if f.tag == 0 { index + 1 } else { f.tag };
             fields.push(QslField {
+                storage: Default::default(),
                 optional: f.optional,
                 bits: f.bits,
                 data: f.data.normalize(f.bits)?,
@@ -120,6 +121,7 @@ impl TryFrom<&ParserQslSchema> for QslSchema {
         let maximum = fields.iter().map(|f| f.tag).max().unwrap_or(0);
         let max_tag = source.max_tag.max(maximum);
         let schema = QslSchema {
+            options: Default::default(),
             flags: source.flags,
             fields,
             name: source.name.clone(),

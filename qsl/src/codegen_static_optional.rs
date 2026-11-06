@@ -105,7 +105,7 @@ pub(super) fn write(schema: &QslSchema, out: &mut String) -> QslResult<()> {
         } else {
             format!("&self.{}", f.name)
         };
-        fast_type_write(&f.data, out, &expr, f.bits, false)?;
+        fast_stored_write(f, out, &expr, f.bits, false)?;
         if f.optional {
             ln(out, "}");
         }
@@ -124,21 +124,7 @@ pub(super) fn read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     } else {
         ln(out, "let explicit_mask=0u64;");
     }
-    for (i, f) in schema
-        .fields
-        .iter()
-        .enumerate()
-        .filter(|(_, f)| !f.optional)
-    {
-        emit_unchecked_value(
-            &f.data,
-            out,
-            &format!("field_{i}"),
-            f.bits,
-            false,
-            schema.borrow_strings(),
-        )?;
-    }
+    emit_required_values(schema, out)?;
     ln(out,"let optional_len=len-reader.as_ptr().offset_from(bytes) as usize;let presence=Self::__qsl_optional_mask(optional_len,explicit_mask);let _=presence;");
     tagged_optional_codegen::result(schema, out);
     for (j, f) in schema.fields.iter().filter(|f| f.optional).enumerate() {
@@ -149,10 +135,10 @@ pub(super) fn read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     ln(out, "result}");
     Ok(())
 }
-pub(super) fn validation(schema: &QslSchema, out: &mut String) -> QslResult<()> {
+pub(super) fn validation(schema: &QslSchema, out: &mut String, capture: bool) -> QslResult<()> {
     let p = StaticOptionalPlan::analyze(schema)?;
     if let StaticPresence::Graph(ref g) = p.presence {
-        return length_graph_codegen::validation(schema, g, out);
+        return length_graph_codegen::validation(schema, g, out, capture);
     }
     if let StaticPresence::Mask { bytes } = p.presence {
         ln(out, format!("let explicit_mask=c.uint({bytes})?;"));
@@ -166,19 +152,30 @@ pub(super) fn validation(schema: &QslSchema, out: &mut String) -> QslResult<()> 
             );
         }
     }
-    for f in schema.fields.iter().filter(|f| !f.optional) {
-        validation_codegen::field(&f.data, out, f.bits, false)?;
-    }
+    checked_codegen::required(schema, out, capture)?;
     match p.presence {
         StaticPresence::Eof=>ln(out,"let presence=(c.position()<input.len()) as u64;"),
         StaticPresence::Length(_)=>ln(out,format!("let total=input.len()-c.position();let node=*{}_LENGTH_NODES.get(total).ok_or(::qsl::QslError::InvalidValue)? as usize;let point={}_CRITICAL_POINTS.get(node).ok_or(::qsl::QslError::InvalidValue)?;if point.0!=total{{return Err(::qsl::QslError::InvalidValue);}}let presence=point.1;",schema.name,schema.name)),
         StaticPresence::Mask{..}=>ln(out,"let presence=explicit_mask;"),
         StaticPresence::Graph(_)=>unreachable!(),
     }
+    ln(out, "let _=presence;");
+    if capture {
+        checked_codegen::begin_result(schema, out);
+    }
     for (i, f) in schema.fields.iter().filter(|f| f.optional).enumerate() {
         ln(out, format!("if (presence>>{i})&1!=0{{"));
-        validation_codegen::field(&f.data, out, f.bits, false)?;
+        if capture {
+            checked_codegen::dispatch(out, &(f.tag - 1).to_string(), "0");
+        } else {
+            checked_codegen::field(f, out, f.bits, false, schema.borrow_strings(), false, None)?;
+        }
         ln(out, "}");
     }
-    validation_codegen::finish(schema, out)
+    if capture {
+        ln(out, "c.finish()?;Ok(result)}");
+        Ok(())
+    } else {
+        checked_codegen::complete(schema, out, false)
+    }
 }

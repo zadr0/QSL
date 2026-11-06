@@ -1,10 +1,15 @@
+
+Trusted Serializable::serialize / BorrowSerializable::serialize trait methods are now unsafe. Callers must establish their preconditions. Generated RT/QPS serialize() methods remain safe Result APIs with value validation; use serialize_checked for general safe output.
+
+> **2026-11-06 contract:** [strict STACK_LIMIT, opt-in Safety, scalar-only QPS and native COPY/LIFETIME](modernization-2026-11-06/MODERNIZATION.en.md). [Four fresh measurements](../qsl-bench/modernization/report.html). Historical timing tables retain their original snapshots.
+
 # QSL. Complete project guide
 
 [Русский](guide.ru.md) · [Architecture](architecture.en.md) · [API](API.en.md) · [Feature measurements](features.en.md)
 
 ## Checked input and identity
 
-Every schema has checked APIs. `!config MAX_DATA_SIZE = 65535;` bounds the frame, QPS restoration and aggregate values. Strict/light hashes are computed during analysis; `!config USE_HASH = xxHash;` selects XXH3-64 and xxHash128 selects 128 bits. Both attributes are imported from qsl; implementation lives in qsl/macros. [Full safety contract](safety.en.md) · [Schema identity](schema-hashes.en.md).
+Checked deserialization is generated only for [safety]. `!config MAX_DATA_SIZE = 65535;` bounds the frame, QPS restoration and aggregate values. Strict/light hashes are computed during analysis; `!config USE_HASH = xxHash;` selects XXH3-64 and xxHash128 selects 128 bits. Both attributes are imported from qsl; implementation lives in qsl/macros. [Full safety contract](safety.en.md) · [Schema identity](schema-hashes.en.md).
 
 ## Purpose and boundaries
 
@@ -14,7 +19,7 @@ QSL is a codec constructor shaped by the project's conditions. Developers establ
 
 Additional mechanisms and attributes are opt-in. Field order is always mandatory: required fields first, optional fields last. Changing order, ranges, codec, quantum or configuration may change wire format. Both peers must agree on the representation.
 
-General QPS restores the complete supplied payload. The scalar specialization packs statically bounded numeric ranks. Length prediction belongs to predict_seq; opt_table selects a reader by tag. Quantization itself does not determine which fields are present.
+Schema QPS packs scalar numeric fields only; strings, arrays and lengths are not quantized. The scalar specialization packs statically bounded numeric ranks. Length prediction belongs to predict_seq; opt_table selects a reader by tag. Quantization itself does not determine which fields are present.
 
 ## Minimal integration
 
@@ -28,14 +33,14 @@ include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
 ```
 
 ```qsl
-&Message[opt_table] {
+&Message[safety,opt_table] {
     u32 id;
     str(0..4096) text|binary_opt=guard|;
     u16? code;
 }
 ```
 
-Every schema supplies checked entry points; safety remains a compatibility attribute. opt_table selects optional readers by tag; predict_seq,opt_table enables the length graph. These attributes do not make an arbitrary pointer safe or remove a custom codec's obligations.
+Checked deserialization requires [safety]. opt_table selects optional readers by tag; predict_seq,opt_table enables the length graph. These attributes do not make an arbitrary pointer safe or remove a custom codec's obligations.
 
 ## Build pipeline
 
@@ -134,7 +139,7 @@ To retain an old `[opt_table]` frame, select `[predict_seq,opt_table]` on both p
 | lifetime | &'a str | Borrows input bytes |
 | binary_opt=true | &'a [u8] | Borrows UTF-8 bytes |
 | binary_opt=view | Utf8Guard<'a> | Borrowed string-like view |
-| binary_opt=guard | Utf8CopyGuard | Copies into owned SerOut |
+| binary_opt=guard | String / StackString | COPY compatibility syntax; no separate Guard |
 | binary_opt=inline | InlineString<MAX> | Copies into inline capacity |
 | decompress=true | InlineString<MAX>, or [u8; N] for fixed strings | Restores raw/LZ into final storage |
 
@@ -162,7 +167,7 @@ The [qps] / qps=Q2/Q4/Q8/Q16 scalar specialization computes statically bounded r
 
 General ByteQps<Q> accepts arbitrary serialized bytes, including numbers, UTF-8, arrays and custom encodings. Q is 2/4/8/16 byte lanes per group. It does not interpret fields or replace schema validation.
 
-## General QPS: format and mathematics
+## Legacy ByteQps: format and mathematics
 
 The explicit 16 B QPB3 header contains magic 4 B, quantum 1 B, mode 1 B, shared minimum 1 B, reserved 1 B and original u64 little-endian length 8 B. Length is not quantized. Raw mode carries the header and original bytes; its 16 B framing cost is visible.
 
@@ -178,7 +183,7 @@ Full groups use machine words instead of many tiny memcpy operations. On x86-64 
 
 After optimization, Q16 on 1024 B of values 0..15 produces 592 B, taking 440.05 ns to encode and 258.01 ns to decode. This general codec does not meet the 20–30% overhead budget or the 25 ns target. It remains an explicitly selected compression path; scalar specialization and ordinary decoding are assessed separately.
 
-## General QPS: region APIs
+## Legacy ByteQps: region APIs
 
 ```rust
 use qsl::qps::ByteQps;
@@ -197,7 +202,7 @@ Three logical regions exist: the source native object, encoded frame and scratch
 
 ## Specialized prepared methods
 
-Numeric QuantizedFrame is distinct from general ByteFrame. Its prepared path uses explicitly initialized QUANT_PADDING_BYTES, a private tail never transmitted. Checked exact-slice APIs require no hidden tail.
+Numeric QuantizedFrame is distinct from legacy ByteFrame. Generated prepared reads now have QUANT_PADDING_BYTES = 0 and physically read exact available byte widths.
 
 serialize_quantized_to checks values and capacity before its fast kernel. quant_write_prepared / quant_read_padded are unsafe: callers guarantee domains, padding, disjoint regions and aligned destinations. QuantizedFrame::decode_into restores into a separate larger native region.
 
@@ -249,7 +254,7 @@ The codec survey does not substitute serialization figures for IPC or socket lat
 
 RT defaults off. DEFAULT counts simultaneously occupied slots per schema, not bytes or quantum. Valid counts are 1..64. Static regions require a finite known upper bound; payload including padding is limited to 64 MiB per schema.
 
-A lease occupies one slot. Exhaustion returns PoolExhausted without allocating another buffer; Drop releases the slot. CAS acquisition and atomic release have their own cost. RT does not imply that source String/Vec fields never allocate.
+A lease occupies one slot. serialize() waits on exhaustion; try_acquire remains nonblocking; Drop releases the slot. CAS acquisition and atomic release have their own cost. RT does not imply that source String/Vec fields never allocate.
 
 deserialize_into remains available. General outer ByteQps receives scratch/output/restoration separately; the inner message's RT pool does not automatically become two outer QPS regions.
 

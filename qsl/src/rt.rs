@@ -11,6 +11,7 @@ use std::{
 struct Slot<const CAP: usize>(UnsafeCell<MaybeUninit<[u8; CAP]>>);
 pub struct StaticRegions<const CAP: usize, const N: usize> {
     occupied: AtomicU64,
+    epoch: crate::modernization::WaitWord,
     slots: [Slot<CAP>; N],
 }
 // Each initialized/readable slot has exactly one owning lease. Acquire/Release
@@ -26,16 +27,21 @@ impl<const CAP: usize, const N: usize> StaticRegions<CAP, N> {
         assert!(N > 0 && N <= 64);
         Self {
             occupied: AtomicU64::new(0),
+            epoch: crate::modernization::WaitWord::new(N as u32),
             slots: [const { Slot(UnsafeCell::new(MaybeUninit::uninit())) }; N],
         }
     }
     pub fn try_acquire(&'static self) -> QslResult<RegionLease<CAP, N>> {
+        if !self.epoch.try_take() {
+            return Err(QslError::PoolExhausted);
+        }
         let allowed = if N == 64 { u64::MAX } else { (1u64 << N) - 1 };
         let mut used = self.occupied.load(Ordering::Relaxed);
         loop {
             let free = (!used) & allowed;
             if free == 0 {
-                return Err(QslError::PoolExhausted);
+                used = self.occupied.load(Ordering::Acquire);
+                continue;
             }
             let index = free.trailing_zeros() as usize;
             match self.occupied.compare_exchange_weak(
@@ -55,10 +61,21 @@ impl<const CAP: usize, const N: usize> StaticRegions<CAP, N> {
             }
         }
     }
+    /// Wait for a free slot. Hold no other lease from this pool when all slots can be occupied.
+    pub fn acquire(&'static self) -> RegionLease<CAP, N> {
+        loop {
+            match self.try_acquire() {
+                Ok(lease) => return lease,
+                Err(QslError::PoolExhausted) => self.epoch.wait(0),
+                Err(_) => unreachable!(),
+            }
+        }
+    }
     pub const fn new_zeroed() -> Self {
         assert!(N > 0 && N <= 64);
         Self {
             occupied: AtomicU64::new(0),
+            epoch: crate::modernization::WaitWord::new(N as u32),
             slots: [const { Slot(UnsafeCell::new(MaybeUninit::new([0u8; CAP]))) }; N],
         }
     }
@@ -102,6 +119,7 @@ impl<const CAP: usize, const N: usize> Drop for RegionLease<CAP, N> {
         self.pool
             .occupied
             .fetch_and(!(1u64 << self.index), Ordering::Release);
+        self.pool.epoch.wake_all();
     }
 }
 

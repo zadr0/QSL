@@ -18,6 +18,9 @@ pub use serialize::*;
 pub use strings::*;
 pub use types::*;
 
+pub mod hybrid;
+pub mod modernization;
+pub use modernization::{InlineArray, StackString};
 pub mod optional;
 pub use optional::OptionalOffsets;
 

@@ -1,1 +1,1 @@
-&MacroPacket { Trace trace; u8? status; }
+&MacroPacket[safety] { Trace trace; u8? status; }

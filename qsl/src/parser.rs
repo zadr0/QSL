@@ -266,6 +266,7 @@ pub(crate) fn parse_qsl_raw_with_constants(
         p.expect("&")?;
         let name = p.ident()?.to_owned();
         let mut flags = 0;
+        let mut options = crate::modernization::SchemaOptions::default();
         let mut attributes = std::collections::HashSet::new();
         if p.eat("[")? {
             while !p.eat("]")? {
@@ -328,6 +329,11 @@ pub(crate) fn parse_qsl_raw_with_constants(
                             FLAG_OPT_TABLE
                         }
                     }
+                    "aggressive" => {options.aggressive=true;0},
+                    "transmutate" => {options.transmutate=true;0},
+                    "loyal_cache" => {options.loyal_cache=true;0},
+                    "slots" => {p.expect("=")?;let n=p.expr(&defs)?;if !(1..=64).contains(&n){return Err(p.error("slots must be 1..64"));}options.slots=Some(n as usize);0},
+                    "cache" => {p.expect("=")?;let n=p.expr(&defs)?;if n<0 || n>isize::MAX as i128{return Err(p.error("cache must be 0..isize::MAX bytes"));}options.cache_limit=Some(n as usize);0},
                     "predict_seq" => FLAG_PREDICT_SEQ,
                     "compact" => FLAG_COMPACT,
                     "alignment" => FLAG_ALIGNMENT,
@@ -351,12 +357,42 @@ pub(crate) fn parse_qsl_raw_with_constants(
         p.expect("{")?;
         let mut fields = Vec::new();
         let mut max_tag = 0;
+        let mut regions = Vec::new();
         while !p.eat("}")? {
             if p.eof()? {
                 return Err(p.error("unclosed schema body"));
             }
             if p.eat("#")? {
                 let key = p.ident()?.to_owned();
+                if key == "region" {
+                    p.expect("(")?;
+                    if p.ident()? != "aggressive_transmutate" {
+                        return Err(p.error("region expects aggressive_transmutate"));
+                    }
+                    p.expect("=")?;
+                    p.expect("\"")?;
+                    let ty = p.ident()?.to_owned();
+                    p.expect("\"")?;
+                    p.expect(")")?;
+                    p.expect(";")?;
+                    regions.push((ty, fields.len()));
+                    continue;
+                }
+                if key == "end_region" {
+                    let (ty, start) = regions
+                        .pop()
+                        .ok_or_else(|| p.error("end_region has no matching region"))?;
+                    if start == fields.len() {
+                        return Err(p.error("native region must not be empty"));
+                    }
+                    options.regions.push(crate::modernization::NativeRegion {
+                        rust_type: ty,
+                        start,
+                        end: fields.len(),
+                    });
+                    p.expect(";")?;
+                    continue;
+                }
                 if p.eat("=")? {
                     // Numeric directives are compile-time constants. Other directives
                     // are not silently ignored: unsupported semantics must be explicit.
@@ -383,7 +419,23 @@ pub(crate) fn parse_qsl_raw_with_constants(
             let range = if p.eat("(")? {
                 let min = p.expr(&defs)?;
                 let max = if p.eat("..")? {
-                    Some(p.expr(&defs)?)
+                    p.skip()?;
+                    if p.source[p.pos..].starts_with(')') {
+                        let top = primitive(&ty_name)
+                            .and_then(|t| t.fixed_wire_size().ok().flatten())
+                            .map(|n| {
+                                let bits = n * 8;
+                                if ty_name.starts_with('i') {
+                                    (1i128 << (bits - 1)) - 1
+                                } else {
+                                    (1i128 << bits) - 1
+                                }
+                            })
+                            .unwrap_or(u32::MAX as i128);
+                        Some(top)
+                    } else {
+                        Some(p.expr(&defs)?)
+                    }
                 } else {
                     None
                 };
@@ -515,6 +567,7 @@ pub(crate) fn parse_qsl_raw_with_constants(
                 }
             }
             fields.push(QslField {
+                storage: Default::default(),
                 optional,
                 bits,
                 data,
@@ -523,7 +576,11 @@ pub(crate) fn parse_qsl_raw_with_constants(
                 default,
             });
         }
+        if !regions.is_empty() {
+            return Err(p.error("unclosed native region"));
+        }
         let schema = QslSchema {
+            options,
             flags,
             fields,
             name,
@@ -532,6 +589,7 @@ pub(crate) fn parse_qsl_raw_with_constants(
         if result.iter().any(|s: &QslSchema| s.name == schema.name) {
             return Err(p.error(format!("duplicate schema `{}`", schema.name)));
         }
+        crate::modernization::validate_options(&schema).map_err(|message| p.error(message))?;
         result.push(schema);
     }
     Ok(result)
@@ -557,6 +615,11 @@ fn primitive(name: &str) -> Option<QslType> {
         "u64" => QslType::Integer {
             bits: 64,
             signed: false,
+            min: 0,
+        },
+        "i8" => QslType::Integer {
+            bits: 8,
+            signed: true,
             min: 0,
         },
         "i16" => QslType::Integer {
@@ -587,7 +650,7 @@ fn build_type(
     p: &Cursor<'_>,
 ) -> Result<(QslType, usize), ParseError> {
     let result = match name {
-        "u8" | "u16" | "u32" | "u64" | "i16" | "i32" | "i64" => {
+        "u8" | "u16" | "u32" | "u64" | "i8" | "i16" | "i32" | "i64" => {
             let standard = primitive(name).unwrap();
             let width = standard
                 .fixed_wire_size()

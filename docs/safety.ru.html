@@ -1,43 +1,14 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><title>QSL · safety · RU</title><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css"></head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="safety-ru-1">Безопасное чтение и предел данных</h1>
-<p><a href="safety.en.html">English</a> · <a href="guide.ru.html">Руководство</a> · <a href="schema-hashes.ru.html">Хэши схем</a></p>
-<p>Каждая сгенерированная схема предоставляет безопасные методы. Атрибут <code>safety</code> больше не требуется и сохранён как совместимое написание. Обычные доверенные указательные методы сохраняют отдельный контракт: внешние байты передаются в checked API.</p>
-<pre><code>!config MAX_DATA_SIZE = 65535; // значение по умолчанию, байты
-!config USE_HASH = xxHash;    // либо xxHash128</code></pre>
-<p>Настройки задаются в DEQ, распространяются на каждую генерируемую схему и сохраняются в <code>Schema::MAX_DATA_SIZE</code>. Допустимы положительные значения до isize::MAX и вычисляемые целочисленные выражения. Повторное объявление, в том числе в разных DEQ-файлах, является ошибкой.</p>
-<h2 id="safety-ru-2">Что ограничивается</h2>
-<div class="table-scroll"><table><thead><tr><th>Область</th><th>Когда проверяется</th></tr></thead><tbody><tr><td>Полный входной кадр</td><td>До разбора полей</td></tr><tr><td>Восстановленный внутренний кадр QPS</td><td>По исходной длине заголовка, до записи в restoration</td></tr><tr><td>Суммарный объём значений</td><td>Единым бюджетом при проходе по полям</td></tr><tr><td>Выходной кадр checked-сериализатора</td><td>До выдачи результата</td></tr></tbody></table></div>
-<p>Каждая из этих величин должна укладываться в MAX_DATA_SIZE. Это не отдельный лимит на каждую строку: два восстановленных поля по 48 B превышают общий предел 64 B, даже если сжатый кадр занимает меньше 64 B.</p>
-<p>Для чисел бюджет учитывает исходную ширину значения; для строк — восстановленные байты UTF-8; для поддержанных массивов u8 — число элементов. Числовая константа, занимающая ноль бит в QPS, всё равно учитывается в исходном объёме. Метаданные ограничены общей длиной кадра. Сложение бюджета заменено проверяемым вычитанием, чтобы сумма не могла переполниться.</p>
-<p>MAX_DATA_SIZE ограничивает данные одного сообщения. Он не является ограничителем RSS процесса: служебные объекты Rust, ёмкости InlineString, таблицы и одновременно занятые RT-слоты учитываются при проектировании памяти отдельно.</p>
-<h2 id="safety-ru-3">Один проверяющий проход</h2>
-<ol><li><code>ValidationCursor::with_limit</code> проверяет размер кадра и создаёт общий бюджет.</li><li>Сгенерированный код в объявленном порядке читает метаданные и поля. Проверяются доступность байтов, числовые диапазоны, длины, UTF-8, padding, optional-теги и корректное окончание.</li><li>Для LZ проверяются токены, смещения и восстановленный объём. Используется ограниченная стековая область; куча и промежуточный String для валидации не создаются.</li><li>Только после успешного окончания курсора вызывается доверенный указательный декодер, который записывает результат в конечное хранилище.</li></ol>
-<p>Проверка не сериализует объект для сравнения, не вычисляет хэш сообщения и не оборачивается в catch_unwind. Значения битовых полей извлекаются нативным little-endian окном до 128 бит, а не циклом по каждому биту. Безопасная проверка и последующее создание результата — разные стадии; это не заявление об одном проходе памяти всего декодирования.</p>
-<p>При ошибке в любом поле указательный декодер ещё не запускается. Например, длина строки u32::MAX в коротком кадре отклоняется до создания String. Заголовок QPB3 с исходной длиной 4 GiB отклоняется до изменения restoration при стандартном лимите.</p>
-<h2 id="safety-ru-4">Методы каждой схемы</h2>
-<pre><code>let mut wire = [0u8; 1024];
-let used = value.serialize_checked_to(&amp;mut wire)?;
-let input = &amp;wire[..used];
-
-Packet::validate(input)?; // только проверка, без создания объекта
-let value = Packet::deserialize_checked(input)?;
-
-let mut output = std::mem::MaybeUninit::&lt;Packet&gt;::uninit();
-let value = Packet::deserialize_checked_into(input, &amp;mut output)?;</code></pre>
-<p>Каждый вызов deserialize_checked сам выполняет ровно одну проверку схемы; предварительно вызывать validate для него не требуется. Deserialize_checked_into доступен для владеющих и заимствованных типов. У заимствованного результата время жизни связано с исходным кадром либо с регионом восстановления QPS.</p>
-<p><code>serialize_checked_to</code> один раз проверяет значения и достаточность выходной области, затем использует нативный writer. <code>serialize_checked()</code> возвращает Result&lt;Vec&lt;u8&gt;&gt; и использует fallible reserve. Для сжатых строк размер выделяемого выхода оценивается верхней raw-границей; owned-вариант консервативно отклоняет её, если она больше лимита. Подготовленный выход проверяет фактический записанный размер; при этой последней ошибке его байты уже могут измениться.</p>
-<p>Общий QPS доступен при <code>[qps]</code> без дополнительного safety: <code>serialize_qps_to</code> и <code>deserialize_qps_into</code> / <code>deserialize_qps</code>. Сначала проверяется внешний размер и исходная длина, затем выполняется восстановление, после него — одна проверка внутренней схемы. Повреждённые токены могут изменить restoration до ошибки; превышение заявленной длины отклоняется до записи.</p>
-<h2 id="safety-ru-5">Ошибки и внешние кодеки</h2>
-<p>Превышение предела возвращает <code>QslError::SizeLimitExceeded</code>; нехватка выходной ёмкости — BufferTooSmall; неверная длина, домен, UTF-8, padding или конец кадра — соответствующую ошибку QslError. Fallible reserve owned-выхода может вернуть AllocationFailed.</p>
-<p>QslCustom должен предоставить <code>qsl_validate</code> для входа и <code>qsl_validate_values</code> для checked-записи. Реализации по умолчанию отклоняют непрозрачный кодек. Его произвольный пользовательский код не становится доказанно безопасным от наличия курсора.</p>
-<h2 id="safety-ru-6">Единое подключение макросов</h2>
-<pre><code>#[qsl::qsl_macro]
-pub struct Meta { pub id: u64 }
-
-#[qsl::schem_macro]
-pub struct Trace { pub meta: Meta, pub code: u16 }</code></pre>
-<p>Оба атрибута доступны через одну зависимость qsl даже без feature rust-macros. Реализация хранится в qsl/macros; отдельный служебный proc-macro-компонент требуется Rust. Feature rust-macros включает только чтение Rust-исходников генератором через Syn. Для этого по-прежнему явно вызывается build_qsl_files_with_rust; атрибут сам не ищет файлы и не меняет исходную структуру.</p>
-<p>Лимит и наличие проверяемого API не меняют байты формата и исключены из строгого и лёгкого хэшей. Разные лимиты могут принять или отклонить один кадр по локальной политике. Версия канонического описания остаётся 1.</p>
-<h2 id="safety-ru-7">Проверки</h2>
-<p>77 unit-тестов, 10 последовательных native/IPC/socket, 2 wire-вектора, 12 проверок хэшей и 2 compile-fail примера пройдены. Дополнительный стенд содержит 6 интеграционных сценариев и 7200 вызовов валидаторов на повреждённых кадрах; проверены raw/compact/LZ/borrowed/opt_table/predict_seq/state_bits/legacy/QPS. Прошли строгий Clippy, сборка анализатора и 5 регрессий основных возможностей. Свежие 39 операций примеров опубликованы отдельно в <a href="examples.ru.html">отчёте</a>; исторические времена сохраняют свои снимки исходников.</p>
-<pre><code>cargo test --manifest-path qsl/Cargo.toml --locked --all-features -- --test-threads=1
-cargo test --manifest-path reference/safe-schema-control/Cargo.toml --locked</code></pre></main></body></html>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><title>QSL · safety · RU</title><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css"></head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="safety-ru-1">Безопасное чтение и пределы данных</h1>
+<p>Checked-десериализация генерируется <strong>только при [safety]</strong>. Обычная COPY читает и проверяет значения одним курсором, затем публикует результат. Native COPY/overlay проверяет подготовленное представление до assume_init или создания ссылки. Полный предварительный проход и последующий повторный decode для обычного checked-чтения не требуются.</p>
+<p>MAX_DATA_SIZE по умолчанию 65535 B: ограничивает входной кадр и суммарные полезные значения до выделения памяти. У массивов учитывается ширина элементов; LZ проверяет восстановленный объём. STACK_LIMIT по умолчанию 256 B относится ко всем встроенным буферам. Сверх него String/Vec сохраняют wire-кодек.</p>
+<pre><code>&amp;Packet[safety] { u32 id; str(1..100) text; }</code></pre>
+<pre><code>let bytes = value.serialize_checked()?;
+let decoded = Packet::deserialize_checked(&amp;bytes)?;
+let mut out = std::mem::MaybeUninit::uninit();
+let decoded = Packet::deserialize_checked_into(&amp;bytes, &amp;mut out)?;</code></pre>
+<p>Отдельный validate перед deserialize_checked не нужен. На ошибке checked_into не публикует частичный объект. Временные успешно прочитанные owned-поля освобождаются обычным Drop. Отдельный validate может выделять память для большого LZ-буфера восстановления, ограниченного бюджетом; нулевые аллокации для любого валидатора не обещаются.</p>
+<p>serialize_checked_to проверяет значения и выходную ёмкость. serialize_checked использует fallible reserve; сжатые строки резервируют raw-верхнюю границу, а MAX_DATA_SIZE проверяется по фактическому кадру. При финальной ошибке размера переданный выход мог уже измениться.</p>
+<p>Trusted pointer API сохраняет отдельный unsafe-контракт полного корректного кадра, инициализированной памяти и отсутствия перекрытия. QslCustom обязан валидировать собственные представления и значения; произвольный внешний код не становится доказанно безопасным автоматически.</p>
+<p>QPS работает только с самостоятельными числовыми полями. Его generated prepared-чтению больше не нужен частный хвост: QUANT_PADDING_BYTES = 0. Строки, массивы и их длины используют собственный кодек. ByteQps остаётся legacy runtime API, а не новой политикой схемных строк.</p>
+<p><a href="modernization-2026-11-06/MODERNIZATION.ru.md">Полный контракт, ошибки, native COPY/LIFETIME и миграция</a>.</p>
+<p>Trusted trait-методы Serializable::serialize / BorrowSerializable::serialize теперь unsafe. Их предусловия должны выполняться вызывающим кодом. Сгенерированные RT/QPS serialize() остаются безопасными Result-методами с проверкой значений; для общего безопасного выхода используйте serialize_checked.</p></main></body></html>

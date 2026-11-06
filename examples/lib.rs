@@ -104,17 +104,13 @@ mod tests {
         let a = BorrowedText { text: &text };
         assert_eq!(a.serialize_checked().unwrap(), wire);
         assert_eq!(BorrowedText::deserialize_checked(&wire).unwrap().text, text);
-        let a = GuardText {
-            text: qsl::Utf8CopyGuard::try_from_bytes(text.as_bytes()).unwrap(),
-        };
+        let a = GuardText { text: text.clone() };
         assert_eq!(a.serialize_checked().unwrap(), wire);
         assert_eq!(
             GuardText::deserialize_checked(&wire).unwrap().text.as_str(),
             text
         );
-        let a = InlineText {
-            text: inline(&text).unwrap(),
-        };
+        let a = InlineText { text: text.clone() };
         assert_eq!(
             InlineText::deserialize_checked(&a.serialize_checked().unwrap())
                 .unwrap()
@@ -122,9 +118,7 @@ mod tests {
                 .as_str(),
             text
         );
-        let a = CompressedText {
-            text: inline(&text).unwrap(),
-        };
+        let a = CompressedText { text: text.clone() };
         let compressed = a.serialize_checked().unwrap();
         assert!(compressed.len() < wire.len());
         assert_eq!(
@@ -136,19 +130,16 @@ mod tests {
         );
     }
     #[test]
-    fn whole_payload_qps_and_error_checks() {
-        let value = WholeText {
+    fn scalar_prefix_and_error_checks() {
+        let value = MixedMessage {
+            a: 3,
+            b: 7,
             text: "A".repeat(1024),
         };
-        let mut scratch = [0; 8192];
-        let mut encoded = [0; 8208];
-        let frame = value.serialize_qps_to(&mut scratch, &mut encoded).unwrap();
-        let mut restored = [0; 8192];
-        let mut out = std::mem::MaybeUninit::uninit();
-        let decoded =
-            WholeText::deserialize_qps_into(frame.as_slice(), &mut restored, &mut out).unwrap();
-        assert_eq!(decoded.text, value.text);
-        unsafe { out.assume_init_drop() };
+        let bytes = value.serialize_checked().unwrap();
+        let decoded = MixedMessage::deserialize_checked(&bytes).unwrap();
+        assert_eq!((decoded.a, decoded.b, decoded.text), (3, 7, value.text));
+        assert_eq!(&bytes[1..5], &1024u32.to_le_bytes());
         assert!(Bounded::deserialize_checked(&[9, 1, 0, 0, 0, b'a']).is_err());
         assert!(Bounded::deserialize_checked(&[1, 255, 255, 255, 255]).is_err());
     }
@@ -168,9 +159,7 @@ pub fn uniform_texts() -> Vec<String> {
 #[test]
 fn uniform_utf8_really_uses_lz_instead_of_a_shorter_raw_header() {
     for text in uniform_texts().iter().take(32) {
-        let value = CompressedText {
-            text: inline(text).unwrap(),
-        };
+        let value = CompressedText { text: text.clone() };
         let bytes = value.serialize_checked().unwrap();
         assert!(
             bytes.len() < text.len() / 2,

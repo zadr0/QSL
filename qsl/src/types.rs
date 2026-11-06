@@ -383,6 +383,7 @@ impl QslType {
 
 #[derive(Default, Debug, Clone)]
 pub struct QslField {
+    pub storage: crate::modernization::StorageKind,
     pub optional: bool,
     /// In COMPACT, the rank width (0..=64) of the field or its length prefix.
     pub bits: usize,
@@ -397,6 +398,7 @@ pub struct QslField {
 
 #[derive(Default, Debug, Clone)]
 pub struct QslSchema {
+    pub options: crate::modernization::SchemaOptions,
     pub flags: usize,
     pub fields: Vec<QslField>,
     pub name: String,
@@ -481,6 +483,7 @@ impl QslSchema {
         self.fields.len().div_ceil(32)
     }
     pub fn validate(&self) -> QslResult<()> {
+        crate::modernization::validate_options(self).map_err(|_| QslError::InvalidSchema)?;
         if self.name.is_empty() || !valid_ident(&self.name) {
             return Err(QslError::InvalidSchema);
         }
@@ -563,7 +566,13 @@ impl QslSchema {
         let mut names = HashSet::new();
         let mut optional_tags = HashSet::new();
         let mut has_borrowed_data = false;
-        for field in &self.fields {
+        for (index, field) in self.fields.iter().enumerate() {
+            let native = self.options.transmutate
+                || self
+                    .options
+                    .regions
+                    .iter()
+                    .any(|r| r.start <= index && index < r.end);
             if !valid_ident(&field.name) || !names.insert(field.name.as_str()) {
                 return Err(QslError::InvalidSchema);
             }
@@ -576,7 +585,7 @@ impl QslSchema {
             if field.bits > 64 && !matches!(&field.data, QslType::FixedString(_)) {
                 return Err(QslError::InvalidWidth);
             }
-            field.data.validate(self.borrow_strings())?;
+            field.data.validate(self.borrow_strings() && !native)?;
             field.data.rank_width(field.bits)?;
             if let Some(value) = field.default {
                 let in_range = match &field.data {
@@ -612,7 +621,10 @@ impl QslSchema {
             ) || (self.borrow_strings()
                 && (matches!(
                     field.data,
-                    QslType::String(_) | QslType::RangedString { .. }
+                    QslType::String(_)
+                        | QslType::RangedString { .. }
+                        | QslType::FixedString(_)
+                        | QslType::InlineRawString { .. }
                 ) || matches!(&field.data, QslType::Array(inner, _) | QslType::FixedArray(inner, _)
                     | QslType::RangedArray { element: inner, .. } if matches!(inner.as_ref(), QslType::Byte))));
             if needs_lifetime && !self.lifetime() {
@@ -621,7 +633,7 @@ impl QslSchema {
             has_borrowed_data |= needs_lifetime;
         }
         // Otherwise `Foo<'a>` would have an unused lifetime parameter.
-        if self.lifetime() && !has_borrowed_data {
+        if self.lifetime() && !has_borrowed_data && !self.options.transmutate {
             return Err(QslError::InvalidSchema);
         }
         let packed =
@@ -629,6 +641,7 @@ impl QslSchema {
         if !self.sequential()
             && !self.bitmap()
             && !packed
+            && !self.opt_table()
             && self.optional_count() * self.tag_bits() > 64
         {
             return Err(QslError::InvalidSchema);

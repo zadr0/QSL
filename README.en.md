@@ -1,71 +1,45 @@
-# QSL — exchange of data described in advance
+# QSL
 
-[Examples RU/EN](examples/README.md) · [Fresh results](examples/PERFORMANCE.md) · [Interactive charts](examples/performance.html)
+[Русский](README.ru.md)
 
-[Русский](README.ru.md) · [Complete guide](docs/guide.en.md) · [Interactive documentation](docs/index.html?lang=en)
+## English
 
-**QSL is a data-description language and Rust code generator for binary exchange.** Its original task is to transfer data whose structure both sides know in advance: field types, valid values, lengths and serialization order.
+QSL is a data-description language and a specialized Rust code generator for binary exchange. Its original task is exchanging data described in advance. Both peers know field order, domains and codecs before application startup.
 
-The developer describes these conditions in a schema. During the build, QSL analyzes it and generates Rust structures, serialization and deserialization methods, validation and the required tables. The application exchanges messages using generated code with a known data layout.
+At build time QSL analyzes bounds, bit widths, register groups, tables and wire identities, then emits concrete methods. Runtime values and lengths remain dynamic; schema interpretation is outside the hot path.
 
-This approach moves part of the work from execution to code generation. The tradeoff is that the developer must define the format explicitly, prepare storage and uphold the schema's constraints. Performance depends on these choices, message sizes and machine architecture.
+### Where it fits
 
-## Scope of application
+QSL targets controlled exchange between coordinated components: internal protocols, IPC, telemetry and repeated records. Its specialization is a build-time-known format with explicit memory invariants. Developers choose ownership, bounds, input checking and prepared storage. Routing, TLS, version negotiation and a QBProto handshake are not automatically supplied by a schema.
 
-QSL targets controlled binary exchange: both sides agree on message structure and encoding settings in advance. Typical uses include an internal application protocol, IPC, telemetry with known fields, and repeated-record processing. The current implementation generates Rust code.
-
-Its narrow specialization is that **format structure is known at build time**, and data obeys that structure's invariants. Values and lengths can still change at runtime. An upper bound is required by facilities that depend on it, such as inline strings and static RT pools. Preparing buffers and choosing ownership can remove some allocations from the repeated path.
-
-The developer maintains schema compatibility, valid sizes and memory lifetimes. External input uses a checked API. Request routing, encryption and version negotiation belong to the application protocol; QSL bytes can travel over the chosen transport. Socket and memory-region facilities provide separate integration tools. The current native-region and direct WinSock implementations depend on Windows.
-
-## A small example
-
-```qsl
-&User {
+~~~qsl
+&User[safety,aggressive] {
     u64 id;
     str(1..100) name;
     u8? status;
 }
-```
+~~~
 
-This schema describes a user record: a required identifier, a name of 1 to 100 **UTF-8 bytes**, and an optional status. By default, the fields map to Rust `u64`, `String` and `Option<u8>`. Every schema provides checked APIs. `MAX_DATA_SIZE` defaults to 65535 bytes, bounding frames, QPS restoration and aggregate values. [Contract and API](docs/safety.en.md).
+Required fields always precede optionals. Here name is an inline COPY string bounded by 100 **UTF-8 bytes**. Read status through status(), change it through set_status(...), and construct the record through try_new(...). Without aggressive, variable owned strings normally use String. Without safety, checked deserialization is not generated.
 
-**Required fields must always precede optional fields.** Additional attributes and mechanisms are selected independently; this schema does not require compression, offset tables or forced inlining.
+### Available choices
 
-## Using QSL
-
-1. A `.qsl` file defines fields and their constraints. An optional `.deq` file supplies constants and generation settings.
-2. The generator runs from `build.rs`; the application includes its generated Rust code.
-3. The application writes and reads binary messages. Buffer APIs, including `serialize_to` and `deserialize_into`, support storage reuse.
-
-Both sides agree on the schema and encoding settings. Changing field order, domains or representation can change the binary format. Low-level methods require correct sizes, alignment and lifetimes for the supplied memory regions.
-
-## Available choices
-
-| Task | QSL facilities |
+| Goal | Mechanism |
 |---|---|
-| Reduce representation size | Value domains, `compact`, string LZ and QPS |
-| Access optional fields efficiently | `opt_table`: tag-indexed readers; `predict_seq`: a length-derived index |
-| Choose string ownership | `String`, borrowed UTF-8, a copying wrapper or inline capacity; fixed strings use `[u8; N]` |
-| Control storage | Reusable buffers, static RT pools, native regions and IPC |
-| Extend a schema | Rust field templates and custom codecs |
+| Reduce repeated read work | Automatic exact register groups |
+| Select ownership | String, inline storage, direct &str / &[u8], fixed arrays |
+| Pack scalar numbers losslessly | qps=Q2/Q4/Q8/Q16; Q16 by default |
+| Compress a string | Independent QSL-LZ; QPS never quantizes strings, arrays or lengths |
+| Read optional fields | predict_seq: length index; opt_table: tag → reader |
+| Control untrusted input | safety, one cursor, MAX_DATA_SIZE = 65535 |
+| Prepare storage | serialize_to / deserialize_into, RT slots, loyal_cache |
+| Use native layout | Separate COPY/LIFETIME Transmutate and nested regions |
+| Reuse definitions | Nested Rust qsl_macro / schem_macro field expansion |
 
-**QPS performs reversible compression with exact data restoration. `predict_seq` uses length and a numeric index; `opt_table` selects a reader by tag.** These mechanisms have separate responsibilities and limits.
+Attributes are opt-in. STACK_LIMIT defaults to **256 data bytes per inline buffer**, including explicit inline/LZ requests. Larger COPY buffers use String/Vec; fixed native Transmutate requires an explicitly sufficient limit. Bounded RT pools wait for a free slot. Trusted pointer methods require valid frames and correct memory. Low-level serialize trait methods are now unsafe; serialize_checked is the general safe output API.
 
-Each option must be assessed on a concrete schema. A smaller frame can take longer to restore; borrowing and constructing a new string produce different result forms. The report includes measurement conditions, baseline comparisons and limitations.
+Wire changes require coordinated peers. Strict and light hashes are computed during analysis; xxHash is not cryptographic. Performance depends on the schema, architecture, working-set size and checked/trusted contract.
 
-## Where to start
+[Contract and migration EN](docs/modernization-2026-11-06/MODERNIZATION.en.md) · [Complete guide](docs/guide.en.html) · [Runnable examples](examples/README.md) · [Focused measurements and charts](qsl-bench/modernization/report.html)
 
-- [Guide](docs/guide.en.md) — integration, schema language, formats, memory and API contracts.
-- [Interactive documentation](docs/index.html?lang=en) — examples, charts and measurement waveforms.
-- [Measurements and commands](docs/features.en.md) — Criterion, source data and `P=M/T`, where `M` is original useful bytes and `T` is nanoseconds.
-- [Architecture](docs/architecture.en.md) and [mathematical introduction](docs/mathematics.en.md) — generator design and the reasoning behind optimizations.
-- [Zed extension](https://github.com/zadr0/QSL-Extension) — diagnostics, field layout and schema analysis in English and Russian.
-
-## Repository contents
-
-The standalone `qsl` crate includes source, internal attribute macros and a Cargo manifest. Documentation and fixtures are under `docs` and `reference`. [Checked schemas](docs/safety.en.md) · [Hashes](docs/schema-hashes.en.md).
-
-[predict_seq / opt_table separation and migration](docs/optional-modes.en.md).
-
-[Tag-only opt_table control / Контроль отдельного opt_table](examples/tag-dispatch/README.md).
+Fresh run, 1024 UTF-8 scalars / 2048 B: String 130.38 ns, inline string 63.20 ns; the 25 ns target was not achieved. Numeric record: default 2.68 ns / 24 B, Q16 4.15 ns / 5 B. These are trusted reads without validation. The report retains 99% intervals, outliers and source snapshots. The protocol comparison remains a historical **16/100** result, not a completed full pass.

@@ -100,8 +100,61 @@ pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError
         cache.insert(index, (result.clone(), expanded, height));
         Ok((result, expanded, height))
     }
+    fn regions(
+        index: usize,
+        schemas: &[QslSchema],
+        names: &HashMap<&str, usize>,
+        cache: &HashMap<usize, (Vec<QslField>, bool, usize)>,
+        memo: &mut HashMap<usize, Vec<crate::modernization::NativeRegion>>,
+    ) -> Result<Vec<crate::modernization::NativeRegion>, MacroError> {
+        if let Some(r) = memo.get(&index) {
+            return Ok(r.clone());
+        }
+        let source = &schemas[index];
+        let mut positions = vec![0usize];
+        let mut children = Vec::new();
+        for f in &source.fields {
+            let target = if let QslType::Custom { rust_type, .. } = &f.data {
+                names
+                    .get(rust_type.as_str())
+                    .copied()
+                    .filter(|&i| schemas[i].flags & FLAG_MACRO != 0)
+            } else {
+                None
+            };
+            let count = target.map_or(1, |i| cache[&i].0.len());
+            children.push(target);
+            positions.push(positions.last().unwrap() + count);
+        }
+        let mut out = Vec::new();
+        for r in &source.options.regions {
+            let start = *positions
+                .get(r.start)
+                .ok_or_else(|| MacroError("native region start outside schema".into()))?;
+            let end = *positions
+                .get(r.end)
+                .ok_or_else(|| MacroError("native region end outside schema".into()))?;
+            out.push(crate::modernization::NativeRegion {
+                rust_type: r.rust_type.clone(),
+                start,
+                end,
+            });
+        }
+        for (i, target) in children.into_iter().enumerate() {
+            if let Some(target) = target {
+                for mut r in regions(target, schemas, names, cache, memo)? {
+                    r.start += positions[i];
+                    r.end += positions[i];
+                    out.push(r);
+                }
+            }
+        }
+        memo.insert(index, out.clone());
+        Ok(out)
+    }
     let mut result = Vec::new();
     let mut cache = HashMap::new();
+    let mut region_cache = HashMap::new();
     for (i, source) in schemas.iter().enumerate() {
         let (mut fields, expanded, _) = fields(i, schemas, &names, &mut Vec::new(), &mut cache)?;
         if expanded {
@@ -111,6 +164,7 @@ pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError
         }
         let mut schema = source.clone();
         schema.fields = fields;
+        schema.options.regions = regions(i, schemas, &names, &cache, &mut region_cache)?;
         if expanded {
             schema.max_tag = schema.fields.len();
         }
@@ -131,6 +185,24 @@ pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError
                 )));
             }
             optional |= f.optional;
+        }
+        for region in &schema.options.regions {
+            let members = schema
+                .fields
+                .get(region.start..region.end)
+                .ok_or_else(|| MacroError("native region outside expanded schema".into()))?;
+            if members.is_empty()
+                || members.iter().any(|f| {
+                    f.optional
+                        || f.data.fixed_wire_size().ok().flatten().is_none()
+                        || matches!(f.data, QslType::FixedCompressedString(_))
+                })
+            {
+                return Err(MacroError(format!(
+                    "{}: native regions require fixed required fields",
+                    schema.name
+                )));
+            }
         }
         schema
             .validate()

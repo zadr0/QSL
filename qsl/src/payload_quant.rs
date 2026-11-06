@@ -140,6 +140,7 @@ impl PayloadQuantPlan {
             let next = residues.rotate_left((bits & 7) as u32);
             residues = if f.optional { residues | next } else { next };
         }
+        p.padding_bytes = 0; // Exact-width dispatch never touches a private tail.
         let raw_header = if s.state_bits() {
             4
         } else if s.predicted_opt_table() {
@@ -302,7 +303,7 @@ impl<T: QuantizedRecord, const CAP: usize, const N: usize> QuantizedRegions<T, C
             marker: PhantomData,
         }
     }
-    pub fn try_encode(&'static self, value: &T) -> QslResult<QuantizedLease<T, CAP, N>> {
+    pub fn encode(&'static self, value: &T) -> QslResult<QuantizedLease<T, CAP, N>> {
         value.quant_validate_values()?;
         crate::validation::check_size(value.serialized_size(), T::MAX_DATA_SIZE)?;
         if value
@@ -312,7 +313,7 @@ impl<T: QuantizedRecord, const CAP: usize, const N: usize> QuantizedRegions<T, C
         {
             return Err(QslError::BufferTooSmall);
         }
-        let mut storage = self.pool.try_acquire()?;
+        let mut storage = self.pool.acquire();
         let len = unsafe { value.quant_write_prepared(storage.as_mut_ptr()) };
         unsafe {
             storage.set_len(len + T::PADDING_BYTES);

@@ -37,8 +37,10 @@ pub(super) fn read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
         ln(out, "let mut header=::qsl::QslFastBitsReader::new(bytes);");
         if n == 1 {
             ln(out, "let count=header.read_bits(1) as usize;");
-        } else {
+        } else if n * schema.tag_bits() <= 64 {
             ln(out,format!("let count=header.read_bits({}) as usize;let mut tags=header.read_bits((count*{})as u32);",schema.count_bits(),schema.tag_bits()));
+        } else {
+            ln(out,format!("let count=header.read_bits({})as usize;let mut tag_mask=0u64;for _ in 0..count{{tag_mask|=1u64<<header.read_bits({});}}",schema.count_bits(),schema.tag_bits()));
         }
         ln(
             out,
@@ -53,8 +55,8 @@ pub(super) fn read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
         .enumerate()
         .filter(|(_, f)| !f.optional)
     {
-        emit_unchecked_value(
-            &f.data,
+        emit_stored_value(
+            f,
             out,
             &format!("field_{i}"),
             f.bits,
@@ -71,6 +73,13 @@ pub(super) fn read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             &(schema.fields.iter().find(|f| f.optional).unwrap().tag - 1).to_string(),
             "0",
         );
+        ln(out, "}");
+    } else if n * schema.tag_bits() > 64 {
+        ln(
+            out,
+            "while tag_mask!=0{let tag=tag_mask.trailing_zeros()as usize;tag_mask&=tag_mask-1;",
+        );
+        dispatch(schema, out, "tag", "0");
         ln(out, "}");
     } else if n > 1 {
         let width = schema.tag_bits();

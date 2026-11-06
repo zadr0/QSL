@@ -1,0 +1,9 @@
+name = "qps-proofs"
+version = "0.1.0"
+defaultTargets = ["QPS", "Modernization"]
+
+[[lean_lib]]
+name = "QPS"
+
+[[lean_lib]]
+name = "Modernization"
