@@ -1,0 +1,23 @@
+[
+  {
+    "crate": "qsl-lexer",
+    "version": "0.1.0",
+    "registry_sha256": "6f92b649de91e58b8ed63bb7fe60ea9f7bf2e3a7beca05c3c68613ea3e821cfa",
+    "source_commit": "b8819127b4a0dc0442b6441aec3e16f785d530ee",
+    "english_readme_and_rustdoc": true
+  },
+  {
+    "crate": "qsl-interpreter",
+    "version": "0.1.0",
+    "registry_sha256": "b8c2a5777bc53ce49b900061d45822b9fdb85880969e1e6750caf7cdc5d3b371",
+    "source_commit": "b8819127b4a0dc0442b6441aec3e16f785d530ee",
+    "english_readme_and_rustdoc": true
+  },
+  {
+    "crate": "qsl",
+    "version": "0.1.2",
+    "registry_sha256": "35fd4bc884a4bbff468d2cb55bba95906affe41853fa00f5784d291b66480517",
+    "source_commit": "b8819127b4a0dc0442b6441aec3e16f785d530ee",
+    "english_readme_and_rustdoc": true
+  }
+]

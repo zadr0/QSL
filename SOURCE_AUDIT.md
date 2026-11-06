@@ -73,5 +73,9 @@ compiler-pipeline example pass. Clippy for all three crates passes with warnings
 denied. Exact generated-source equivalence is recorded under
 reference/compiler-split/generation-equivalence.json. The updated source
 manifest covers all three crates. No new benchmark or speedup claim is added.
-The release candidate is qsl 0.1.2 with qsl-lexer/qsl-interpreter 0.1.0.
-Registry publication and package-consumer checks are recorded separately.
+Published: qsl 0.1.2 and qsl-lexer/qsl-interpreter 0.1.0.
+The three package archives pass all-feature tests. A crates.io-only consumer
+passes default and full-feature round-trip/truncation checks. Registry archive
+checksums match Cargo.lock; packaged READMEs and Rust documentation are English.
+Release source is commit b8819127b4a0. Publication logs and the runnable registry
+consumer are under reference/crates-release-0.1.2.

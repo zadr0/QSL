@@ -1,0 +1,12 @@
+[package]
+name = "qsl-registry-release-check"
+version = "0.0.0"
+edition = "2021"
+publish = false
+[dependencies]
+qsl = "=0.1.2"
+[build-dependencies]
+qsl-interpreter = "=0.1.0"
+[features]
+full = ["qsl/native", "qsl/diagnostics", "qsl/rust-macros", "qsl-interpreter/rust-macros"]
+[workspace]

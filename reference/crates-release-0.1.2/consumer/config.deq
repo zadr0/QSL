@@ -1,0 +1,2 @@
+!config MAX_DATA_SIZE = 1024;
+!config STACK_LIMIT = 256;

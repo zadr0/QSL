@@ -1,0 +1,36 @@
+   Compiling qsl-lexer v0.1.0
+   Compiling qsl-interpreter v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\crates-release-target\package\qsl-interpreter-0.1.0)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.26s
+     Running unittests src\lib.rs (.optimization/crates-release-tests-target\debug\deps\qsl_interpreter-c0c2f15585cf183b.exe)
+
+running 19 tests
+test frontend_tests::tests::invalid_preparation_is_rejected_before_emission ... ok
+test backend::tests::failed_target_lowering_keeps_builder_reusable ... ok
+test backend::tests::one_builder_can_drive_multiple_backends_without_schema_mutation ... ok
+test frontend_tests::shared_analysis_survives_rust_lowering_and_keeps_wire_identity ... ok
+test frontend_tests::tests::prepared_data_owns_input_and_controls_generation_configuration ... ok
+test interpreter::tests::borrowed_generation_keeps_string_in_input_buffer ... ok
+test interpreter::tests::fixed_compact_layout_precomputes_packing ... ok
+test interpreter::tests::fixed_lengths_are_constant_folded ... ok
+test interpreter::tests::checked_decoding_is_opt_in_and_optimization_options_remain_explicit ... ok
+test interpreter::tests::fixed_normal_layout_generates_literal_offsets ... ok
+test interpreter::tests::generator_emits_default_only_for_explicit_numeric_attribute ... ok
+test interpreter::tests::native_string_headers_are_selected_while_generating ... ok
+test interpreter::tests::no_duplicate_optional_tags ... ok
+test interpreter::tests::optional_bitmap_uses_msb_first_u32 ... ok
+test frontend_tests::tests::prepared_and_compatible_generation_have_identical_rust_bytes ... ok
+test interpreter::tests::required_fields_never_have_tags ... ok
+test interpreter::tests::tags_use_three_bits_when_max_tag_is_eight ... ok
+test macro_emission_tests::internal_schema_templates_keep_flattened_rust_output ... ok
+test macro_emission_tests::rust_templates_are_expanded_before_emission_without_duplicate_types ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+   Doc-tests qsl_interpreter
+
+running 2 tests
+test src\lib.rs - (line 25) ... ignored
+test src\lib.rs - (line 5) ... ok
+
+test result: ok. 1 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.53s
+

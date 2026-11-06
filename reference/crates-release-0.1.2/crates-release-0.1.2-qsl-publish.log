@@ -1,0 +1,12 @@
+    Updating crates.io index
+   Packaging qsl v0.1.2 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+    Updating crates.io index
+    Packaged 33 files, 328.6KiB (73.7KiB compressed)
+   Verifying qsl v0.1.2 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+   Compiling qsl v0.1.2 (C:\Users\Guild\Desktop\dev-qsl\.optimization\crates-release-target\package\qsl-0.1.2)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.53s
+   Uploading qsl v0.1.2 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+    Uploaded qsl v0.1.2 to registry `crates-io`
+note: waiting for qsl v0.1.2 to be available at registry `crates-io`
+help: you may press ctrl-c to skip waiting; the crate should be available shortly
+   Published qsl v0.1.2 at registry `crates-io`

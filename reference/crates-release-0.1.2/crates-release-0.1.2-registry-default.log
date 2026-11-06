@@ -1,0 +1,18 @@
+    Updating crates.io index
+     Locking 11 packages to latest compatible versions
+      Adding xxhash-rust v0.8.15 (available: v0.8.19)
+ Downloading crates ...
+  Downloaded qsl v0.1.2
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling xxhash-rust v0.8.15
+   Compiling qsl-lexer v0.1.0
+   Compiling qsl-interpreter v0.1.0
+   Compiling syn v2.0.119
+   Compiling qsl-registry-release-check v0.0.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\crates-release-0.1.2-consumer)
+   Compiling qsl-macros-impl v0.1.0
+   Compiling qsl v0.1.2
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 14.69s
+     Running `.optimization/crates-release-registry-target\debug\qsl-registry-release-check.exe`
+Separate compiler crates: 17 wire bytes, checked round-trip passed
