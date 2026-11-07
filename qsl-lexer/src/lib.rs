@@ -1,5 +1,6 @@
 #![doc = include_str!("../README.md")]
 pub mod analysis;
+pub mod bitmap;
 pub mod builder;
 pub mod compat;
 pub mod config;
@@ -13,6 +14,8 @@ pub mod modernization;
 pub mod parser;
 pub mod parser_util;
 pub mod payload_quant;
+mod primitive_macro;
+pub mod regions;
 #[cfg(feature = "rust-macros")]
 pub mod rust_macro;
 pub mod schema_hash;

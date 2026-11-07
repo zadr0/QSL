@@ -1,24 +1,5 @@
-# binary_opt: string ownership
+# binary_opt · QSL 0.2.0
 
-[Architecture](../../architecture.en.md) · [safety](safety.md)
+String/str field modifier: true selects UTF-8 bytes, view selects &str, inline selects a dedicated bounded string header, guard retains COPY compatibility syntax. Current COPY lowering uses String/StackString according to bounds and STACK_LIMIT; legacy guard wrappers remain runtime APIs. UTF-8 validation is retained. Fixed strings use [u8;N] within the strict limit, or a documented owned fallback above it.
 
-| Modifier | Generated Rust field | Storage |
-|---|---|---|
-| absent / false | String, or &str with lifetime | Normal schema ownership |
-| true | &'a [u8] | Borrowed UTF-8 bytes; lifetime required |
-| view | Utf8Guard<'a> | Borrowed string-like view; lifetime required |
-| guard | Utf8CopyGuard | Copies bytes to owned/reusable SerOut |
-| inline | InlineString<MAX> | Inline bounded capacity and length |
-
-Fixed str(N), including equal bounds, always uses `[u8; N]`. Bounds count UTF-8 bytes, not Unicode characters. The modifier applies only to string/str fields.
-
-```qsl
-&Bytes[lifetime,safety] { str(0..4096) text|binary_opt=true|; }
-&View[lifetime,safety] { str(0..4096) text|binary_opt=view|; }
-&Copy[safety] { str(0..4096) text|binary_opt=guard|; }
-&Inline[safety] { str(0..4096) text|binary_opt=inline|; }
-```
-
-CopyGuard avoids creating a String object but still needs storage. First creation can allocate; prepared reuse avoids repeated storage preparation when capacity suffices. It does not borrow the frame. Borrowed modes require the source to remain alive and immutable. Decompression needs a destination for restored bytes; unsupported borrowed/guard combinations are rejected. Checked decoding validates UTF-8; trusted APIs retain their preconditions.
-
-Historical string measurements are not part of the current numeric QPS/control runs. No new claim about 1024-character latency is made here.
+[Full guide](../../guide.en.md) · [Safety](../../safety.en.md) · [Migration](../../migration-0.2.0.en.md) · [All attributes](index.md).

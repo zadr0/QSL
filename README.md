@@ -1,119 +1,97 @@
-# QSL
+# QSL 0.2.0
 
-[Быстрый старт RU](docs/quickstart.ru.md) · [Quick start EN](docs/quickstart.en.md)
-
-[Русский](#русский) · [English](#english) · [Interactive documentation](docs/index.html)
+[Русский](#русский) · [English](#english) · [Release v0.2.0](https://github.com/zadr0/QSL/releases/tag/v0.2.0)
 
 ## Русский
 
-Рабочие исходники разделены на `qsl-lexer` и `qsl-interpreter`. Один `QslSchemaBuilder` собирает схемы; `builder.use_interpreter()` выбирает Rust-генератор через трейт. Архитектура предусматривает отдельный LLVM-компилятор. [Архитектура RU](docs/architecture.ru.md) · [Пример build.rs](examples/compiler-pipeline/). Обновление входит в qsl 0.1.2; крейты компилятора имеют версию 0.1.0.
+QSL — язык описания заранее согласованных данных и генератор специализированных бинарных кодеков Rust. При сборке схема задаёт порядок полей, диапазоны, длины, владение и проверки; приложение получает конкретные структуры и методы. Разбор схемы не входит в горячий путь.
 
-QSL — язык описания данных и генератор специализированного Rust-кода для бинарного обмена. Исходная задача — обмен заранее описанными данными. Обе стороны знают поля, порядок, диапазоны и кодеки до запуска приложения.
-
-Схема анализируется при сборке. QSL рассчитывает границы, битовые ширины, регистровые группы, таблицы и идентичность формата, затем генерирует конкретные методы. Значения и длины могут меняться в runtime; разбор самой схемы в горячий путь не входит.
-
-### Установка
+Это узкий инструмент для управляемых внутренних протоколов, телеметрии и повторяемых записей. Условия совместимости, TLS, маршрутизацию и внешнюю IPC-память обеспечивает приложение. QSL предоставляет формат и средства работы с подготовленными буферами; LLVM-backend и QBProto-рукопожатие пока не реализованы.
 
 ```toml
 [dependencies]
-qsl = "=0.1.2"
+qsl = "=0.2.0"
 
 [build-dependencies]
-qsl = "=0.1.2"
+qsl = "=0.2.0"
 ```
 
-[Быстрый старт из четырёх файлов](docs/quickstart.ru.md). QSL нужен в build.rs для генерации и в приложении для исполнения.
-
-### Где он применим
-
-QSL рассчитан на управляемый обмен между согласованными компонентами: внутренние протоколы, IPC, телеметрия и повторяемые записи. Его узость — известный при сборке формат и явные инварианты памяти. Разработчик выбирает владение, ограничения, проверку входа и подготовку буферов. Универсальная маршрутизация, TLS, согласование версий и QBProto-рукопожатие не возникают из схемы автоматически.
-
-~~~qsl
-&User[safety,aggressive] {
+```qsl
+&User[safety,aggressive,optionals=bitmap,opt_table] {
     u64 id;
     str(1..100) name;
     u8? status;
 }
-~~~
+```
 
-Обязательные поля всегда перед опциональными. Здесь name — встроенная COPY-строка до 100 **байтов UTF-8**; status читается методом status(), изменяется через set_status(...), объект создаётся через try_new(...). Без aggressive переменная строка обычно становится String. Без safety checked-десериализация не генерируется.
+Обязательные поля находятся перед опциональными. Длина строки измеряется в байтах UTF-8. Здесь name использует ограниченный встроенный буфер, status — сгенерированный optional-доступ; объект создаётся через try_new. Без aggressive переменная COPY-строка обычно хранится в String. safety включает checked-десериализацию; явные unchecked-методы сохраняются.
 
-### Что можно выбрать
-
-| Задача | Механика |
+| Возможность | Контракт |
 |---|---|
-| Сократить повторную работу чтения | Автоматические точные регистровые группы |
-| Управлять владением | String, встроенный буфер, прямой &str / &[u8], фиксированные массивы |
-| Упаковать самостоятельные числа без потерь | qps=Q2/Q4/Q8/Q16, по умолчанию Q16 |
-| Сжать строку | Отдельный QSL-LZ; строки, массивы и длины не квантуются QPS |
-| Читать optional-поля | predict_seq: индекс по длине; opt_table: тег → читатель |
-| Контролировать недоверенный вход | safety, единый курсор, MAX_DATA_SIZE = 65535 |
-| Готовить память | serialize_to / deserialize_into, RT-слоты, loyal_cache |
-| Работать с нативным layout | Отдельные COPY и LIFETIME Transmutate, вложенные регионы |
-| Переиспользовать описание | Rust qsl_macro / schem_macro с вложенным раскрытием полей |
+| default / opt_table | Match или статическая функция по optional-маркеру; обычный теговый формат сохраняется |
+| bitmap | Только optional-поля, маска 8–128 бит, обход установленных битов |
+| predict_seq | Индекс по длине; не управляет порядком BM |
+| qps=Q2/Q4/Q8/Q16 | Обратимая числовая упаковка; по умолчанию Q16 |
+| Строки | String, ограниченное встроенное хранение, &str / &[u8], отдельное QSL-LZ |
+| Память | serialize_to, deserialize_into, SerOut, ограниченные RT-слоты |
+| Native-layout | COPY и проверяемый LIFETIME; именованные регионы создают вложенные типы |
+| Пользовательские типы | QslCustom, проверяемые qsl_primitive! / qsl_native_primitive!, Rust-шаблоны |
+| Безопасность | Курсор, диапазоны, UTF-8, контроль распаковки, MAX_DATA_SIZE=65535 |
+| Компилятор | qsl-lexer → общий QslSchemaBuilder → qsl-interpreter |
 
-Атрибуты опциональны. STACK_LIMIT по умолчанию **256 B данных на встроенный буфер**, строгий даже для явно выбранных inline/LZ. Сверх лимита COPY использует String/Vec; нативный фиксированный Transmutate требует явно достаточного лимита. RT ограниченных схем ждёт освобождения слота. Trusted-методы требуют корректного кадра и памяти. Низкоуровневые trait-методы serialize теперь unsafe; безопасный общий выход — serialize_checked.
+**Переход с 0.1:** BM меняет wire-формат, обе стороны обновляются согласованно. Cargo-feature native, Windows-сокеты/IPC-регионы и windows-sys удалены; обычный serialize возвращает Vec<u8>, serialize_to принимает срез. Нативный layout и SerOut от Windows не зависят. [Полный переход и ограничения](docs/migration-0.2.0.ru.md).
 
-При изменении формата стороны обновляются согласованно. Строгий и лёгкий хэши вычисляются при анализе; xxHash не является криптографической гарантией. Скорость зависит от схемы, архитектуры, размера рабочего набора и выбранного контракта.
+STACK_LIMIT по умолчанию — 256 B данных на встроенный буфер. Превышение использует String/Vec при сохранении кодека; фиксированный native-layout требует явно достаточного лимита. Атрибуты опциональны; их наличие не гарантирует ускорение. Хэши учитывают формат, но не заменяют согласование версий или аутентификацию.
 
-[Контракт и переход RU](docs/modernization-2026-11-06/MODERNIZATION.ru.md) · [Полное руководство](docs/guide.ru.html) · [Рабочие примеры](examples/README.md) · [Точечные замеры с графиками](qsl-bench/modernization/report.html)
+[Полный интерактивный справочник](https://zadr0.github.io/QSL/index.html) · [Архитектура](docs/architecture.ru.md) · [API](docs/API.ru.md) · [Безопасность](docs/safety.ru.md) · [Примитивы и регионы](docs/custom-types.ru.md) · [Примеры](examples/README.md) · [Заметки выпуска](docs/releases/0.2.0.ru.md).
 
-Сохранённые замеры 6 ноября: String 130,38 нс и встроенная строка 63,20 нс для 2048 B UTF-8; цель 25 нс не достигнута. Числовой перепрогон: default 2,788 нс / 24 B и Q16 4,304 нс / 5 B; ускорение не подтверждено. [Снимки и интервалы](qsl-bench/modernization/results/2026-11-06-register-width/README.md) относятся к измеренным исходникам. Сравнение протоколов — исторические 16/100.
+Проект проверяется на Windows 11 x86-64, i5-7400, 24 GiB / 2133 MHz. Старые измерения сохраняют исходные версии. Прогон 7 ноября не принят как строгий из-за загрузки CPU; новое ускорение им не доказано. Цель 25 нс для 1024 символов UTF-8 не объявляется достигнутой.
+
+[MIT](LICENSE) · [crates.io](https://crates.io/crates/qsl/0.2.0) · [docs.rs](https://docs.rs/qsl/0.2.0/qsl/)
 
 ## English
 
-Development sources are split into `qsl-lexer` and `qsl-interpreter`. One `QslSchemaBuilder` collects schemas; `builder.use_interpreter()` selects Rust generation through a trait. A separate LLVM backend can implement the same contract. [Architecture EN](docs/architecture.en.md) · [Build-script example](examples/compiler-pipeline/). The split ships in qsl 0.1.2; the compiler crates are version 0.1.0.
+QSL is a schema language and specialized Rust binary-codec generator for data described in advance. Build-time analysis resolves field order, domains, lengths, ownership and validation into concrete structures and methods. Schema parsing is outside the hot path.
 
-QSL is a data-description language and a specialized Rust code generator for binary exchange. Its original task is exchanging data described in advance. Both peers know field order, domains and codecs before application startup.
-
-At build time QSL analyzes bounds, bit widths, register groups, tables and wire identities, then emits concrete methods. Runtime values and lengths remain dynamic; schema interpretation is outside the hot path.
-
-### Installation
+It targets controlled internal protocols, telemetry and repeated records. Applications provide version negotiation, TLS, routing and external IPC storage. QSL supplies the format and caller-prepared buffer interfaces. An LLVM backend and QBProto handshake are planned, not implemented.
 
 ```toml
 [dependencies]
-qsl = "=0.1.2"
+qsl = "=0.2.0"
 
 [build-dependencies]
-qsl = "=0.1.2"
+qsl = "=0.2.0"
 ```
 
-[Four-file quick start](docs/quickstart.en.md). Both dependencies are required: build.rs generates the codec and the application uses it.
-
-### Where it fits
-
-QSL targets controlled exchange between coordinated components: internal protocols, IPC, telemetry and repeated records. Its specialization is a build-time-known format with explicit memory invariants. Developers choose ownership, bounds, input checking and prepared storage. Routing, TLS, version negotiation and a QBProto handshake are not automatically supplied by a schema.
-
-~~~qsl
-&User[safety,aggressive] {
+```qsl
+&User[safety,aggressive,optionals=bitmap,opt_table] {
     u64 id;
     str(1..100) name;
     u8? status;
 }
-~~~
+```
 
-Required fields always precede optionals. Here name is an inline COPY string bounded by 100 **UTF-8 bytes**. Read status through status(), change it through set_status(...), and construct the record through try_new(...). Without aggressive, variable owned strings normally use String. Without safety, checked deserialization is not generated.
+Required fields precede optionals; string bounds count UTF-8 bytes. Here name uses bounded inline storage and status has generated optional accessors; construct with try_new. Without aggressive, a variable COPY string normally uses String. safety enables checked deserialization; explicit unchecked methods remain available.
 
-### Available choices
-
-| Goal | Mechanism |
+| Capability | Contract |
 |---|---|
-| Reduce repeated read work | Automatic exact register groups |
-| Select ownership | String, inline storage, direct &str / &[u8], fixed arrays |
-| Pack scalar numbers losslessly | qps=Q2/Q4/Q8/Q16; Q16 by default |
-| Compress a string | Independent QSL-LZ; QPS never quantizes strings, arrays or lengths |
-| Read optional fields | predict_seq: length index; opt_table: tag → reader |
-| Control untrusted input | safety, one cursor, MAX_DATA_SIZE = 65535 |
-| Prepare storage | serialize_to / deserialize_into, RT slots, loyal_cache |
-| Use native layout | Separate COPY/LIFETIME Transmutate and nested regions |
-| Reuse definitions | Nested Rust qsl_macro / schem_macro field expansion |
+| default / opt_table | Match or a static optional-reader table; ordinary tag bytes are preserved |
+| bitmap | Optional-only 8–128-bit masks and set-bit traversal |
+| predict_seq | Length-derived index; inactive under BM |
+| qps=Q2/Q4/Q8/Q16 | Reversible scalar packing; Q16 by default |
+| Strings | String, bounded inline storage, &str / &[u8], independent QSL-LZ |
+| Memory | serialize_to, deserialize_into, SerOut and bounded RT slots |
+| Native layout | COPY and checked aligned LIFETIME; named regions create nested types |
+| Custom types | QslCustom, validating scalar-wrapper macros and reusable Rust templates |
+| Safety | Cursor bounds, ranges, UTF-8, decompression limits, MAX_DATA_SIZE=65535 |
+| Compiler | qsl-lexer → one QslSchemaBuilder → qsl-interpreter |
 
-Attributes are opt-in. STACK_LIMIT defaults to **256 data bytes per inline buffer**, including explicit inline/LZ requests. Larger COPY buffers use String/Vec; fixed native Transmutate requires an explicitly sufficient limit. Bounded RT pools wait for a free slot. Trusted pointer methods require valid frames and correct memory. Low-level serialize trait methods are now unsafe; serialize_checked is the general safe output API.
+**Migrating from 0.1:** BM changes wire format and requires coordinated peer migration. The native Cargo feature, Windows sockets/IPC regions and windows-sys are removed. Ordinary serialize returns Vec<u8>; serialize_to takes a mutable slice. Native layout and SerOut do not depend on Windows. [Complete migration and constraints](docs/migration-0.2.0.en.md).
 
-Wire changes require coordinated peers. Strict and light hashes are computed during analysis; xxHash is not cryptographic. Performance depends on the schema, architecture, working-set size and checked/trusted contract.
+STACK_LIMIT defaults to 256 data bytes per inline buffer. Larger owned buffers use String/Vec while retaining their codec; fixed native layouts require an explicitly sufficient limit. Attributes are opt-in and do not guarantee a speedup. Schema hashes describe format identity, not version negotiation or authentication.
 
-[Contract and migration EN](docs/modernization-2026-11-06/MODERNIZATION.en.md) · [Complete guide](docs/guide.en.html) · [Runnable examples](examples/README.md) · [Focused measurements and charts](qsl-bench/modernization/report.html)
+[Interactive reference](https://zadr0.github.io/QSL/en.html) · [Architecture](docs/architecture.en.md) · [API](docs/API.en.md) · [Safety](docs/safety.en.md) · [Custom types](docs/custom-types.en.md) · [Examples](examples/README.md) · [Release notes](docs/releases/0.2.0.en.md).
 
-Recorded November 6 runs: String 130.38 ns and inline ownership 63.20 ns for 2048 UTF-8 bytes; the 25 ns target was not met. Numerical rerun: default 2.788 ns / 24 B and Q16 4.304 ns / 5 B; no speedup was established. [Snapshots and intervals](qsl-bench/modernization/results/2026-11-06-register-width/README.md) belong to their measured sources. The protocol comparison remains a historical 16/100 result.
+Recorded hardware is Windows 11 x86-64, i5-7400 and 24 GiB / 2133 MHz. Historical measurements retain their source snapshots. The November 7 pass is rejected as a strict result because of CPU activity and establishes no new speedup. The 25 ns target for 1024 UTF-8 characters is not claimed achieved.
 
-Лицензия: [MIT](LICENSE).
+[MIT](LICENSE) · [crates.io](https://crates.io/crates/qsl/0.2.0) · [docs.rs](https://docs.rs/qsl/0.2.0/qsl/)

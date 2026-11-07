@@ -1,3 +1,5 @@
-# state_bits
+# state_bits · QSL 0.2.0
 
-Explicit compatibility mode for the old D/u32 and static-index representation. `[state_bits]` uses Q1; explicit Q1/Q2/Q4/Q8/Q16 are supported. It is distinct from QPS v2 numeric operand compression and does not auto-detect a peer format. Both peers must agree on schema/configuration. [Architecture](../../architecture.en.md).
+state_bits=Q1/Q2/Q4/Q8/Q16 selects the separate legacy D/presence-index format, not QPS compression. Its optional-field and analysis limits are independent. It cannot be combined with BM. Table storage policies and wire presence format are distinct; consult the full guide before migrating old frames.
+
+[Full guide](../../guide.en.md) · [Safety](../../safety.en.md) · [Migration](../../migration-0.2.0.en.md) · [All attributes](index.md).

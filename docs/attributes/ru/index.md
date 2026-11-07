@@ -1,5 +1,5 @@
-# Атрибуты схемы
+# Атрибуты и конфигурация QSL 0.2.0
 
-[qps](qps.md) · [quant](quant.md) · [state_bits](state_bits.md) · [opt_table](opt_table.md) · [safety](safety.md) · [inline](inline.md) · [rt](rt.md) · [macros](macros.md) · [predict_seq](predict_seq.md) · [binary_opt](binary_opt.md) · [decompress](decompress.md) · [lifetime](lifetime.md) · [compact](compact.md) · [bitmap](bitmap.md) · [alignment](alignment.md) · [default](default.md)
+[aggressive](aggressive.md) · [alignment](alignment.md) · [binary_opt](binary_opt.md) · [bitmap](bitmap.md) · [cache](cache.md) · [compact](compact.md) · [decompress](decompress.md) · [default](default.md) · [inline](inline.md) · [lifetime](lifetime.md) · [loyal_cache](loyal_cache.md) · [macros](macros.md) · [opt_table](opt_table.md) · [predict_seq](predict_seq.md) · [qps](qps.md) · [quant](quant.md) · [rt](rt.md) · [safety](safety.md) · [slots](slots.md) · [state_bits](state_bits.md) · [transmutate](transmutate.md)
 
-[Актуальная архитектура](../../architecture.ru.md). QPS сжимает числовым операндом; predict_seq предсказывает по длине; opt_table выбирает читателя по тегу. `[qps]` по умолчанию использует Q16. Старое кодирование D/индексов — `state_bits`; `quant=Qn` — синоним QPS.
+Механики опциональны; обязательные поля предшествуют опциональным. QPS упаковывает операнды, PS использует длину, OT выбирает читателя, BM управляет обходом маски. Native-layout не требует Windows Cargo-feature. [Полное руководство](../../guide.ru.md).

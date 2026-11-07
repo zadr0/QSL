@@ -87,6 +87,52 @@ pub trait QslCustom: Sized {
     }
 }
 
+mod primitive_integer_seal {
+    pub trait Sealed {}
+    macro_rules! integer { ($($t:ty),*) => { $(impl Sealed for $t {})* }; }
+    integer!(u8, i8, u16, i16, u32, i32, u64, i64);
+}
+/// Supported scalar representations for the opt-in primitive macros.
+#[doc(hidden)]
+pub trait PrimitiveInteger: primitive_integer_seal::Sealed {}
+macro_rules! primitive_integer { ($($t:ty),*) => { $(impl PrimitiveInteger for $t {})* }; }
+primitive_integer!(u8, i8, u16, i16, u32, i32, u64, i64);
+
+/// Exact transparent integer representation promised by QslPrimitive.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct PrimitiveRepr {
+    pub bits: u8,
+    pub signed: bool,
+    pub min: i128,
+    pub max: i128,
+}
+impl PrimitiveRepr {
+    pub fn data(self) -> QslType {
+        QslType::RangedInteger {
+            bits: self.bits,
+            signed: self.signed,
+            min: self.min,
+            max: self.max,
+        }
+    }
+    pub fn validate(self) -> QslResult<()> {
+        self.data().validate(false)
+    }
+}
+/// Explicit optimization contract for transparent scalar wrappers.
+/// # Safety
+/// The type has exactly the declared integer's size, alignment and native bit
+/// representation, has no padding or destructor, and every declared domain value
+/// is valid. Bit conversion is exact, deterministic and allocation-free. Its
+/// normal QslCustom codec is the same little-endian scalar representation.
+pub unsafe trait QslPrimitive: QslCustom {
+    const REPRESENTATION: PrimitiveRepr;
+    fn qsl_to_bits(&self) -> u64;
+    /// Construct through ordinary typed Rust code; this must be a total, safe conversion.
+    /// Schema-domain validation is performed separately before checked materialization.
+    fn qsl_from_bits(bits: u64) -> Self;
+}
+
 #[derive(Default, Debug, Clone)]
 pub enum QslType {
     #[default]
@@ -432,7 +478,8 @@ impl QslSchema {
         self.flags & FLAG_OPT_TABLE_LEGACY != 0 && self.optional_count() > 1
     }
     pub fn predict_seq(&self) -> bool {
-        !self.state_bits()
+        !self.bitmap()
+            && !self.state_bits()
             && (self.flags & FLAG_PREDICT_SEQ != 0
                 || (self.flags & FLAG_OPT_TABLE_LEGACY != 0 && self.optional_count() == 1))
     }
@@ -450,7 +497,8 @@ impl QslSchema {
         self.opt_table() && self.predict_seq()
     }
     pub fn sequential(&self) -> bool {
-        self.flags & (FLAG_OPT_TABLE_LEGACY | FLAG_PREDICT_SEQ | FLAG_STATE_BITS) != 0
+        !self.bitmap()
+            && self.flags & (FLAG_OPT_TABLE_LEGACY | FLAG_PREDICT_SEQ | FLAG_STATE_BITS) != 0
     }
     pub fn lifetime(&self) -> bool {
         self.flags & (FLAG_LIFETIME | FLAG_FIELD_BORROW) != 0
@@ -478,9 +526,22 @@ impl QslSchema {
             (usize::BITS - count.leading_zeros()) as usize
         }
     }
-    /// One presence bit for every declared field, including required fields.
+    /// Bitmap v2 counts optional fields only; an empty mask has no header.
+    pub fn bitmap_width(&self) -> usize {
+        crate::bitmap::BitmapPlan::new(self.optional_count()).map_or(0, |p| p.width)
+    }
+    pub fn bitmap_bytes(&self) -> usize {
+        self.bitmap_width() / 8
+    }
+    /// Compatibility sizing helper; use bitmap_bytes for exact wire length.
     pub fn bitmap_words(&self) -> usize {
-        self.fields.len().div_ceil(32)
+        self.bitmap_width().div_ceil(32)
+    }
+    pub fn optional_tag_base(&self) -> usize {
+        self.fields
+            .iter()
+            .find(|f| f.optional)
+            .map_or(0, |f| f.tag - 1)
     }
     pub fn validate(&self) -> QslResult<()> {
         crate::modernization::validate_options(self).map_err(|_| QslError::InvalidSchema)?;
@@ -520,7 +581,9 @@ impl QslSchema {
         if !self.quant_requested() && self.flags & PAYLOAD_QUANT_MASK != 0 {
             return Err(QslError::InvalidSchema);
         }
-        if self.max_tag > 64 || self.optional_count() > 64 {
+        if self.max_tag > if self.bitmap() { 65535 } else { 64 }
+            || self.optional_count() > if self.bitmap() { 128 } else { 64 }
+        {
             return Err(QslError::InvalidSchema);
         }
         if (self.flags & (FLAG_INLINE | FLAG_INLINE_ALWAYS | FLAG_INLINE_NEVER)).count_ones() > 1
@@ -538,7 +601,7 @@ impl QslSchema {
                 }
             }
         }
-        if self.opt_table() && (self.compact() || self.bitmap()) {
+        if self.bitmap() && self.flags & (FLAG_OPT_TABLE_LEGACY | FLAG_STATE_BITS) != 0 {
             return Err(QslError::InvalidSchema);
         }
         if self.sequential() {
@@ -585,7 +648,10 @@ impl QslSchema {
             if field.bits > 64 && !matches!(&field.data, QslType::FixedString(_)) {
                 return Err(QslError::InvalidWidth);
             }
-            field.data.validate(self.borrow_strings() && !native)?;
+            let native_custom = matches!(&field.data,QslType::Custom{rust_type,..} if self.options.native_types.contains_key(rust_type));
+            field
+                .data
+                .validate(self.borrow_strings() && !native && !native_custom)?;
             field.data.rank_width(field.bits)?;
             if let Some(value) = field.default {
                 let in_range = match &field.data {
@@ -630,21 +696,16 @@ impl QslSchema {
             if needs_lifetime && !self.lifetime() {
                 return Err(QslError::InvalidSchema);
             }
-            has_borrowed_data |= needs_lifetime;
+            has_borrowed_data |= needs_lifetime
+                || (self.borrow_strings()
+                    && matches!(&field.data,QslType::Custom{rust_type,..} if self.options.native_types.get(rust_type).is_some_and(|l|l.is_region)));
         }
         // Otherwise `Foo<'a>` would have an unused lifetime parameter.
         if self.lifetime() && !has_borrowed_data && !self.options.transmutate {
             return Err(QslError::InvalidSchema);
         }
-        let packed =
-            self.quant_requested() && crate::payload_quant::PayloadQuantPlan::analyze(self)?.active;
-        if !self.sequential()
-            && !self.bitmap()
-            && !packed
-            && !self.opt_table()
-            && self.optional_count() * self.tag_bits() > 64
-        {
-            return Err(QslError::InvalidSchema);
+        if self.quant_requested() {
+            crate::payload_quant::PayloadQuantPlan::analyze(self)?;
         }
         if self.state_bits() || self.predict_table() {
             crate::static_index::PredictPlan::analyze(self)?;
@@ -664,6 +725,40 @@ fn valid_ident(s: &str) -> bool {
     matches!(c.next(), Some(x) if x == '_' || x.is_ascii_alphabetic())
         && c.all(|x| x == '_' || x.is_ascii_alphanumeric())
         && !KEYWORDS.contains(&s)
+}
+
+/// Attach already-validated build-time type facts before the usual schema checks.
+#[doc(hidden)]
+pub fn apply_primitive_bindings(
+    schema: &mut QslSchema,
+    bindings: &std::collections::BTreeMap<String, PrimitiveRepr>,
+) -> QslResult<()> {
+    for (name, p) in bindings {
+        p.validate()?;
+        let layout = crate::modernization::native_type_layout(&p.data(), &Default::default())
+            .ok_or(QslError::InvalidSchema)?;
+        schema.options.native_types.insert(name.clone(), layout);
+    }
+    fn bind(t: &mut QslType, bindings: &std::collections::BTreeMap<String, PrimitiveRepr>) {
+        match t {
+            QslType::Custom {
+                rust_type,
+                fixed_wire_size,
+            } => {
+                if let Some(p) = bindings.get(rust_type) {
+                    *fixed_wire_size = Some(p.bits as usize / 8);
+                }
+            }
+            QslType::Array(e, _)
+            | QslType::FixedArray(e, _)
+            | QslType::RangedArray { element: e, .. } => bind(e, bindings),
+            _ => {}
+        }
+    }
+    for f in &mut schema.fields {
+        bind(&mut f.data, bindings);
+    }
+    Ok(())
 }
 
 #[cfg(test)]

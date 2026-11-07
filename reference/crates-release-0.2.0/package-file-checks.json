@@ -1,0 +1,20 @@
+[
+  {
+    "package": "lexer",
+    "listed_files": 34,
+    "english_docs_only": true,
+    "removed_platform_modules_absent": true
+  },
+  {
+    "package": "interpreter",
+    "listed_files": 27,
+    "english_docs_only": true,
+    "removed_platform_modules_absent": true
+  },
+  {
+    "package": "qsl",
+    "listed_files": 28,
+    "english_docs_only": true,
+    "removed_platform_modules_absent": true
+  }
+]

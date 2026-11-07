@@ -1,7 +1,7 @@
+> **QSL 0.2.0:** [migration and current contracts](migration-0.2.0.en.md). BM changes format; ordinary non-BM tags are preserved. Windows-specific runtime modules and the native Cargo feature are removed. Historical measurement chapters retain their captured versions.
+
 
 Trusted Serializable::serialize / BorrowSerializable::serialize trait methods are now unsafe. Callers must establish their preconditions. Generated RT/QPS serialize() methods remain safe Result APIs with value validation; use serialize_checked for general safe output.
-
-> **2026-11-06 contract:** [strict STACK_LIMIT, opt-in Safety, scalar-only QPS and native COPY/LIFETIME](modernization-2026-11-06/MODERNIZATION.en.md). [Four measured cases from November 6](../qsl-bench/modernization/report.html). Historical timing tables retain their original snapshots.
 
 # QSL. Complete project guide
 
@@ -25,10 +25,10 @@ Schema QPS packs scalar numeric fields only; strings, arrays and lengths are not
 
 ```toml
 [dependencies]
-qsl = "=0.1.1"
+qsl = "=0.2.0"
 
 [build-dependencies]
-qsl = "=0.1.1"
+qsl = "=0.2.0"
 ```
 
 [Four-file quick start](quickstart.en.md). Both dependencies are required: build.rs generates the codec and the application uses it.
@@ -111,37 +111,35 @@ With compact, alignment completes each field at a byte boundary. This is wire al
 
 compact conflicts with predictive sequential layouts. Active scalar QPS does not arbitrarily combine with compact, alignment, bitmap or legacy directories; incompatible selections are rejected by analysis.
 
-## Optional fields and default values
+Default values initialize absent fields; they do not synthesize presence or bypass validation.
 
-After Rust-template expansion, final order must still be [required][optional]. Tags increase with declaration order. Moving a field changes the wire format and must be explicit.
+## Default: count/tags and match
 
-The default modifier supplies numeric initialization for Rust Default; it does not turn an absent field into a present one. Decoding a missing field returns None. Some(constant) retains separate presence even when the value requires no payload bits.
+Required fields precede optional fields. Without prediction or BM the frame preserves its existing packed optional-count/tag header, then required values and present optional values. Default dispatch uses a generated match. One optional field keeps a one-bit presence header. Tags remain incremental schema tags; sparse tags produced by region lowering are mapped explicitly.
 
-optionals=bitmap allocates one bit per declared field, including required fields, using complete little-endian u32 words. Required-field bits must be set. Four metadata bytes can cost more than the default header for a small schema. Field order determines bit positions.
+## BM: optional-only set-bit traversal
 
-## predict_seq: a length-derived index
+Only optional fields occupy bits. Counts 0 / 1–8 / 9–16 / 17–32 / 33–64 / 65–128 use 0 / 1 / 2 / 4 / 8 / 16 header bytes. The mask is little endian; marker 1 occupies its MSB. Read `marker=WIDTH-mask.trailing_zeros()`, clear `mask &= mask-1`, dispatch marker and repeat until zero. Required values retain declaration order; present optional values are serialized and read in descending marker order.
 
-`predict_seq` determines field presence from length; it does not choose readers by tag. Standalone mode writes no tags: one optional uses EOF, while several optionals use a numeric index into a static table of unique fixed-size subset sums. Ambiguous sums, a zero-size single optional and analysis-budget overflow are rejected. Input length is required; `deserialize_unsafe(ptr)` without length is unsupported.
+For `&P[safety,optionals=bitmap,opt_table]{u8 id;u16? a;u8? b;}`, id=9, a=0x1234 and b=7 encode as `C0 09 07 34 12`. BM v2 differs from the former u32/all-fields mask. Both peers must migrate together; no automatic format detection is added.
 
-## opt_table: reader selection by tag
+Before traversal, Safety checks the largest marker once if spare bits exist. Empty masks skip it. A full-width mask has no spare bits. After a successful check every remaining dense OT index is bounded. Field data and end-of-frame checks still run through the checked cursor.
 
-`opt_table` generates a static reader-function table indexed by the actual schema tag: `readers[tag - 1]`. This is not the optional ordinal: required-field tags leave empty entries. Before trusted dispatch, the checked cursor validates allowed tags, order, duplicates, bounds and values across the complete frame. A reader returns its consumed byte count so the cursor advances without computing field length again.
+## OT: choose an optional reader
 
-Standalone `[opt_table]` preserves the default wire format and hashes. For several optionals, decoding reads the count and packed tags from the header, then dispatches readers for present fields. A single optional needs only presence; its tag is already known from the schema. No table is allocated per message. The table has `max_tag` Option-function-pointer entries; each entry occupies one machine pointer on x86-64. A table does not guarantee a speedup: indirect calls and result preparation have costs.
+Standalone opt_table preserves default bytes and hashes. In ordinary tagged/BM paths its dense static table contains one reader per optional marker; required fields do not create gaps. Absolute schema tags are mapped to dense ordinals. With BM the marker directly selects that ordinal. A per-field cursor reader is shared with default match dispatch; checked and unchecked contracts retain separate readers.
 
-## predict_seq + opt_table: preserved length graph
+There is no per-frame table allocation. A non-borrowed raw entry is a function pointer (one pointer on x86-64); checked dispatch has its own table. An indirect call is not guaranteed to outperform a match. Compact ordinary layouts and BM can use OT. The former optional_count*tag_bits<=64 restriction is removed from ordinary streaming headers.
 
-`[predict_seq,opt_table]` preserves the wire bytes and hashes of the former mixed `[opt_table]` implementation. `predict_seq` determines the length event; `opt_table` supplies the reader for each resolved field. These responsibilities are separate.
+## PS: a length-derived index
 
-After metadata and required fields, decoding derives optional payload length L. The numeric index is `I(L) = sum((L > c_j) as usize)`. Events describe forced and possible fields. For two optional u8 fields, `I=(L>0)+(L>1)`: L=0 means neither, L=2 means both, and L=1 requires metadata to distinguish a from b. Skipping a metadata read does not remove its reserved wire byte. When a tag is not separately stored, the generator knows it from the resolved field position.
+predict_seq derives presence from payload length, not tag dispatch. A standalone single optional uses EOF; multiple fields require unambiguous supported fixed-size subset sums. Invalid/ambiguous sums and a zero-size optional codec are rejected where length cannot distinguish presence. The trusted API needs input length: a pointer-only deserialize_unsafe cannot infer it.
 
-For string ranges 3..33 and 1..255, boundaries follow from the ranges. CRITICAL_POINTS and the event graph belong to `predict_seq`; OPT_TABLE dispatches readers. General graph analysis supports 12 fields and 65535 payload bytes; equal fixed widths support up to 64 fields. Unsupported graphs fall back to checked EOF, an exact length table, or an explicit presence mask. This is not a promise of a branch-free complete decoder.
+## PS + OT
 
-`opt_table=legacy` is the separate older wire offset directory. The scalar QPS specialization and its prepared kernel contain no ordinary field tags and use their own bit offsets; `opt_table` does not force them through a byte reader table. With `state_bits`, D supplies presence while optional reads use the reader table. General outer QPS restores the inner frame first.
+The combined mode preserves its existing length graph and wire contract. `I(L)=sum((L>c_j) as usize)` selects an event; forced fields use existing OT readers, ambiguous fields require the mode's presence metadata. The reserved metadata bytes are not silently removed. General graph limits remain 12 fields / 65535 payload bytes; equal fixed widths support up to 64 fields. Those are distinct from BM limits.
 
-### Migration and previous measurements
-
-To retain an old `[opt_table]` frame, select `[predict_seq,opt_table]` on both peers. New standalone `[opt_table]` matches default, but generally differs from the former mixed format. There is no automatic version detection. Previous measurements labelled opt_table, including the 1.46–1.73x example speedups, measured the mixed length graph. They are not measurements of the new tag table; original JSON, sources and values remain unchanged.
+PS is inactive when BM is selected and cannot reorder its traversal. QPS does not predict: it is reversible operand-based scalar packing. Legacy offset directories and state_bits are separate formats with their own compatibility checks. Scalar QPS uses bit offsets rather than forcing packed fields through a byte reader table.
 
 ## Strings, UTF-8 and ownership
 
@@ -237,25 +235,11 @@ Each schema cursor checks lengths, domains, metadata, UTF-8, padding, LZ and com
 
 Structural validation is not schema identification. Schemas with identical admissible wire forms can accept the same bytes. Type discrimination requires an agreed discriminator, version or handshake. QBProto and identifier R remain planned.
 
-## SerOut and native regions
+## Portable buffers and sockets
 
-SerOut owns an allocation with capacity, initialized length and alignment. new creates initialized storage. with_capacity_aligned keeps length zero until filled. Uninitialized bytes must not be observed. Trusted serialize_to requires sufficient capacity; its name does not imply a capacity check.
+SerOut owns an aligned global-allocator allocation with capacity and initialized length. new initializes its byte range; with_capacity_aligned starts with length zero. Publish initialized bytes only. Ordinary Serializable/BorrowSerializable serialize always returns Vec<u8>; serialize_to takes a mutable byte slice and returns the written length. Pointer-based output supports caller-prepared storage under its unsafe contract.
 
-The native feature changes convenient Serializable::serialize from Vec<u8> to SerOut. Result types also depend on generated inherent methods, so examples must match the chosen configuration.
-
-Windows NativeRegion is a single-threaded bump region backed by VirtualAlloc. Individual buffer/slot operations avoid per-block heap allocation. Rust borrows prevent reset/drop during use. The region is intentionally neither Send nor Sync. prefault touches pages beforehand; alignment and working-set size affect caches and bandwidth.
-
-Performance depends on CPU, compiler, dimensions, caches and RAM. A 64 B aligned buffer does not prove that the entire working set fits L1 or that every native object has that alignment.
-
-## SharedRegion and IPC
-
-SharedRegion supports Windows threads and separate processes. Participants exchange mapping offsets rather than absolute pointers. A writer reserves storage, fills bytes and publishes complete content using release/acquire ordering.
-
-Published bytes are immutable; owners retain mapping lifetime. Reservations are capacity-bounded. This is not an automatic queue that frees every message independently. Applications define ownership, mapping names and format agreement.
-
-Opening an external mapping requires trust in its headers and synchronization; parts of this API are intentionally unsafe. Process separation does not establish frame validity. Apply suitable validation before trusted decoding.
-
-The codec survey does not substitute serialization figures for IPC or socket latency. Those mechanisms have separate functional checks and use cases; their system delays are not inferred from codec nanoseconds.
+The native Cargo feature, Windows NativeRegion/SharedRegion/NativeSocket/NativeListener and windows-sys were removed in 0.2.0. Portable RawSocket uses standard TCP framing. IPC/shared-memory allocation, TLS, routing and protocol negotiation belong to the application. Native-layout COPY/LIFETIME is a separate representation mechanism and remains available.
 
 ## QSL_RT
 
@@ -272,7 +256,7 @@ deserialize_into remains available. General outer ByteQps receives scratch/outpu
 
 ## Sockets
 
-RawSocket uses Rust's regular TCP object with QSL binary framing. NativeSocket/NativeListener under native+Windows call WinSock directly, supporting blocking operations, complete send/receive, framing, frame limits and timeouts.
+RawSocket uses Rust standard TCP with QSL binary framing. Windows-specific NativeSocket/NativeListener were removed in 0.2.0. Applications can supply their own transport around prepared byte buffers.
 
 max_frame constrains accepted size before frame allocation/reading. Framing errors or interrupted operations can terminate connection usability; the application must not reinterpret an arbitrary stream middle as a fresh frame. Pointer receive requires sufficient writable storage.
 
@@ -287,7 +271,7 @@ pub struct Meta { pub id: u32, pub tick: u64 }
 
 &Packet { Meta meta; u16 code; } generates meta_id, meta_tick and code. The original Rust type can remain nested; its fields are copied into the generated structure. Nested and repeated templates are supported. qsl_macro/schem_macro mark Rust declarations; QSL has no [macro] attribute.
 
-Limits: 64 expanded fields, depth 64, no cycles or name collisions. Optional/default on a group reference is ambiguous; specify properties on members. Generic/cfg rules and computed capacities are not guessed. Bounded editor discovery is not full Rust import resolution.
+Limits: depth 64, no cycles or name collisions. Ordinary modes retain max_tag <=64; BM supports up to 128 optional fields and max_tag <=65535. Optional/default on a group reference is ambiguous; specify properties on members. Generic/cfg rules and computed capacities are not guessed. Bounded editor discovery is not full Rust import resolution.
 
 QslCustom provides SIZE, COMP_SIZE and raw read/write methods. Checked decoding needs qsl_validate, whose default rejects the representation. User unsafe code is responsible for initialization, exact widths and valid Rust values. Unknown custom width limits RT and static size/offset estimates.
 
@@ -297,7 +281,7 @@ DEQ supports !define NAME: type = expression; and the documented !config setting
 
 inline, inline=hint, inline=always and inline=never explicitly control generated methods. Without an attribute, the compiler decides. This is independent of InlineString and prediction. always can increase code and instruction-cache pressure; never may preserve a call. Actual effects depend on the build.
 
-rust-macros enables marked Rust-structure parsing. native enables native outputs and, on Windows with 64-bit atomics, memory/socket facilities. diagnostics supplies separate checked-cursor tools; it is not required for automatically generated checked APIs. Read public APIs together with feature gates.
+rust-macros enables explicit marked Rust-source imports. diagnostics supplies diagnostic checked-cursor tools; it is not required for generated checked APIs. No native/Windows Cargo feature remains.
 
 ## Measurement method and P
 
@@ -309,7 +293,7 @@ For a borrowed result, P measures creation of a view over the complete payload. 
 
 For positive T in [T_low,T_high], P lies in [M/T_high,M/T_low]. Compare only identical tasks. Validation without materialization, a borrowed view and a new String have different output contracts even when their M is identical.
 
-The survey has 103 distinct cases (95 main and 8 UTF-8/whole-record), with 125 observations after repeating 22 general-QPS cases. The other 81 cases retain their initial snapshot. Criterion, 15 s warm-up per case, 10 s measurement, 200 samples, 99% CI and an 8 GiB limit. The measuring thread is pinned to a permitted CPU with above-normal priority. Preparation is outside timing unless allocation/lease is explicitly named. Sources and executable are captured with SHA-256 before execution.
+The historical source survey (not a 0.2.0 run) has 103 distinct cases (95 main and 8 UTF-8/whole-record), with 125 observations after repeating 22 general-QPS cases. The other 81 cases retain their initial snapshot. Criterion, 15 s warm-up per case, 10 s measurement, 200 samples, 99% CI and an 8 GiB limit. The measuring thread is pinned to a permitted CPU with above-normal priority. Preparation is outside timing unless allocation/lease is explicitly named. Sources and executable are captured with SHA-256 before execution.
 
 A waveform displays T_i=sample_time_i/iterations_i and P_i=M/T_i for each sample. It is not individual-call latency or network p99. Warm-up is absent from these points. Axes/units are labelled and complete sample/estimate data remain available.
 
@@ -332,7 +316,7 @@ Hardware: Windows 11 x86-64, i5-7400, RAM 24 GiB / 2133 MHz. Earlier profiles wi
 | payload_quant / qps | Scalar operand specialization |
 | qps_bytes | General byte groups, framing and restoration |
 | rt | Static slots, CAS acquisition and leases |
-| socket / native | TCP, WinSock, VirtualAlloc and IPC |
+| socket | Portable standard TCP framing; application controls external transport |
 
 The API index lists public names, signatures, source paths and lines for this snapshot. Generator string literals are not misclassified as generator methods. Private algorithms are described by module; obtain your actual qsl_gen.rs through the build or editor expansion action.
 
@@ -394,4 +378,8 @@ File and socket operations also use std::io::Error. Schema validation does not a
 
 [Seven programs and commands](../examples/README.md) · [39 historical measurements](examples.en.md) · [Charts and waveforms](../examples/performance.html). Timings retain their explicit source snapshots; historical tables are not replaced.
 
-Standalone tag dispatch inherits `optional_count * tag_bits <= 64`; compact and bitmap cannot be combined with opt_table. A wider optional tail needs a compatible combined/state_bits/legacy layout within that layout’s own limits.
+Ordinary tagged/BM OT now supports compact and streaming tag headers; see the current optional chapter.
+
+## Native region types and scalar polymorphism
+
+Named regions now produce actual nested types, never flattened parent fields. COPY owns them; LIFETIME checks exact native/wire layout, endianness, alignment and values before creating a reference. Explicit scalar wrapper macros validate layout/domain promises without automatically reinterpreting arbitrary custom codecs. Compact custom values charge original SIZE to the restored-data budget while consuming COMP_SIZE; array elements are validated before checked writing. [Complete contracts and runnable examples](migration-0.2.0.en.md).

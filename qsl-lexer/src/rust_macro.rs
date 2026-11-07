@@ -241,6 +241,7 @@ pub fn parse_rust_macros(sources: &[&str]) -> Result<Vec<QslSchema>, MacroError>
     let mut result = Vec::new();
     for def in defs {
         let mut native = false;
+        let mut native_alignment: Option<usize> = None;
         for attr in def.attrs.iter().filter(|a| marked(std::slice::from_ref(a))) {
             if !matches!(attr.meta, syn::Meta::Path(_)) {
                 let mode = attr
@@ -254,7 +255,7 @@ pub fn parse_rust_macros(sources: &[&str]) -> Result<Vec<QslSchema>, MacroError>
         }
         if native {
             for attr in def.attrs.iter().filter(|a| a.path().is_ident("repr")) {
-                attr.parse_nested_meta(|meta|{if meta.path.is_ident("C"){Ok(())}else if meta.path.is_ident("align"){let content;syn::parenthesized!(content in meta.input);let value:syn::LitInt=content.parse()?;let n=value.base10_parse::<usize>()?;if !n.is_power_of_two(){return Err(meta.error("native alignment must be a power of two"))}Ok(())}else{Err(meta.error("aggressive_transmutate requires repr(C), optionally with align(N); packed/Rust/transparent are incompatible"))}}).map_err(|e|MacroError(format!("{}: {e}",def.ident)))?;
+                attr.parse_nested_meta(|meta|{if meta.path.is_ident("C"){Ok(())}else if meta.path.is_ident("align"){let content;syn::parenthesized!(content in meta.input);let value:syn::LitInt=content.parse()?;let n=value.base10_parse::<usize>()?;if !n.is_power_of_two(){return Err(meta.error("native alignment must be a power of two"))}native_alignment=Some(native_alignment.unwrap_or(1).max(n));Ok(())}else{Err(meta.error("aggressive_transmutate requires repr(C), optionally with align(N); packed/Rust/transparent are incompatible"))}}).map_err(|e|MacroError(format!("{}: {e}",def.ident)))?;
             }
         }
         if def
@@ -340,6 +341,9 @@ pub fn parse_rust_macros(sources: &[&str]) -> Result<Vec<QslSchema>, MacroError>
                 .options
                 .regions
                 .push(crate::modernization::NativeRegion {
+                    alignment: native_alignment,
+                    external: true,
+                    field_prefix: String::new(),
                     rust_type: schema.name.clone(),
                     start: 0,
                     end: schema.fields.len(),

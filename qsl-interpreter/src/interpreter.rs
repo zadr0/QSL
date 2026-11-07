@@ -9,6 +9,10 @@ mod checked_codegen;
 mod hybrid_codegen;
 #[path = "codegen_length_graph.rs"]
 mod length_graph_codegen;
+#[path = "codegen_native.rs"]
+mod native_codegen;
+#[path = "codegen_optional.rs"]
+mod optional_codegen;
 #[path = "codegen_payload_quant.rs"]
 mod payload_quant_codegen;
 #[path = "codegen_qps.rs"]
@@ -399,7 +403,7 @@ fn minimum_size(schema: &QslSchema) -> QslResult<usize> {
         s.bytes(1 + schema.optional_count() * 4)?;
     } else if schema.predict_seq() {
     } else if schema.bitmap() {
-        s.bytes(schema.bitmap_words() * 4)?;
+        s.bytes(schema.bitmap_bytes())?;
     } else if schema.optional_count() == 1 {
         s.bits(1)?;
         if !schema.compact() {
@@ -441,7 +445,15 @@ fn minimum_size_expr(schema: &QslSchema) -> QslResult<String> {
     }
     let mut size = minimum_size(schema)?.to_string();
     for field in schema.fields.iter().filter(|field| !field.optional) {
-        if let QslType::Custom { rust_type, .. } = &field.data {
+        if let QslType::Custom {
+            rust_type,
+            fixed_wire_size,
+            ..
+        } = &field.data
+        {
+            if fixed_wire_size.is_some() && !schema.compact() {
+                continue;
+            }
             let constant = if schema.compact() {
                 "COMP_SIZE"
             } else {
@@ -638,10 +650,7 @@ fn emit_size(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     } else if schema.bitmap() {
         ln(
             out,
-            format!(
-                "let mut __qsl_bits: usize = {};",
-                schema.bitmap_words() * 32
-            ),
+            format!("let mut __qsl_bits: usize = {};", schema.bitmap_width()),
         );
     } else if schema.optional_count() == 1 {
         ln(out, "let mut __qsl_bits: usize = 1;");
@@ -667,7 +676,7 @@ fn emit_size(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     if !schema.compact() {
         ln(out, "__qsl_bits = (__qsl_bits + 7) & !7usize;");
     }
-    for field in &schema.fields {
+    for field in optional_codegen::ordered_fields(schema) {
         let width = field.data.rank_width(field.bits)?;
         if field.optional {
             ln(
@@ -966,7 +975,7 @@ fn emit_optional_flat_write(schema: &QslSchema, out: &mut String) -> QslResult<(
         ),
     );
     let mut offset = if schema.bitmap() {
-        schema.bitmap_words() * 4
+        schema.bitmap_bytes()
     } else {
         1
     };
@@ -1219,7 +1228,7 @@ fn emit_register_group(
 }
 fn emit_flat_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     let mut offset = if schema.bitmap() {
-        schema.bitmap_words() * 4
+        schema.bitmap_bytes()
     } else {
         0
     };
@@ -1261,7 +1270,7 @@ fn emit_flat_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
 /// exact-width loads. Partial trailing words never read past the allocation.
 fn emit_compact_flat_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     let offset = if schema.bitmap() {
-        schema.bitmap_words() * 4
+        schema.bitmap_bytes()
     } else {
         0
     };
@@ -1351,6 +1360,16 @@ fn emit_compact_flat_read(schema: &QslSchema, out: &mut String) -> QslResult<()>
     Ok(())
 }
 
+fn custom_codec_leaves(ty: &QslType) -> Vec<&QslType> {
+    match ty {
+        QslType::Custom { .. } => vec![ty],
+        QslType::Array(e, _)
+        | QslType::FixedArray(e, _)
+        | QslType::RangedArray { element: e, .. } => custom_codec_leaves(e),
+        _ => Vec::new(),
+    }
+}
+
 fn unchecked_read_supported(schema: &QslSchema) -> bool {
     schema.fields.iter().all(|field| match &field.data {
         QslType::None
@@ -1386,6 +1405,22 @@ fn emit_stored_value(
     borrowed: bool,
 ) -> QslResult<()> {
     use crate::modernization::StorageKind;
+    if f.storage == StorageKind::NativeView {
+        let QslType::Custom {
+            rust_type,
+            fixed_wire_size: Some(n),
+            ..
+        } = &f.data
+        else {
+            return Err(QslError::InvalidSchema);
+        };
+        ln(
+            out,
+            format!("let {name}=&*reader.read_exact({n}).cast::<{rust_type}>();"),
+        );
+        return Ok(());
+    }
+
     if f.storage == StorageKind::Default {
         return emit_unchecked_value(&f.data, out, name, width, compact, borrowed);
     }
@@ -1428,7 +1463,7 @@ fn emit_stored_value(
    if matches!(f.storage,StorageKind::FixedArray(_)){ln(out,format!("let {name}:[{ty};{n}]=std::array::from_fn(|_|{{"));emit_unchecked_value(e,out,"item",e.default_compact_bits()?,compact,false)?;ln(out,"item});");}
    else{ln(out,format!("let mut {name}=::qsl::InlineArray::<{ty},{n}>::new();for _ in 0..__qsl_len{{"));emit_unchecked_value(e,out,"item",e.default_compact_bits()?,compact,false)?;ln(out,format!("{name}.push(item).unwrap_unchecked();}}"));}
   }
-  StorageKind::HeapString|StorageKind::Default=>unreachable!(),
+  StorageKind::HeapString|StorageKind::Default|StorageKind::NativeView=>unreachable!(),
  }
     Ok(())
 }
@@ -2142,6 +2177,9 @@ fn emit_sequential_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
 }
 
 fn emit_fast_read(schema: &QslSchema, out: &mut String, plan: &QslIoPlan) -> QslResult<()> {
+    if optional_codegen::applies(schema) {
+        return optional_codegen::read(schema, out);
+    }
     if schema.predicted_opt_table() {
         return static_optional_codegen::read(schema, out);
     }
@@ -2175,24 +2213,22 @@ fn emit_fast_read(schema: &QslSchema, out: &mut String, plan: &QslIoPlan) -> Qsl
 
 fn emit_fast_header(schema: &QslSchema, out: &mut String) {
     if schema.bitmap() {
-        for fields in schema.fields.chunks(32) {
-            let mut mask_expr = String::from("0u32");
-            for (index, f) in fields.iter().enumerate() {
-                let shift = 31 - index;
-                if f.optional {
-                    write!(
-                        mask_expr,
-                        " | ((self.{}.is_some() as u32) << {shift})",
-                        f.name
-                    )
-                    .unwrap();
-                } else {
-                    write!(mask_expr, " | (1u32 << {shift})").unwrap();
-                }
+        let p = crate::bitmap::BitmapPlan::new(schema.optional_count()).unwrap();
+        if p.width != 0 {
+            let ty = p.rust_type();
+            let mut expr = format!("0{ty}");
+            for (i, f) in schema.fields.iter().filter(|f| f.optional).enumerate() {
+                write!(
+                    expr,
+                    "|((self.{}.is_some()as {ty})<<{})",
+                    f.name,
+                    p.width - 1 - i
+                )
+                .unwrap();
             }
             ln(
                 out,
-                format!("writer.write_bytes_unchecked(&({mask_expr}).to_le_bytes());"),
+                format!("writer.write_bytes_unchecked(&({expr}).to_le_bytes());"),
             );
         }
     } else if schema.optional_count() == 1 {
@@ -2246,7 +2282,9 @@ fn emit_fast_write(schema: &QslSchema, out: &mut String, plan: &QslIoPlan) -> Qs
             "unsafe fn __qsl_write_unchecked(&self,to:*mut u8) {"
         },
     );
-    if schema.state_bits() || schema.predict_table() {
+    if optional_codegen::applies(schema) {
+        optional_codegen::write(schema, out)?;
+    } else if schema.state_bits() || schema.predict_table() {
         qps_codegen::write(schema, out)?;
     } else if schema.predicted_opt_table() {
         static_optional_codegen::write(schema, out)?;
@@ -2389,7 +2427,7 @@ fn emit_direct_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     if schema.bitmap() {
         ln(
             out,
-            format!("reader.read_exact({});", schema.bitmap_words() * 4),
+            format!("reader.read_exact({});", schema.bitmap_bytes()),
         );
     }
     for (i, f) in schema.fields.iter().enumerate() {
@@ -2479,7 +2517,7 @@ fn emit_prepared_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     if schema.bitmap() {
         ln(
             out,
-            format!("reader.read_exact({});", schema.bitmap_words() * 4),
+            format!("reader.read_exact({});", schema.bitmap_bytes()),
         );
     }
     let mut block_index = 0;
@@ -2734,6 +2772,7 @@ impl QslInterpreter {
                 src.push('\n');
             }
             emit_memory_contract(schema, overlay, &mut src)?;
+            native_codegen::extra(schema, &mut src)?;
             let rewritten = apply_inline_policy(schema, &src[generated_start..]);
             src.truncate(generated_start);
             src.push_str(&rewritten);
@@ -2765,8 +2804,17 @@ impl QslInterpreter {
     }
 
     fn generate_struct(schema: &QslSchema, out: &mut String) -> QslResult<()> {
+        if schema.options.external_definition {
+            return Ok(());
+        }
         let suffix = if schema.lifetime() { "<'a>" } else { "" };
-        ln(out, "#[repr(C)] #[allow(non_camel_case_types)]");
+        if schema.options.generated_region {
+            ln(out, "#[::qsl::schem_macro] #[derive(Clone,Copy)]");
+        }
+        ln(
+            out,
+            "#[repr(C)] #[allow(non_camel_case_types,non_snake_case)]",
+        );
         ln(out, format!("pub struct {}{} {{", schema.name, suffix));
         for f in &schema.fields {
             let ty = crate::modernization::field_rust_type(f, schema.borrow_strings())?;
@@ -2889,6 +2937,37 @@ impl QslInterpreter {
             // Arbitrary variable-sized custom arrays do not have a static
             // pointer-advance rule. Reject them during build, not at runtime.
             return Err(QslError::InvalidSchema);
+        }
+        // A known width must agree with the application-side custom codec.
+        // These are compile-time assertions, never checks in the decode kernel.
+        for data in schema
+            .fields
+            .iter()
+            .flat_map(|f| custom_codec_leaves(&f.data))
+        {
+            if let QslType::Custom {
+                rust_type,
+                fixed_wire_size: Some(n),
+            } = data
+            {
+                ln(
+                    out,
+                    format!("const _:()=assert!(<{rust_type} as ::qsl::QslCustom>::SIZE=={n});"),
+                );
+                if schema.compact() {
+                    ln(out,format!("const _:()=assert!(<{rust_type} as ::qsl::QslCustom>::COMP_SIZE<={n});"));
+                }
+                if let Some(l) = schema
+                    .options
+                    .native_types
+                    .get(rust_type)
+                    .filter(|l| !l.is_region)
+                {
+                    let size = l.native_bytes;
+                    let align = l.alignment;
+                    ln(out,format!("const _:()=assert!(std::mem::size_of::<{rust_type}>()=={size}&&std::mem::align_of::<{rust_type}>()=={align}&&!std::mem::needs_drop::<{rust_type}>());"));
+                }
+            }
         }
         Self::generate_struct(schema, out)?;
         if schema.predicted_opt_table() {
@@ -3542,18 +3621,18 @@ mod tests {
         assert!(src.contains("writer.write_bits_unchecked(2, 3 *"));
         assert!(src.contains("writer.write_bits_unchecked(6, 3 *"));
         assert!(!src.contains("writer.write_bits_unchecked(0, 3 *"));
-        assert!(src.contains("let __qsl_field_0"));
-        assert!(src.contains("let __qsl_field_1"));
+        assert!(src.contains("let field_0"));
+        assert!(src.contains("fn __qsl_cursor_name"));
     }
     #[test]
-    fn optional_bitmap_uses_msb_first_u32() {
+    fn optional_bitmap_uses_smallest_optional_only_word() {
         let src = source(sample(FLAG_OPTIONAL_BITMAP));
-        assert!(src.contains("(1u32 << 31)"));
-        assert!(src.contains("<< 30"));
-        assert!(src.contains("<< 29"));
-        assert!(src.contains("let __qsl_mask_0 = reader.read_u32();"));
+        assert!(src.contains("self.name.is_some()as u8)<<7"));
+        assert!(src.contains("self.city.is_some()as u8)<<6"));
+        assert!(!src.contains("self.id.is_some()"));
+        assert!(src.contains("while bit_mask!=0"));
         assert!(src.contains("const SIZE_TAG: usize = 0;"));
-        assert!(src.contains("fn get_size() -> usize { 8 }"));
+        assert!(src.contains("fn get_size() -> usize { 5 }"));
         assert!(!src.contains("pub fn comp_write"));
         assert!(!src.contains("pub fn comp_read"));
     }
@@ -3562,7 +3641,7 @@ mod tests {
         let src = source(sample(FLAG_COMPACT));
         assert!(src.contains("const SIZE_TAG: usize = 3;"));
         assert!(src.contains("writer.write_bits_unchecked(0u64 +"));
-        assert!(src.contains("let __qsl_tags = reader.read_bits((__qsl_count * 3) as u32);"));
+        assert!(src.contains("let mut optional_tags=[0u8;2];"));
         assert!(src.contains("pub unsafe fn comp_read"));
     }
     #[test]
@@ -3709,7 +3788,7 @@ mod tests {
         assert!(src.contains("impl Default for OptDefault"));
         assert!(src.contains("x: Some(9i128 as u8)"));
         assert!(src.contains("const SIZE_TAG: usize = 0;"));
-        assert!(src.contains("std::ptr::write(to, __qsl_presence as u8);"));
+        assert!(src.contains("writer.write_bits_unchecked(self.x.is_some() as u64, 1)"));
         assert!(!src.contains("writer.write_bits_unchecked(0, 0 *"));
     }
 }

@@ -20,3 +20,6 @@ mod macro_emission_tests;
 pub mod prelude {
     pub use crate::{build_qsl_schem, InterpreterBuilderExt, QslSchemaBuilder, SchemaBackend};
 }
+
+#[cfg(test)]
+mod optional_policy_tests;

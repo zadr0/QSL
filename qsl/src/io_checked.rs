@@ -27,7 +27,6 @@ impl<'a> QslCheckedWriter<'a> {
             _borrow: PhantomData,
         }
     }
-    #[cfg(feature = "native")]
     pub fn from_raw(out: &'a mut crate::serialize::SerOut) -> Self {
         Self::from(out)
     }
@@ -173,7 +172,6 @@ impl<'a> QslCheckedBitsWriter<'a> {
             _borrow: PhantomData,
         }
     }
-    #[cfg(feature = "native")]
     pub fn from_raw(out: &'a mut crate::serialize::SerOut) -> Self {
         Self::from(out)
     }

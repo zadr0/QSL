@@ -1,32 +1,5 @@
-# `default=EXPR` — attribute specification
+# default · QSL 0.2.0
 
-**Status:** implemented. Every schema has checked APIs; `[safety]` remains compatible; trusted methods retain their own preconditions.
+Field modifier |default=7| controls generated initialization within the declared numeric domain. It does not add an optional-presence bit, authorize invalid values or change explicitly supplied wire data. It is excluded from schema identity. Default generation is explicit, not an unconditional unwrap_or_default in the hot path.
 
-## Syntax
-
-```qsl
-&SeqNumber[predict_seq] { u64 id; u32? extra|default=7|; }
-```
-
-## Exact mechanism and wire effect
-
-The Rust Default object may initialize extra to Some(7), but decoding a missing field gives None. Default is not separately serialized.
-
-## Constraints and invalid combinations
-
-Compile-time numeric expressions only; arbitrary String/custom defaults unsupported. Do not silently replace None with unwrap_or_default.
-
-## Runtime contract
-
-Both peers must use compatible schema and wire revisions. The unsafe path does not verify arbitrary network input; source lifetime, data bounds and ranks must satisfy the schema.
-
-## What to measure
-
-Compare complete writes and reads on identical inputs, with metadata and payload separated; record wire size, allocations, CPU, benchmark profile and p99. Historical case (not part of the fresh QSL-only run):
-`records/Packet/read/current` — [all-estimates.csv](../../data/all-estimates.csv).
-
-## Source implementation
-
-`qsl/src/parser.rs default; interpreter.rs emit_default_impl`.
-
-[← All attributes](index.md) · [Architecture](../../architecture.en.md)
+[Full guide](../../guide.en.md) · [Safety](../../safety.en.md) · [Migration](../../migration-0.2.0.en.md) · [All attributes](index.md).

@@ -1,4 +1,30 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><title>QSL · Modernization · EN</title><link rel="stylesheet" href="../assets/full.css"><link rel="stylesheet" href="../assets/explorers.css"></head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="../index.html">QSL</a><h1 id="modern-en-1">QSL deserialization modernization</h1>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><link rel="stylesheet" href="../assets/full.css"><link rel="stylesheet" href="../assets/explorers.css">
+<title>QSL — MODERNIZATION</title>
+<meta name="description" content="QSL project and Rust codec documentation.">
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.en.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.en.html">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.ru.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="QSL — MODERNIZATION">
+<meta property="og:description" content="QSL project and Rust codec documentation.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.en.html">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL 0.2.0 — binary serialization for Rust">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="QSL — MODERNIZATION">
+<meta name="twitter:description" content="QSL project and Rust codec documentation.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.en.html#webpage","url":"https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.en.html","name":"QSL — MODERNIZATION","description":"QSL project and Rust codec documentation.","inLanguage":"en","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="../en.html">QSL</a><blockquote>Historical November 6 contract. <a href="../migration-0.2.0.en.html">Current 0.2.0 contracts and native-region hierarchy</a>.</blockquote>
+<h1 id="modern-en-1">QSL deserialization modernization</h1>
 <p>Implementation contract, November 6, 2026. <a href="MODERNIZATION.ru.html">Русский</a>.</p>
 <h2 id="modern-en-2">Purpose and boundaries</h2>
 <p>QSL moves analysis of an agreed binary layout to build time. The schema defines declaration order, value domains and lengths. The generator emits concrete Rust code; runtime does not rediscover the schema. Attributes are opt-in. Required fields must precede optional fields, including after expansion of Rust templates.</p>
@@ -78,4 +104,4 @@ pub struct Meta {
 <p>The QSL-LZ header counts packed bytes; it does not prove the restored string size. A shared checked run parser validates produced + count arithmetic, the actual destination/schema bound, readable literal/offset bytes and valid backward distances for every run. The actual count is then charged to the shared MAX_DATA_SIZE budget before reserve or writes. A header-derived size alone must never authorize an unchecked decode into a smaller allocation.</p>
 <p>For example, hex [84 00 41 FF 01] with MAX=100 declares four packed bytes but reconstructs 132 bytes: literal A followed by a 131-byte match. Checked decoding returns InvalidValue before writing that match. Truncated literals/offsets fail before heap reservation. Several restored strings exceeding the aggregate budget return SizeLimitExceeded. UTF-8 is validated before publishing a result.</p>
 <p>This protection covers validate, deserialize_checked and deserialize_checked_into for inline/String and the fixed LZ format. Errors do not publish a partial object into the caller&#x27;s MaybeUninit. Unsafe decode_bounded/decode_into remain separate entry points without input validation; callers guarantee a complete valid stream and sufficient capacity.</p>
-<p>Regression cases include MAX+1 expansion, forged packed lengths, truncated runs, zero/out-of-history distances, the combined budget of two restored strings and an unchanged destination with canary bytes. Malformed first tokens also verify zero allocations.</p></main></body></html>
+<p>Regression cases include MAX+1 expansion, forged packed lengths, truncated runs, zero/out-of-history distances, the combined budget of two restored strings and an unchanged destination with canary bytes. Malformed first tokens also verify zero allocations.</p></main><nav id="qsl-language-links" class="footer" aria-label="Documentation languages"><a href="https://zadr0.github.io/QSL/" hreflang="ru">Русский</a> · <a href="https://zadr0.github.io/QSL/en.html" hreflang="en">English</a> · <a href="https://zadr0.github.io/QSL/sitemap.xml">Sitemap</a></nav></body></html>

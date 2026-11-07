@@ -92,16 +92,16 @@
     "peak job commit"
   ],
   "conditions": [
-    "15 s прогрев · 10 s измерение · 200 выборок · CI 99%",
-    "15 s warm-up · 10 s measurement · 200 samples · 99% CI"
+    "15 s прогрев · 10 s измерение · 200 выборок · CI 99% Исторический профиль; не оценка 0.2.0.",
+    "15 s warm-up · 10 s measurement · 200 samples · 99% CI Historical source profile; not a 0.2.0 result."
   ],
   "Pdefinition": [
     "P = M / T; M — исходные полезные байты, T — нс на операцию. Wire-размер и ёмкость показываются отдельно.",
     "P = M / T; M is original useful bytes, T is ns per operation. Wire size and capacity are separate."
   ],
   "compareNote": [
-    "Ниже — исторические профили с указанными исходниками. Текущий контракт меняет native storage и checked API; свежие четыре случая доступны по ссылке выше.",
-    "Below are historical profiles with source snapshots. The current contract changes native storage and checked APIs; use the link above for four fresh cases."
+    "Ниже — исторические профили с указанными исходниками. Текущий контракт меняет native storage и checked API; свежие четыре случая доступны по ссылке выше. Исторический профиль; не оценка 0.2.0.",
+    "Below are historical profiles with source snapshots. The current contract changes native storage and checked APIs; use the link above for four fresh cases. Historical source profile; not a 0.2.0 result."
   ],
   "mode": [
     "Режим",

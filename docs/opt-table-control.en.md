@@ -1,3 +1,5 @@
+> **0.2.0:** [current contracts](migration-0.2.0.en.md). Timing tables below retain their captured historical sources. The [November 7 pass](../qsl-interpreter/tests/optional-v2/results/2026-11-07.md) is not accepted as a strict result; it establishes no speedup.
+
 # Control: default vs opt_table
 
 > Historical profile: `opt_table` here labels the former mixed length graph. `[predict_seq,opt_table]` preserves its format; new standalone `[opt_table]` dispatches readers by tag. [Separation and migration](optional-modes.en.md).

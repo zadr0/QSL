@@ -1,0 +1,507 @@
+[
+  {
+    "path": "index.html",
+    "url": "https://zadr0.github.io/QSL/",
+    "lang": "ru",
+    "title": "QSL — бинарная сериализация и компилятор схем Rust",
+    "description": "QSL генерирует Rust-кодеки по явной схеме: типы, UTF-8, optional-поля, проверка входа и подготовленные буферы. Документация RU/EN.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/",
+      "en": "https://zadr0.github.io/QSL/en.html",
+      "x-default": "https://zadr0.github.io/QSL/"
+    }
+  },
+  {
+    "path": "en.html",
+    "url": "https://zadr0.github.io/QSL/en.html",
+    "lang": "en",
+    "title": "QSL — Rust binary serialization and schema compiler",
+    "description": "QSL is a Rust binary serialization library and schema compiler for explicit data layouts, UTF-8, optional fields and prepared buffers.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/",
+      "en": "https://zadr0.github.io/QSL/en.html",
+      "x-default": "https://zadr0.github.io/QSL/"
+    }
+  },
+  {
+    "path": "API.ru.html",
+    "url": "https://zadr0.github.io/QSL/API.ru.html",
+    "lang": "ru",
+    "title": "Rust API QSL — кодеки, схемы и буферы",
+    "description": "Индекс API QSL 0.2.0: сборщик схем, методы сериализации, проверка входа, буферы и ссылки на исходники по тегу.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/API.ru.html",
+      "en": "https://zadr0.github.io/QSL/API.en.html",
+      "x-default": "https://zadr0.github.io/QSL/API.en.html"
+    }
+  },
+  {
+    "path": "architecture.ru.html",
+    "url": "https://zadr0.github.io/QSL/architecture.ru.html",
+    "lang": "ru",
+    "title": "Архитектура QSL — lexer, interpreter и runtime Rust",
+    "description": "Архитектура компилятора QSL: общий сборщик схем, независимые backend, статические таблицы и переносимый runtime.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/architecture.ru.html",
+      "en": "https://zadr0.github.io/QSL/architecture.en.html",
+      "x-default": "https://zadr0.github.io/QSL/architecture.en.html"
+    }
+  },
+  {
+    "path": "custom-types.ru.html",
+    "url": "https://zadr0.github.io/QSL/custom-types.ru.html",
+    "lang": "ru",
+    "title": "Примитивы и вложенные структуры QSL для Rust",
+    "description": "QslCustom, проверяемые макросы примитивов, регистрация типов, native-регионы, COPY и LIFETIME в QSL 0.2.0.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/custom-types.ru.html",
+      "en": "https://zadr0.github.io/QSL/custom-types.en.html",
+      "x-default": "https://zadr0.github.io/QSL/custom-types.en.html"
+    }
+  },
+  {
+    "path": "examples.ru.html",
+    "url": "https://zadr0.github.io/QSL/examples.ru.html",
+    "lang": "ru",
+    "title": "Примеры QSL — схемы, UTF-8 и безопасное чтение",
+    "description": "Рабочие примеры QSL для Rust: числа, строки, optional-поля, QPS, RT, макросы и обработка повреждённых данных.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/examples.ru.html",
+      "en": "https://zadr0.github.io/QSL/examples.en.html",
+      "x-default": "https://zadr0.github.io/QSL/examples.en.html"
+    }
+  },
+  {
+    "path": "features.ru.html",
+    "url": "https://zadr0.github.io/QSL/features.ru.html",
+    "lang": "ru",
+    "title": "Возможности QSL и сохранённые измерения",
+    "description": "Возможности QSL, условия сравнения и исторические измерения Rust-кодеков. Результаты привязаны к версиям исходников.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/features.ru.html",
+      "en": "https://zadr0.github.io/QSL/features.en.html",
+      "x-default": "https://zadr0.github.io/QSL/features.en.html"
+    }
+  },
+  {
+    "path": "guide.ru.html",
+    "url": "https://zadr0.github.io/QSL/guide.ru.html",
+    "lang": "ru",
+    "title": "Руководство QSL — схемы и бинарная сериализация Rust",
+    "description": "Полное руководство QSL: формат схем, строки UTF-8, optional-поля, память, проверки и генерация Rust-кода.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/guide.ru.html",
+      "en": "https://zadr0.github.io/QSL/guide.en.html",
+      "x-default": "https://zadr0.github.io/QSL/guide.en.html"
+    }
+  },
+  {
+    "path": "mathematics.ru.html",
+    "url": "https://zadr0.github.io/QSL/mathematics.ru.html",
+    "lang": "ru",
+    "title": "Математика QSL — ранги, операнды и границы BM",
+    "description": "Обратимая упаковка QSL, разрядности, индексы optional-полей, P=M/T и границы доказательств Lean4.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/mathematics.ru.html",
+      "en": "https://zadr0.github.io/QSL/mathematics.en.html",
+      "x-default": "https://zadr0.github.io/QSL/mathematics.en.html"
+    }
+  },
+  {
+    "path": "migration-0.2.0.ru.html",
+    "url": "https://zadr0.github.io/QSL/migration-0.2.0.ru.html",
+    "lang": "ru",
+    "title": "Переход на QSL 0.2.0 — BM v2 и API Rust",
+    "description": "Изменения QSL 0.2.0: новый BM-формат, общие читатели OT, вложенные типы, пользовательские примитивы и удаление Windows-модулей.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/migration-0.2.0.ru.html",
+      "en": "https://zadr0.github.io/QSL/migration-0.2.0.en.html",
+      "x-default": "https://zadr0.github.io/QSL/migration-0.2.0.en.html"
+    }
+  },
+  {
+    "path": "opt-table-control.ru.html",
+    "url": "https://zadr0.github.io/QSL/opt-table-control.ru.html",
+    "lang": "ru",
+    "title": "Сравнение default и opt_table в QSL",
+    "description": "Исторический контроль optional-полей QSL: размеры схем, прогретые буферы и условия сравнения default и opt_table.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/opt-table-control.ru.html",
+      "en": "https://zadr0.github.io/QSL/opt-table-control.en.html",
+      "x-default": "https://zadr0.github.io/QSL/opt-table-control.en.html"
+    }
+  },
+  {
+    "path": "optional-modes.ru.html",
+    "url": "https://zadr0.github.io/QSL/optional-modes.ru.html",
+    "lang": "ru",
+    "title": "Опциональные поля QSL — bitmap, predict_seq и opt_table",
+    "description": "Различия BM, PS и OT в QSL: маски 8–128 бит, индекс по длине, функции чтения, формат кадра и ограничения.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/optional-modes.ru.html",
+      "en": "https://zadr0.github.io/QSL/optional-modes.en.html",
+      "x-default": "https://zadr0.github.io/QSL/optional-modes.en.html"
+    }
+  },
+  {
+    "path": "performance.ru.html",
+    "url": "https://zadr0.github.io/QSL/performance.ru.html",
+    "lang": "ru",
+    "title": "Производительность QSL — методика и ограничения замеров",
+    "description": "Методика Criterion для QSL, полезные байты за нс, интервалы доверия и ограничения исторических результатов.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/performance.ru.html",
+      "en": "https://zadr0.github.io/QSL/performance.en.html",
+      "x-default": "https://zadr0.github.io/QSL/performance.en.html"
+    }
+  },
+  {
+    "path": "quickstart.ru.html",
+    "url": "https://zadr0.github.io/QSL/quickstart.ru.html",
+    "lang": "ru",
+    "title": "QSL для Rust — установка и первый пример",
+    "description": "Установите QSL 0.2.0, опишите схему и соберите первый Rust-кодек с проверяемой сериализацией и восстановлением.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/quickstart.ru.html",
+      "en": "https://zadr0.github.io/QSL/quickstart.en.html",
+      "x-default": "https://zadr0.github.io/QSL/quickstart.en.html"
+    }
+  },
+  {
+    "path": "safety.ru.html",
+    "url": "https://zadr0.github.io/QSL/safety.ru.html",
+    "lang": "ru",
+    "title": "Безопасность QSL — проверка входа и границ данных",
+    "description": "Проверки QSL: длина кадра, диапазоны, UTF-8, распаковка, MAX_DATA_SIZE и отдельный контракт unchecked-методов.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/safety.ru.html",
+      "en": "https://zadr0.github.io/QSL/safety.en.html",
+      "x-default": "https://zadr0.github.io/QSL/safety.en.html"
+    }
+  },
+  {
+    "path": "schema-hashes.ru.html",
+    "url": "https://zadr0.github.io/QSL/schema-hashes.ru.html",
+    "lang": "ru",
+    "title": "Хэши схем QSL — строгая и лёгкая идентичность",
+    "description": "Детерминированные хэши QSL по схеме и формату: xxHash, xxHash128, порядок полей, BM v2 и ограничения совместимости.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/schema-hashes.ru.html",
+      "en": "https://zadr0.github.io/QSL/schema-hashes.en.html",
+      "x-default": "https://zadr0.github.io/QSL/schema-hashes.en.html"
+    }
+  },
+  {
+    "path": "SEO.ru.html",
+    "url": "https://zadr0.github.io/QSL/SEO.ru.html",
+    "lang": "ru",
+    "title": "Поиск и индексация документации QSL",
+    "description": "Техническое SEO документации QSL: canonical, RU/EN, sitemap, GitHub Pages, структурированные данные и границы индексации.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/SEO.ru.html",
+      "en": "https://zadr0.github.io/QSL/SEO.en.html",
+      "x-default": "https://zadr0.github.io/QSL/SEO.en.html"
+    }
+  },
+  {
+    "path": "API.en.html",
+    "url": "https://zadr0.github.io/QSL/API.en.html",
+    "lang": "en",
+    "title": "QSL Rust API — codecs, schemas and buffers",
+    "description": "QSL 0.2.0 API reference: schema builders, serialization methods, validation, buffers and links to tagged Rust sources.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/API.en.html",
+      "ru": "https://zadr0.github.io/QSL/API.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/API.en.html"
+    }
+  },
+  {
+    "path": "architecture.en.html",
+    "url": "https://zadr0.github.io/QSL/architecture.en.html",
+    "lang": "en",
+    "title": "QSL architecture — lexer, interpreter and Rust runtime",
+    "description": "QSL compiler architecture: one schema builder, independent backends, static dispatch tables and a portable Rust runtime.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/architecture.en.html",
+      "ru": "https://zadr0.github.io/QSL/architecture.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/architecture.en.html"
+    }
+  },
+  {
+    "path": "custom-types.en.html",
+    "url": "https://zadr0.github.io/QSL/custom-types.en.html",
+    "lang": "en",
+    "title": "QSL custom primitives and nested Rust structures",
+    "description": "QslCustom, validating scalar-wrapper macros, type registration, native regions, COPY and LIFETIME in QSL 0.2.0.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/custom-types.en.html",
+      "ru": "https://zadr0.github.io/QSL/custom-types.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/custom-types.en.html"
+    }
+  },
+  {
+    "path": "examples.en.html",
+    "url": "https://zadr0.github.io/QSL/examples.en.html",
+    "lang": "en",
+    "title": "QSL examples — schemas, UTF-8 and checked decoding",
+    "description": "Runnable QSL Rust examples: numbers, strings, optional fields, QPS, RT, macros and rejection of malformed input.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/examples.en.html",
+      "ru": "https://zadr0.github.io/QSL/examples.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/examples.en.html"
+    }
+  },
+  {
+    "path": "features.en.html",
+    "url": "https://zadr0.github.io/QSL/features.en.html",
+    "lang": "en",
+    "title": "QSL features and recorded measurements",
+    "description": "QSL features, comparison conditions and historical Rust codec measurements, each tied to its captured source version.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/features.en.html",
+      "ru": "https://zadr0.github.io/QSL/features.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/features.en.html"
+    }
+  },
+  {
+    "path": "guide.en.html",
+    "url": "https://zadr0.github.io/QSL/guide.en.html",
+    "lang": "en",
+    "title": "QSL guide — schemas and Rust binary serialization",
+    "description": "The complete QSL guide: schema format, UTF-8 strings, optional fields, memory, validation and specialized Rust code generation.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/guide.en.html",
+      "ru": "https://zadr0.github.io/QSL/guide.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/guide.en.html"
+    }
+  },
+  {
+    "path": "mathematics.en.html",
+    "url": "https://zadr0.github.io/QSL/mathematics.en.html",
+    "lang": "en",
+    "title": "QSL mathematics — ranks, operands and bitmap bounds",
+    "description": "QSL lossless packing, bit widths, optional-field indices, P=M/T and the scope of Lean4 arithmetic proofs.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/mathematics.en.html",
+      "ru": "https://zadr0.github.io/QSL/mathematics.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/mathematics.en.html"
+    }
+  },
+  {
+    "path": "migration-0.2.0.en.html",
+    "url": "https://zadr0.github.io/QSL/migration-0.2.0.en.html",
+    "lang": "en",
+    "title": "Migrating to QSL 0.2.0 — BM v2 and Rust APIs",
+    "description": "QSL 0.2.0 migration: new bitmap format, shared OT readers, nested types, custom primitives and removal of Windows-specific modules.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/migration-0.2.0.en.html",
+      "ru": "https://zadr0.github.io/QSL/migration-0.2.0.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/migration-0.2.0.en.html"
+    }
+  },
+  {
+    "path": "opt-table-control.en.html",
+    "url": "https://zadr0.github.io/QSL/opt-table-control.en.html",
+    "lang": "en",
+    "title": "QSL default and opt_table comparison",
+    "description": "Historical QSL optional-field control: schema sizes, prepared buffers and conditions for comparing default and opt_table.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/opt-table-control.en.html",
+      "ru": "https://zadr0.github.io/QSL/opt-table-control.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/opt-table-control.en.html"
+    }
+  },
+  {
+    "path": "optional-modes.en.html",
+    "url": "https://zadr0.github.io/QSL/optional-modes.en.html",
+    "lang": "en",
+    "title": "QSL optional fields — bitmap, predict_seq and opt_table",
+    "description": "BM, PS and OT in QSL: 8–128-bit masks, length-derived indices, reader dispatch, frame format and compatibility constraints.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/optional-modes.en.html",
+      "ru": "https://zadr0.github.io/QSL/optional-modes.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/optional-modes.en.html"
+    }
+  },
+  {
+    "path": "performance.en.html",
+    "url": "https://zadr0.github.io/QSL/performance.en.html",
+    "lang": "en",
+    "title": "QSL performance — methodology and measurement limits",
+    "description": "QSL Criterion methodology, useful bytes per nanosecond, confidence intervals and limits of recorded performance results.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/performance.en.html",
+      "ru": "https://zadr0.github.io/QSL/performance.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/performance.en.html"
+    }
+  },
+  {
+    "path": "quickstart.en.html",
+    "url": "https://zadr0.github.io/QSL/quickstart.en.html",
+    "lang": "en",
+    "title": "QSL for Rust — installation and quick start",
+    "description": "Install QSL 0.2.0, describe a schema and build your first Rust binary codec with checked serialization and deserialization.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/quickstart.en.html",
+      "ru": "https://zadr0.github.io/QSL/quickstart.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/quickstart.en.html"
+    }
+  },
+  {
+    "path": "safety.en.html",
+    "url": "https://zadr0.github.io/QSL/safety.en.html",
+    "lang": "en",
+    "title": "QSL safety — checked decoding and data bounds",
+    "description": "QSL input validation: frame length, ranges, UTF-8, decompression limits, MAX_DATA_SIZE and explicit unchecked API contracts.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/safety.en.html",
+      "ru": "https://zadr0.github.io/QSL/safety.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/safety.en.html"
+    }
+  },
+  {
+    "path": "schema-hashes.en.html",
+    "url": "https://zadr0.github.io/QSL/schema-hashes.en.html",
+    "lang": "en",
+    "title": "QSL schema hashes — strict and light identities",
+    "description": "Deterministic QSL schema identities: xxHash, xxHash128, field order, BM v2 and the limits of hash-based compatibility checks.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/schema-hashes.en.html",
+      "ru": "https://zadr0.github.io/QSL/schema-hashes.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/schema-hashes.en.html"
+    }
+  },
+  {
+    "path": "SEO.en.html",
+    "url": "https://zadr0.github.io/QSL/SEO.en.html",
+    "lang": "en",
+    "title": "QSL documentation discovery and indexing",
+    "description": "QSL documentation SEO: canonical URLs, RU/EN pages, sitemap, GitHub Pages, structured data and indexing boundaries.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/SEO.en.html",
+      "ru": "https://zadr0.github.io/QSL/SEO.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/SEO.en.html"
+    }
+  },
+  {
+    "path": "releases/0.2.0.en.html",
+    "url": "https://zadr0.github.io/QSL/releases/0.2.0.en.html",
+    "lang": "en",
+    "title": "QSL 0.2.0 — release notes and migration",
+    "description": "QSL 0.2.0 release: wire/API changes, crates.io packages, verification evidence, source tags and RU/EN documentation.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/releases/0.2.0.en.html",
+      "ru": "https://zadr0.github.io/QSL/releases/0.2.0.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/releases/0.2.0.en.html"
+    }
+  },
+  {
+    "path": "releases/0.2.0.ru.html",
+    "url": "https://zadr0.github.io/QSL/releases/0.2.0.ru.html",
+    "lang": "ru",
+    "title": "QSL 0.2.0 — заметки выпуска и переход",
+    "description": "Выпуск QSL 0.2.0: изменения формата и API, пакеты crates.io, проверки, исходники и документация RU/EN.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/releases/0.2.0.ru.html",
+      "en": "https://zadr0.github.io/QSL/releases/0.2.0.en.html",
+      "x-default": "https://zadr0.github.io/QSL/releases/0.2.0.en.html"
+    }
+  },
+  {
+    "path": "modernization-2026-11-06/MODERNIZATION.en.html",
+    "url": "https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.en.html",
+    "lang": "en",
+    "title": "QSL — MODERNIZATION",
+    "description": "QSL project and Rust codec documentation.",
+    "index": false,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.en.html",
+      "ru": "https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.en.html"
+    }
+  },
+  {
+    "path": "modernization-2026-11-06/MODERNIZATION.ru.html",
+    "url": "https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.ru.html",
+    "lang": "ru",
+    "title": "QSL — MODERNIZATION",
+    "description": "Документация проекта QSL и Rust-кодеков.",
+    "index": false,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.ru.html",
+      "en": "https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.en.html",
+      "x-default": "https://zadr0.github.io/QSL/modernization-2026-11-06/MODERNIZATION.en.html"
+    }
+  },
+  {
+    "path": "reports/examples.html",
+    "url": "https://zadr0.github.io/QSL/reports/examples.html",
+    "lang": "ru",
+    "title": "QSL — examples.html",
+    "description": "Документация проекта QSL и Rust-кодеков.",
+    "index": false,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/reports/examples.html",
+      "x-default": "https://zadr0.github.io/QSL/reports/examples.html"
+    }
+  },
+  {
+    "path": "reports/modernization.html",
+    "url": "https://zadr0.github.io/QSL/reports/modernization.html",
+    "lang": "ru",
+    "title": "QSL — modernization.html",
+    "description": "Документация проекта QSL и Rust-кодеков.",
+    "index": false,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/reports/modernization.html",
+      "x-default": "https://zadr0.github.io/QSL/reports/modernization.html"
+    }
+  },
+  {
+    "path": "QSL_standalone_RU_EN.html",
+    "url": "https://zadr0.github.io/QSL/",
+    "lang": "ru",
+    "title": "QSL — бинарная сериализация и компилятор схем Rust",
+    "description": "QSL генерирует Rust-кодеки по явной схеме: типы, UTF-8, optional-поля, проверка входа и подготовленные буферы. Документация RU/EN.",
+    "index": false,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/",
+      "en": "https://zadr0.github.io/QSL/en.html",
+      "x-default": "https://zadr0.github.io/QSL/"
+    }
+  }
+]

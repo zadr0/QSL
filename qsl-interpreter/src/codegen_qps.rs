@@ -30,7 +30,7 @@ pub(crate) fn maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {
     } else if schema.legacy_opt_table() {
         s.bytes(1 + 4 * schema.optional_count())?;
     } else if schema.bitmap() {
-        s.bytes(4 * schema.bitmap_words())?;
+        s.bytes(schema.bitmap_bytes())?;
     } else if schema.optional_count() == 1 {
         s.bits(1)?;
     } else if schema.optional_count() > 1 {
@@ -171,6 +171,9 @@ pub(super) fn callback_table(schema: &QslSchema, out: &mut String) -> QslResult<
     if !schema.opt_table() {
         return Ok(());
     }
+    if optional_codegen::applies(schema) {
+        return optional_codegen::tables(schema, out);
+    }
     let name = &schema.name;
     let ty = if schema.lifetime() {
         format!("{name}<'a>")
@@ -197,6 +200,9 @@ pub(super) fn callback_table(schema: &QslSchema, out: &mut String) -> QslResult<
     Ok(())
 }
 pub(super) fn callbacks(schema: &QslSchema, out: &mut String) -> QslResult<()> {
+    if optional_codegen::applies(schema) {
+        return optional_codegen::callbacks(schema, out);
+    }
     if !schema.opt_table() {
         return Ok(());
     }

@@ -1,0 +1,12 @@
+# Changelog
+
+## 0.2.0 — 2026-11-08
+
+- Change BM to optional-only masks selected from u8/u16/u32/u64/u128 and descending set-bit traversal. Validate spare bits once before dispatch; suppress PS ordering under BM.
+- Share optional readers between match/OT and reuse OT handlers for PS. Preserve ordinary non-BM count/tag wire encoding.
+- Lower native regions to actual nested types; support nested/reused definitions, COPY and checked aligned borrowing.
+- Add explicitly registered scalar wrappers through qsl_primitive!/qsl_native_primitive!, compile-time layout checks, per-value validators and exact custom compact array widths.
+- Remove Windows-specific sockets/IPC regions, the native feature and windows-sys. Preserve portable SerOut and unchecked APIs; ordinary serialization consistently uses Vec/slices.
+- Publish current RU/EN repository documentation, English package docs, source-index and migration notes. Retain historical measurements with version labels; the noisy November 7 run is not accepted as a strict result.
+
+This is a breaking pre-1.0 release. BM peers must coordinate migration. qsl-lexer and qsl-interpreter are 0.2.0; qsl-macros-impl is unchanged at 0.1.0.

@@ -1,0 +1,20 @@
+{
+  "release": "0.2.0",
+  "date": "2026-11-08",
+  "phase": "pre-publication",
+  "lexer_tests": 50,
+  "interpreter_tests": 21,
+  "runtime_unit_tests": 38,
+  "runtime_integration_tests": 14,
+  "generated_contract_tests": 36,
+  "example_tests": 4,
+  "executable_examples": 7,
+  "quickstart_and_pipeline": "passed",
+  "strict_clippy": "passed",
+  "rustdoc_warnings_denied": "passed",
+  "lean4": "bitmap arithmetic verified",
+  "seo_canonical_urls": 34,
+  "api_source_declarations": 756,
+  "benchmarks": "November 7 pass not accepted as strict",
+  "registry_consumer": "prepared; pending registry publication"
+}

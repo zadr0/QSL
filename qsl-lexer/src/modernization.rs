@@ -10,6 +10,10 @@ pub struct SchemaOptions {
     pub slots: Option<usize>,
     pub cache_limit: Option<usize>,
     pub regions: Vec<NativeRegion>,
+    pub generated_region: bool,
+    pub external_definition: bool,
+    pub native_alignment: Option<usize>,
+    pub native_types: std::collections::BTreeMap<String, NativeTypeLayout>,
 }
 
 impl SchemaOptions {
@@ -136,9 +140,16 @@ pub enum StorageKind {
     FixedArray(usize),
     StrView,
     HeapString,
+    NativeView,
 }
 pub fn field_rust_type(f: &crate::QslField, borrowed: bool) -> QslResult<String> {
     Ok(match f.storage {
+        StorageKind::NativeView => {
+            let QslType::Custom { rust_type, .. } = &f.data else {
+                return Err(QslError::InvalidSchema);
+            };
+            format!("&'a {rust_type}")
+        }
         StorageKind::Default => f.data.rust_type(borrowed)?,
         StorageKind::StackString(n) => format!("::qsl::StackString<{n}>"),
         StorageKind::StackArray(n) => {
@@ -169,6 +180,16 @@ pub fn lower_storage(s: &QslSchema, limit: usize) -> QslResult<QslSchema> {
                 .iter()
                 .any(|r| r.start <= index && index < r.end);
         f.storage = match &f.data {
+            QslType::Custom { rust_type, .. }
+                if borrowed
+                    && !native
+                    && s.options
+                        .native_types
+                        .get(rust_type)
+                        .is_some_and(|l| l.is_region) =>
+            {
+                StorageKind::NativeView
+            }
             QslType::FixedString(_) | QslType::InlineRawString { .. } if borrowed && !native => {
                 StorageKind::StrView
             }
@@ -327,9 +348,10 @@ pub fn validate_options(s: &QslSchema) -> Result<(), String> {
             || s.optional_count() != 0
             || s.fields.iter().any(|f| {
                 f.data.fixed_wire_size().ok().flatten().is_none()
+                    || matches!(&f.data,QslType::Custom{rust_type,..} if !s.options.native_types.contains_key(rust_type))
                     || matches!(
                         f.data,
-                        QslType::Custom { .. } | QslType::FixedCompressedString(_)
+                        QslType::FixedCompressedString(_)
                     )
             }))
     {
@@ -359,6 +381,9 @@ pub fn validate_options(s: &QslSchema) -> Result<(), String> {
 
 #[derive(Debug, Clone)]
 pub struct NativeRegion {
+    pub alignment: Option<usize>,
+    pub external: bool,
+    pub field_prefix: String,
     pub rust_type: String,
     pub start: usize,
     pub end: usize,
@@ -389,7 +414,8 @@ fn fixed_native_layout(t: &QslType) -> Option<(usize, usize)> {
 pub fn check_native_offsets(s: &QslSchema) -> Result<(), String> {
     let (mut wire, mut native, mut alignment) = (0usize, 0usize, 1usize);
     for f in &s.fields {
-        let (n, a) = fixed_native_layout(&f.data)
+        let (n, a) = native_type_layout(&f.data, &s.options.native_types)
+            .map(|l| (l.native_bytes, l.alignment))
             .ok_or_else(|| format!("{}: native layout is not statically known", f.name))?;
         alignment = alignment.max(a);
         native = native
@@ -512,9 +538,8 @@ pub fn check_storage_limit(s: &QslSchema, limit: usize) -> Result<(), String> {
         }
         let bytes = match &f.data {
             QslType::FixedString(n) => Some(*n),
-            QslType::FixedArray(e, n) => {
-                fixed_native_layout(e).and_then(|(size, _)| size.checked_mul(*n))
-            }
+            QslType::FixedArray(e, n) => native_type_layout(e, &s.options.native_types)
+                .and_then(|layout| layout.native_bytes.checked_mul(*n)),
             _ => None,
         };
         if let Some(bytes) = bytes {
@@ -524,4 +549,54 @@ pub fn check_storage_limit(s: &QslSchema, limit: usize) -> Result<(), String> {
         }
     }
     Ok(())
+}
+
+/// Explicit layout facts of a generated region or registered native primitive.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct NativeTypeLayout {
+    pub native_bytes: usize,
+    pub alignment: usize,
+    pub wire_bytes: usize,
+    pub is_region: bool,
+    pub value_bytes: usize,
+    pub leaves: usize,
+}
+pub fn native_type_layout(
+    t: &QslType,
+    types: &std::collections::BTreeMap<String, NativeTypeLayout>,
+) -> Option<NativeTypeLayout> {
+    if let QslType::Custom { rust_type, .. } = t {
+        return types.get(rust_type).cloned();
+    }
+    if let QslType::FixedArray(e, n) = t {
+        let l = native_type_layout(e, types)?;
+        return Some(NativeTypeLayout {
+            is_region: false,
+            native_bytes: l.native_bytes.checked_mul(*n)?,
+            alignment: l.alignment,
+            wire_bytes: l.wire_bytes.checked_mul(*n)?,
+            value_bytes: l.value_bytes.checked_mul(*n)?,
+            leaves: if e.primitive().ok().flatten().is_some()
+                || matches!(e.as_ref(),QslType::Custom{rust_type,..} if types.get(rust_type).is_some_and(|l|!l.is_region))
+            {
+                1
+            } else {
+                l.leaves.checked_mul(*n)?
+            },
+        });
+    }
+    let (native_bytes, alignment) = fixed_native_layout(t)?;
+    let wire_bytes = t.fixed_wire_size().ok()??;
+    Some(NativeTypeLayout {
+        is_region: false,
+        native_bytes,
+        alignment,
+        wire_bytes,
+        value_bytes: if matches!(t, QslType::Padding(_) | QslType::None) {
+            0
+        } else {
+            wire_bytes
+        },
+        leaves: usize::from(!matches!(t, QslType::Padding(_) | QslType::None)),
+    })
 }

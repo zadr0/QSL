@@ -1,4 +1,13 @@
 use super::*;
+/// Exact byte-sized custom codecs are not ordinary 32-bit array scalars.
+/// Keep this expression in generated validation code so Rust resolves COMP_SIZE.
+pub(super) fn compact_element_bits(element: &QslType) -> QslResult<String> {
+    if let QslType::Custom { rust_type, .. } = element {
+        Ok(format!("<{rust_type} as ::qsl::QslCustom>::COMP_SIZE.checked_mul(8).ok_or(::qsl::QslError::LengthOverflow)?"))
+    } else {
+        Ok(element.default_compact_bits()?.to_string())
+    }
+}
 pub(super) fn field(ty: &QslType, out: &mut String, width: usize, compact: bool) -> QslResult<()> {
     match ty {
         QslType::None=>{},
@@ -32,11 +41,11 @@ pub(super) fn field(ty: &QslType, out: &mut String, width: usize, compact: bool)
             if compact{ln(out,format!("let length=(c.bits({width})? as usize).checked_add({min}).ok_or(::qsl::QslError::LengthOverflow)?;"));}else{ln(out,"let length=c.uint(4)? as usize;");}
             let max=if let QslType::RangedArray{max,..}=ty{*max}else{u32::MAX as usize};let bytes=element.fixed_wire_size()?.ok_or(QslError::InvalidSchema)?;
             ln(out,format!("if !({min}..={max}).contains(&length){{return Err(::qsl::QslError::InvalidValue)}}"));
-            if is_bytes(element){ln(out,"c.payload(length)?;");}else{let bits=element.default_compact_bits()?;if compact{ln(out,format!("c.check_values(length.checked_mul({bytes}usize).ok_or(::qsl::QslError::LengthOverflow)?,length.checked_mul({bits}usize).ok_or(::qsl::QslError::LengthOverflow)?)?;"));}else{ln(out,format!("c.check_allocation(length.checked_mul({bytes}usize).ok_or(::qsl::QslError::LengthOverflow)?)?;"));}ln(out,"for _ in 0..length{");field(element,out,bits,compact)?;ln(out,"}");if compact{ln(out,"c.align()?;");}}
+            if is_bytes(element){ln(out,"c.payload(length)?;");}else{let bits=element.default_compact_bits()?;if compact{let required_bits=compact_element_bits(element)?;ln(out,format!("c.check_values(length.checked_mul({bytes}usize).ok_or(::qsl::QslError::LengthOverflow)?,length.checked_mul({required_bits}).ok_or(::qsl::QslError::LengthOverflow)?)?;"));}else{ln(out,format!("c.check_allocation(length.checked_mul({bytes}usize).ok_or(::qsl::QslError::LengthOverflow)?)?;"));}ln(out,"for _ in 0..length{");field(element,out,bits,compact)?;ln(out,"}");if compact{ln(out,"c.align()?;");}}
         }
         QslType::Custom{rust_type,..}=>{
             let size=if compact {"COMP_SIZE"}else{"SIZE"};
-            ln(out,format!("c.charge(<{rust_type} as ::qsl::QslCustom>::{size})?;<{rust_type} as ::qsl::QslCustom>::qsl_validate(c.bytes(<{rust_type} as ::qsl::QslCustom>::{size})?,{compact})?;"));
+            ln(out,format!("c.charge(<{rust_type} as ::qsl::QslCustom>::SIZE)?;<{rust_type} as ::qsl::QslCustom>::qsl_validate(c.bytes(<{rust_type} as ::qsl::QslCustom>::{size})?,{compact})?;"));
         }
     }
     Ok(())
@@ -54,7 +63,9 @@ fn body(schema: &QslSchema, out: &mut String, capture: bool) -> QslResult<()> {
     if capture {
         let lifetime = if schema.lifetime() { "'a " } else { "" };
         ln(out,format!("#[allow(unused_variables,unused_mut,unused_assignments,clippy::manual_range_contains,clippy::absurd_extreme_comparisons,clippy::unnecessary_cast)] fn __qsl_read_checked(input:&{lifetime}[u8])->::qsl::QslResult<Self>{{Self::__qsl_read_checked_with_limit(input,Self::MAX_DATA_SIZE)}}fn __qsl_read_checked_with_limit(input:&{lifetime}[u8],limit:usize)->::qsl::QslResult<Self>{{let mut c=::qsl::validation::ValidationCursor::with_budget(input,Self::MAX_DATA_SIZE,limit.min(Self::MAX_DATA_SIZE))?;"));
-        if !schema.opt_table() || schema.state_bits() || schema.predict_table() {
+        if (!schema.opt_table() || schema.state_bits() || schema.predict_table())
+            && !optional_codegen::applies(schema)
+        {
             for f in schema.fields.iter().filter(|f| f.optional) {
                 ln(
                     out,
@@ -76,6 +87,9 @@ fn body(schema: &QslSchema, out: &mut String, capture: bool) -> QslResult<()> {
             minimum_size_expr(schema)?
         ),
     );
+    if optional_codegen::applies(schema) {
+        return optional_codegen::checked(schema, out, capture);
+    }
     if schema.predicted_opt_table() {
         return static_optional_codegen::validation(schema, out, capture);
     }
@@ -287,6 +301,20 @@ pub fn serialize_checked(&self)->::qsl::QslResult<Vec<u8>>{{self.validate_values
     Ok(())
 }
 
+fn array_element_values(element: &QslType, out: &mut String) -> QslResult<()> {
+    match element {
+        QslType::Custom { rust_type, .. } => ln(out,format!("<{rust_type} as ::qsl::QslCustom>::qsl_validate_values(item)?;")),
+        QslType::RangedInteger { min, max, .. } => ln(out,format!("if !({min}i128..={max}i128).contains(&(*item as i128)){{return Err(::qsl::QslError::InvalidValue)}}")),
+        QslType::Flags(bits) if *bits < 64 => ln(out,format!("if (*item as u64)>={}u64{{return Err(::qsl::QslError::InvalidValue)}}",1u64<<*bits)),
+        QslType::Array(e, _) | QslType::FixedArray(e, _) | QslType::RangedArray { element: e, .. } => {
+            ln(out,"for item in item.iter(){");
+            array_element_values(e, out)?;
+            ln(out,"}");
+        }
+        _ => {}
+    }
+    Ok(())
+}
 pub(super) fn values(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     // Nested if is valid in both Rust 2021 and 2024 consumer crates.
     ln(out,"#[allow(unused_variables,unused_mut,clippy::manual_range_contains,clippy::absurd_extreme_comparisons,clippy::collapsible_if)] pub fn validate_values(&self)->::qsl::QslResult<()> {let mut budget=::qsl::validation::ValueBudget::new(Self::MAX_DATA_SIZE);");
@@ -336,14 +364,9 @@ pub(super) fn values(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             }
         } else {
             if let QslType::Custom { rust_type, .. } = &f.data {
-                let size = if schema.compact() {
-                    "COMP_SIZE"
-                } else {
-                    "SIZE"
-                };
                 ln(
                     out,
-                    format!("budget.charge(<{rust_type} as ::qsl::QslCustom>::{size})?;"),
+                    format!("budget.charge(<{rust_type} as ::qsl::QslCustom>::SIZE)?;"),
                 );
             } else if let Some(size) = f.data.fixed_wire_size()? {
                 ln(out, format!("budget.charge({size})?;"));
@@ -356,6 +379,14 @@ pub(super) fn values(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             QslType::Array(element,min)|QslType::RangedArray{element,min,..}=>{let size=element.fixed_wire_size()?.ok_or(QslError::InvalidSchema)?;ln(out,format!("budget.charge(value.len().checked_mul({size}usize).ok_or(::qsl::QslError::LengthOverflow)?)?;"));let max=if let QslType::RangedArray{max,..}=&f.data{*max}else{u32::MAX as usize};ln(out,format!("if !({min}..={max}).contains(&value.len()){{return Err(::qsl::QslError::InvalidValue);}}"));},
             QslType::FixedArray(_,n)=>ln(out,format!("if value.len()!={n}{{return Err(::qsl::QslError::InvalidValue);}}")),_=>{}
         }
+        }
+        if let QslType::Array(e, _)
+        | QslType::FixedArray(e, _)
+        | QslType::RangedArray { element: e, .. } = &f.data
+        {
+            ln(out, "for item in value.iter(){");
+            array_element_values(e, out)?;
+            ln(out, "}");
         }
         if f.optional {
             ln(out, "}");

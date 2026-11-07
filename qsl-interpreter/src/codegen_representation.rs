@@ -78,8 +78,10 @@ pub(super) fn generate(i: &QslInterpreter, s: &QslSchema, out: &mut String) -> Q
         "u16"
     } else if bit <= 32 {
         "u32"
-    } else {
+    } else if bit <= 64 {
         "u64"
+    } else {
+        "u128"
     };
     ln(out, "#[repr(C)]");
     ln(out, format!("pub struct {name}{lt}{{"));

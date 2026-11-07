@@ -1,0 +1,18 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+    Checking xxhash-rust v0.8.15
+    Checking syn v2.0.119
+    Checking qsl-lexer v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-lexer)
+    Checking qsl-interpreter v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter)
+   Compiling qsl-macros-impl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl\macros)
+    Checking qsl v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+ Documenting qsl v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 19.04s
+   Generated C:\Users\Guild\Desktop\dev-qsl\.optimization/release-0.2.0-doc-target\doc\qsl\index.html and 1 other file
+ Documenting qsl-lexer v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-lexer)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.95s
+   Generated C:\Users\Guild\Desktop\dev-qsl\.optimization/release-0.2.0-doc-target\doc\qsl_lexer\index.html
+ Documenting qsl-interpreter v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.55s
+   Generated C:\Users\Guild\Desktop\dev-qsl\.optimization/release-0.2.0-doc-target\doc\qsl_interpreter\index.html

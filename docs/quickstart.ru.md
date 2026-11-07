@@ -21,10 +21,10 @@ QSL рассчитан на внутренние протоколы, IPC, тел
 
 ```toml
 [dependencies]
-qsl = "=0.1.2"
+qsl = "=0.2.0"
 
 [build-dependencies]
-qsl = "=0.1.2"
+qsl = "=0.2.0"
 ```
 
 ### 2. user.qsl
@@ -89,3 +89,5 @@ fn main() -> qsl::QslResult<()> {
 [Полное руководство](guide.ru.md) · [Архитектура](architecture.ru.md)
 · [Проверка входа](safety.ru.md) · [Примеры](../examples/README.md)
 · [qsl на crates.io](https://crates.io/crates/qsl).
+
+[Переход на 0.2.0 и удалённая feature native](migration-0.2.0.ru.md).

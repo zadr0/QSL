@@ -1,12 +1,13 @@
 [package]
 name = "qsl"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2021"
 license = "MIT"
 rust-version = "1.98"
 authors = ["Arsa"]
-description = "Schema-driven binary serialization and Rust code generation for explicit data layouts."
+description = "Schema-driven binary serialization for Rust with explicit layouts and checked APIs."
 repository = "https://github.com/zadr0/QSL"
+homepage = "https://zadr0.github.io/QSL/"
 documentation = "https://docs.rs/qsl"
 readme = "README.md"
 keywords = ["serialization", "binary", "schema", "codegen", "protocol"]
@@ -19,14 +20,10 @@ all-features = true
 
 [features]
 default = []
-native = ["dep:windows-sys"]
 diagnostics = []
 rust-macros = ["qsl-lexer/rust-macros", "qsl-interpreter/rust-macros"]
 
 [dependencies]
-qsl-lexer = { version = "=0.1.0", path = "../qsl-lexer" }
-qsl-interpreter = { version = "=0.1.0", path = "../qsl-interpreter" }
+qsl-lexer = { version = "=0.2.0", path = "../qsl-lexer" }
+qsl-interpreter = { version = "=0.2.0", path = "../qsl-interpreter" }
 qsl-macros-impl = { version = "=0.1.0", path = "macros" }
-
-[target.'cfg(windows)'.dependencies]
-windows-sys = { version = "=0.61.2", optional = true, features = ["Win32_Foundation", "Win32_Security", "Win32_System_Memory", "Win32_System_SystemInformation", "Win32_System_IO", "Win32_Networking_WinSock"] }

@@ -1,3 +1,5 @@
+> Historical November 6 contract. [Current 0.2.0 contracts and native-region hierarchy](../migration-0.2.0.en.md).
+
 # QSL deserialization modernization
 
 Implementation contract, November 6, 2026. [Русский](MODERNIZATION.ru.md).

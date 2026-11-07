@@ -1,33 +1,5 @@
-# `decompress=true` — attribute specification
+# decompress · QSL 0.2.0
 
-**Status:** implemented. Every schema has checked APIs; `[safety]` remains compatible; trusted methods retain their own preconditions.
+Field modifier |decompress=true| selects independent bounded QSL-LZ, not QPS. Store raw when compression is unhelpful. Checks bound each restored run by actual output size, capacity and MAX_DATA_SIZE; a forged encoded length cannot authorize expansion. The codec is lossless and linear with bounded match work, but no universal speed/compression guarantee is claimed. Above STACK_LIMIT, COPY restoration uses String.
 
-## Syntax
-
-```qsl
-&PackedView { str(0..4096) text|decompress=true|; }
-&FixedUtf8Compressed { str(1024) text|decompress=true|; }
-```
-
-## Exact mechanism and wire effect
-
-QSL-LZ v1 for bounded dynamic strings, fixed framing rev2 for str(N). Compressed framing is used only when the whole result is smaller; otherwise raw. Adjacent numeric fields are not automatically compressed.
-
-## Constraints and invalid combinations
-
-Up to 65535 decoded bytes; cannot combine borrowed true/guard with dynamic decompress. Performance depends on entropy, length and CPU.
-
-## Runtime contract
-
-Both peers must use compatible schema and wire revisions. The unsafe path does not verify arbitrary network input; source lifetime, data bounds and ranks must satisfy the schema.
-
-## What to measure
-
-Compare complete writes and reads on identical inputs, with metadata and payload separated; record wire size, allocations, CPU, benchmark profile and p99. Historical case (not part of the fresh QSL-only run):
-`utf8_1024/ascii/read_compressed` — [all-estimates.csv](../../data/all-estimates.csv).
-
-## Source implementation
-
-`qsl/src/strings.rs encode_bounded/decode_bounded/fixed v2`.
-
-[← All attributes](index.md) · [Architecture](../../architecture.en.md)
+[Full guide](../../guide.en.md) · [Safety](../../safety.en.md) · [Migration](../../migration-0.2.0.en.md) · [All attributes](index.md).

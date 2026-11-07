@@ -1,0 +1,42 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling xxhash-rust v0.8.15
+   Compiling syn v2.0.119
+   Compiling qsl-lexer v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-lexer)
+   Compiling qsl-interpreter v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 43.06s
+     Running unittests src\lib.rs (.optimization/release-0.2.0-interpreter-target\debug\deps\qsl_interpreter-441ea00675675c18.exe)
+
+running 21 tests
+test backend::tests::failed_target_lowering_keeps_builder_reusable ... ok
+test backend::tests::one_builder_can_drive_multiple_backends_without_schema_mutation ... ok
+test frontend_tests::shared_analysis_survives_rust_lowering_and_keeps_wire_identity ... ok
+test frontend_tests::tests::invalid_preparation_is_rejected_before_emission ... ok
+test frontend_tests::tests::prepared_and_compatible_generation_have_identical_rust_bytes ... ok
+test interpreter::tests::borrowed_generation_keeps_string_in_input_buffer ... ok
+test frontend_tests::tests::prepared_data_owns_input_and_controls_generation_configuration ... ok
+test interpreter::tests::checked_decoding_is_opt_in_and_optimization_options_remain_explicit ... ok
+test interpreter::tests::fixed_compact_layout_precomputes_packing ... ok
+test interpreter::tests::fixed_lengths_are_constant_folded ... ok
+test interpreter::tests::fixed_normal_layout_generates_literal_offsets ... ok
+test interpreter::tests::generator_emits_default_only_for_explicit_numeric_attribute ... ok
+test interpreter::tests::no_duplicate_optional_tags ... ok
+test interpreter::tests::native_string_headers_are_selected_while_generating ... ok
+test interpreter::tests::optional_bitmap_uses_smallest_optional_only_word ... ok
+test interpreter::tests::required_fields_never_have_tags ... ok
+test interpreter::tests::tags_use_three_bits_when_max_tag_is_eight ... ok
+test macro_emission_tests::internal_schema_templates_keep_flattened_rust_output ... ok
+test macro_emission_tests::rust_templates_are_expanded_before_emission_without_duplicate_types ... ok
+test optional_policy_tests::bitmap_prediction_and_table_do_not_change_the_new_wire_identity ... ok
+test optional_policy_tests::prediction_reuses_one_optional_reader_definition ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.63s
+
+   Doc-tests qsl_interpreter
+
+running 2 tests
+test src\lib.rs - (line 25) ... ignored
+test src\lib.rs - (line 5) ... ok
+
+test result: ok. 1 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.88s
+

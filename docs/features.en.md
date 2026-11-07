@@ -1,3 +1,5 @@
+> **0.2.0:** [current contracts](migration-0.2.0.en.md). Timing tables below retain their captured historical sources. The [November 7 pass](../qsl-interpreter/tests/optional-v2/results/2026-11-07.md) is not accepted as a strict result; it establishes no speedup.
+
 > **2026-11-06 contract:** [strict STACK_LIMIT, opt-in Safety, scalar-only QPS and native COPY/LIFETIME](modernization-2026-11-06/MODERNIZATION.en.md). [Four fresh measurements](../qsl-bench/modernization/report.html). Historical timing tables retain their original snapshots.
 
 # QSL feature measurements

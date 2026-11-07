@@ -5,8 +5,9 @@ use crate::{GenerationConfig, QslError, QslResult, QslSchema};
 /// Backends may borrow this model and derive their own target-specific plans.
 #[derive(Clone, Debug)]
 pub struct QslSchemaBuilder {
-    schemas: Vec<QslSchema>,
-    config: GenerationConfig,
+    pub(crate) schemas: Vec<QslSchema>,
+    pub(crate) config: GenerationConfig,
+    pub(crate) primitives: std::collections::BTreeMap<String, crate::PrimitiveRepr>,
 }
 impl QslSchemaBuilder {
     pub fn schemas(&self) -> &[QslSchema] {
@@ -32,12 +33,18 @@ pub fn analyze_schemas(
     for schema in &schemas {
         schema.validate()?;
     }
-    Ok(QslSchemaBuilder { schemas, config })
+    Ok(QslSchemaBuilder {
+        schemas,
+        config,
+        primitives: Default::default(),
+    })
 }
 
 #[doc(hidden)]
 pub fn expand_schemas(schemas: &[QslSchema]) -> QslResult<Vec<QslSchema>> {
-    crate::schema_macro::expand_macros(schemas).map_err(|_| QslError::InvalidSchema)
+    let expanded =
+        crate::schema_macro::expand_macros(schemas).map_err(|_| QslError::InvalidSchema)?;
+    crate::regions::lower_regions(&expanded).map_err(|_| QslError::InvalidSchema)
 }
 
 #[cfg(test)]

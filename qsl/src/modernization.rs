@@ -318,64 +318,17 @@ mod tests {
 }
 
 /// Availability is the wait predicate; release publishes a free slot before waking.
+/// The atomic acquisition path stays independent of the portable blocking path.
 pub(crate) struct WaitWord {
     value: std::sync::atomic::AtomicU32,
-    #[cfg(not(any(
-        windows,
-        all(
-            target_os = "linux",
-            any(
-                target_arch = "x86_64",
-                target_arch = "aarch64",
-                target_arch = "riscv64",
-                target_arch = "x86"
-            )
-        )
-    )))]
     lock: std::sync::Mutex<()>,
-    #[cfg(not(any(
-        windows,
-        all(
-            target_os = "linux",
-            any(
-                target_arch = "x86_64",
-                target_arch = "aarch64",
-                target_arch = "riscv64",
-                target_arch = "x86"
-            )
-        )
-    )))]
     condition: std::sync::Condvar,
 }
 impl WaitWord {
     pub const fn new(value: u32) -> Self {
         Self {
             value: std::sync::atomic::AtomicU32::new(value),
-            #[cfg(not(any(
-                windows,
-                all(
-                    target_os = "linux",
-                    any(
-                        target_arch = "x86_64",
-                        target_arch = "aarch64",
-                        target_arch = "riscv64",
-                        target_arch = "x86"
-                    )
-                )
-            )))]
             lock: std::sync::Mutex::new(()),
-            #[cfg(not(any(
-                windows,
-                all(
-                    target_os = "linux",
-                    any(
-                        target_arch = "x86_64",
-                        target_arch = "aarch64",
-                        target_arch = "riscv64",
-                        target_arch = "x86"
-                    )
-                )
-            )))]
             condition: std::sync::Condvar::new(),
         }
     }
@@ -389,142 +342,21 @@ impl WaitWord {
             .is_ok()
     }
     pub fn wait(&self, expected: u32) {
-        #[cfg(windows)]
-        unsafe {
-            extern "system" {
-                fn WaitOnAddress(
-                    address: *const core::ffi::c_void,
-                    compare: *const core::ffi::c_void,
-                    size: usize,
-                    milliseconds: u32,
-                ) -> i32;
-            }
-            #[link(name = "kernel32")]
-            extern "system" {}
-            let _ = WaitOnAddress(
-                self.value.as_ptr().cast(),
-                (&expected as *const u32).cast(),
-                4,
-                u32::MAX,
-            );
-        }
-        #[cfg(all(
-            target_os = "linux",
-            any(
-                target_arch = "x86_64",
-                target_arch = "aarch64",
-                target_arch = "riscv64",
-                target_arch = "x86"
-            )
-        ))]
-        unsafe {
-            extern "C" {
-                fn syscall(number: core::ffi::c_long, ...) -> core::ffi::c_long;
-            }
-            #[cfg(target_arch = "x86_64")]
-            const SYS: core::ffi::c_long = 202;
-            #[cfg(any(target_arch = "aarch64", target_arch = "riscv64"))]
-            const SYS: core::ffi::c_long = 98;
-            #[cfg(target_arch = "x86")]
-            const SYS: core::ffi::c_long = 240;
-            let _ = syscall(
-                SYS,
-                self.value.as_ptr(),
-                128i32,
-                expected,
-                std::ptr::null::<u8>(),
-                0usize,
-                0usize,
-            );
-        }
-        #[cfg(not(any(
-            windows,
-            all(
-                target_os = "linux",
-                any(
-                    target_arch = "x86_64",
-                    target_arch = "aarch64",
-                    target_arch = "riscv64",
-                    target_arch = "x86"
-                )
-            )
-        )))]
-        {
-            let guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
-            drop(
-                self.condition
-                    .wait_while(guard, |_| {
-                        self.value.load(std::sync::atomic::Ordering::Acquire) == expected
-                    })
-                    .unwrap_or_else(|e| e.into_inner()),
-            );
-        }
+        let guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
+        drop(
+            self.condition
+                .wait_while(guard, |_| {
+                    self.value.load(std::sync::atomic::Ordering::Acquire) == expected
+                })
+                .unwrap_or_else(|e| e.into_inner()),
+        );
     }
     pub fn wake_all(&self) {
-        #[cfg(not(any(
-            windows,
-            all(
-                target_os = "linux",
-                any(
-                    target_arch = "x86_64",
-                    target_arch = "aarch64",
-                    target_arch = "riscv64",
-                    target_arch = "x86"
-                )
-            )
-        )))]
+        // The same lock pairs the predicate check with sleep, preventing a
+        // release from notifying between that check and Condvar::wait.
         let _guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
         self.value
             .fetch_add(1, std::sync::atomic::Ordering::Release);
-        #[cfg(windows)]
-        unsafe {
-            #[link(name = "kernel32")]
-            extern "system" {
-                fn WakeByAddressAll(address: *const core::ffi::c_void);
-            }
-            WakeByAddressAll(self.value.as_ptr().cast());
-        }
-        #[cfg(all(
-            target_os = "linux",
-            any(
-                target_arch = "x86_64",
-                target_arch = "aarch64",
-                target_arch = "riscv64",
-                target_arch = "x86"
-            )
-        ))]
-        unsafe {
-            extern "C" {
-                fn syscall(number: core::ffi::c_long, ...) -> core::ffi::c_long;
-            }
-            #[cfg(target_arch = "x86_64")]
-            const SYS: core::ffi::c_long = 202;
-            #[cfg(any(target_arch = "aarch64", target_arch = "riscv64"))]
-            const SYS: core::ffi::c_long = 98;
-            #[cfg(target_arch = "x86")]
-            const SYS: core::ffi::c_long = 240;
-            let _ = syscall(
-                SYS,
-                self.value.as_ptr(),
-                129i32,
-                i32::MAX,
-                0usize,
-                0usize,
-                0usize,
-            );
-        }
-        #[cfg(not(any(
-            windows,
-            all(
-                target_os = "linux",
-                any(
-                    target_arch = "x86_64",
-                    target_arch = "aarch64",
-                    target_arch = "riscv64",
-                    target_arch = "x86"
-                )
-            )
-        )))]
         self.condition.notify_all();
     }
 }

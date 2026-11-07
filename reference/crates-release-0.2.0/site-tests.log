@@ -1,0 +1,4 @@
+PASS: 149 real cases; all groups/operations/P/T/wire; 200-point waveforms; RU/EN; operand vectors; length events; API search
+PASS: 32 native dense vectors / 4 optional states; scope, pipeline, corruption, truncation, all memory modes, QPS operands and RU/EN refresh
+PASS: malformed dense-frame errors match native Rust validation
+PASS: direct English URL overrides a Russian browser locale

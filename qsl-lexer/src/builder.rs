@@ -17,6 +17,69 @@ pub trait SchemaBackend {
 }
 
 impl QslSchemaBuilder {
+    pub fn new() -> Self {
+        Self {
+            schemas: Vec::new(),
+            config: GenerationConfig::default(),
+            primitives: Default::default(),
+        }
+    }
+    /// Register an explicit transparent primitive before collecting source.
+    pub fn with_primitive<T: crate::QslPrimitive>(mut self, name: &str) -> QslResult<Self> {
+        let p = T::REPRESENTATION;
+        p.validate()?;
+        let n = p.bits as usize / 8;
+        let align = crate::modernization::native_type_layout(&p.data(), &Default::default())
+            .ok_or(crate::QslError::InvalidSchema)?
+            .alignment;
+        if name.is_empty()
+            || !name
+                .chars()
+                .enumerate()
+                .all(|(i, c)| c == '_' || c.is_ascii_alphabetic() || i > 0 && c.is_ascii_digit())
+            || T::SIZE != n
+            || T::COMP_SIZE > n
+            || std::mem::size_of::<T>() != n
+            || std::mem::align_of::<T>() != align
+            || std::mem::needs_drop::<T>()
+        {
+            return Err(crate::QslError::InvalidSchema);
+        }
+        if self.primitives.insert(name.into(), p).is_some() {
+            return Err(crate::QslError::InvalidSchema);
+        }
+        Ok(self)
+    }
+    /// Registered metadata is applied by the parser before its existing checks.
+    pub fn with_source(mut self, source: &str) -> Result<Self, Box<dyn std::error::Error>> {
+        let mut raw = crate::parser::parse_qsl_raw_with_primitives(
+            source,
+            &Default::default(),
+            &self.primitives,
+        )?;
+        raw.splice(0..0, self.schemas);
+        self.schemas = crate::frontend::expand_schemas(&raw)?;
+        for schema in &self.schemas {
+            schema.validate()?;
+        }
+        Ok(self)
+    }
+
+    #[cfg(feature = "rust-macros")]
+    pub fn with_rust_templates(
+        mut self,
+        sources: &[&str],
+    ) -> Result<Self, Box<dyn std::error::Error>> {
+        let mut expanded = crate::rust_macro::expand_with_rust(&self.schemas, sources)?;
+        for schema in &mut expanded {
+            crate::apply_primitive_bindings(schema, &self.primitives)?;
+        }
+        self.schemas = crate::frontend::expand_schemas(&expanded)?;
+        for schema in &self.schemas {
+            schema.validate()?;
+        }
+        Ok(self)
+    }
     /// Build from already parsed schemas, e.g. an editor or Rust macro importer.
     pub fn from_schemas(schemas: &[QslSchema], config: GenerationConfig) -> QslResult<Self> {
         crate::analyze_schemas(schemas, config)
@@ -151,4 +214,10 @@ fn load_inputs(
     #[cfg(not(feature = "rust-macros"))]
     let schemas = crate::schema_macro::expand_macros(&schemas)?;
     crate::analyze_schemas(&schemas, generation).map_err(Into::into)
+}
+
+impl Default for QslSchemaBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
 }

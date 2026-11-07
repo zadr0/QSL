@@ -155,4 +155,43 @@ mod tests {
             }
         });
     }
+    #[test]
+    fn blocking_waiters_resume_without_lost_notifications() {
+        use std::sync::{mpsc, Arc, Barrier};
+        use std::time::Duration;
+        static SINGLE: StaticRegions<8, 1> = StaticRegions::new();
+        let held = SINGLE.try_acquire().unwrap();
+        let barrier = Arc::new(Barrier::new(5));
+        let (send, receive) = mpsc::channel();
+        let threads = (0..4)
+            .map(|_| {
+                let ready = barrier.clone();
+                let completed = send.clone();
+                std::thread::spawn(move || {
+                    ready.wait();
+                    let mut lease = SINGLE.acquire();
+                    unsafe {
+                        lease.as_mut_ptr().write(7);
+                        lease.set_len(1);
+                    }
+                    assert_eq!(lease.as_slice(), &[7]);
+                    completed.send(()).unwrap();
+                })
+            })
+            .collect::<Vec<_>>();
+        drop(send);
+        barrier.wait();
+        assert!(matches!(
+            receive.recv_timeout(Duration::from_millis(20)),
+            Err(mpsc::RecvTimeoutError::Timeout)
+        ));
+        drop(held);
+        for _ in 0..4 {
+            receive.recv_timeout(Duration::from_secs(5)).unwrap();
+        }
+        for thread in threads {
+            thread.join().unwrap();
+        }
+        assert!(SINGLE.try_acquire().is_ok());
+    }
 }

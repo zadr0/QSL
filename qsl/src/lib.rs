@@ -50,10 +50,8 @@ pub use qsl_lexer::{
     },
     types::*,
 };
+pub use qsl_lexer::{qsl_native_primitive, qsl_primitive};
 pub use qsl_macros_impl::{qsl_macro, schem_macro};
 pub use serialize::*;
 pub use socket::RawSocket;
 pub use strings::*;
-/// Native Windows memory regions and direct blocking TCP.
-#[cfg(all(feature = "native", windows, target_has_atomic = "64"))]
-pub mod native;

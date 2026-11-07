@@ -1,18 +1,19 @@
 [package]
 name = "qsl-lexer"
-version = "0.1.0"
-description = "QSL schema lexer, parser and deterministic build-time analysis."
+version = "0.2.0"
+description = "Schema lexer, parser and build-time analysis for QSL binary serialization."
 edition = "2021"
 rust-version = "1.98"
 license = "MIT"
 authors = ["Arsa"]
 repository = "https://github.com/zadr0/QSL"
+homepage = "https://zadr0.github.io/QSL/"
 documentation = "https://docs.rs/qsl-lexer"
 publish = ["crates-io"]
 readme = "README.md"
 keywords = ["serialization", "binary", "schema", "codegen"]
-categories = ["encoding"]
-include = ["src/**", "tests/**", "Cargo.toml", "Cargo.lock", "README.md", "LICENSE"]
+categories = ["encoding", "parser-implementations"]
+include = ["src/**", "tests/**", "proofs/**", "Cargo.toml", "Cargo.lock", "README.md", "CHANGELOG.md", "LICENSE"]
 
 [package.metadata.docs.rs]
 all-features = true

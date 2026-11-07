@@ -1,4 +1,29 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><title>QSL · schema-hashes · RU</title><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css"></head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="schema-hashes-ru-1">Идентичность схем QSL</h1>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css">
+<title>Хэши схем QSL — строгая и лёгкая идентичность</title>
+<meta name="description" content="Детерминированные хэши QSL по схеме и формату: xxHash, xxHash128, порядок полей, BM v2 и ограничения совместимости.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/schema-hashes.ru.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/schema-hashes.ru.html">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/schema-hashes.en.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/schema-hashes.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="Хэши схем QSL — строгая и лёгкая идентичность">
+<meta property="og:description" content="Детерминированные хэши QSL по схеме и формату: xxHash, xxHash128, порядок полей, BM v2 и ограничения совместимости.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/schema-hashes.ru.html">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL 0.2.0 — binary serialization for Rust">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Хэши схем QSL — строгая и лёгкая идентичность">
+<meta name="twitter:description" content="Детерминированные хэши QSL по схеме и формату: xxHash, xxHash128, порядок полей, BM v2 и ограничения совместимости.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/schema-hashes.ru.html#webpage","url":"https://zadr0.github.io/QSL/schema-hashes.ru.html","name":"Хэши схем QSL — строгая и лёгкая идентичность","description":"Детерминированные хэши QSL по схеме и формату: xxHash, xxHash128, порядок полей, BM v2 и ограничения совместимости.","inLanguage":"ru","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="schema-hashes-ru-1">Идентичность схем QSL</h1>
 <p><a href="schema-hashes.en.html">English</a></p>
 <p>QSL вычисляет два хэша во время анализа уже раскрытой схемы. В сгенерированном Rust хранятся готовые константы: чтение и запись не запускают хэширование, не выделяют память для него и не добавляют хэш в кадр.</p>
 <pre><code>!config USE_HASH = xxHash;    // по умолчанию: XXH3-64</code></pre>
@@ -33,4 +58,6 @@ let light: u128 = Packet::SCHEMA_HASH_LIGHT;
 cargo test --manifest-path reference/schema-hash-control/Cargo.toml --locked
 cargo build --manifest-path qsl/Cargo.toml --locked --release --bin qsl-analyze --features rust-macros
 Get-Content examples/schema-hashes/packet.qsl -Raw | ./qsl/target/release/qsl-analyze.exe --generate examples/schema-hashes/schema.deq</code></pre>
-<p>Тесты фиксируют оба эталонных хэша, независимость от названных настроек, влияние формата, вложенные макросы, несколько DEQ-файлов и повторный запуск отдельного процесса. Изолированный стенд компилирует owned/borrowed/QPS/RT-типы и сравнивает реальные кадры при переключении 64/128 бит. Бенчмарки не перезапускаются: горячие методы не изменены, новых оценок времени нет.</p></main></body></html>
+<p>Тесты фиксируют оба эталонных хэша, независимость от названных настроек, влияние формата, вложенные макросы, несколько DEQ-файлов и повторный запуск отдельного процесса. Изолированный стенд компилирует owned/borrowed/QPS/RT-типы и сравнивает реальные кадры при переключении 64/128 бит. Бенчмарки не перезапускаются: горячие методы не изменены, новых оценок времени нет.</p>
+<h2 id="schema-hashes-ru-8">Bitmap revision 2</h2>
+<p>Канонический дескриптор BM включает ревизию 2 и ширину маски. Обязательные поля больше не занимают биты; обход идёт по убыванию optional-маркера. OT и неактивный при BM PS не меняют эту идентичность. Идентичность native/custom остаётся неполной, если независимая семантика кодека непрозрачна анализатору. Хэши не согласуют версии и не доказывают отсутствие коллизий. <a href="migration-0.2.0.ru.html">Переход</a>.</p></main><nav id="qsl-language-links" class="footer" aria-label="Documentation languages"><a href="https://zadr0.github.io/QSL/" hreflang="ru">Русский</a> · <a href="https://zadr0.github.io/QSL/en.html" hreflang="en">English</a> · <a href="https://zadr0.github.io/QSL/sitemap.xml">Sitemap</a></nav></body></html>

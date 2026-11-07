@@ -13,7 +13,7 @@ dependencies = [
 
 [[package]]
 name = "qsl"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "qsl-interpreter",
  "qsl-lexer",
@@ -22,14 +22,14 @@ dependencies = [
 
 [[package]]
 name = "qsl-interpreter"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "qsl-lexer",
 ]
 
 [[package]]
 name = "qsl-lexer"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "xxhash-rust",
 ]

@@ -8,7 +8,6 @@ autobenches = false
 path = "lib.rs"
 [features]
 default = []
-native = ["qsl/native"]
 [dependencies]
 qsl = { path = "../qsl" }
 [build-dependencies]

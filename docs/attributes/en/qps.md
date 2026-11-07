@@ -1,3 +1,5 @@
-# QPS
+# qps · QSL 0.2.0
 
-[Complete contracts](../../guide.en.md). QPS is exact operand compression, never field-presence prediction. predict_seq owns prediction; opt_table selects readers by tag. Scalar specialization packs bounded numeric ranks. General ByteQps handles the complete serialized payload through explicit encode/restore APIs, with a 16 B QPB3 header and unquantized original length. qps defaults to Q16; Q2/Q4/Q8/Q16 are supported. quant is an alias; state_bits explicitly selects old D/index compatibility. General QPS can fall back to raw with visible framing cost; grouping arbitrary u8 values does not guarantee savings.
+qps defaults to Q16; explicit qps=Q2/Q4/Q8/Q16 selects reversible scalar operand packing. It does not predict optional presence and does not quantize strings, arrays or their lengths. Unsuitable schemas retain the explicitly reported raw path. Separate ByteQps can wrap arbitrary bytes with its own 16 B QPB3 framing and restoration buffer; it is not the schema string policy.
+
+[Full guide](../../guide.en.md) · [Safety](../../safety.en.md) · [Migration](../../migration-0.2.0.en.md) · [All attributes](index.md).

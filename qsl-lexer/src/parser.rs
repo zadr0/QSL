@@ -113,7 +113,11 @@ pub fn parse_qsl_with_constants(
     globals: &HashMap<String, i128>,
 ) -> Result<Vec<QslSchema>, ParseError> {
     let raw = parse_qsl_raw_with_constants(source, globals)?;
-    crate::schema_macro::expand_macros(&raw).map_err(|e| ParseError {
+    let schemas = crate::schema_macro::expand_macros(&raw).map_err(|e| ParseError {
+        offset: source.len(),
+        message: e.to_string(),
+    })?;
+    crate::regions::lower_regions(&schemas).map_err(|e| ParseError {
         offset: source.len(),
         message: e.to_string(),
     })
@@ -122,6 +126,14 @@ pub fn parse_qsl_with_constants(
 pub fn parse_qsl_raw_with_constants(
     source: &str,
     globals: &HashMap<String, i128>,
+) -> Result<Vec<QslSchema>, ParseError> {
+    parse_qsl_raw_with_primitives(source, globals, &Default::default())
+}
+#[doc(hidden)]
+pub fn parse_qsl_raw_with_primitives(
+    source: &str,
+    globals: &HashMap<String, i128>,
+    primitives: &std::collections::BTreeMap<String, crate::PrimitiveRepr>,
 ) -> Result<Vec<QslSchema>, ParseError> {
     let mut p = Cursor::new(source);
     let mut defs = globals.clone();
@@ -230,7 +242,10 @@ pub fn parse_qsl_raw_with_constants(
                 let key = p.ident()?.to_owned();
                 if key == "region" {
                     p.expect("(")?;
-                    if p.ident()? != "aggressive_transmutate" {
+                    if !matches!(
+                        p.ident()?,
+                        "aggressive_transmutate" | "aggresive_transmutate"
+                    ) {
                         return Err(p.error("region expects aggressive_transmutate"));
                     }
                     p.expect("=")?;
@@ -250,6 +265,9 @@ pub fn parse_qsl_raw_with_constants(
                         return Err(p.error("native region must not be empty"));
                     }
                     options.regions.push(crate::modernization::NativeRegion {
+                        alignment: None,
+                        external: false,
+                        field_prefix: String::new(),
                         rust_type: ty,
                         start,
                         end: fields.len(),
@@ -273,7 +291,17 @@ pub fn parse_qsl_raw_with_constants(
                 p.expect("<")?;
                 let inner_name = p.ident()?;
                 let inner = primitive(inner_name)
-                    .ok_or_else(|| p.error("unsupported array element type"))?;
+                    .or_else(|| {
+                        primitives.get(inner_name).map(|repr| QslType::Custom {
+                            rust_type: inner_name.to_owned(),
+                            fixed_wire_size: Some(repr.bits as usize / 8),
+                        })
+                    })
+                    .ok_or_else(|| {
+                        p.error(
+                            "array elements must be built-in or explicitly registered primitives",
+                        )
+                    })?;
                 p.expect(">")?;
                 Some(inner)
             } else {
@@ -353,8 +381,15 @@ pub fn parse_qsl_raw_with_constants(
                 p.expect("|")?;
             }
             p.expect(";")?;
-            if !(1..=64).contains(&tag) {
-                return Err(p.error("QSL tag must be in 1..=64"));
+            if tag == 0
+                || tag
+                    > if flags & FLAG_OPTIONAL_BITMAP != 0 {
+                        65535
+                    } else {
+                        64
+                    }
+            {
+                return Err(p.error("QSL tag exceeds the selected codec capacity"));
             }
             max_tag = max_tag.max(tag);
             let (mut data, mut bits) = build_type(&ty_name, element, range, None, &p)?;
@@ -443,7 +478,7 @@ pub fn parse_qsl_raw_with_constants(
         if !regions.is_empty() {
             return Err(p.error("unclosed native region"));
         }
-        let schema = QslSchema {
+        let mut schema = QslSchema {
             options,
             flags,
             fields,
@@ -453,6 +488,8 @@ pub fn parse_qsl_raw_with_constants(
         if result.iter().any(|s: &QslSchema| s.name == schema.name) {
             return Err(p.error(format!("duplicate schema `{}`", schema.name)));
         }
+        crate::apply_primitive_bindings(&mut schema, primitives)
+            .map_err(|_| p.error("invalid registered primitive descriptor"))?;
         crate::modernization::validate_options(&schema).map_err(|message| p.error(message))?;
         result.push(schema);
     }
@@ -708,8 +745,6 @@ mod lowlevel_tests {
             "&A{str(0..100) x|binary_opt=view||decompress=true|;}",
             "&A[predict_seq]{u64 id;u16? x;u8 required;}",
             "&A[predict_seq]{u16? x;u16? y;}",
-            "&A[opt_table,compact]{u16? x;u16? y;}",
-            "&A[opt_table,optionals=bitmap]{u16? x;u16? y;}",
             "&A[predict_seq]{str?(0) x;}",
         ] {
             assert!(parse_qsl(source).is_err(), "{source}");

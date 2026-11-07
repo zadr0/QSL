@@ -1,0 +1,62 @@
+[
+  {
+    "optionalCount": 0,
+    "maskBits": 0,
+    "objectBytes": 1
+  },
+  {
+    "optionalCount": 1,
+    "maskBits": 8,
+    "objectBytes": 6
+  },
+  {
+    "optionalCount": 8,
+    "maskBits": 8,
+    "objectBytes": 20
+  },
+  {
+    "optionalCount": 9,
+    "maskBits": 16,
+    "objectBytes": 22
+  },
+  {
+    "optionalCount": 16,
+    "maskBits": 16,
+    "objectBytes": 36
+  },
+  {
+    "optionalCount": 17,
+    "maskBits": 32,
+    "objectBytes": 40
+  },
+  {
+    "optionalCount": 32,
+    "maskBits": 32,
+    "objectBytes": 72
+  },
+  {
+    "optionalCount": 33,
+    "maskBits": 64,
+    "objectBytes": 80
+  },
+  {
+    "optionalCount": 64,
+    "maskBits": 64,
+    "objectBytes": 144
+  },
+  {
+    "optionalCount": 65,
+    "maskBits": 128,
+    "objectBytes": 160
+  },
+  {
+    "optionalCount": 128,
+    "maskBits": 128,
+    "objectBytes": 288
+  },
+  {
+    "nativeType": "Meta",
+    "size": 16,
+    "parentSize": 24
+  }
+]

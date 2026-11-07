@@ -26,7 +26,7 @@ fn json(s: &str) -> String {
 fn main() {
     if std::env::args().any(|a| a == "--capabilities") {
         println!(
-            "{{\"editorBundle\":1,\"wireLayout\":1,\"schemaHashVersion\":1,\"checkedSchemas\":1,\"optionalModes\":2,\"generatedRust\":1,\"memoryLayout\":1,\"safetyOptIn\":1,\"qpsCodecRevision\":2,\"qpsByteCodecRevision\":3,\"rustMacros\":{}}}",
+            "{{\"editorBundle\":1,\"bitmapRevision\":2,\"bitmapMaxOptionals\":128,\"wireLayout\":1,\"schemaHashVersion\":1,\"checkedSchemas\":1,\"optionalModes\":2,\"generatedRust\":1,\"memoryLayout\":1,\"safetyOptIn\":1,\"qpsCodecRevision\":2,\"qpsByteCodecRevision\":3,\"rustMacros\":{}}}",
             cfg!(feature = "rust-macros")
         );
         return;
@@ -336,7 +336,11 @@ fn main() {
             })
             .collect::<Vec<_>>()
             .join(",");
-        let static_mode = if quant.active && s.opt_table() {
+        let static_mode = if s.bitmap() && s.opt_table() {
+            "optional-only bitmap; dense reader table; descending markers"
+        } else if s.bitmap() {
+            "optional-only bitmap; match dispatch; descending markers"
+        } else if quant.active && s.opt_table() {
             "packed numeric kernel; no wire tags"
         } else if s.state_bits() && s.opt_table() {
             "descriptor presence with tag-indexed reader dispatch"

@@ -14,26 +14,11 @@ pub trait Serializable: Sized {
     /// `serialize_into_unsafe`/`serialize_to` as the initialized wire length.
     fn serialized_size(&self) -> usize;
 
-    /// Allocate the final buffer once and write directly through its pointer.
-    /// # Safety
-    /// Every field must satisfy its declared QSL range and exact-length contract.
-    /// The combined encoded size must fit isize::MAX.
-    #[cfg(feature = "native")]
-    unsafe fn serialize(&self) -> SerOut {
-        let mut out = unsafe { SerOut::uninit(self.serialized_size()) };
-        unsafe {
-            let written = self.serialize_into_unsafe(out.as_mut_ptr());
-            out.len = written;
-        }
-        out
-    }
-
     /// Single-allocation Vec encoder. No intermediate buffers or validations.
     /// Each encoded byte is initialized by the writer, avoiding a zero-fill pass.
     /// # Safety
     /// Every field must satisfy its declared QSL range and exact-length contract.
     /// The combined encoded size must fit isize::MAX.
-    #[cfg(not(feature = "native"))]
     unsafe fn serialize(&self) -> Vec<u8> {
         let len = self.serialized_size();
         let mut out = Vec::with_capacity(len);
@@ -58,20 +43,9 @@ pub trait Serializable: Sized {
         self.serialized_size()
     }
 
-    /// Store into a preallocated `SerOut` without comparing capacities.
-    /// # Safety
-    /// `to` must have at least `self.serialized_size()` writable bytes.
-    #[cfg(feature = "native")]
-    unsafe fn serialize_to(&self, to: &mut SerOut) -> usize {
-        let written = self.serialize_into_unsafe(to.as_mut_ptr());
-        to.len = written;
-        written
-    }
-
     /// Store into a preallocated byte slice without comparing capacities.
     /// # Safety
     /// `to` must have at least `self.serialized_size()` writable bytes.
-    #[cfg(not(feature = "native"))]
     unsafe fn serialize_to(&self, to: &mut [u8]) -> usize {
         self.serialize_into_unsafe(to.as_mut_ptr())
     }
@@ -136,20 +110,6 @@ pub trait BorrowSerializable<'a>: Sized {
     /// Required output capacity; compressed strings use their raw-size bound.
     fn serialized_size(&self) -> usize;
 
-    /// Allocate once and encode borrowed fields without a zero-fill pass.
-    /// # Safety
-    /// Values must satisfy all QSL bounds and exact byte lengths.
-    /// The combined encoded size must fit isize::MAX.
-    #[cfg(feature = "native")]
-    unsafe fn serialize(&self) -> SerOut {
-        let mut out = unsafe { SerOut::uninit(self.serialized_size()) };
-        unsafe {
-            let written = self.serialize_into_unsafe(out.as_mut_ptr());
-            out.len = written;
-        }
-        out
-    }
-    #[cfg(not(feature = "native"))]
     /// Allocate once and encode into bytes initialized by the generated writer.
     /// # Safety
     /// Values must satisfy all QSL bounds and exact byte lengths.
@@ -179,16 +139,6 @@ pub trait BorrowSerializable<'a>: Sized {
 
     /// # Safety
     /// `to` must contain the complete writable output region.
-    #[cfg(feature = "native")]
-    unsafe fn serialize_to(&self, to: &mut SerOut) -> usize {
-        let written = self.serialize_into_unsafe(to.as_mut_ptr());
-        to.len = written;
-        written
-    }
-
-    /// # Safety
-    /// `to` must contain the complete writable output region.
-    #[cfg(not(feature = "native"))]
     unsafe fn serialize_to(&self, to: &mut [u8]) -> usize {
         self.serialize_into_unsafe(to.as_mut_ptr())
     }
@@ -240,12 +190,7 @@ impl SerOut {
         let ptr = std::ptr::NonNull::new(ptr).unwrap_or_else(|| handle_alloc_error(layout));
         Self { ptr, layout, len }
     }
-    /// Allocate output which must be completely initialized before observation.
-    /// Used only by the generated encoder's single-write allocation path.
-    #[cfg(feature = "native")]
-    unsafe fn uninit(len: usize) -> Self {
-        Self::with_capacity_aligned(len, 4)
-    }
+
     /// Allocate reusable storage with architecture-selected power-of-two alignment.
     /// The initialized slice is initially empty; capacity is retained after reuse.
     pub fn with_capacity_aligned(capacity: usize, alignment: usize) -> Self {

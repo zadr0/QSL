@@ -1,0 +1,9 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling qsl-compiler-pipeline v0.0.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\examples\compiler-pipeline)
+   Compiling quote v1.0.47
+   Compiling syn v2.0.119
+   Compiling qsl-macros-impl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl\macros)
+   Compiling qsl v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.12s
+     Running `.optimization/release-0.2.0-examples-target\debug\qsl-compiler-pipeline.exe`
+Separate compiler crates: 17 wire bytes, checked round-trip passed

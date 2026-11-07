@@ -1,0 +1,60 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css">
+<title>QSL custom primitives and nested Rust structures</title>
+<meta name="description" content="QslCustom, validating scalar-wrapper macros, type registration, native regions, COPY and LIFETIME in QSL 0.2.0.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/custom-types.en.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/custom-types.en.html">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/custom-types.ru.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/custom-types.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="QSL custom primitives and nested Rust structures">
+<meta property="og:description" content="QslCustom, validating scalar-wrapper macros, type registration, native regions, COPY and LIFETIME in QSL 0.2.0.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/custom-types.en.html">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL 0.2.0 — binary serialization for Rust">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="QSL custom primitives and nested Rust structures">
+<meta name="twitter:description" content="QslCustom, validating scalar-wrapper macros, type registration, native regions, COPY and LIFETIME in QSL 0.2.0.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/custom-types.en.html#webpage","url":"https://zadr0.github.io/QSL/custom-types.en.html","name":"QSL custom primitives and nested Rust structures","description":"QslCustom, validating scalar-wrapper macros, type registration, native regions, COPY and LIFETIME in QSL 0.2.0.","inLanguage":"en","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="en.html">QSL</a><h1 id="custom-types-en-1">Custom types and reusable Rust structures</h1>
+<p>QslCustom declares exact normal SIZE and compact COMP_SIZE, validators for wire bytes/values and explicit unsafe pointer hooks. Both validators must authorize the custom domain before checked code calls its trusted hooks. A changed COMP_SIZE requires matching compact read/write implementations; the default hooks use the normal codec. Source arrays accept built-ins and explicitly registered primitives.</p>
+<h2 id="custom-types-en-2">Explicit scalar wrapper macros</h2>
+<p>A schema field-expansion macro and a scalar serialization contract serve different purposes. Existing user <code>QslCustom</code> codecs remain opaque and retain their byte format. They are not automatically reinterpreted as integers.</p>
+<p>In a Rust module shared by the application and build script:</p>
+<pre><code>qsl_lexer::qsl_primitive!(pub struct DeviceId(u32);range=(1,100););</code></pre>
+<p>Or bind an existing one-field integer tuple struct:</p>
+<pre><code>#[repr(transparent)]
+#[derive(Clone, Copy)]
+pub struct DeviceId(pub u32);
+qsl_lexer::qsl_primitive!(DeviceId,u32,range=(1,100));</code></pre>
+<p>Supported representations: u8/i8, u16/i16, u32/i32 and u64/i64. The macro checks integer kind, size, alignment, field-zero offset, absence of Drop and domain bounds. It constructs values with typed Rust constructors. Normal encoding is little endian; compact encoding stores <code>value-min</code> in the minimum whole-byte width for the declared domain. This is byte-oriented custom compression, not automatic bit merging with neighboring built-in fields. A constant domain occupies zero compact bytes. Existing PS restrictions on zero-width optional codecs still apply.</p>
+<p>Register the same type before parsing:</p>
+<pre><code>use qsl_interpreter::prelude::*;
+let builder = QslSchemaBuilder::new()
+    .with_primitive::&lt;DeviceId&gt;(&quot;DeviceId&quot;)?
+    .with_source(&quot;&amp;Packet[safety,compact,optionals=bitmap,opt_table]{DeviceId id;DeviceId? extra;}&quot;)?;
+let rust = builder.use_interpreter()?;</code></pre>
+<p>Registration checks build-side ABI and retains normal custom width. Generated const assertions check target-side size, alignment, Drop and codec widths, including array elements. Primitive metadata is reapplied after explicit Rust-template imports. Registered primitives can also appear as QSL array elements; unregistered opaque array elements are rejected by the source parser.</p>
+<p>For native regions, the application additionally opts into the existing runtime contract:</p>
+<pre><code>qsl_lexer::qsl_native_primitive!(DeviceId,u32);</code></pre>
+<p>The native macro validates scalar values before creating a checked view. Manual <code>unsafe impl QslPrimitive</code> / <code>NativeField</code> remains an explicit responsibility: layout checks cannot prove arbitrary Rust method semantics. No general user-type transmute or automatic merged-register kernel is introduced. Nested optional schemas inside a custom codec keep their own masks and marker scope.</p>
+<h2 id="custom-types-en-3">Real nested native regions</h2>
+<pre><code>&amp;Parent[safety] {
+    #region(aggressive_transmutate=&quot;Meta&quot;);
+    u64 id;
+    u32 value;
+    str(4) tag;
+    #end_region;
+    str(3..10) name;
+}</code></pre>
+<p>This produces <code>#[repr(C)] Meta { id:u64, value:u32, tag:[u8;4] }</code> and <code>Parent { Meta:Meta, name:String }</code>. Region fields are not flattened into Parent. The historical <code>aggresive_transmutate</code> spelling is accepted as an alias.</p>
+<p>COPY owns the nested object and falls back to field reconstruction where native and wire layouts differ. LIFETIME borrows a typed region only when wire/native sizes and field offsets match, the host is little endian, input alignment is sufficient, and all field validators succeed. An ordinary Vec buffer does not promise alignment for arbitrary native types; misaligned checked borrowing returns an error. COPY does not require borrowed-input alignment.</p>
+<p>Nested regions produce a type hierarchy. Identical definitions are reused; conflicting names, crossed/empty regions, recursive names, unknown native types, dynamic fields and optional fields inside native regions are rejected. Fixed strings use byte arrays. The configured stack limit applies to native string/array fields too. Native descriptors support at most 64 initialized leaves; numeric arrays use their existing coalesced leaf representation. Region nesting is capped at 64.</p>
+<p>A Rust <code>#[qsl::schem_macro(aggressive_transmutate)]</code> template reuses its existing Rust type as a nested field; the generator does not emit a duplicate struct. Ordinary field-expansion macros keep their previous flattening behavior. Explicit <code>repr(align(...))</code> is accounted for; extra padding can make LIFETIME unavailable while COPY remains usable.</p></main><nav id="qsl-language-links" class="footer" aria-label="Documentation languages"><a href="https://zadr0.github.io/QSL/" hreflang="ru">Русский</a> · <a href="https://zadr0.github.io/QSL/en.html" hreflang="en">English</a> · <a href="https://zadr0.github.io/QSL/sitemap.xml">Sitemap</a></nav></body></html>

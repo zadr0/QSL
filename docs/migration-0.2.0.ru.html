@@ -1,0 +1,73 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css">
+<title>Переход на QSL 0.2.0 — BM v2 и API Rust</title>
+<meta name="description" content="Изменения QSL 0.2.0: новый BM-формат, общие читатели OT, вложенные типы, пользовательские примитивы и удаление Windows-модулей.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/migration-0.2.0.ru.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/migration-0.2.0.ru.html">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/migration-0.2.0.en.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/migration-0.2.0.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="Переход на QSL 0.2.0 — BM v2 и API Rust">
+<meta property="og:description" content="Изменения QSL 0.2.0: новый BM-формат, общие читатели OT, вложенные типы, пользовательские примитивы и удаление Windows-модулей.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/migration-0.2.0.ru.html">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL 0.2.0 — binary serialization for Rust">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Переход на QSL 0.2.0 — BM v2 и API Rust">
+<meta name="twitter:description" content="Изменения QSL 0.2.0: новый BM-формат, общие читатели OT, вложенные типы, пользовательские примитивы и удаление Windows-модулей.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/migration-0.2.0.ru.html#webpage","url":"https://zadr0.github.io/QSL/migration-0.2.0.ru.html","name":"Переход на QSL 0.2.0 — BM v2 и API Rust","description":"Изменения QSL 0.2.0: новый BM-формат, общие читатели OT, вложенные типы, пользовательские примитивы и удаление Windows-модулей.","inLanguage":"ru","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="migration-0.2.0-ru-1">Диспетчеризация optional v2 и нативные регионы</h1>
+<p>Контракт QSL 0.2.0: анализатор qsl-lexer, Rust-генератор qsl-interpreter и переносимый runtime. BM несовместим со старым BM-форматом; остальные описанные режимы сохраняют собственные контракты. Платформенные Windows-модули и Cargo-feature native удалены. Обе стороны обмена обновляются согласованно.</p>
+<h2 id="migration-0.2.0-ru-2">Разделение механизмов</h2>
+<div class="table-scroll"><table><thead><tr><th>Механизм</th><th>Что использует</th><th>Что делает</th></tr></thead><tbody><tr><td>Обычный режим</td><td>Счётчик и теги optional-полей</td><td>Вызывает обработчик через <code>match</code></td></tr><tr><td>BM: <code>optionals=bitmap</code></td><td>Маску присутствия</td><td>Обходит только установленные биты</td></tr><tr><td>OT: <code>opt_table</code></td><td>Проверенный маркер</td><td>Выбирает функцию чтения из таблицы</td></tr><tr><td>PS: <code>predict_seq</code></td><td>Длину payload</td><td>Определяет возможную последовательность optional-полей</td></tr></tbody></table></div>
+<p>QPS остаётся обратимым сжатием на основе операнда. Предсказание к нему не относится. Атрибуты опциональны; обязательные поля должны располагаться перед опциональными. В BM порядок задаёт маска, поэтому PS для него не применяется. OT совместим и с BM, и с PS.</p>
+<h2 id="migration-0.2.0-ru-3">Новый формат BM</h2>
+<p>Количество optional-полей определяет ширину: 0 / 1–8 / 9–16 / 17–32 / 33–64 / 65–128 полей занимают 0 / 1 / 2 / 4 / 8 / 16 байт маски. Обязательные поля в маску не входят. Порядок байтов — little endian. Маркер первого optional-поля равен 1 и расположен в старшем бите.</p>
+<p>Чтение выполняет <code>marker = WIDTH - mask.trailing_zeros()</code> и <code>mask &amp;= mask - 1</code>. Поэтому присутствующие optional-поля читаются в обратном порядке объявления. Запись использует тот же порядок. Обязательные поля сохраняют исходный порядок.</p>
+<pre><code>&amp;P[safety,optionals=bitmap,opt_table,predict_seq] {
+    u8 id;
+    u16? a;
+    u8? b;
+}</code></pre>
+<p>Для <code>id=9, a=Some(0x1234), b=Some(7)</code> кадр равен <code>C0 09 07 34 12</code>: маска, id, b, a. Здесь OT включён, а PS не применяется. Без OT байты те же, но обработчик выбирается через <code>match</code>.</p>
+<p>Это согласованная замена старого BM: обе стороны обмена должны обновиться вместе либо договориться о версии вне кадра. Канонический хэш BM включает ревизию 2 и ширину маски. Хэш не заменяет рукопожатие или аутентификацию. Обычный формат без BM сохраняется: теги находятся в прежнем заголовке, после которого цикл читает соответствующие значения. Теги не переносятся между значениями payload.</p>
+<h2 id="migration-0.2.0-ru-4">Safety и unchecked</h2>
+<p>Для непустой маски до цикла проверяется <code>WIDTH - trailing_zeros(mask) &lt;= optional_count</code>. Это её наибольший маркер: оставшиеся будут меньше. Так отсекаются лишние биты и обосновывается индекс OT. Для пустой маски проверка не нужна. Теговый режим проверяет счётчик, порядок и допустимость тегов.</p>
+<p>Курсор проверяет границы кадра, диапазоны, UTF-8, размер распакованной строки, бюджет восстановленных данных и отсутствие лишнего хвоста. При ошибке <code>deserialize_checked_into</code> не публикует частично заполненный объект. Временные значения уничтожаются обычным образом.</p>
+<p>Unchecked-методы сохранены. Вызывающая сторона обеспечивает корректность кадра, достаточную инициализированную память для регистрового чтения, время жизни и отсутствие недопустимых пересечений. Предварительная проверка другого кадра этих гарантий не даёт.</p>
+<p>Для пользовательского компактного значения читается <code>COMP_SIZE</code>, но бюджет восстановленных данных учитывает <code>SIZE</code>. Массив проверяется по фактической компактной ширине элемента; перед безопасной записью валидируется каждый элемент. Скрытые выделения памяти внутри пользовательского кодека остаются его ответственностью.</p>
+<h2 id="migration-0.2.0-ru-5">Пользовательские примитивы</h2>
+<p>Макрос внедрения полей и полиморфный кодек — разные механизмы. Существующие реализации <code>QslCustom</code> сохраняются. Автоматической замены их формата на встроенный числовой тип нет.</p>
+<p>В общем Rust-модуле приложения и build-скрипта:</p>
+<pre><code>qsl_lexer::qsl_primitive!(pub struct DeviceId(u32);range=(1,100););</code></pre>
+<p>Поддерживаются u8/i8, u16/i16, u32/i32, u64/i64. Макрос проверяет вид числа, размер, выравнивание, смещение поля, отсутствие Drop и допустимость диапазона. Обычный кодек записывает little endian. Компактный кодек хранит ранг <code>value-min</code> минимальным целым количеством байт. Соседние встроенные поля с ним автоматически не объединяются в один регистр. Постоянный диапазон занимает 0 компактных байт; ограничения PS на нулевую ширину optional-кодека сохраняются.</p>
+<pre><code>use qsl_interpreter::prelude::*;
+let builder = QslSchemaBuilder::new()
+    .with_primitive::&lt;DeviceId&gt;(&quot;DeviceId&quot;)?
+    .with_source(&quot;&amp;Packet[safety,compact,optionals=bitmap,opt_table]{DeviceId id;DeviceId? extra;}&quot;)?;
+let rust = builder.use_interpreter()?;</code></pre>
+<p>Регистрация предшествует разбору. Rust проверяет ABI также в приложении через сгенерированные константные утверждения, включая элементы массивов. Зарегистрированный примитив допускается внутри QSL-массива. После импорта Rust-шаблонов метаданные применяются повторно.</p>
+<p>Для использования в нативном регионе приложение отдельно вызывает <code>qsl_lexer::qsl_native_primitive!(DeviceId,u32);</code>. Макрос использует существующий <code>NativeField</code> и проверяет значение до создания безопасного представления. Произвольные ручные <code>unsafe impl</code> остаются обязанностью разработчика: сравнение размеров не доказывает семантику его методов. Широкая автоматическая трансмутация пользовательских типов не добавляется. Вложенная схема внутри кодека имеет собственную область optional-маркеров.</p>
+<h2 id="migration-0.2.0-ru-6">Вложенные структуры регионов</h2>
+<pre><code>&amp;Parent[safety] {
+    #region(aggressive_transmutate=&quot;Meta&quot;);
+    u64 id;
+    u32 value;
+    str(4) tag;
+    #end_region;
+    str(3..10) name;
+}</code></pre>
+<p>Генерируются самостоятельная <code>#[repr(C)] Meta { id:u64, value:u32, tag:[u8;4] }</code> и <code>Parent { Meta:Meta, name:String }</code>. Поля региона не раскрываются обратно в Parent. Старое написание <code>aggresive_transmutate</code> принимается как синоним.</p>
+<p>COPY создаёт собственный объект; при несовпадении native- и wire-layout использует сборку по полям. LIFETIME создаёт ссылку только после проверки размера, смещений, little endian, выравнивания входа и всех значений. Обычный Vec не гарантирует выравнивание произвольной структуры: при нарушении checked-чтение возвращает ошибку. COPY такого выравнивания входного адреса не требует.</p>
+<p>Вложенные регионы создают иерархию типов. Повторные идентичные определения переиспользуются. Конфликты имён, рекурсия, пересекающиеся или пустые регионы, неизвестные native-типы, динамические и optional-поля внутри региона отклоняются. Фиксированные строки представлены <code>[u8;N]</code>; лимит стека действует и для native-строк/массивов. Native-дескриптор допускает до 64 инициализированных листьев, вложенность регионов ограничена 64.</p>
+<p>Rust-шаблон <code>#[qsl::schem_macro(aggressive_transmutate)]</code> сохраняет исходный Rust-тип как вложенное поле без дублирующего определения. Обычные макросы внедрения полей продолжают раскрываться. Явный <code>repr(align(...))</code> учитывается; дополнительный padding может исключить LIFETIME при доступном COPY.</p>
+<h2 id="migration-0.2.0-ru-7">Проверки</h2>
+<p><a href="https://github.com/zadr0/QSL/blob/v0.2.0/qsl-interpreter/tests/optional-v2/README.md">Проверочный проект</a> содержит граничные ширины BM, сравнение match/OT, вложенные индексы, регионы, пользовательские примитивы, массивы, сжатые строки и повреждённые кадры. Узкий Criterion сравнивает только текущую диспетчеризацию; результаты не являются сетевой пропускной способностью или общей оценкой всех схем QSL.</p>
+<p><a href="https://github.com/zadr0/QSL/blob/v0.2.0/qsl-lexer/proofs/README.md">Lean4</a> проверяет арифметическую границу индекса таблицы при явно указанных предпосылках. Доказательства не покрывают указатели Rust, произвольные реализации трейтов и машинный код. Тесты повреждённых кадров также не заменяют полного доказательства безопасности памяти.</p></main><nav id="qsl-language-links" class="footer" aria-label="Documentation languages"><a href="https://zadr0.github.io/QSL/" hreflang="ru">Русский</a> · <a href="https://zadr0.github.io/QSL/en.html" hreflang="en">English</a> · <a href="https://zadr0.github.io/QSL/sitemap.xml">Sitemap</a></nav></body></html>

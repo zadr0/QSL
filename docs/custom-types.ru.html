@@ -1,0 +1,52 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css">
+<title>Примитивы и вложенные структуры QSL для Rust</title>
+<meta name="description" content="QslCustom, проверяемые макросы примитивов, регистрация типов, native-регионы, COPY и LIFETIME в QSL 0.2.0.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/custom-types.ru.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/custom-types.ru.html">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/custom-types.en.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/custom-types.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="Примитивы и вложенные структуры QSL для Rust">
+<meta property="og:description" content="QslCustom, проверяемые макросы примитивов, регистрация типов, native-регионы, COPY и LIFETIME в QSL 0.2.0.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/custom-types.ru.html">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL 0.2.0 — binary serialization for Rust">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Примитивы и вложенные структуры QSL для Rust">
+<meta name="twitter:description" content="QslCustom, проверяемые макросы примитивов, регистрация типов, native-регионы, COPY и LIFETIME в QSL 0.2.0.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/custom-types.ru.html#webpage","url":"https://zadr0.github.io/QSL/custom-types.ru.html","name":"Примитивы и вложенные структуры QSL для Rust","description":"QslCustom, проверяемые макросы примитивов, регистрация типов, native-регионы, COPY и LIFETIME в QSL 0.2.0.","inLanguage":"ru","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="custom-types-ru-1">Пользовательские типы и повторные Rust-структуры</h1>
+<p>QslCustom задаёт точные SIZE и COMP_SIZE, проверки wire-байтов/значений и явные unsafe-методы по указателям. Обе проверки должны подтвердить домен до вызова trusted-кодека из checked-пути. При изменении COMP_SIZE нужны соответствующие compact-чтение и запись: стандартные методы используют обычный кодек. Текстовые массивы допускают встроенные и явно зарегистрированные примитивы.</p>
+<h2 id="custom-types-ru-2">Пользовательские примитивы</h2>
+<p>Макрос внедрения полей и полиморфный кодек — разные механизмы. Существующие реализации <code>QslCustom</code> сохраняются. Автоматической замены их формата на встроенный числовой тип нет.</p>
+<p>В общем Rust-модуле приложения и build-скрипта:</p>
+<pre><code>qsl_lexer::qsl_primitive!(pub struct DeviceId(u32);range=(1,100););</code></pre>
+<p>Поддерживаются u8/i8, u16/i16, u32/i32, u64/i64. Макрос проверяет вид числа, размер, выравнивание, смещение поля, отсутствие Drop и допустимость диапазона. Обычный кодек записывает little endian. Компактный кодек хранит ранг <code>value-min</code> минимальным целым количеством байт. Соседние встроенные поля с ним автоматически не объединяются в один регистр. Постоянный диапазон занимает 0 компактных байт; ограничения PS на нулевую ширину optional-кодека сохраняются.</p>
+<pre><code>use qsl_interpreter::prelude::*;
+let builder = QslSchemaBuilder::new()
+    .with_primitive::&lt;DeviceId&gt;(&quot;DeviceId&quot;)?
+    .with_source(&quot;&amp;Packet[safety,compact,optionals=bitmap,opt_table]{DeviceId id;DeviceId? extra;}&quot;)?;
+let rust = builder.use_interpreter()?;</code></pre>
+<p>Регистрация предшествует разбору. Rust проверяет ABI также в приложении через сгенерированные константные утверждения, включая элементы массивов. Зарегистрированный примитив допускается внутри QSL-массива. После импорта Rust-шаблонов метаданные применяются повторно.</p>
+<p>Для использования в нативном регионе приложение отдельно вызывает <code>qsl_lexer::qsl_native_primitive!(DeviceId,u32);</code>. Макрос использует существующий <code>NativeField</code> и проверяет значение до создания безопасного представления. Произвольные ручные <code>unsafe impl</code> остаются обязанностью разработчика: сравнение размеров не доказывает семантику его методов. Широкая автоматическая трансмутация пользовательских типов не добавляется. Вложенная схема внутри кодека имеет собственную область optional-маркеров.</p>
+<h2 id="custom-types-ru-3">Вложенные структуры регионов</h2>
+<pre><code>&amp;Parent[safety] {
+    #region(aggressive_transmutate=&quot;Meta&quot;);
+    u64 id;
+    u32 value;
+    str(4) tag;
+    #end_region;
+    str(3..10) name;
+}</code></pre>
+<p>Генерируются самостоятельная <code>#[repr(C)] Meta { id:u64, value:u32, tag:[u8;4] }</code> и <code>Parent { Meta:Meta, name:String }</code>. Поля региона не раскрываются обратно в Parent. Старое написание <code>aggresive_transmutate</code> принимается как синоним.</p>
+<p>COPY создаёт собственный объект; при несовпадении native- и wire-layout использует сборку по полям. LIFETIME создаёт ссылку только после проверки размера, смещений, little endian, выравнивания входа и всех значений. Обычный Vec не гарантирует выравнивание произвольной структуры: при нарушении checked-чтение возвращает ошибку. COPY такого выравнивания входного адреса не требует.</p>
+<p>Вложенные регионы создают иерархию типов. Повторные идентичные определения переиспользуются. Конфликты имён, рекурсия, пересекающиеся или пустые регионы, неизвестные native-типы, динамические и optional-поля внутри региона отклоняются. Фиксированные строки представлены <code>[u8;N]</code>; лимит стека действует и для native-строк/массивов. Native-дескриптор допускает до 64 инициализированных листьев, вложенность регионов ограничена 64.</p>
+<p>Rust-шаблон <code>#[qsl::schem_macro(aggressive_transmutate)]</code> сохраняет исходный Rust-тип как вложенное поле без дублирующего определения. Обычные макросы внедрения полей продолжают раскрываться. Явный <code>repr(align(...))</code> учитывается; дополнительный padding может исключить LIFETIME при доступном COPY.</p></main><nav id="qsl-language-links" class="footer" aria-label="Documentation languages"><a href="https://zadr0.github.io/QSL/" hreflang="ru">Русский</a> · <a href="https://zadr0.github.io/QSL/en.html" hreflang="en">English</a> · <a href="https://zadr0.github.io/QSL/sitemap.xml">Sitemap</a></nav></body></html>

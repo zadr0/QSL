@@ -85,6 +85,17 @@ fn bounds(t: &QslType, raw: bool) -> (Option<usize>, Option<usize>) {
             .and_then(|n| n.checked_mul(8)),
     )
 }
+fn wire_fields(s: &QslSchema) -> Vec<&qsl::QslField> {
+    if s.bitmap() {
+        s.fields
+            .iter()
+            .filter(|f| !f.optional)
+            .chain(s.fields.iter().rev().filter(|f| f.optional))
+            .collect()
+    } else {
+        s.fields.iter().collect()
+    }
+}
 pub(super) fn describe(s: &QslSchema) -> String {
     if let Ok(Some(p)) = qsl::hybrid::HybridPlan::analyze(s) {
         return hybrid(s, &p);
@@ -109,7 +120,7 @@ pub(super) fn describe(s: &QslSchema) -> String {
     } else if s.legacy_opt_table() {
         ((1 + 4 * n) * 8, (1 + 4 * n) * 8)
     } else if s.bitmap() {
-        (s.bitmap_words() * 32, s.bitmap_words() * 32)
+        (s.bitmap_width(), s.bitmap_width())
     } else if n == 1 {
         (1, 1)
     } else if n > 1 {
@@ -126,7 +137,7 @@ pub(super) fn describe(s: &QslSchema) -> String {
     );
     let mut rows = Vec::new();
     let mut prior = Vec::new();
-    for (i, f) in s.fields.iter().enumerate() {
+    for (i, f) in wire_fields(s).into_iter().enumerate() {
         let (min, max) = if packed {
             let width = quant.as_ref().unwrap().fields[i].bits;
             (Some(width), Some(width))
@@ -217,7 +228,7 @@ fn hybrid(s: &QslSchema, p: &qsl::hybrid::HybridPlan) -> String {
     } else if tail.legacy_opt_table() {
         ((1 + 4 * optional) * 8, (1 + 4 * optional) * 8)
     } else if tail.bitmap() {
-        (tail.bitmap_words() * 32, tail.bitmap_words() * 32)
+        (tail.bitmap_width(), tail.bitmap_width())
     } else if optional == 1 {
         (8, 8)
     } else if optional > 1 {
@@ -234,7 +245,7 @@ fn hybrid(s: &QslSchema, p: &qsl::hybrid::HybridPlan) -> String {
         graph.as_ref().map(|g| &g.presence),
         Some(qsl::static_optional::StaticPresence::Graph(_))
     );
-    for f in &tail.fields {
+    for f in wire_fields(tail) {
         let (min, max) = bounds(&f.data, f.optional && (raw || tail.state_bits()));
         rows.push(row(
             f,

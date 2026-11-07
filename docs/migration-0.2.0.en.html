@@ -1,0 +1,83 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css">
+<title>Migrating to QSL 0.2.0 — BM v2 and Rust APIs</title>
+<meta name="description" content="QSL 0.2.0 migration: new bitmap format, shared OT readers, nested types, custom primitives and removal of Windows-specific modules.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/migration-0.2.0.en.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/migration-0.2.0.en.html">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/migration-0.2.0.ru.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/migration-0.2.0.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="Migrating to QSL 0.2.0 — BM v2 and Rust APIs">
+<meta property="og:description" content="QSL 0.2.0 migration: new bitmap format, shared OT readers, nested types, custom primitives and removal of Windows-specific modules.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/migration-0.2.0.en.html">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL 0.2.0 — binary serialization for Rust">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Migrating to QSL 0.2.0 — BM v2 and Rust APIs">
+<meta name="twitter:description" content="QSL 0.2.0 migration: new bitmap format, shared OT readers, nested types, custom primitives and removal of Windows-specific modules.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/migration-0.2.0.en.html#webpage","url":"https://zadr0.github.io/QSL/migration-0.2.0.en.html","name":"Migrating to QSL 0.2.0 — BM v2 and Rust APIs","description":"QSL 0.2.0 migration: new bitmap format, shared OT readers, nested types, custom primitives and removal of Windows-specific modules.","inLanguage":"en","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="en.html">QSL</a><h1 id="migration-0.2.0-en-1">Optional dispatch v2 and native regions (0.2.0)</h1>
+<p>QSL 0.2.0 consists of the qsl-lexer frontend, qsl-interpreter Rust backend and portable qsl runtime. Bitmap encoding changes deliberately; peers coordinate migration. Windows-specific sockets/IPC modules, the native Cargo feature and the Windows-library dependency are removed. Native-layout generation remains platform independent.</p>
+<h2 id="migration-0.2.0-en-2">Three separate mechanisms</h2>
+<div class="table-scroll"><table><thead><tr><th>Mechanism</th><th>Input</th><th>Purpose</th><th>Ordering</th></tr></thead><tbody><tr><td>Default</td><td>Optional count and tags</td><td>Dispatch through a generated <code>match</code></td><td>Existing ascending tag order</td></tr><tr><td>BM, <code>optionals=bitmap</code></td><td>Native-width presence mask</td><td>Visit set bits only</td><td>Descending optional marker</td></tr><tr><td>OT, <code>opt_table</code></td><td>A validated marker</td><td>Select a generated reader function</td><td>Follows the active format</td></tr><tr><td>PS, <code>predict_seq</code></td><td>Payload length</td><td>Select a possible presence sequence</td><td>Independent of OT; disabled when BM is active</td></tr></tbody></table></div>
+<p>QPS is operand-based reversible compression. It does not predict optional fields. None of BM, OT or PS enables QPS implicitly. Optimization attributes remain opt-in; required fields must precede optional fields.</p>
+<h2 id="migration-0.2.0-en-3">Bitmap wire revision 2</h2>
+<p>Width depends on the number of optional fields, not all fields: 0 / 1–8 / 9–16 / 17–32 / 33–64 / 65–128 fields use 0 / 1 / 2 / 4 / 8 / 16 bytes. The word is little endian. Optional marker 1 occupies bit <code>WIDTH-1</code>. Required fields do not occupy bits. A schema supports at most 128 optional fields in BM mode.</p>
+<p>The reader uses <code>marker = WIDTH - mask.trailing_zeros()</code> and <code>mask &amp;= mask - 1</code>. Thus the last declared present optional field is read first. The writer emits optional values in that same order; required fields retain declaration order. There is no per-absent-field iteration.</p>
+<pre><code>&amp;P[safety,optionals=bitmap,opt_table,predict_seq] {
+    u8 id;
+    u16? a;
+    u8? b;
+}</code></pre>
+<p>For <code>id=9, a=Some(0x1234), b=Some(7)</code> the bytes are <code>C0 09 07 34 12</code>: mask, id, b, a. PS is inactive for this schema; OT is active. Without OT the same markers select a <code>match</code>, with identical bytes.</p>
+<p><strong>Migration:</strong> this intentionally replaces the previous bitmap format. Old and new BM peers must be upgraded together or negotiated outside the frame. BM canonical schema identity includes revision 2 and its width; toggling inactive PS or OT does not change those bytes. A schema hash is not a protocol handshake or an authentication check.</p>
+<p>Non-BM count/tag headers are preserved: tags are read from the existing metadata header, then a dynamic loop dispatches their values. Tags are not moved between payload values. One optional field keeps its existing one-bit presence header. Expanded or manually constructed schemas retain absolute tag semantics; dense optional ordinals are an internal dispatch detail.</p>
+<h2 id="migration-0.2.0-en-4">Safety and trusted entry points</h2>
+<p>For a nonzero BM, the checked path validates its largest marker before traversal. <code>WIDTH - trailing_zeros(mask) &lt;= optional_count</code> rejects spare aligned bits. Every later marker is smaller, so a dense OT lookup is within bounds. Zero masks skip this check. Tagged input validates count, strictly increasing tags and membership before dispatch. A checked cursor then verifies field bounds, ranges, UTF-8, compressed output size, restored-data budget and end of frame.</p>
+<p><code>deserialize_checked</code>, <code>deserialize_checked_into</code>, <code>validate</code>, and checked serialization retain their contracts. A failed checked-into call does not publish a partially initialized destination. Materialized temporary fields are dropped on failure. Custom codecs must implement their existing validators; opaque validators reject safe decoding by default.</p>
+<p>Unchecked <code>Serializable</code> / <code>BorrowSerializable</code> and raw destination entry points remain available. Their caller must provide a valid schema-specific frame, enough initialized storage for any documented register loads, correct lifetimes and aliasing. They do not become safe because another frame was previously validated.</p>
+<p>The checked restored-data budget charges a compact custom value&#x27;s <code>SIZE</code>, while consuming <code>COMP_SIZE</code> wire bytes. Custom arrays check their associated compact width before allocation and validate each element before checked writing. A custom codec&#x27;s own hidden allocations remain its responsibility.</p>
+<h2 id="migration-0.2.0-en-5">One optional reader, several dispatchers</h2>
+<p>BM and ordinary tagged paths generate one cursor reader per optional field. OT contains those readers in optional-marker order. Default <code>match</code> calls the same readers. PS+OT reuses the existing PS-compatible OT handlers instead of copying their decode body into each predicted sequence. Checked and unchecked readers are separate implementations because their contracts differ. Validation-only walks may emit their own field checks; this is not a claim that every machine instruction occurs once in the final binary.</p>
+<h2 id="migration-0.2.0-en-6">Explicit scalar wrapper macros</h2>
+<p>A schema field-expansion macro and a scalar serialization contract serve different purposes. Existing user <code>QslCustom</code> codecs remain opaque and retain their byte format. They are not automatically reinterpreted as integers.</p>
+<p>In a Rust module shared by the application and build script:</p>
+<pre><code>qsl_lexer::qsl_primitive!(pub struct DeviceId(u32);range=(1,100););</code></pre>
+<p>Or bind an existing one-field integer tuple struct:</p>
+<pre><code>#[repr(transparent)]
+#[derive(Clone, Copy)]
+pub struct DeviceId(pub u32);
+qsl_lexer::qsl_primitive!(DeviceId,u32,range=(1,100));</code></pre>
+<p>Supported representations: u8/i8, u16/i16, u32/i32 and u64/i64. The macro checks integer kind, size, alignment, field-zero offset, absence of Drop and domain bounds. It constructs values with typed Rust constructors. Normal encoding is little endian; compact encoding stores <code>value-min</code> in the minimum whole-byte width for the declared domain. This is byte-oriented custom compression, not automatic bit merging with neighboring built-in fields. A constant domain occupies zero compact bytes. Existing PS restrictions on zero-width optional codecs still apply.</p>
+<p>Register the same type before parsing:</p>
+<pre><code>use qsl_interpreter::prelude::*;
+let builder = QslSchemaBuilder::new()
+    .with_primitive::&lt;DeviceId&gt;(&quot;DeviceId&quot;)?
+    .with_source(&quot;&amp;Packet[safety,compact,optionals=bitmap,opt_table]{DeviceId id;DeviceId? extra;}&quot;)?;
+let rust = builder.use_interpreter()?;</code></pre>
+<p>Registration checks build-side ABI and retains normal custom width. Generated const assertions check target-side size, alignment, Drop and codec widths, including array elements. Primitive metadata is reapplied after explicit Rust-template imports. Registered primitives can also appear as QSL array elements; unregistered opaque array elements are rejected by the source parser.</p>
+<p>For native regions, the application additionally opts into the existing runtime contract:</p>
+<pre><code>qsl_lexer::qsl_native_primitive!(DeviceId,u32);</code></pre>
+<p>The native macro validates scalar values before creating a checked view. Manual <code>unsafe impl QslPrimitive</code> / <code>NativeField</code> remains an explicit responsibility: layout checks cannot prove arbitrary Rust method semantics. No general user-type transmute or automatic merged-register kernel is introduced. Nested optional schemas inside a custom codec keep their own masks and marker scope.</p>
+<h2 id="migration-0.2.0-en-7">Real nested native regions</h2>
+<pre><code>&amp;Parent[safety] {
+    #region(aggressive_transmutate=&quot;Meta&quot;);
+    u64 id;
+    u32 value;
+    str(4) tag;
+    #end_region;
+    str(3..10) name;
+}</code></pre>
+<p>This produces <code>#[repr(C)] Meta { id:u64, value:u32, tag:[u8;4] }</code> and <code>Parent { Meta:Meta, name:String }</code>. Region fields are not flattened into Parent. The historical <code>aggresive_transmutate</code> spelling is accepted as an alias.</p>
+<p>COPY owns the nested object and falls back to field reconstruction where native and wire layouts differ. LIFETIME borrows a typed region only when wire/native sizes and field offsets match, the host is little endian, input alignment is sufficient, and all field validators succeed. An ordinary Vec buffer does not promise alignment for arbitrary native types; misaligned checked borrowing returns an error. COPY does not require borrowed-input alignment.</p>
+<p>Nested regions produce a type hierarchy. Identical definitions are reused; conflicting names, crossed/empty regions, recursive names, unknown native types, dynamic fields and optional fields inside native regions are rejected. Fixed strings use byte arrays. The configured stack limit applies to native string/array fields too. Native descriptors support at most 64 initialized leaves; numeric arrays use their existing coalesced leaf representation. Region nesting is capped at 64.</p>
+<p>A Rust <code>#[qsl::schem_macro(aggressive_transmutate)]</code> template reuses its existing Rust type as a nested field; the generator does not emit a duplicate struct. Ordinary field-expansion macros keep their previous flattening behavior. Explicit <code>repr(align(...))</code> is accounted for; extra padding can make LIFETIME unavailable while COPY remains usable.</p>
+<h2 id="migration-0.2.0-en-8">Evidence and limits</h2>
+<p>See the standalone <a href="https://github.com/zadr0/QSL/blob/v0.2.0/qsl-interpreter/tests/optional-v2/README.md">test harness</a>, the <a href="https://github.com/zadr0/QSL/blob/v0.2.0/qsl-lexer/proofs/README.md">Lean arithmetic proofs</a>, and the focused benchmark report produced by that harness. Lean proves arithmetic index bounds under documented integer assumptions; it does not prove Rust pointer provenance, user trait promises, allocator behavior or generated assembly. Passing deterministic malformed-frame tests is not an exhaustive memory-safety proof.</p></main><nav id="qsl-language-links" class="footer" aria-label="Documentation languages"><a href="https://zadr0.github.io/QSL/" hreflang="ru">Русский</a> · <a href="https://zadr0.github.io/QSL/en.html" hreflang="en">English</a> · <a href="https://zadr0.github.io/QSL/sitemap.xml">Sitemap</a></nav></body></html>

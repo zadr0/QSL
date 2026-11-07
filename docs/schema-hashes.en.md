@@ -76,3 +76,7 @@ Get-Content examples/schema-hashes/packet.qsl -Raw | ./qsl/target/release/qsl-an
 ```
 
 Tests pin both algorithms' golden digests, check excluded settings and included format changes, expand nested templates, merge independent DEQ settings and repeat native analysis across processes. A separate fixture compiles owned/borrowed/QPS/RT output and compares real frames when switching hash width. No benchmark timings were added: hot I/O implementations are unchanged.
+
+## Bitmap revision 2
+
+BM canonical descriptors include revision 2 and mask width. Required fields no longer occupy bits; traversal is descending optional marker order. OT and BM-inactive PS are code-generation policies and do not alter that identity. Native/custom type identities remain incomplete when their independent codec semantics are opaque. Hashes do not negotiate versions or prove collision-free compatibility. [Migration](migration-0.2.0.en.md).

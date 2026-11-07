@@ -301,6 +301,10 @@ fn descriptor(schema: &QslSchema, kind: SchemaHashKind) -> QslResult<(Vec<u8>, b
         0
     };
     d.byte(mode);
+    if schema.bitmap() {
+        d.byte(2);
+        d.size(schema.bitmap_width())?;
+    }
     if let Some(h) = &hybrid {
         d.size(h.prefix.fields.len())?;
         d.size(h.prefix_bytes)?;

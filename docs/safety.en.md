@@ -32,3 +32,7 @@ The safety attribute does not disable unsafe reads. Native COPY/LIFETIME and reg
 
 
 An input LZ block length does not authorize a decoded size. Each run is checked against actual restored bytes, destination capacity and shared MAX_DATA_SIZE before reserve/writes. Forged lengths, MAX+1 expansion, truncated literal/offset data and invalid backreferences are rejected; unchecked APIs remain separate.
+
+## BM and polymorphic values
+
+BM checks its maximum marker before traversal when spare bits exist; all later OT indices are bounded. Compact custom values charge SIZE to the restored-data budget, not COMP_SIZE. Array elements are validated before checked writes. Native views validate all values and alignment before creating a reference. Unchecked APIs remain explicit. [Full 0.2.0 contract](migration-0.2.0.en.md).

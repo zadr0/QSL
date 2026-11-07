@@ -20,10 +20,10 @@ and build dependencies.
 
 ```toml
 [dependencies]
-qsl = "=0.1.2"
+qsl = "=0.2.0"
 
 [build-dependencies]
-qsl = "=0.1.2"
+qsl = "=0.2.0"
 ```
 
 ### 2. user.qsl
@@ -110,11 +110,10 @@ predict_seq and opt_table are independent mechanisms and may be combined.
 | Feature | Purpose |
 |---|---|
 | rust-macros | Import marked Rust definitions during schema analysis |
-| native | Windows native memory and socket support |
 | diagnostics | Diagnostic checked cursor APIs |
 
 The attributes qsl::qsl_macro and qsl::schem_macro are re-exported by qsl.
-During the 0.1 series, coordinate API and wire choices explicitly.
+During the pre-1.0 series, coordinate API and wire choices explicitly.
 
 [Complete English guide](https://github.com/zadr0/QSL/blob/main/docs/guide.en.md)
 · [Architecture](https://github.com/zadr0/QSL/blob/main/docs/architecture.en.md)
@@ -125,9 +124,9 @@ During the 0.1 series, coordinate API and wire choices explicitly.
 [MIT license](https://github.com/zadr0/QSL/blob/main/LICENSE).
 
 
-## Compiler crates in 0.1.2
+## Compiler crates in 0.2.0
 
-The compiler is separated into `qsl-lexer` (source collection and analysis) and `qsl-interpreter` (Rust generation). `qsl` retains runtime I/O and compatible public imports. The facade is released as qsl 0.1.2; the standalone compiler crates start at version 0.1.0.
+The compiler is separated into `qsl-lexer` (source collection and analysis) and `qsl-interpreter` (Rust generation). `qsl` retains runtime I/O and compatible public imports. The facade and both compiler crates are version 0.2.0. The unchanged procedural implementation crate remains at 0.1.0.
 
 One `QslSchemaBuilder` owns the schemas and DEQ settings. Backends borrow this data through `SchemaBackend`; each backend owns its output and error types. Import the extension trait to choose Rust generation:
 
@@ -144,3 +143,27 @@ For files, `build_qsl_schem("schemas")?` collects sorted QSL/DEQ files without g
 The shared schema collection stays unchanged. Rust storage and overlay lowering belong to the Rust backend. A future LLVM crate can implement the same backend trait and add `use_llvm()` independently. LLVM generation is not implemented, and Rust-specific custom codecs require an explicit target ABI mapping.
 
 Existing `QslInterpreter::generate`, `generate_parsed`, `prepare_schemas`, `generate_prepared`, `build_qsl_files`, error types and import paths remain available. `AnalyzedModule` names the same collection as `QslSchemaBuilder`. The parser shares `Lexer`'s scanner, and `PreparedModule` describes Rust-target preparation.
+
+## Platform-independent runtime in 0.2.0
+
+The Windows-specific native socket and IPC-region modules, the `native` Cargo feature and the `windows-sys` dependency have been removed. `Serializable::serialize` and `BorrowSerializable::serialize` consistently return `Vec<u8>`; `serialize_to` accepts a byte slice. `SerOut` remains a platform-independent aligned buffer, and native-layout COPY/LIFETIME generation remains available. This is an API change from the removed native feature; the former default Vec/slice API is preserved.
+
+## Optional dispatch and schema migration
+
+0.2.0 changes bitmap encoding: only optional fields have bits, with a little-endian u8/u16/u32/u64/u128 selected by optional count. Marker 1 is the most significant bit; the set-bit loop reads present optionals in descending marker order. Old BM frames require coordinated peer migration. Ordinary count/tag headers are unchanged. `opt_table` chooses reader functions; `predict_seq` derives presence from length and is inactive under BM.
+
+```qsl
+&Packet[safety,optionals=bitmap,opt_table] { u64 id; u16? a; u8? b; }
+```
+
+A named `aggressive_transmutate` region produces a real nested Rust type and parent field. Checked COPY and aligned LIFETIME validate before exposing values; explicit unchecked methods remain available.
+
+## Explicit custom scalar wrappers
+
+```rust
+qsl::qsl_primitive!(pub struct DeviceId(u32);range=(1,100););
+use qsl::QslCustom;
+assert!(DeviceId(0).qsl_validate_values().is_err());
+```
+
+The macro checks an integer tuple wrapper's representation and domain, retains QslCustom hooks and supplies a compact whole-byte rank codec. Register the same type with `QslSchemaBuilder::new().with_primitive::<DeviceId>("DeviceId")?` before `.with_source(...)`. For native regions, explicitly opt into `qsl::qsl_native_primitive!(DeviceId,u32);`. Arbitrary user codecs are not automatically reinterpreted or merged into scalar register groups. [Complete migration and constraints](https://github.com/zadr0/QSL/blob/v0.2.0/docs/migration-0.2.0.en.md).

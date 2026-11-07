@@ -1,3 +1,5 @@
+> **0.2.0:** [current contracts](migration-0.2.0.en.md). Timing tables below retain their captured historical sources. The [November 7 pass](../qsl-interpreter/tests/optional-v2/results/2026-11-07.md) is not accepted as a strict result; it establishes no speedup.
+
 # QSL: mathematics and physical cost
 
 [Русский](mathematics.ru.md) · [Guide](guide.en.md) · [Charts](index.html#measurements)
@@ -58,3 +60,11 @@ cargo test --manifest-path qsl/Cargo.toml --test qps_bytes_vectors --features na
 # In proofs/ with the pinned Lean toolchain:
 lake env lean QPS.lean
 ```
+
+## BM v2 and custom rank bounds
+
+For N optional fields choose W in {8,16,32,64,128}. Marker i (1<=i<=N) occupies 1<<(W-i). For a nonzero mask, m=W-ctz(mask) is the largest present marker. If m<=N, then 0<=m-1<N; clearing the least-significant set bit can only decrease the next marker. This is the arithmetic bound behind a single spare-bit check and subsequent dense OT lookups. N=0 has no mask. [Lean assumptions](../qsl-lexer/proofs/README.md).
+
+A scalar wrapper domain [a,b] uses rank r=x-a. Let B=bit_length(b-a) and k=ceil(B/8). Its custom compact codec stores k bytes; decode checks r<=b-a before constructing x=a+r. B=0 restores a constant without value bytes. Optional presence remains separate. This exact whole-byte codec does not imply automatic bit merging with neighboring fields.
+
+P=M/T uses original useful bytes, not encoded bytes or buffer capacity. For T in [low,high], P lies in [M/high,M/low]. A wide interval or loaded CPU cannot establish a speedup by choosing a favorable point estimate.

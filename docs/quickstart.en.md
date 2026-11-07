@@ -22,10 +22,10 @@ and build dependencies.
 
 ```toml
 [dependencies]
-qsl = "=0.1.2"
+qsl = "=0.2.0"
 
 [build-dependencies]
-qsl = "=0.1.2"
+qsl = "=0.2.0"
 ```
 
 ### 2. user.qsl
@@ -125,3 +125,5 @@ During the 0.1 series, coordinate API and wire choices explicitly.
 · [Source](https://github.com/zadr0/QSL)
 
 [MIT license](https://github.com/zadr0/QSL/blob/main/LICENSE).
+
+[0.2.0 migration and removed native feature](migration-0.2.0.en.md).

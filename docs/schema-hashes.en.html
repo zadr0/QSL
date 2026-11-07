@@ -1,4 +1,29 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><title>QSL · schema-hashes · EN</title><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css"></head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="schema-hashes-en-1">QSL schema identity</h1>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css">
+<title>QSL schema hashes — strict and light identities</title>
+<meta name="description" content="Deterministic QSL schema identities: xxHash, xxHash128, field order, BM v2 and the limits of hash-based compatibility checks.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/schema-hashes.en.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/schema-hashes.en.html">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/schema-hashes.ru.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/schema-hashes.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="QSL schema hashes — strict and light identities">
+<meta property="og:description" content="Deterministic QSL schema identities: xxHash, xxHash128, field order, BM v2 and the limits of hash-based compatibility checks.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/schema-hashes.en.html">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL 0.2.0 — binary serialization for Rust">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="QSL schema hashes — strict and light identities">
+<meta name="twitter:description" content="Deterministic QSL schema identities: xxHash, xxHash128, field order, BM v2 and the limits of hash-based compatibility checks.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/schema-hashes.en.html#webpage","url":"https://zadr0.github.io/QSL/schema-hashes.en.html","name":"QSL schema hashes — strict and light identities","description":"Deterministic QSL schema identities: xxHash, xxHash128, field order, BM v2 and the limits of hash-based compatibility checks.","inLanguage":"en","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="en.html">QSL</a><h1 id="schema-hashes-en-1">QSL schema identity</h1>
 <p><a href="schema-hashes.ru.html">Русский</a></p>
 <p>QSL computes two hashes while analyzing the fully expanded schema. Generated Rust contains literal constants. Reading and writing do not hash a schema, allocate hashing storage, or insert a digest into a record.</p>
 <pre><code>!config USE_HASH = xxHash;    // default: XXH3-64</code></pre>
@@ -33,4 +58,6 @@ let light: u128 = Packet::SCHEMA_HASH_LIGHT;
 cargo test --manifest-path reference/schema-hash-control/Cargo.toml --locked
 cargo build --manifest-path qsl/Cargo.toml --locked --release --bin qsl-analyze --features rust-macros
 Get-Content examples/schema-hashes/packet.qsl -Raw | ./qsl/target/release/qsl-analyze.exe --generate examples/schema-hashes/schema.deq</code></pre>
-<p>Tests pin both algorithms&#x27; golden digests, check excluded settings and included format changes, expand nested templates, merge independent DEQ settings and repeat native analysis across processes. A separate fixture compiles owned/borrowed/QPS/RT output and compares real frames when switching hash width. No benchmark timings were added: hot I/O implementations are unchanged.</p></main></body></html>
+<p>Tests pin both algorithms&#x27; golden digests, check excluded settings and included format changes, expand nested templates, merge independent DEQ settings and repeat native analysis across processes. A separate fixture compiles owned/borrowed/QPS/RT output and compares real frames when switching hash width. No benchmark timings were added: hot I/O implementations are unchanged.</p>
+<h2 id="schema-hashes-en-8">Bitmap revision 2</h2>
+<p>BM canonical descriptors include revision 2 and mask width. Required fields no longer occupy bits; traversal is descending optional marker order. OT and BM-inactive PS are code-generation policies and do not alter that identity. Native/custom type identities remain incomplete when their independent codec semantics are opaque. Hashes do not negotiate versions or prove collision-free compatibility. <a href="migration-0.2.0.en.html">Migration</a>.</p></main><nav id="qsl-language-links" class="footer" aria-label="Documentation languages"><a href="https://zadr0.github.io/QSL/" hreflang="ru">Русский</a> · <a href="https://zadr0.github.io/QSL/en.html" hreflang="en">English</a> · <a href="https://zadr0.github.io/QSL/sitemap.xml">Sitemap</a></nav></body></html>

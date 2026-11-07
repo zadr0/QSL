@@ -11,7 +11,7 @@ def inline(s):
  s=html.escape(s);s=re.sub(r'`([^`]+)`',r'<code>\1</code>',s);s=re.sub(r'\*\*(.+?)\*\*',r'<strong>\1</strong>',s)
  def link(m):
   href=m[2]
-  if re.search(r'(guide|features|architecture|API|performance|opt-table-control|mathematics|safety|schema-hashes|examples|optional-modes|MODERNIZATION|quickstart)\.(ru|en)\.md$',href):href=href[:-3]+'.html'
+  if re.search(r'(guide|features|architecture|API|performance|opt-table-control|mathematics|safety|schema-hashes|examples|optional-modes|MODERNIZATION|quickstart|migration-0\.2\.0|custom-types)\.(ru|en)\.md$',href):href=href[:-3]+'.html'
   return '<a href="'+href+'">'+m[1]+'</a>'
  return re.sub(r'\[([^\]]+)\]\(([^)]+)\)',link,s)
 def render(source,prefix):
@@ -52,7 +52,7 @@ for lang in ['ru','en']:
  content,toc=render((docs/f'guide.{lang}.md').read_text(encoding='utf-8'),'guide-'+lang)
  books.append(f'<article class="book locale" data-locale="{lang}"'+(' hidden'if lang=='en'else'')+'>'+content+'</article>')
  nav.append(f'<div class="doc-nav locale" data-locale="{lang}"'+(' hidden'if lang=='en'else'')+'>'+''.join(f'<a href="#{id}">{html.escape(title)}</a>'for id,title in toc)+'</div>')
-head='<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><title>QSL · '+t('project')+'</title><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css"></head><body>'
+head='<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><title>QSL 0.2.0 · '+t('project')+'</title><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css"></head><body>'
 body=f'''<header class="top"><a class="brand" href="#overview">QSL</a><small data-t="project">{t('project')}</small><span class="spacer"></span><button data-lang="ru" aria-pressed="true">RU</button><button data-lang="en" aria-pressed="false">EN</button></header><div class="shell"><aside class="sidebar"><a href="#overview" data-t="overview">{t('overview')}</a><a href="#measurements" data-t="measurements">{t('measurements')}</a><a href="#qps-demo" data-t="quantDemo">{t('quantDemo')}</a><a href="#event-demo" data-t="eventDemo">{t('eventDemo')}</a><a href="#api" data-t="api">{t('api')}</a><a href="#history" data-t="history">{t('history')}</a><div class="sep"></div><h2 data-t="guide">{t('guide')}</h2>{''.join(nav)}</aside><main class="content">
 <section id="overview" class="hero"><div class="eyebrow">QSL / RUST</div><h1 data-t="hero">{t('hero')}</h1><p data-t="lead">{t('lead')}</p><div class="actions"><a data-doc="guide" href="guide.ru.html" data-t="guide">{t('guide')}</a><a data-doc="features" href="features.ru.html" data-t="download">{t('download')}</a><a href="../SOURCE_AUDIT.md" data-t="audit">{t('audit')}</a></div><div class="cards"><div class="card"><strong data-t="cardSchema">{t('cardSchema')}</strong><p data-t="cardSchemaText">{t('cardSchemaText')}</p></div><div class="card"><strong data-t="cardMemory">{t('cardMemory')}</strong><p data-t="cardMemoryText">{t('cardMemoryText')}</p></div><div class="card"><strong data-t="cardCodec">{t('cardCodec')}</strong><p data-t="cardCodecText">{t('cardCodecText')}</p></div></div><pre><code>&amp;Message[safety,opt_table] {{
     u32 id;
@@ -67,7 +67,7 @@ body=f'''<header class="top"><a class="brand" href="#overview">QSL</a><small dat
 <section id="event-demo" class="panel"><h2 data-t="eventDemo">{t('eventDemo')}</h2><p data-t="eventNote">{t('eventNote')}</p><div class="controls"><label><span data-t="presentA">{t('presentA')}</span><input id="event-a" type="checkbox" checked></label><label><span data-t="presentB">{t('presentB')}</span><input id="event-b" type="checkbox"></label></div><div class="output" id="event-result"></div><div class="kv"><div><span data-t="forced">{t('forced')}</span><strong id="event-forced"></strong></div><div><span data-t="possible">{t('possible')}</span><strong id="event-possible"></strong></div></div></section>
 <section id="full-guide"><h2 data-t="guide">{t('guide')}</h2>{''.join(books)}</section>
 <section id="api"><h2 data-t="api">{t('api')}</h2><div class="controls"><input id="api-query" type="search" aria-label="API search"></div><p id="api-count" class="note"></p><div id="api-results" class="api-list"></div><p class="note" data-t="sourceNote">{t('sourceNote')}</p><a data-doc="API" href="API.ru.html" data-t="api">{t('api')}</a></section>
-<section id="history"><a id="control"></a><h2 data-t="history">{t('history')}</h2><p class="note" data-t="historyNote">{t('historyNote')}</p><p><a data-doc="opt-table-control" href="opt-table-control.ru.html">default / opt_table · N=1/2/3/5/10</a> · <a data-doc="performance" href="performance.ru.html">Scalar QPS / opt_table</a></p></section><footer class="footer">QSL · <a href="https://github.com/zadr0/QSL">GitHub</a> · <a href="https://github.com/zadr0/QSL-Extension">Zed</a></footer></main></div>'''
+<section id="history"><a id="control"></a><h2 data-t="history">{t('history')}</h2><p class="note" data-t="historyNote">{t('historyNote')}</p><p><a data-doc="opt-table-control" href="opt-table-control.ru.html">default / opt_table · N=1/2/3/5/10</a> · <a data-doc="performance" href="performance.ru.html">Scalar QPS / opt_table</a></p></section><footer class="footer">QSL 0.2.0 · <a href="https://github.com/zadr0/QSL">GitHub</a> · <a href="https://github.com/zadr0/QSL-Extension">Zed</a></footer></main></div>'''
 body=body.replace('<div class="actions"><a data-doc="guide"', '<p data-t="heroScope">'+t('heroScope')+'</p><div class="hero-rail"><code>schema.qsl</code><span aria-hidden="true">→</span><code>qsl_gen.rs</code><span aria-hidden="true">→</span><code>application</code><span aria-hidden="true">→</span><code>frame</code></div><div class="actions"><a href="#layout-lab" data-t="openLab">'+t('openLab')+'</a><a data-doc="guide"',1)
 # Interactive, concrete models supplement the measured data without estimating timings.
 fragment=(docs/'assets/explorers.html').read_text(encoding='utf-8')
@@ -86,25 +86,29 @@ body=body.replace('<section id="full-guide">',modes_notice+'<section id="full-gu
 body=body.replace('<section id="full-guide">',examples_notice+'<section id="full-guide">',1)
 body=body.replace('<section id="full-guide">',notice+'<section id="full-guide">',1)
 body=body.replace('<section id="full-guide">','<section id="full-guide" class="reading-intro"><h3 data-t="guideRoute"></h3><p data-t="guideRouteText"></p>')
-modern_notice='<section class="panel"><h2>QSL · 06.11.2026</h2><p class="locale" data-locale="ru"><strong>Строгий STACK_LIMIT · однопроходное checked-чтение · native COPY/LIFETIME</strong><br>QPS — только самостоятельные числа; строки и длины не квантуются. <a href="modernization-2026-11-06/MODERNIZATION.ru.html">Новый контракт и миграция</a> · <a href="../qsl-bench/modernization/report.html">4 Criterion-случая от 6 ноября и кардиограммы</a>. Старые таблицы ниже сохраняют свои снимки.</p><p class="locale" data-locale="en" hidden><strong>Strict STACK_LIMIT · single-pass checked reads · native COPY/LIFETIME</strong><br>QPS packs scalar numbers only; strings and lengths are not quantized. <a href="modernization-2026-11-06/MODERNIZATION.en.html">Current contract and migration</a> · <a href="../qsl-bench/modernization/report.html">4 Criterion cases from November 6 and sample traces</a>. Historical tables below retain their snapshots.</p></section>'
+modern_notice='<section class="panel"><p class="locale" data-locale="ru"><strong>Измерения ниже — исторические снимки.</strong> Прогон 7 ноября не принят как строгий: загрузка CPU 27–64%. Ускорение 0.2.0 не заявляется. <a href="../qsl-interpreter/tests/optional-v2/results/2026-11-07.md">Данные</a>.</p><p class="locale" data-locale="en" hidden><strong>Measurements below retain historical source snapshots.</strong> The November 7 pass is not accepted as strict: CPU 27–64%. No 0.2.0 speedup is claimed. <a href="../qsl-interpreter/tests/optional-v2/results/2026-11-07.md">Data</a>.</p></section>'
 body=body.replace('<section id="overview"',modern_notice+'<section id="overview"',1)
-release_notice='<section class="panel"><h2>QSL 0.1.2</h2><p class="locale" data-locale="ru">Пакет на crates.io · Rust 1.98+. <a href="quickstart.ru.html">Установка и первый запуск</a> · <a href="https://crates.io/crates/qsl">crates.io</a>. Документация пакета — на английском, руководство проекта доступно на RU/EN.</p><p class="locale" data-locale="en" hidden>Available on crates.io · Rust 1.98+. <a href="quickstart.en.html">Installation and first run</a> · <a href="https://crates.io/crates/qsl">crates.io</a>. Package documentation is English; repository guides are available in RU/EN.</p></section>'
+release_notice='<section class="panel"><h2>QSL 0.2.0</h2><p class="locale" data-locale="ru"><strong>BM v2 · вложенные регионы · проверяемые примитивы</strong><br>Три крейта 0.2.0; документация пакетов — English. Windows native-модули и feature удалены. <a href="quickstart.ru.html">Установка</a> · <a href="migration-0.2.0.ru.html">Переход и ограничения</a> · <a href="https://github.com/zadr0/QSL/releases/tag/v0.2.0">Release и файлы</a>.</p><p class="locale" data-locale="en" hidden><strong>BM v2 · nested regions · validating primitives</strong><br>Three 0.2.0 crates; English package documentation. Windows native modules and feature are removed. <a href="quickstart.en.html">Install</a> · <a href="migration-0.2.0.en.html">Migration and limits</a> · <a href="https://github.com/zadr0/QSL/releases/tag/v0.2.0">Release and downloads</a>.</p></section>'
 body=body.replace(modern_notice,release_notice+modern_notice,1)
 
+
+body=body.replace('<section id="measurements">',(docs/'assets/bitmap.html').read_text(encoding='utf-8')+'<section id="measurements">',1)
+
+body=body.replace('<a href="#measurements"','<a href="#bitmap-v2">BM v2</a><a href="#measurements"',1)
 
 # Initial explanatory copy is visible even before script execution.
 body=re.sub(r'(<([a-z0-9]+)\b[^>]*\bdata-t="([^"]+)"[^>]*>)(</\2>)',lambda m:m[1]+t(m[3])+m[4],body)
 
 def embed(id,value):return '<script type="application/json" id="'+id+'">'+json.dumps(value,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c')+'</script>'
 dashboard=json.loads((docs/'data/features.json').read_text());dashboard['rows']+=json.loads((docs/'data/history-comparable.json').read_text())['rows']
-page=head+body+embed('feature-data',dashboard)+embed('api-data',json.loads((docs/'data/api.json').read_text()))+embed('words',words)+embed('group-notes',json.loads((docs/'data/full-group-notes.json').read_text()))+'<script src="assets/full.js"></script><script src="assets/explorers.js"></script></body></html>'
+page=head+body+embed('feature-data',dashboard)+embed('api-data',json.loads((docs/'data/api.json').read_text()))+embed('words',words)+embed('group-notes',json.loads((docs/'data/full-group-notes.json').read_text()))+'<script src="assets/full.js"></script><script src="assets/explorers.js"></script><script src="assets/bitmap.js"></script></body></html>'
 (docs/'index.html').write_text(page,encoding='utf-8',newline='\n')
-css=(docs/'assets/full.css').read_text();js=(docs/'assets/full.js').read_text();(docs/'QSL_standalone_RU_EN.html').write_text(page.replace('<link rel="stylesheet" href="assets/full.css">','<style>'+css+'</style>').replace('<script src="assets/full.js"></script>','<script>'+js+'</script>').replace('<link rel="stylesheet" href="assets/explorers.css">','<style>'+(docs/'assets/explorers.css').read_text()+'</style>').replace('<script src="assets/explorers.js"></script>','<script>'+(docs/'assets/explorers.js').read_text()+'</script>'),encoding='utf-8',newline='\n')
+css=(docs/'assets/full.css').read_text();js=(docs/'assets/full.js').read_text();(docs/'QSL_standalone_RU_EN.html').write_text(page.replace('<link rel="stylesheet" href="assets/full.css">','<style>'+css+'</style>').replace('<script src="assets/full.js"></script>','<script>'+js+'</script>').replace('<link rel="stylesheet" href="assets/explorers.css">','<style>'+(docs/'assets/explorers.css').read_text()+'</style>').replace('<script src="assets/explorers.js"></script>','<script>'+(docs/'assets/explorers.js').read_text()+'</script>').replace('<script src="assets/bitmap.js"></script>','<script>'+(docs/'assets/bitmap.js').read_text()+'</script>'),encoding='utf-8',newline='\n')
 for lang in ['ru','en']:
- for name in ['guide','features','architecture','API','performance','opt-table-control','mathematics','safety','schema-hashes','examples','optional-modes','quickstart']:
+ for name in ['guide','features','architecture','API','performance','opt-table-control','mathematics','safety','schema-hashes','examples','optional-modes','quickstart','migration-0.2.0','custom-types','SEO']:
   p=docs/f'{name}.{lang}.md'
   if not p.exists():continue
-  content,_=render(p.read_text(encoding='utf-8'),name+'-'+lang);content=content.replace('<h2','<h1',1).replace('</h2>','</h1>',1);H=head.replace('lang="ru"',f'lang="{lang}"').replace('<title>QSL · '+t('project')+'</title>',f'<title>QSL · {name} · {lang.upper()}</title>');(docs/f'{name}.{lang}.html').write_text(H+'<main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a>'+content+'</main></body></html>',encoding='utf-8',newline='\n')
+  content,_=render(p.read_text(encoding='utf-8'),name+'-'+lang);content=content.replace('<h2','<h1',1).replace('</h2>','</h1>',1);H=head.replace('lang="ru"',f'lang="{lang}"').replace('<title>QSL 0.2.0 · '+t('project')+'</title>',f'<title>QSL 0.2.0 · {name} · {lang.upper()}</title>');(docs/f'{name}.{lang}.html').write_text(H+'<main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a>'+content+'</main></body></html>',encoding='utf-8',newline='\n')
 print('Full QSL HTML built with measured samples, region explorer, length graph, guide and API')
 
 # Keep the nested current implementation contract reproducible with the site.
@@ -112,11 +116,21 @@ for lang in ["ru", "en"]:
  p=docs/"modernization-2026-11-06"/f"MODERNIZATION.{lang}.md"
  content,_=render(p.read_text(encoding="utf-8"),"modern-"+lang)
  content=content.replace("<h2","<h1",1).replace("</h2>","</h1>",1)
- title="QSL · Modernization · "+lang.upper()
+ title="QSL 0.2.0 · Modernization · "+lang.upper()
  H=head.replace('lang="ru"',f'lang="{lang}"').replace(
-  "<title>QSL · "+t("project")+"</title>","<title>"+title+"</title>"
+  "<title>QSL 0.2.0 · "+t("project")+"</title>","<title>"+title+"</title>"
  ).replace('href="assets/','href="../assets/')
  p.with_suffix(".html").write_text(
   H+'<main class="book" style="max-width:1120px;padding:25px;margin:auto">'
   +'<a href="../index.html">QSL</a>'+content+"</main></body></html>",
   encoding="utf-8",newline="\n")
+
+for lang in ['ru','en']:
+ p=docs/'releases'/f'0.2.0.{lang}.md'
+ content,_=render(p.read_text(encoding='utf-8'),'release-'+lang)
+ H=head.replace('lang="ru"',f'lang="{lang}"').replace('href="assets/','href="../assets/')
+ p.with_suffix('.html').write_text(H+'<main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="../index.html">QSL</a>'+content+'</main></body></html>',encoding='utf-8',newline='\n')
+
+# Keep SEO and the server-rendered English entry point reproducible.
+import runpy
+runpy.run_path(str(repo/"reference/apply-seo.py"),run_name="__main__")

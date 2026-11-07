@@ -1,4 +1,29 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><title>QSL · safety · EN</title><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css"></head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="safety-en-1">Checked decoding and data limits</h1>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css">
+<title>QSL safety — checked decoding and data bounds</title>
+<meta name="description" content="QSL input validation: frame length, ranges, UTF-8, decompression limits, MAX_DATA_SIZE and explicit unchecked API contracts.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/safety.en.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/safety.en.html">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/safety.ru.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/safety.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="QSL safety — checked decoding and data bounds">
+<meta property="og:description" content="QSL input validation: frame length, ranges, UTF-8, decompression limits, MAX_DATA_SIZE and explicit unchecked API contracts.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/safety.en.html">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL 0.2.0 — binary serialization for Rust">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="QSL safety — checked decoding and data bounds">
+<meta name="twitter:description" content="QSL input validation: frame length, ranges, UTF-8, decompression limits, MAX_DATA_SIZE and explicit unchecked API contracts.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/safety.en.html#webpage","url":"https://zadr0.github.io/QSL/safety.en.html","name":"QSL safety — checked decoding and data bounds","description":"QSL input validation: frame length, ranges, UTF-8, decompression limits, MAX_DATA_SIZE and explicit unchecked API contracts.","inLanguage":"en","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="en.html">QSL</a><h1 id="safety-en-1">Checked decoding and data limits</h1>
 <p>Checked deserialization is generated <strong>only for [safety]</strong>. Ordinary COPY materializes and validates values through one cursor before publishing a result. Native COPY/overlay validates the prepared representation before assume_init or a typed reference. Ordinary checked decoding does not perform a full pre-scan followed by another decode pass.</p>
 <p>MAX_DATA_SIZE defaults to 65535 B and bounds input frames and aggregate useful values before allocation. Arrays charge element widths; LZ checks restored sizes. STACK_LIMIT defaults to 256 data bytes for every inline buffer. Above it String/Vec retain the wire codec.</p>
 <pre><code>&amp;Packet[safety] { u32 id; str(1..100) text; }</code></pre>
@@ -13,4 +38,6 @@ let decoded = Packet::deserialize_checked_into(&amp;bytes, &amp;mut out)?;</code
 <p><a href="modernization-2026-11-06/MODERNIZATION.en.html">Full contract, errors, native COPY/LIFETIME and migration</a>.</p>
 <p>Trusted Serializable::serialize / BorrowSerializable::serialize trait methods are now unsafe. Callers must establish their preconditions. Generated RT/QPS serialize() methods remain safe Result APIs with value validation; use serialize_checked for general safe output.</p>
 <p>The safety attribute does not disable unsafe reads. Native COPY/LIFETIME and region APIs always expose explicit _unchecked entry points without input validation, alongside checked methods. See the <a href="modernization-2026-11-06/MODERNIZATION.en.html">unchecked API contract</a> for names and caller obligations.</p>
-<p>An input LZ block length does not authorize a decoded size. Each run is checked against actual restored bytes, destination capacity and shared MAX_DATA_SIZE before reserve/writes. Forged lengths, MAX+1 expansion, truncated literal/offset data and invalid backreferences are rejected; unchecked APIs remain separate.</p></main></body></html>
+<p>An input LZ block length does not authorize a decoded size. Each run is checked against actual restored bytes, destination capacity and shared MAX_DATA_SIZE before reserve/writes. Forged lengths, MAX+1 expansion, truncated literal/offset data and invalid backreferences are rejected; unchecked APIs remain separate.</p>
+<h2 id="safety-en-2">BM and polymorphic values</h2>
+<p>BM checks its maximum marker before traversal when spare bits exist; all later OT indices are bounded. Compact custom values charge SIZE to the restored-data budget, not COMP_SIZE. Array elements are validated before checked writes. Native views validate all values and alignment before creating a reference. Unchecked APIs remain explicit. <a href="migration-0.2.0.en.html">Full 0.2.0 contract</a>.</p></main><nav id="qsl-language-links" class="footer" aria-label="Documentation languages"><a href="https://zadr0.github.io/QSL/" hreflang="ru">Русский</a> · <a href="https://zadr0.github.io/QSL/en.html" hreflang="en">English</a> · <a href="https://zadr0.github.io/QSL/sitemap.xml">Sitemap</a></nav></body></html>

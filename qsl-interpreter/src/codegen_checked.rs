@@ -69,6 +69,21 @@ fn value(
     storage: StorageKind,
     length: Option<&str>,
 ) -> QslResult<()> {
+    if storage == StorageKind::NativeView {
+        let QslType::Custom {
+            rust_type,
+            fixed_wire_size: Some(n),
+            ..
+        } = ty
+        else {
+            return Err(QslError::InvalidSchema);
+        };
+        ln(
+            out,
+            format!("{{c.charge({n})?;{rust_type}::__qsl_region_view(c.bytes({n})?)?}}"),
+        );
+        return Ok(());
+    }
     if storage == StorageKind::StrView {
         if let QslType::InlineRawString { min, max } = ty {
             if let Some(length) = length {
@@ -134,13 +149,13 @@ fn value(
   if fixed{ln(out,format!("let length={n}usize;"));}else if compact{ln(out,format!("let length=(c.bits({width})? as usize).checked_add({n}).ok_or(::qsl::QslError::LengthOverflow)?;"));}else{ln(out,"let length=c.uint(4)? as usize;");}
   if !fixed{ln(out,format!("if !({n}..={max}).contains(&length){{return Err(::qsl::QslError::InvalidValue)}}"));}
   let size=e.fixed_wire_size()?.ok_or(QslError::InvalidSchema)?;ln(out,format!("let bytes=length.checked_mul({size}usize).ok_or(::qsl::QslError::LengthOverflow)?;"));
-  if compact&&!is_bytes(e){let bits=e.default_compact_bits()?;ln(out,format!("c.check_values(bytes,length.checked_mul({bits}usize).ok_or(::qsl::QslError::LengthOverflow)?)?;"));}else{ln(out,"c.check_allocation(bytes)?;");}
+  if compact&&!is_bytes(e){let bits=validation_codegen::compact_element_bits(e)?;ln(out,format!("c.check_values(bytes,length.checked_mul({bits}).ok_or(::qsl::QslError::LengthOverflow)?)?;"));}else{ln(out,"c.check_allocation(bytes)?;");}
   if borrowed&&!matches!(storage,StorageKind::FixedArray(_)){ln(out,"c.payload(bytes)?");}else{
    let et=e.rust_type(false)?;match storage{StorageKind::FixedArray(n)|StorageKind::StackArray(n)=>ln(out,format!("let mut values=::qsl::InlineArray::<{et},{n}>::new();")),_=>ln(out,format!("let mut values=Vec::<{et}>::new();values.try_reserve_exact(length).map_err(|_|::qsl::QslError::AllocationFailed)?;"))}
    ln(out,"for _ in 0..length{let item={");value(e,out,e.default_compact_bits()?,compact,false,StorageKind::Default,None)?;ln(out,"};");if matches!(storage,StorageKind::FixedArray(_)|StorageKind::StackArray(_)){ln(out,"values.push(item)?;");}else{ln(out,"values.push(item);");}ln(out,"}");if compact&&!is_bytes(e){ln(out,"c.align()?;");}ln(out,if matches!(storage,StorageKind::FixedArray(_)){"values.into_array()?"}else{"values"});
   }
  },
- QslType::Custom{rust_type,..}=>{let size=if compact{"COMP_SIZE"}else{"SIZE"};let method=if compact{"qsl_comp_read_unchecked"}else{"qsl_read_unchecked"};ln(out,format!("let bytes=c.payload(<{rust_type} as ::qsl::QslCustom>::{size})?;<{rust_type} as ::qsl::QslCustom>::qsl_validate(bytes,{compact})?;unsafe{{<{rust_type} as ::qsl::QslCustom>::{method}(bytes.as_ptr())}}"));}
+ QslType::Custom{rust_type,..}=>{let size=if compact{"COMP_SIZE"}else{"SIZE"};let method=if compact{"qsl_comp_read_unchecked"}else{"qsl_read_unchecked"};ln(out,format!("c.charge(<{rust_type} as ::qsl::QslCustom>::SIZE)?;let bytes=c.bytes(<{rust_type} as ::qsl::QslCustom>::{size})?;<{rust_type} as ::qsl::QslCustom>::qsl_validate(bytes,{compact})?;unsafe{{<{rust_type} as ::qsl::QslCustom>::{method}(bytes.as_ptr())}}"));}
  };
     Ok(())
 }
@@ -201,8 +216,8 @@ pub(super) fn required_run(
         field(
             f,
             out,
-            f.bits,
-            false,
+            f.data.rank_width(f.bits)?,
+            s.compact(),
             s.borrow_strings(),
             capture,
             Some(&format!("__qsl_header_{start} as usize")),
@@ -254,7 +269,7 @@ pub(super) fn begin_result(s: &QslSchema, out: &mut String) {
     ln(out, "};");
 }
 pub(super) fn callbacks(s: &QslSchema, out: &mut String) -> QslResult<()> {
-    if !s.opt_table() || s.flags & crate::FLAG_SAFETY == 0 {
+    if (!s.opt_table() && !optional_codegen::applies(s)) || s.flags & crate::FLAG_SAFETY == 0 {
         return Ok(());
     }
     let lifetime = if s.lifetime() { "'a" } else { "'input" };
@@ -270,8 +285,8 @@ pub(super) fn callbacks(s: &QslSchema, out: &mut String) -> QslResult<()> {
         field(
             f,
             out,
-            f.bits,
-            false,
+            f.data.rank_width(f.bits)?,
+            s.compact(),
             s.borrow_strings(),
             true,
             if (s.state_bits() || graph_raw) && qps_codegen::variable(&f.data) {
@@ -280,9 +295,22 @@ pub(super) fn callbacks(s: &QslSchema, out: &mut String) -> QslResult<()> {
                 None
             },
         )?;
+        if s.compact() && s.flags & FLAG_ALIGNMENT != 0 {
+            ln(out, "c.align()?;");
+        }
         ln(out, format!("output.{}=field_{};Ok(())}}", f.name, f.tag));
     }
-    let entries = (1..=s.max_tag)
+    if !s.opt_table() {
+        return Ok(());
+    }
+    let dynamic = optional_codegen::applies(s);
+    let table_len = if dynamic {
+        s.optional_count()
+    } else {
+        s.max_tag
+    };
+    let table_base = if dynamic { s.optional_tag_base() } else { 0 };
+    let entries = (1 + table_base..=table_len + table_base)
         .map(|tag| {
             s.fields
                 .iter()
@@ -293,7 +321,7 @@ pub(super) fn callbacks(s: &QslSchema, out: &mut String) -> QslResult<()> {
         })
         .collect::<Vec<_>>()
         .join(",");
-    ln(out,format!("#[allow(dead_code,clippy::type_complexity)]const __QSL_CHECKED_OPT_TABLE:[Option<{hrtb}fn(&mut ::qsl::validation::ValidationCursor<{lifetime}>,&mut Self,usize)->::qsl::QslResult<()>>;{}]=[{entries}];",s.max_tag));
+    ln(out,format!("#[allow(dead_code,clippy::type_complexity)]const __QSL_CHECKED_OPT_TABLE:[Option<{hrtb}fn(&mut ::qsl::validation::ValidationCursor<{lifetime}>,&mut Self,usize)->::qsl::QslResult<()>>;{}]=[{entries}];",table_len));
     Ok(())
 }
 pub(super) fn dispatch(out: &mut String, tag: &str, length: &str) {

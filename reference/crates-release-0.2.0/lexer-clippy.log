@@ -1,0 +1,6 @@
+    Checking unicode-ident v1.0.27
+    Checking xxhash-rust v0.8.15
+    Checking proc-macro2 v1.0.107
+    Checking syn v2.0.119
+    Checking qsl-lexer v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-lexer)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 8.16s

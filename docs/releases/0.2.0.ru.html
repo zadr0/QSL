@@ -1,0 +1,37 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><link rel="stylesheet" href="../assets/full.css"><link rel="stylesheet" href="../assets/explorers.css">
+<title>QSL 0.2.0 — заметки выпуска и переход</title>
+<meta name="description" content="Выпуск QSL 0.2.0: изменения формата и API, пакеты crates.io, проверки, исходники и документация RU/EN.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/releases/0.2.0.ru.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/releases/0.2.0.ru.html">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/releases/0.2.0.en.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/releases/0.2.0.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="QSL 0.2.0 — заметки выпуска и переход">
+<meta property="og:description" content="Выпуск QSL 0.2.0: изменения формата и API, пакеты crates.io, проверки, исходники и документация RU/EN.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/releases/0.2.0.ru.html">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL 0.2.0 — binary serialization for Rust">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="QSL 0.2.0 — заметки выпуска и переход">
+<meta name="twitter:description" content="Выпуск QSL 0.2.0: изменения формата и API, пакеты crates.io, проверки, исходники и документация RU/EN.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/releases/0.2.0.ru.html#webpage","url":"https://zadr0.github.io/QSL/releases/0.2.0.ru.html","name":"QSL 0.2.0 — заметки выпуска и переход","description":"Выпуск QSL 0.2.0: изменения формата и API, пакеты crates.io, проверки, исходники и документация RU/EN.","inLanguage":"ru","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="../index.html">QSL</a><h2 id="release-ru-1">QSL 0.2.0 — явная диспетчеризация optional и переносимый runtime</h2>
+<p>QSL генерирует Rust-кодеки при сборке для заранее согласованных схем. Выпуск меняет часть pre-1.0 API и BM-формат, разделяя обход маски, предсказание длины и выбор читателя. Универсальный сетевой протокол и LLVM-backend не добавляются.</p>
+<h2 id="release-ru-2">Пакеты</h2>
+<ul><li>qsl 0.2.0: переносимый runtime и совместимый фасад компилятора.</li><li>qsl-lexer 0.2.0: сбор схем и анализ при сборке.</li><li>qsl-interpreter 0.2.0: понижение и генерация Rust.</li><li>qsl-macros-impl остаётся 0.1.0: его реализация не менялась.</li></ul>
+<h2 id="release-ru-3">Изменения</h2>
+<ul><li>BM использует только optional-поля, little-endian маску u8/u16/u32/u64/u128 и цикл установленных битов по убыванию маркера. Safety до обхода отклоняет лишние биты.</li><li>Default выбирает читателя через match, OT переиспользует обработчики. PS определяет присутствие по длине и использует OT; порядок BM он не меняет. QPS остаётся обратимой упаковкой по операнду, а не предсказанием.</li><li>Именованные native-регионы создают настоящие вложенные типы. Вложенные и повторные определения поддерживают COPY и проверяемый выровненный LIFETIME.</li><li>Проверяемые макросы примитивов задают явный числовой/layout-контракт, сохраняя QslCustom. Бюджет восстановления учитывает SIZE; compact-массив использует COMP_SIZE и проверяет значения элементов.</li><li>Удалены feature native, windows-sys и Windows-сокеты/IPC-регионы. SerOut, std TCP, native-layout и unchecked-методы сохраняются. Обычная сериализация использует Vec/срезы.</li><li>Обновлены полное руководство RU/EN, справочник атрибутов, индекс исходного API, примеры и переход. Документация пакетов — на английском.</li></ul>
+<h2 id="release-ru-4">Переход</h2>
+<p>BM v2 несовместим со старым BM-кадром. Обновляйте обе стороны вместе либо согласуйте версию вне кадра. Обычный счётчик/теги без BM сохраняются. Удалите features=[&quot;native&quot;] из зависимостей. Прежний стандартный Vec/срез API работает; клиенты бывшего SerOut-returning режима адаптируются явно. Внешнюю IPC-память и транспорт обеспечивает приложение.</p>
+<p><a href="../migration-0.2.0.ru.html">Полный переход</a> · <a href="../guide.ru.html">Руководство</a> · <a href="../quickstart.ru.html">Быстрый старт</a> · <a href="../safety.ru.html">Безопасность</a>.</p>
+<h2 id="release-ru-5">Проверки</h2>
+<p>С выпуском сохраняются тесты, строгий Clippy, сборка документации, проверки упакованных крейтов и отдельный клиент из registry. Lean4 проверяет явно описанную арифметику индексов, а не всю модель памяти Rust. Исторические замеры сохраняют исходные версии. Четыре случая Criterion от 7 ноября <strong>не приняты как строгий результат</strong> из-за фоновой загрузки CPU 27–64%; ускорение не заявляется.</p>
+<p>Вложения Release: три .crate-пакета, архив автономной документации и SHA-256. GitHub также предоставляет архив исходников по тегу. Rust 1.98+; MIT.</p></main><nav id="qsl-language-links" class="footer" aria-label="Documentation languages"><a href="https://zadr0.github.io/QSL/" hreflang="ru">Русский</a> · <a href="https://zadr0.github.io/QSL/en.html" hreflang="en">English</a> · <a href="https://zadr0.github.io/QSL/sitemap.xml">Sitemap</a></nav></body></html>

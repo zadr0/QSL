@@ -89,9 +89,9 @@ pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError
             } else {
                 result.push(f.clone());
             }
-            if result.len() > 64 {
+            if result.len() > if schema.bitmap() { 65535 } else { 64 } {
                 return Err(MacroError(format!(
-                    "{}: expanded schema exceeds 64 fields",
+                    "{}: expanded schema exceeds the codec field capacity",
                     schema.name
                 )));
             }
@@ -135,6 +135,9 @@ pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError
                 .get(r.end)
                 .ok_or_else(|| MacroError("native region end outside schema".into()))?;
             out.push(crate::modernization::NativeRegion {
+                alignment: r.alignment,
+                external: r.external,
+                field_prefix: r.field_prefix.clone(),
                 rust_type: r.rust_type.clone(),
                 start,
                 end,
@@ -143,6 +146,9 @@ pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError
         for (i, target) in children.into_iter().enumerate() {
             if let Some(target) = target {
                 for mut r in regions(target, schemas, names, cache, memo)? {
+                    if r.external {
+                        r.field_prefix = format!("{}_{}", source.fields[i].name, r.field_prefix);
+                    }
                     r.start += positions[i];
                     r.end += positions[i];
                     out.push(r);

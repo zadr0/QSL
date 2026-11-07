@@ -53,7 +53,12 @@ fn scalar(t: &QslType, optional: bool) -> Option<M> {
         _ => return None,
     })
 }
-fn field(f: &qsl::QslField, borrowed: bool, aggressive: bool) -> Option<M> {
+fn field(
+    f: &qsl::QslField,
+    borrowed: bool,
+    aggressive: bool,
+    types: &std::collections::BTreeMap<String, qsl::modernization::NativeTypeLayout>,
+) -> Option<M> {
     if let Some(r) = qsl::modernization::optional_representation(f, aggressive) {
         if let Some(niche) = r.niche {
             let bits = niche
@@ -115,7 +120,7 @@ fn field(f: &qsl::QslField, borrowed: bool, aggressive: bool) -> Option<M> {
                 data: (**e).clone(),
                 ..Default::default()
             };
-            let element = field(&ef, false, aggressive)?;
+            let element = field(&ef, false, aggressive, types)?;
             let max = match &f.data {
                 QslType::FixedArray(_, n) | QslType::RangedArray { max: n, .. } => Some(*n),
                 _ => None,
@@ -177,7 +182,21 @@ fn field(f: &qsl::QslField, borrowed: bool, aggressive: bool) -> Option<M> {
                 m
             }
         }
-        QslType::Custom { .. } => return None,
+        QslType::Custom { rust_type, .. } => {
+            // An arbitrary custom Option may have an unknown niche. Never guess it.
+            if f.optional {
+                return None;
+            }
+            let layout = types.get(rust_type)?;
+            if f.storage == StorageKind::NativeView {
+                let mut m = base(size_of::<&u8>(), align_of::<&u8>());
+                m.borrow_min = layout.wire_bytes;
+                m.borrow_max = Some(layout.wire_bytes);
+                m
+            } else {
+                base(layout.native_bytes, layout.alignment)
+            }
+        }
         _ => return None,
     };
     if f.optional {
@@ -216,7 +235,12 @@ pub(super) fn describe(s: &QslSchema) -> String {
     let mut borrow_max = Some(0usize);
     let mut rows = Vec::new();
     for f in &s.fields {
-        let m = field(f, s.borrow_strings(), s.options.aggressive);
+        let m = field(
+            f,
+            s.borrow_strings(),
+            s.options.aggressive,
+            &s.options.native_types,
+        );
         let offset = m.and_then(|m| round(size?, m.align));
         if let Some(m) = m {
             align = align.max(m.align);
@@ -258,14 +282,22 @@ pub(super) fn describe(s: &QslSchema) -> String {
             2
         } else if bitmap <= 32 {
             4
-        } else {
+        } else if bitmap <= 64 {
             8
+        } else {
+            16
         };
-        align = align.max(bytes);
-        let at = size.and_then(|n| round(n, bytes));
+        let mask_alignment = if bytes == 16 {
+            align_of::<u128>()
+        } else {
+            bytes
+        };
+        align = align.max(mask_alignment);
+        let at = size.and_then(|n| round(n, mask_alignment));
         size = at.and_then(|n| n.checked_add(bytes));
-        rows.push(format!("{{\"name\":\"__qsl_presence\",\"rustType\":\"u{}\",\"offset\":{},\"size\":{bytes},\"alignment\":{bytes},\"heapMinimum\":0,\"heapMaximum\":0,\"borrowedMinimum\":0,\"borrowedMaximum\":0}}",bytes*8,n(at)));
+        rows.push(format!("{{\"name\":\"__qsl_presence\",\"rustType\":\"u{}\",\"offset\":{},\"size\":{bytes},\"alignment\":{mask_alignment},\"heapMinimum\":0,\"heapMaximum\":0,\"borrowedMinimum\":0,\"borrowedMaximum\":0}}",bytes*8,n(at)));
     }
+    align = align.max(s.options.native_alignment.unwrap_or(1));
     let size = size.and_then(|n| round(n, align));
     format!("{{\"layout\":\"repr(C)\",\"target\":{},\"pointerBytes\":{},\"objectBytes\":{},\"alignment\":{align},\"ownedDataMinimum\":{heap_min},\"ownedDataMaximum\":{},\"borrowedDataMinimum\":{borrow_min},\"borrowedDataMaximum\":{},\"allocatorCapacityIncluded\":false,\"fields\":[{}]}}",json(std::env::consts::ARCH),size_of::<usize>(),n(size),n(heap_max),n(borrow_max),rows.join(","))
 }

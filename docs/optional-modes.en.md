@@ -1,30 +1,37 @@
-> **2026-11-06 contract:** [strict STACK_LIMIT, opt-in Safety, scalar-only QPS and native COPY/LIFETIME](modernization-2026-11-06/MODERNIZATION.en.md). [Four fresh measurements](../qsl-bench/modernization/report.html). Historical timing tables retain their original snapshots.
+# Optional fields in QSL 0.2.0
 
-# Optional fields: length and tags
+[Русский](optional-modes.ru.md) · [Migration](migration-0.2.0.en.md)
 
-## predict_seq: a length-derived index
+## Default: count/tags and match
 
-`predict_seq` determines field presence from length; it does not choose readers by tag. Standalone mode writes no tags: one optional uses EOF, while several optionals use a numeric index into a static table of unique fixed-size subset sums. Ambiguous sums, a zero-size single optional and analysis-budget overflow are rejected. Input length is required; `deserialize_unsafe(ptr)` without length is unsupported.
+Required fields precede optional fields. Without prediction or BM the frame preserves its existing packed optional-count/tag header, then required values and present optional values. Default dispatch uses a generated match. One optional field keeps a one-bit presence header. Tags remain incremental schema tags; sparse tags produced by region lowering are mapped explicitly.
 
-## opt_table: reader selection by tag
+## BM: optional-only set-bit traversal
 
-`opt_table` generates a static reader-function table indexed by the actual schema tag: `readers[tag - 1]`. This is not the optional ordinal: required-field tags leave empty entries. Before trusted dispatch, the checked cursor validates allowed tags, order, duplicates, bounds and values across the complete frame. A reader returns its consumed byte count so the cursor advances without computing field length again.
+Only optional fields occupy bits. Counts 0 / 1–8 / 9–16 / 17–32 / 33–64 / 65–128 use 0 / 1 / 2 / 4 / 8 / 16 header bytes. The mask is little endian; marker 1 occupies its MSB. Read `marker=WIDTH-mask.trailing_zeros()`, clear `mask &= mask-1`, dispatch marker and repeat until zero. Required values retain declaration order; present optional values are serialized and read in descending marker order.
 
-Standalone `[opt_table]` preserves the default wire format and hashes. For several optionals, decoding reads the count and packed tags from the header, then dispatches readers for present fields. A single optional needs only presence; its tag is already known from the schema. No table is allocated per message. The table has `max_tag` Option-function-pointer entries; each entry occupies one machine pointer on x86-64. A table does not guarantee a speedup: indirect calls and result preparation have costs.
+For `&P[safety,optionals=bitmap,opt_table]{u8 id;u16? a;u8? b;}`, id=9, a=0x1234 and b=7 encode as `C0 09 07 34 12`. BM v2 differs from the former u32/all-fields mask. Both peers must migrate together; no automatic format detection is added.
 
-## predict_seq + opt_table: preserved length graph
+Before traversal, Safety checks the largest marker once if spare bits exist. Empty masks skip it. A full-width mask has no spare bits. After a successful check every remaining dense OT index is bounded. Field data and end-of-frame checks still run through the checked cursor.
 
-`[predict_seq,opt_table]` preserves the wire bytes and hashes of the former mixed `[opt_table]` implementation. `predict_seq` determines the length event; `opt_table` supplies the reader for each resolved field. These responsibilities are separate.
+## OT: choose an optional reader
 
-After metadata and required fields, decoding derives optional payload length L. The numeric index is `I(L) = sum((L > c_j) as usize)`. Events describe forced and possible fields. For two optional u8 fields, `I=(L>0)+(L>1)`: L=0 means neither, L=2 means both, and L=1 requires metadata to distinguish a from b. Skipping a metadata read does not remove its reserved wire byte. When a tag is not separately stored, the generator knows it from the resolved field position.
+Standalone opt_table preserves default bytes and hashes. In ordinary tagged/BM paths its dense static table contains one reader per optional marker; required fields do not create gaps. Absolute schema tags are mapped to dense ordinals. With BM the marker directly selects that ordinal. A per-field cursor reader is shared with default match dispatch; checked and unchecked contracts retain separate readers.
 
-For string ranges 3..33 and 1..255, boundaries follow from the ranges. CRITICAL_POINTS and the event graph belong to `predict_seq`; OPT_TABLE dispatches readers. General graph analysis supports 12 fields and 65535 payload bytes; equal fixed widths support up to 64 fields. Unsupported graphs fall back to checked EOF, an exact length table, or an explicit presence mask. This is not a promise of a branch-free complete decoder.
+There is no per-frame table allocation. A non-borrowed raw entry is a function pointer (one pointer on x86-64); checked dispatch has its own table. An indirect call is not guaranteed to outperform a match. Compact ordinary layouts and BM can use OT. The former optional_count*tag_bits<=64 restriction is removed from ordinary streaming headers.
 
-`opt_table=legacy` is the separate older wire offset directory. The scalar QPS specialization and its prepared kernel contain no ordinary field tags and use their own bit offsets; `opt_table` does not force them through a byte reader table. With `state_bits`, D supplies presence while optional reads use the reader table. General outer QPS restores the inner frame first.
+## PS: a length-derived index
 
-### Migration and previous measurements
+predict_seq derives presence from payload length, not tag dispatch. A standalone single optional uses EOF; multiple fields require unambiguous supported fixed-size subset sums. Invalid/ambiguous sums and a zero-size optional codec are rejected where length cannot distinguish presence. The trusted API needs input length: a pointer-only deserialize_unsafe cannot infer it.
 
-To retain an old `[opt_table]` frame, select `[predict_seq,opt_table]` on both peers. New standalone `[opt_table]` matches default, but generally differs from the former mixed format. There is no automatic version detection. Previous measurements labelled opt_table, including the 1.46–1.73x example speedups, measured the mixed length graph. They are not measurements of the new tag table; original JSON, sources and values remain unchanged.
+## PS + OT
 
+The combined mode preserves its existing length graph and wire contract. `I(L)=sum((L>c_j) as usize)` selects an event; forced fields use existing OT readers, ambiguous fields require the mode's presence metadata. The reserved metadata bytes are not silently removed. General graph limits remain 12 fields / 65535 payload bytes; equal fixed widths support up to 64 fields. Those are distinct from BM limits.
 
-Standalone tag dispatch inherits `optional_count * tag_bits <= 64`; compact and bitmap cannot be combined with opt_table. A wider optional tail needs a compatible combined/state_bits/legacy layout within that layout’s own limits.
+PS is inactive when BM is selected and cannot reorder its traversal. QPS does not predict: it is reversible operand-based scalar packing. Legacy offset directories and state_bits are separate formats with their own compatibility checks. Scalar QPS uses bit offsets rather than forcing packed fields through a byte reader table.
+
+## Compatibility and measurements
+
+Changing from a historical mixed opt_table to standalone opt_table requires choosing the correct attributes on both peers; retain predict_seq+opt_table for the historical length graph. Upgrading an ordinary default/tag-table schema to 0.2.0 preserves its count/tag bytes. BM requires coordinated migration and has revision 2 in its schema descriptor. Dispatch-only OT and BM-inactive PS do not alter BM identity.
+
+The four [November 7 measurements](../qsl-interpreter/tests/optional-v2/results/2026-11-07.md) are not accepted as strict results because of background CPU load. Earlier opt_table figures refer to their captured source versions and must not be presented as 0.2.0 performance.

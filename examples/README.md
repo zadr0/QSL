@@ -1,3 +1,5 @@
+> QSL 0.2.0. BM v2, native-region types and validating primitives: [RU](../docs/migration-0.2.0.ru.md) / [EN](../docs/migration-0.2.0.en.md). Windows/native Cargo support is removed.
+
 # QSL examples / Примеры
 
 Примеры обновлены под строгий STACK_LIMIT и текущий API. По умолчанию предел 256 B: большие строки inline/LZ восстанавливаются в String; wire-кодек сохраняется. Числовые optional-поля используют try_new/getter/setter. Все примеры с checked-чтением явно включают safety.
@@ -25,7 +27,7 @@ cargo run --manifest-path examples/Cargo.toml --example macros --locked
 cargo run --manifest-path examples/Cargo.toml --example safety --locked
 ```
 
-[Current contract RU](../docs/modernization-2026-11-06/MODERNIZATION.ru.md) · [EN](../docs/modernization-2026-11-06/MODERNIZATION.en.md) · [Four fresh Criterion cases](../qsl-bench/modernization/report.html)
+[Current contract RU](../docs/migration-0.2.0.ru.md) · [EN](../docs/migration-0.2.0.en.md) · [Four fresh Criterion cases](../qsl-bench/modernization/report.html)
 
 Исторические 39 измерений и их графики остаются в PERFORMANCE.md, performance.html и performance/. Они относятся к прежнему API, в том числе Guard и nonblocking RT. Старый benches/showcase.rs сохранён для истории и исключён из активной Cargo-матрицы. Новый стенд — qsl-bench/modernization; эти старые 39 случаев повторно не запускаются.
 
