@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><link rel="stylesheet" href="../assets/full.css"><link rel="stylesheet" href="../assets/explorers.css">
+<!doctype html><html lang="en" data-generation="3"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="../assets/full.css?v=96f71b9057">
 <title>QSL 0.2.0 — release notes and migration</title>
 <meta name="description" content="QSL 0.2.0 release: wire/API changes, crates.io packages, verification evidence, source tags and RU/EN documentation.">
 <meta name="robots" content="index,follow,max-image-preview:large">
@@ -14,24 +14,24 @@
 <meta property="og:description" content="QSL 0.2.0 release: wire/API changes, crates.io packages, verification evidence, source tags and RU/EN documentation.">
 <meta property="og:url" content="https://zadr0.github.io/QSL/releases/0.2.0.en.html">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="QSL 0.2.0 — binary serialization for Rust">
+<meta property="og:image:alt" content="QSL — core, lexer, interpreter and Rust codec facade">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="QSL 0.2.0 — release notes and migration">
 <meta name="twitter:description" content="QSL 0.2.0 release: wire/API changes, crates.io packages, verification evidence, source tags and RU/EN documentation.">
-<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
-<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/releases/0.2.0.en.html#webpage","url":"https://zadr0.github.io/QSL/releases/0.2.0.en.html","name":"QSL 0.2.0 — release notes and migration","description":"QSL 0.2.0 release: wire/API changes, crates.io packages, verification evidence, source tags and RU/EN documentation.","inLanguage":"en","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
-</head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="../en.html">QSL</a><h2 id="release-en-1">QSL 0.2.0 — explicit optional dispatch and portable runtime</h2>
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"main after 0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/releases/0.2.0.en.html#webpage","url":"https://zadr0.github.io/QSL/releases/0.2.0.en.html","name":"QSL 0.2.0 — release notes and migration","description":"QSL 0.2.0 release: wire/API changes, crates.io packages, verification evidence, source tags and RU/EN documentation.","inLanguage":"en","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body data-data-version="6954f72e64ac"><main class="book"><a href="../en.html">QSL</a><h1 id="releases-en-1">QSL 0.2.0 — explicit optional dispatch and portable runtime</h1>
 <p>QSL is a build-time Rust binary-codec generator for agreed schemas. This breaking pre-1.0 release separates mask traversal, length prediction and reader dispatch; it does not add a universal network protocol or LLVM backend.</p>
-<h2 id="release-en-2">Packages</h2>
+<h2 id="releases-en-2">Packages</h2>
 <ul><li>qsl 0.2.0: portable runtime and compiler facade.</li><li>qsl-lexer 0.2.0: schema collection and build-time analysis.</li><li>qsl-interpreter 0.2.0: Rust lowering and generation.</li><li>qsl-macros-impl remains 0.1.0; its implementation is unchanged.</li></ul>
-<h2 id="release-en-3">Changes</h2>
+<h2 id="releases-en-3">Changes</h2>
 <ul><li>BM has optional-only little-endian masks selected from u8/u16/u32/u64/u128. A set-bit loop reads descending optional markers; Safety rejects spare bits before dispatch.</li><li>Default uses match; OT shares optional readers. PS derives presence from length and reuses OT handlers. PS cannot reorder BM. QPS remains reversible operand packing, not prediction.</li><li>Named native regions create real nested Rust types. Nested/reused definitions support COPY and checked aligned LIFETIME.</li><li>Explicit scalar-wrapper macros validate integer/layout/domain contracts while retaining QslCustom codecs. Restored budgets charge original SIZE; custom arrays respect COMP_SIZE and validate element values.</li><li>Remove the native feature, windows-sys and Windows-only socket/IPC modules. Keep SerOut, std TCP, native-layout helpers and unchecked APIs. Ordinary serialization consistently uses Vec/slices.</li><li>Update the complete RU/EN guide, attribute reference, source API index, examples and migration instructions. Package documentation is English.</li></ul>
-<h2 id="release-en-4">Migration</h2>
+<h2 id="releases-en-4">Migration</h2>
 <p>BM v2 is incompatible with old BM frames. Upgrade peers together or negotiate outside the frame. Ordinary non-BM count/tag bytes are preserved. Remove features=[&quot;native&quot;] from dependencies. Existing default Vec/slice calls continue to work; former SerOut-returning feature clients must adapt explicitly. Applications own external shared-memory and transport facilities.</p>
 <p><a href="../migration-0.2.0.en.html">Full migration</a> · <a href="../guide.en.html">Guide</a> · <a href="../quickstart.en.html">Quick start</a> · <a href="../safety.en.html">Safety</a>.</p>
-<h2 id="release-en-5">Evidence</h2>
+<h2 id="releases-en-5">Evidence</h2>
 <p>Tests, strict Clippy, documentation builds, packaged-crate checks and a registry-only consumer are recorded with this release. Lean4 checks documented arithmetic index bounds, not the whole Rust memory model. Historical timing profiles retain their versions. Four November 7 Criterion cases are <strong>not accepted as strict performance results</strong> because of 27–64% observed background CPU activity; no speedup is claimed.</p>
-<p>Release assets contain the three .crate packages, an offline documentation archive and SHA-256 checksums. GitHub also supplies the tagged source archive. Rust 1.98+; MIT.</p></main><nav id="qsl-language-links" class="footer" aria-label="Documentation languages"><a href="https://zadr0.github.io/QSL/" hreflang="ru">Русский</a> · <a href="https://zadr0.github.io/QSL/en.html" hreflang="en">English</a> · <a href="https://zadr0.github.io/QSL/sitemap.xml">Sitemap</a></nav></body></html>
+<p>Release assets contain the three .crate packages, an offline documentation archive and SHA-256 checksums. GitHub also supplies the tagged source archive. Rust 1.98+; MIT.</p></main></body></html>

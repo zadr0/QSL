@@ -174,12 +174,11 @@ pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError
         if expanded {
             schema.max_tag = schema.fields.len();
         }
-        if schema.fields.iter().any(|f| {
-            matches!(
-                f.data,
-                QslType::BinaryString { .. } | QslType::GuardString { .. }
-            )
-        }) {
+        if schema
+            .fields
+            .iter()
+            .any(|f| matches!(f.data, QslType::BorrowedString { .. }))
+        {
             schema.flags |= FLAG_FIELD_BORROW;
         }
         let mut optional = false;
@@ -251,7 +250,10 @@ mod tests {
         )
         .unwrap();
         assert!(s[2].lifetime());
-        assert!(matches!(s[2].fields[0].data, QslType::GuardString { .. }));
+        assert!(matches!(
+            s[2].fields[0].data,
+            QslType::BorrowedString { .. }
+        ));
     }
     #[test]
     fn shared_empty_macro_dag_is_expanded_once_per_definition() {

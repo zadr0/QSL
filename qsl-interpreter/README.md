@@ -1,3 +1,5 @@
+> Current main: shared schema/runtime contracts are owned by qsl-core. Supported variable UTF-8 storage is String, &str, StackString and InlineString; new/reuse are method modes. Published 0.2.0 packages are immutable; these changes are available from this source checkout.
+
 # qsl-interpreter
 
 The Rust-emission backend of QSL. It extends the shared `QslSchemaBuilder` from `qsl-lexer` through a trait. It depends on the frontend, not on the runtime. Generated application code continues to use `::qsl`.

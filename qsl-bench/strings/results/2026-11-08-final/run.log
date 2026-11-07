@@ -1,0 +1,92 @@
+utf8_1024_scalars_2048_bytes/String_new
+                        time:   [99.324 ns 100.18 ns 101.34 ns]
+                        thrpt:  [18.822 GiB/s 19.040 GiB/s 19.203 GiB/s]
+Found 15 outliers among 200 measurements (7.50%)
+  4 (2.00%) high mild
+  11 (5.50%) high severe
+utf8_1024_scalars_2048_bytes/StackString_new
+                        time:   [52.368 ns 52.689 ns 53.110 ns]
+                        thrpt:  [35.913 GiB/s 36.200 GiB/s 36.422 GiB/s]
+Found 26 outliers among 200 measurements (13.00%)
+  9 (4.50%) high mild
+  17 (8.50%) high severe
+utf8_1024_scalars_2048_bytes/InlineString_new
+                        time:   [52.166 ns 52.794 ns 53.627 ns]
+                        thrpt:  [35.567 GiB/s 36.128 GiB/s 36.563 GiB/s]
+Found 30 outliers among 200 measurements (15.00%)
+  11 (5.50%) high mild
+  19 (9.50%) high severe
+utf8_1024_scalars_2048_bytes/str_view
+                        time:   [6.4646 ns 6.5232 ns 6.5897 ns]
+                        thrpt:  [289.45 GiB/s 292.39 GiB/s 295.05 GiB/s]
+Found 5 outliers among 200 measurements (2.50%)
+  3 (1.50%) high mild
+  2 (1.00%) high severe
+utf8_1024_scalars_2048_bytes/String_reuse
+                        time:   [52.523 ns 52.811 ns 53.176 ns]
+                        thrpt:  [35.868 GiB/s 36.116 GiB/s 36.314 GiB/s]
+Found 26 outliers among 200 measurements (13.00%)
+  10 (5.00%) high mild
+  16 (8.00%) high severe
+utf8_1024_scalars_2048_bytes/StackString_reuse
+                        time:   [103.43 ns 104.65 ns 106.00 ns]
+                        thrpt:  [17.993 GiB/s 18.225 GiB/s 18.441 GiB/s]
+Found 1 outliers among 200 measurements (0.50%)
+  1 (0.50%) high mild
+utf8_1024_scalars_2048_bytes/InlineString_reuse
+                        time:   [52.381 ns 52.676 ns 53.045 ns]
+                        thrpt:  [35.957 GiB/s 36.209 GiB/s 36.413 GiB/s]
+Found 29 outliers among 200 measurements (14.50%)
+  6 (3.00%) high mild
+  23 (11.50%) high severe
+
+utf8_255_scalars_255_bytes/String_new
+                        time:   [53.479 ns 53.836 ns 54.266 ns]
+                        thrpt:  [4.3763 GiB/s 4.4113 GiB/s 4.4408 GiB/s]
+Found 18 outliers among 200 measurements (9.00%)
+  9 (4.50%) high mild
+  9 (4.50%) high severe
+utf8_255_scalars_255_bytes/String_reuse
+                        time:   [12.370 ns 12.636 ns 12.973 ns]
+                        thrpt:  [18.307 GiB/s 18.794 GiB/s 19.198 GiB/s]
+Found 14 outliers among 200 measurements (7.00%)
+  3 (1.50%) high mild
+  11 (5.50%) high severe
+
+
+Benchmarking utf8_1024_scalars_2048_bytes/String_new
+Benchmarking utf8_1024_scalars_2048_bytes/String_new: Warming up for 15.000 s
+Benchmarking utf8_1024_scalars_2048_bytes/String_new: Collecting 200 samples in estimated 10.001 s (99M iterations)
+Benchmarking utf8_1024_scalars_2048_bytes/String_new: Analyzing
+Benchmarking utf8_1024_scalars_2048_bytes/StackString_new
+Benchmarking utf8_1024_scalars_2048_bytes/StackString_new: Warming up for 15.000 s
+Benchmarking utf8_1024_scalars_2048_bytes/StackString_new: Collecting 200 samples in estimated 10.001 s (183M iterations)
+Benchmarking utf8_1024_scalars_2048_bytes/StackString_new: Analyzing
+Benchmarking utf8_1024_scalars_2048_bytes/InlineString_new
+Benchmarking utf8_1024_scalars_2048_bytes/InlineString_new: Warming up for 15.000 s
+Benchmarking utf8_1024_scalars_2048_bytes/InlineString_new: Collecting 200 samples in estimated 10.000 s (187M iterations)
+Benchmarking utf8_1024_scalars_2048_bytes/InlineString_new: Analyzing
+Benchmarking utf8_1024_scalars_2048_bytes/str_view
+Benchmarking utf8_1024_scalars_2048_bytes/str_view: Warming up for 15.000 s
+Benchmarking utf8_1024_scalars_2048_bytes/str_view: Collecting 200 samples in estimated 10.000 s (1.5B iterations)
+Benchmarking utf8_1024_scalars_2048_bytes/str_view: Analyzing
+Benchmarking utf8_1024_scalars_2048_bytes/String_reuse
+Benchmarking utf8_1024_scalars_2048_bytes/String_reuse: Warming up for 15.000 s
+Benchmarking utf8_1024_scalars_2048_bytes/String_reuse: Collecting 200 samples in estimated 10.000 s (177M iterations)
+Benchmarking utf8_1024_scalars_2048_bytes/String_reuse: Analyzing
+Benchmarking utf8_1024_scalars_2048_bytes/StackString_reuse
+Benchmarking utf8_1024_scalars_2048_bytes/StackString_reuse: Warming up for 15.000 s
+Benchmarking utf8_1024_scalars_2048_bytes/StackString_reuse: Collecting 200 samples in estimated 10.003 s (78M iterations)
+Benchmarking utf8_1024_scalars_2048_bytes/StackString_reuse: Analyzing
+Benchmarking utf8_1024_scalars_2048_bytes/InlineString_reuse
+Benchmarking utf8_1024_scalars_2048_bytes/InlineString_reuse: Warming up for 15.000 s
+Benchmarking utf8_1024_scalars_2048_bytes/InlineString_reuse: Collecting 200 samples in estimated 10.001 s (186M iterations)
+Benchmarking utf8_1024_scalars_2048_bytes/InlineString_reuse: Analyzing
+Benchmarking utf8_255_scalars_255_bytes/String_new
+Benchmarking utf8_255_scalars_255_bytes/String_new: Warming up for 15.000 s
+Benchmarking utf8_255_scalars_255_bytes/String_new: Collecting 200 samples in estimated 10.001 s (188M iterations)
+Benchmarking utf8_255_scalars_255_bytes/String_new: Analyzing
+Benchmarking utf8_255_scalars_255_bytes/String_reuse
+Benchmarking utf8_255_scalars_255_bytes/String_reuse: Warming up for 15.000 s
+Benchmarking utf8_255_scalars_255_bytes/String_reuse: Collecting 200 samples in estimated 10.000 s (757M iterations)
+Benchmarking utf8_255_scalars_255_bytes/String_reuse: Analyzing

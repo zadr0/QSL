@@ -1,0 +1,40 @@
+#![doc = include_str!("../README.md")]
+pub mod analysis;
+pub mod bit_io;
+pub mod bitmap;
+pub mod config;
+pub mod hybrid;
+pub mod io;
+pub mod length_graph;
+pub mod modernization;
+pub mod optional;
+pub mod payload_quant;
+mod primitive_macro;
+pub mod qps;
+pub mod qps_bytes;
+pub mod rt;
+pub mod schema_hash;
+pub mod schema_modernization;
+pub mod schema_payload_quant;
+pub mod serialize;
+pub mod socket;
+pub mod static_index;
+pub mod static_optional;
+pub mod strings;
+pub mod types;
+pub mod validation;
+pub mod wire;
+pub use bit_io::*;
+pub use config::GenerationConfig;
+pub use io::*;
+pub use modernization::{InlineArray, StackString};
+pub use optional::OptionalOffsets;
+pub use payload_quant::{QuantizedFrame, QuantizedLease, QuantizedOut, QuantizedRegions};
+pub use schema_hash::{
+    SchemaHashAlgorithm, SchemaHashKind, SchemaHashes, SchemaIdentity, SCHEMA_HASH_VERSION,
+};
+pub use serialize::*;
+pub use socket::RawSocket;
+pub use strings::*;
+pub use types::*;
+pub use wire::*;

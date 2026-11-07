@@ -32,7 +32,7 @@ def mask_rust(s):
   i+=1
  return ''.join(out)
 pattern=re.compile(r'^\s*pub\s+(?:(?:unsafe|const|async)\s+)*(fn|struct|enum|trait|type|const|static|mod|use)\b',re.M)
-for folder in ['qsl/src','qsl/macros/src','qsl-lexer/src','qsl-interpreter/src']:
+for folder in ['qsl-core/src','qsl/src','qsl/macros/src','qsl-lexer/src','qsl-interpreter/src']:
  for p in sorted((root/folder).rglob('*.rs')):
   text=p.read_text(encoding='utf-8');masked=mask_rust(text)
   for match in pattern.finditer(masked):
@@ -50,7 +50,7 @@ for folder in ['qsl/src','qsl/macros/src','qsl-lexer/src','qsl-interpreter/src']
      if stop:
       b=end+method.end()+stop.end();items.append({'module':p.relative_to(root/folder).with_suffix('').as_posix(),'path':p.relative_to(root).as_posix(),'line':text.count('\n',0,a)+1,'kind':'trait method','signature':' '.join(text[a:b].split()),'doc':''})
 # Exported declarative macros are APIs too; generated Rust string literals stay masked.
-for folder in ['qsl-lexer/src','qsl-interpreter/src','qsl/src']:
+for folder in ['qsl-core/src','qsl-lexer/src','qsl-interpreter/src','qsl/src']:
  for p in sorted((root/folder).rglob('*.rs')):
   text=p.read_text(encoding='utf-8');masked=mask_rust(text)
   for m in re.finditer(r'macro_rules!\s+(\w+)',masked):
@@ -59,7 +59,7 @@ for folder in ['qsl-lexer/src','qsl-interpreter/src','qsl/src']:
 items.sort(key=lambda x:(x['path'],x['line']));(repo/'docs/data/api.json').write_text(json.dumps(items,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 for lang in ['en','ru']:
  ru=lang=='ru';head=('# Индекс публичных объявлений\n\n[English](API.en.md) · [Архитектура](architecture.ru.md)\n\n' if ru else '# Public declaration index\n\n[Русский](API.ru.md) · [Architecture](architecture.en.md)\n\n')
- head+=(f'Найдено {len(items)} явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Учитывайте feature rust-macros/diagnostics; native/Windows зависимость удалена; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из [manifest](../reference/crates-release-0.2.0/source-manifest.json). Репозиторий содержит самостоятельные Cargo-пакеты и документацию QSL 0.2.0.\n\n' if ru else f'{len(items)} explicitly public declarations and trait method signatures from current sources. This is a source index, not reflection of every platform export. rust-macros/diagnostics feature gates still apply; no native/Windows dependency remains; generator string literals are excluded. Paths/lines refer to the local snapshot in the [manifest](../reference/crates-release-0.2.0/source-manifest.json). The repository contains independent Cargo packages and QSL 0.2.0 documentation.\n\n')
+ head+=(f'Найдено {len(items)} явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Учитывайте feature rust-macros/diagnostics; native/Windows зависимость удалена; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из [manifest](../reference/core-refactor-2026-11-08/source-manifest.json). Индекс относится к текущей ветке main с qsl-core после опубликованного 0.2.0.\n\n' if ru else f'{len(items)} explicitly public declarations and trait method signatures from current sources. This is a source index, not reflection of every platform export. rust-macros/diagnostics feature gates still apply; no native/Windows dependency remains; generator string literals are excluded. Paths/lines refer to the local snapshot in the [manifest](../reference/core-refactor-2026-11-08/source-manifest.json). This index follows current main, including qsl-core extraction after published 0.2.0.\n\n')
  module=None
  for x in items:
   if x['path']!=module:module=x['path'];head+=f'## {module}\n\n'

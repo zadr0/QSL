@@ -1,5 +1,12 @@
-# binary_opt · QSL 0.2.0
+# binary_opt
 
-Модификатор string/str: true выбирает UTF-8 байты, view — &str, inline — отдельный заголовок ограниченной строки, guard сохраняет совместимый COPY-синтаксис. Текущее COPY-хранение использует String/StackString по границам и STACK_LIMIT; старые Guard доступны как runtime API. Проверка UTF-8 сохраняется. Фиксированная строка использует [u8;N] в пределах строгого лимита либо описанный owned-fallback выше него.
+Модификатор применяется только к string/str. Поддерживаются false (обычный String), inline (InlineString<N>) и view (&str). По умолчанию выбирается String; aggressive может выбрать StackString<N> для конечного диапазона в STACK_LIMIT. guard и true больше не принимаются.
 
-[Полное руководство](../../guide.ru.md) · [Безопасность](../../safety.ru.md) · [Переход](../../migration-0.2.0.ru.md) · [Все атрибуты](index.md).
+```qsl
+&Text[safety] {
+    str(1..100) name|binary_opt=view|;
+    str(1..100) owned;
+}
+```
+
+Границы заданы в байтах UTF-8. &str требует времени жизни исходного кадра. Сжатую переменную строку нельзя выдавать как заимствованный &str: для восстановления нужна память назначения. Fixed native str(N) сохраняет [u8; N]. New/reuse выбирает метод чтения и не является значением binary_opt.

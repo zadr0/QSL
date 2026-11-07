@@ -1,3 +1,5 @@
+> **Current main branch:** [qsl-core and string contracts](migration-0.3.0.en.md). Variable strings use String, &str, StackString and InlineString. Guard and byte-string modes are no longer supported. Changes after published 0.2.0 are available from source.
+
 > **QSL 0.2.0:** [migration and current contracts](migration-0.2.0.en.md). BM changes format; ordinary non-BM tags are preserved. Windows-specific runtime modules and the native Cargo feature are removed. Historical measurement chapters retain their captured versions.
 
 
@@ -47,7 +49,7 @@ include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
 ```qsl
 &Message[safety,opt_table] {
     u32 id;
-    str(0..4096) text|binary_opt=guard|;
+    str(0..4096) text;
     u16? code;
 }
 ```
@@ -147,15 +149,13 @@ PS is inactive when BM is selected and cannot reorder its traversal. QPS does no
 |---|---|---|
 | Ordinary string | String | Creates and fills owned storage |
 | lifetime | &'a str | Borrows input bytes |
-| binary_opt=true | &'a [u8] | Borrows UTF-8 bytes |
-| binary_opt=view | Utf8Guard<'a> | Borrowed string-like view |
-| binary_opt=guard | String / StackString | COPY compatibility syntax; no separate Guard |
+| binary_opt=view | &'a str | Borrowed validated UTF-8 |
 | binary_opt=inline | InlineString<MAX> | Copies into inline capacity |
 | decompress=true | InlineString<MAX>, or [u8; N] for fixed strings | Restores raw/LZ into final storage |
 
 A Unicode scalar can occupy multiple UTF-8 bytes. Measurements therefore distinguish 1024 characters from their actual byte count. Schema bounds and P use bytes.
 
-CopyGuard does not borrow its input frame. Initial storage can allocate; sufficient prepared capacity can be reused. InlineString avoids a separate string allocation, but a large MAX increases the native object and working set even for short values.
+New initializes fresh storage; reuse updates a prepared destination. Prepare sufficient String capacity first. StackString and InlineString copy bytes into inline storage; maximum capacity affects object size independently of current length.
 
 Borrowed modes need the appropriate lifetime and a live immutable source. Fixed strings remain [u8; N] regardless of binary_opt. Decoded bytes cannot be borrowed from compressed source storage; restoration needs its own region.
 
@@ -345,9 +345,7 @@ QslType is the internal generation model; ParserQslType adapts the earlier AST. 
 | String | String or borrowed &str | String.0: usize, legacy minimum; text str uses zero |
 | RangedString | String or borrowed &str | min/max: UTF-8 byte bounds |
 | CompressedString | InlineString<MAX> | min/max: restored UTF-8 byte bounds |
-| BinaryString | &'a [u8] | min/max: UTF-8 byte bounds, optional upper bound |
-| GuardString | Utf8Guard<'a> | min/max: borrowed UTF-8 byte bounds |
-| CopyGuardString | Utf8CopyGuard | min/max: owned byte-buffer bounds |
+| BorrowedString | &'a str | min/max: UTF-8 byte bounds |
 | InlineRawString | InlineString<MAX> | min/max: raw inline byte bounds |
 | FixedCompressedString | [u8; N] | FixedCompressedString.0: usize, restored fixed byte count |
 | Array | Vec<T> or borrowed byte slice | Array.0: Box<QslType>, element; Array.1: usize, minimum count |

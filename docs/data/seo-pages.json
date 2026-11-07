@@ -130,6 +130,19 @@
     }
   },
   {
+    "path": "migration-0.3.0.ru.html",
+    "url": "https://zadr0.github.io/QSL/migration-0.3.0.ru.html",
+    "lang": "ru",
+    "title": "Переход QSL к qsl-core и четырём строковым представлениям",
+    "description": "Изменения текущей ветки QSL: qsl-core, разделение парсера и генератора, String, &str, StackString, InlineString и new/reuse.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/migration-0.3.0.ru.html",
+      "en": "https://zadr0.github.io/QSL/migration-0.3.0.en.html",
+      "x-default": "https://zadr0.github.io/QSL/migration-0.3.0.en.html"
+    }
+  },
+  {
     "path": "opt-table-control.ru.html",
     "url": "https://zadr0.github.io/QSL/opt-table-control.ru.html",
     "lang": "ru",
@@ -325,6 +338,19 @@
     }
   },
   {
+    "path": "migration-0.3.0.en.html",
+    "url": "https://zadr0.github.io/QSL/migration-0.3.0.en.html",
+    "lang": "en",
+    "title": "QSL core extraction and four string representations",
+    "description": "Current QSL source changes: qsl-core, separate frontend/backend, String, &str, StackString, InlineString and new/reuse.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/migration-0.3.0.en.html",
+      "ru": "https://zadr0.github.io/QSL/migration-0.3.0.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/migration-0.3.0.en.html"
+    }
+  },
+  {
     "path": "opt-table-control.en.html",
     "url": "https://zadr0.github.io/QSL/opt-table-control.en.html",
     "lang": "en",
@@ -492,11 +518,596 @@
     }
   },
   {
+    "path": "attributes/en/aggressive.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/aggressive.html",
+    "lang": "en",
+    "title": "aggressive attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of aggressive in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/aggressive.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/aggressive.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/aggressive.html"
+    }
+  },
+  {
+    "path": "attributes/en/alignment.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/alignment.html",
+    "lang": "en",
+    "title": "alignment attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of alignment in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/alignment.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/alignment.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/alignment.html"
+    }
+  },
+  {
+    "path": "attributes/en/binary_opt.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/binary_opt.html",
+    "lang": "en",
+    "title": "binary_opt attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of binary_opt in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/binary_opt.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/binary_opt.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/binary_opt.html"
+    }
+  },
+  {
+    "path": "attributes/en/bitmap.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/bitmap.html",
+    "lang": "en",
+    "title": "bitmap attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of bitmap in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/bitmap.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/bitmap.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/bitmap.html"
+    }
+  },
+  {
+    "path": "attributes/en/cache.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/cache.html",
+    "lang": "en",
+    "title": "cache attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of cache in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/cache.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/cache.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/cache.html"
+    }
+  },
+  {
+    "path": "attributes/en/compact.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/compact.html",
+    "lang": "en",
+    "title": "compact attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of compact in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/compact.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/compact.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/compact.html"
+    }
+  },
+  {
+    "path": "attributes/en/decompress.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/decompress.html",
+    "lang": "en",
+    "title": "decompress attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of decompress in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/decompress.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/decompress.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/decompress.html"
+    }
+  },
+  {
+    "path": "attributes/en/default.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/default.html",
+    "lang": "en",
+    "title": "default attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of default in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/default.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/default.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/default.html"
+    }
+  },
+  {
+    "path": "attributes/en/index.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/index.html",
+    "lang": "en",
+    "title": "QSL attributes — complete reference",
+    "description": "Syntax, purpose and limitations of index in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/index.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/index.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/index.html"
+    }
+  },
+  {
+    "path": "attributes/en/inline.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/inline.html",
+    "lang": "en",
+    "title": "inline attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of inline in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/inline.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/inline.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/inline.html"
+    }
+  },
+  {
+    "path": "attributes/en/lifetime.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/lifetime.html",
+    "lang": "en",
+    "title": "lifetime attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of lifetime in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/lifetime.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/lifetime.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/lifetime.html"
+    }
+  },
+  {
+    "path": "attributes/en/loyal_cache.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/loyal_cache.html",
+    "lang": "en",
+    "title": "loyal_cache attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of loyal_cache in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/loyal_cache.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/loyal_cache.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/loyal_cache.html"
+    }
+  },
+  {
+    "path": "attributes/en/macros.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/macros.html",
+    "lang": "en",
+    "title": "macros attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of macros in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/macros.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/macros.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/macros.html"
+    }
+  },
+  {
+    "path": "attributes/en/opt_table.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/opt_table.html",
+    "lang": "en",
+    "title": "opt_table attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of opt_table in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/opt_table.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/opt_table.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/opt_table.html"
+    }
+  },
+  {
+    "path": "attributes/en/predict_seq.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/predict_seq.html",
+    "lang": "en",
+    "title": "predict_seq attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of predict_seq in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/predict_seq.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/predict_seq.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/predict_seq.html"
+    }
+  },
+  {
+    "path": "attributes/en/qps.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/qps.html",
+    "lang": "en",
+    "title": "qps attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of qps in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/qps.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/qps.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/qps.html"
+    }
+  },
+  {
+    "path": "attributes/en/quant.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/quant.html",
+    "lang": "en",
+    "title": "quant attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of quant in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/quant.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/quant.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/quant.html"
+    }
+  },
+  {
+    "path": "attributes/en/rt.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/rt.html",
+    "lang": "en",
+    "title": "rt attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of rt in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/rt.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/rt.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/rt.html"
+    }
+  },
+  {
+    "path": "attributes/en/safety.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/safety.html",
+    "lang": "en",
+    "title": "safety attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of safety in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/safety.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/safety.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/safety.html"
+    }
+  },
+  {
+    "path": "attributes/en/slots.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/slots.html",
+    "lang": "en",
+    "title": "slots attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of slots in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/slots.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/slots.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/slots.html"
+    }
+  },
+  {
+    "path": "attributes/en/state_bits.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/state_bits.html",
+    "lang": "en",
+    "title": "state_bits attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of state_bits in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/state_bits.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/state_bits.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/state_bits.html"
+    }
+  },
+  {
+    "path": "attributes/en/transmutate.html",
+    "url": "https://zadr0.github.io/QSL/attributes/en/transmutate.html",
+    "lang": "en",
+    "title": "transmutate attribute — QSL reference",
+    "description": "Syntax, purpose and limitations of transmutate in current QSL source.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/attributes/en/transmutate.html",
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/transmutate.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/transmutate.html"
+    }
+  },
+  {
+    "path": "attributes/ru/aggressive.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/aggressive.html",
+    "lang": "ru",
+    "title": "Атрибут aggressive — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута aggressive в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/aggressive.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/aggressive.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/aggressive.html"
+    }
+  },
+  {
+    "path": "attributes/ru/alignment.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/alignment.html",
+    "lang": "ru",
+    "title": "Атрибут alignment — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута alignment в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/alignment.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/alignment.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/alignment.html"
+    }
+  },
+  {
+    "path": "attributes/ru/binary_opt.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/binary_opt.html",
+    "lang": "ru",
+    "title": "Атрибут binary_opt — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута binary_opt в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/binary_opt.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/binary_opt.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/binary_opt.html"
+    }
+  },
+  {
+    "path": "attributes/ru/bitmap.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/bitmap.html",
+    "lang": "ru",
+    "title": "Атрибут bitmap — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута bitmap в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/bitmap.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/bitmap.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/bitmap.html"
+    }
+  },
+  {
+    "path": "attributes/ru/cache.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/cache.html",
+    "lang": "ru",
+    "title": "Атрибут cache — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута cache в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/cache.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/cache.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/cache.html"
+    }
+  },
+  {
+    "path": "attributes/ru/compact.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/compact.html",
+    "lang": "ru",
+    "title": "Атрибут compact — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута compact в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/compact.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/compact.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/compact.html"
+    }
+  },
+  {
+    "path": "attributes/ru/decompress.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/decompress.html",
+    "lang": "ru",
+    "title": "Атрибут decompress — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута decompress в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/decompress.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/decompress.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/decompress.html"
+    }
+  },
+  {
+    "path": "attributes/ru/default.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/default.html",
+    "lang": "ru",
+    "title": "Атрибут default — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута default в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/default.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/default.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/default.html"
+    }
+  },
+  {
+    "path": "attributes/ru/index.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/index.html",
+    "lang": "ru",
+    "title": "Атрибуты QSL — полный справочник",
+    "description": "Синтаксис, назначение и ограничения атрибута index в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/index.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/index.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/index.html"
+    }
+  },
+  {
+    "path": "attributes/ru/inline.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/inline.html",
+    "lang": "ru",
+    "title": "Атрибут inline — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута inline в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/inline.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/inline.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/inline.html"
+    }
+  },
+  {
+    "path": "attributes/ru/lifetime.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/lifetime.html",
+    "lang": "ru",
+    "title": "Атрибут lifetime — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута lifetime в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/lifetime.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/lifetime.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/lifetime.html"
+    }
+  },
+  {
+    "path": "attributes/ru/loyal_cache.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/loyal_cache.html",
+    "lang": "ru",
+    "title": "Атрибут loyal_cache — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута loyal_cache в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/loyal_cache.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/loyal_cache.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/loyal_cache.html"
+    }
+  },
+  {
+    "path": "attributes/ru/macros.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/macros.html",
+    "lang": "ru",
+    "title": "Атрибут macros — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута macros в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/macros.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/macros.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/macros.html"
+    }
+  },
+  {
+    "path": "attributes/ru/opt_table.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/opt_table.html",
+    "lang": "ru",
+    "title": "Атрибут opt_table — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута opt_table в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/opt_table.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/opt_table.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/opt_table.html"
+    }
+  },
+  {
+    "path": "attributes/ru/predict_seq.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/predict_seq.html",
+    "lang": "ru",
+    "title": "Атрибут predict_seq — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута predict_seq в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/predict_seq.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/predict_seq.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/predict_seq.html"
+    }
+  },
+  {
+    "path": "attributes/ru/qps.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/qps.html",
+    "lang": "ru",
+    "title": "Атрибут qps — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута qps в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/qps.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/qps.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/qps.html"
+    }
+  },
+  {
+    "path": "attributes/ru/quant.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/quant.html",
+    "lang": "ru",
+    "title": "Атрибут quant — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута quant в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/quant.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/quant.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/quant.html"
+    }
+  },
+  {
+    "path": "attributes/ru/rt.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/rt.html",
+    "lang": "ru",
+    "title": "Атрибут rt — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута rt в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/rt.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/rt.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/rt.html"
+    }
+  },
+  {
+    "path": "attributes/ru/safety.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/safety.html",
+    "lang": "ru",
+    "title": "Атрибут safety — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута safety в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/safety.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/safety.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/safety.html"
+    }
+  },
+  {
+    "path": "attributes/ru/slots.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/slots.html",
+    "lang": "ru",
+    "title": "Атрибут slots — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута slots в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/slots.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/slots.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/slots.html"
+    }
+  },
+  {
+    "path": "attributes/ru/state_bits.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/state_bits.html",
+    "lang": "ru",
+    "title": "Атрибут state_bits — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута state_bits в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/state_bits.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/state_bits.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/state_bits.html"
+    }
+  },
+  {
+    "path": "attributes/ru/transmutate.html",
+    "url": "https://zadr0.github.io/QSL/attributes/ru/transmutate.html",
+    "lang": "ru",
+    "title": "Атрибут transmutate — справочник QSL",
+    "description": "Синтаксис, назначение и ограничения атрибута transmutate в текущей ветке QSL.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/attributes/ru/transmutate.html",
+      "en": "https://zadr0.github.io/QSL/attributes/en/transmutate.html",
+      "x-default": "https://zadr0.github.io/QSL/attributes/en/transmutate.html"
+    }
+  },
+  {
     "path": "QSL_standalone_RU_EN.html",
     "url": "https://zadr0.github.io/QSL/",
     "lang": "ru",
     "title": "QSL — бинарная сериализация и компилятор схем Rust",
     "description": "QSL генерирует Rust-кодеки по явной схеме: типы, UTF-8, optional-поля, проверка входа и подготовленные буферы. Документация RU/EN.",
+    "index": false,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/",
+      "en": "https://zadr0.github.io/QSL/en.html",
+      "x-default": "https://zadr0.github.io/QSL/"
+    }
+  },
+  {
+    "path": "QSL_standalone_EN.html",
+    "url": "https://zadr0.github.io/QSL/en.html",
+    "lang": "en",
+    "title": "QSL — Rust binary serialization and schema compiler",
+    "description": "QSL is a Rust binary serialization library and schema compiler for explicit data layouts, UTF-8, optional fields and prepared buffers.",
     "index": false,
     "alternates": {
       "ru": "https://zadr0.github.io/QSL/",

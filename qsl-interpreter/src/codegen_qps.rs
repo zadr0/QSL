@@ -52,10 +52,7 @@ pub(crate) fn maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {
             } else if schema.compact()
                 && matches!(
                     f.data,
-                    QslType::RangedString { .. }
-                        | QslType::BinaryString { .. }
-                        | QslType::GuardString { .. }
-                        | QslType::CopyGuardString { .. }
+                    QslType::RangedString { .. } | QslType::BorrowedString { .. }
                 )
             {
                 s.bits(f.data.rank_width(f.bits)?)?;
@@ -235,9 +232,7 @@ pub(super) fn variable(ty: &QslType) -> bool {
         QslType::String(_)
             | QslType::RangedString { .. }
             | QslType::InlineRawString { .. }
-            | QslType::BinaryString { .. }
-            | QslType::GuardString { .. }
-            | QslType::CopyGuardString { .. }
+            | QslType::BorrowedString { .. }
     )
 }
 pub(super) fn raw_read_stored(
@@ -276,9 +271,9 @@ pub(super) fn raw_read(
         format!("let __bytes=std::slice::from_raw_parts(reader.read_exact({len}),{len});"),
     );
     let expr=match ty {
-        QslType::BinaryString{..}=>"__bytes".into(),
-        QslType::GuardString{..}=>"::qsl::Utf8Guard::from_bytes_unchecked(__bytes)".into(),
-        QslType::CopyGuardString{..}=>"::qsl::Utf8CopyGuard::from_bytes_unchecked(__bytes)".into(),
+
+        QslType::BorrowedString{..}=>"std::str::from_utf8_unchecked(__bytes)".into(),
+
         QslType::InlineRawString{max,..}=>format!("::qsl::InlineString::<{max}>::from_str_unchecked(std::str::from_utf8_unchecked(__bytes))"),
         _ if borrowed=>"std::str::from_utf8_unchecked(__bytes)".into(),
         _=>"String::from_utf8_unchecked(__bytes.to_vec())".into()
@@ -368,11 +363,7 @@ pub(super) fn write(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             format!("&self.{}", f.name)
         };
         if f.optional && variable(&f.data) {
-            let bytes = if matches!(f.data, QslType::BinaryString { .. }) {
-                expr.to_string()
-            } else {
-                format!("({expr}).as_bytes()")
-            };
+            let bytes = { format!("({expr}).as_bytes()") };
             ln(out, format!("writer.write_bytes_unchecked({bytes});"));
         } else {
             fast_stored_write(f, out, &expr, f.bits, false)?;

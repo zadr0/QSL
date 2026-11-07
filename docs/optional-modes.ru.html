@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f5f7"><link rel="stylesheet" href="assets/full.css"><link rel="stylesheet" href="assets/explorers.css">
+<!doctype html><html lang="ru" data-generation="3"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="assets/full.css?v=96f71b9057">
 <title>Опциональные поля QSL — bitmap, predict_seq и opt_table</title>
 <meta name="description" content="Различия BM, PS и OT в QSL: маски 8–128 бит, индекс по длине, функции чтения, формат кадра и ограничения.">
 <meta name="robots" content="index,follow,max-image-preview:large">
@@ -14,16 +14,16 @@
 <meta property="og:description" content="Различия BM, PS и OT в QSL: маски 8–128 бит, индекс по длине, функции чтения, формат кадра и ограничения.">
 <meta property="og:url" content="https://zadr0.github.io/QSL/optional-modes.ru.html">
 <meta property="og:locale" content="ru_RU">
-<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="QSL 0.2.0 — binary serialization for Rust">
+<meta property="og:image:alt" content="QSL — core, lexer, interpreter and Rust codec facade">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Опциональные поля QSL — bitmap, predict_seq и opt_table">
 <meta name="twitter:description" content="Различия BM, PS и OT в QSL: маски 8–128 бит, индекс по длине, функции чтения, формат кадра и ограничения.">
-<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card.png">
-<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/optional-modes.ru.html#webpage","url":"https://zadr0.github.io/QSL/optional-modes.ru.html","name":"Опциональные поля QSL — bitmap, predict_seq и opt_table","description":"Различия BM, PS и OT в QSL: маски 8–128 бит, индекс по длине, функции чтения, формат кадра и ограничения.","inLanguage":"ru","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
-</head><body><main class="book" style="max-width:1120px;padding:25px;margin:auto"><a href="index.html">QSL</a><h1 id="optional-modes-ru-1">Опциональные поля в QSL 0.2.0</h1>
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"main after 0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/optional-modes.ru.html#webpage","url":"https://zadr0.github.io/QSL/optional-modes.ru.html","name":"Опциональные поля QSL — bitmap, predict_seq и opt_table","description":"Различия BM, PS и OT в QSL: маски 8–128 бит, индекс по длине, функции чтения, формат кадра и ограничения.","inLanguage":"ru","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body data-data-version="6954f72e64ac"><main class="book"><nav class="doc-header"><a href="index.html">QSL / Документация</a><a href="optional-modes.en.html">English</a></nav><h1 id="optional-modes-ru-1">Опциональные поля в QSL 0.2.0</h1>
 <p><a href="optional-modes.en.html">English</a> · <a href="migration-0.2.0.ru.html">Переход</a></p>
 <h2 id="optional-modes-ru-2">Обычный режим: счётчик, теги и match</h2>
 <p>Обязательные поля находятся перед опциональными. Без PS и BM сохраняется прежний упакованный заголовок счётчика/тегов, затем обязательные значения и значения присутствующих optional-полей. По умолчанию обработчик выбирается через match. Для одного optional-поля остаётся однобитный признак присутствия. Теги соответствуют инкрементальному порядку схемы; разрывы после сворачивания регионов отображаются явно.</p>
@@ -41,4 +41,4 @@
 <p>При выборе BM механизм PS не применяется и не меняет порядок маски. QPS не предсказывает: это обратимая числовая упаковка по операнду. Старые каталоги смещений и state_bits имеют собственные форматы. Числовое QPS использует битовые смещения, а не принудительный байтовый dispatch каждого упакованного поля.</p>
 <h2 id="optional-modes-ru-7">Совместимость и измерения</h2>
 <p>Для старого смешанного opt_table сохраняйте predict_seq+opt_table на обеих сторонах. Обычный default/tag-table при переходе на 0.2.0 сохраняет счётчик и теги. BM требует согласованного перехода и имеет ревизию 2 в дескрипторе схемы. OT как политика выбора читателя и неактивный при BM атрибут PS не меняют BM-хэш.</p>
-<p><a href="https://github.com/zadr0/QSL/blob/v0.2.0/qsl-interpreter/tests/optional-v2/results/2026-11-07.md">Четыре случая от 7 ноября</a> не приняты как строгий замер из-за фоновой загрузки CPU. Старые результаты opt_table относятся к сохранённым исходникам и не являются оценкой 0.2.0.</p></main><nav id="qsl-language-links" class="footer" aria-label="Documentation languages"><a href="https://zadr0.github.io/QSL/" hreflang="ru">Русский</a> · <a href="https://zadr0.github.io/QSL/en.html" hreflang="en">English</a> · <a href="https://zadr0.github.io/QSL/sitemap.xml">Sitemap</a></nav></body></html>
+<p><a href="https://github.com/zadr0/QSL/blob/main/qsl-interpreter/tests/optional-v2/results/2026-11-07.md">Четыре случая от 7 ноября</a> не приняты как строгий замер из-за фоновой загрузки CPU. Старые результаты opt_table относятся к сохранённым исходникам и не являются оценкой 0.2.0.</p></main></body></html>

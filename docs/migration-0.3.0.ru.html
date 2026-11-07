@@ -1,0 +1,38 @@
+<!doctype html><html lang="ru" data-generation="3"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="assets/full.css?v=96f71b9057">
+<title>Переход QSL к qsl-core и четырём строковым представлениям</title>
+<meta name="description" content="Изменения текущей ветки QSL: qsl-core, разделение парсера и генератора, String, &amp;str, StackString, InlineString и new/reuse.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/migration-0.3.0.ru.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/migration-0.3.0.ru.html">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/migration-0.3.0.en.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/migration-0.3.0.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="Переход QSL к qsl-core и четырём строковым представлениям">
+<meta property="og:description" content="Изменения текущей ветки QSL: qsl-core, разделение парсера и генератора, String, &amp;str, StackString, InlineString и new/reuse.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/migration-0.3.0.ru.html">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL — core, lexer, interpreter and Rust codec facade">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Переход QSL к qsl-core и четырём строковым представлениям">
+<meta name="twitter:description" content="Изменения текущей ветки QSL: qsl-core, разделение парсера и генератора, String, &amp;str, StackString, InlineString и new/reuse.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"main after 0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/migration-0.3.0.ru.html#webpage","url":"https://zadr0.github.io/QSL/migration-0.3.0.ru.html","name":"Переход QSL к qsl-core и четырём строковым представлениям","description":"Изменения текущей ветки QSL: qsl-core, разделение парсера и генератора, String, &str, StackString, InlineString и new/reuse.","inLanguage":"ru","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body data-data-version="6954f72e64ac"><main class="book"><nav class="doc-header"><a href="index.html">QSL / Документация</a><a href="migration-0.3.0.en.html">English</a></nav><h1 id="migration-0.3.0-ru-1">Текущая ветка: qsl-core и строковые представления</h1>
+<p>Эти изменения относятся к исходникам main после выпуска 0.2.0. Пакеты 0.2.0 сохраняют опубликованное содержимое. Для новой архитектуры используйте checkout репозитория и локальные зависимости. Wire-формат BM v2 и обычных строк не меняется из-за переноса модулей.</p>
+<h2 id="migration-0.3.0-ru-2">Разделение крейтов</h2>
+<div class="table-scroll"><table><thead><tr><th>Крейт</th><th>Ответственность</th><th>Зависимости</th></tr></thead><tbody><tr><td>qsl-core</td><td>Ошибки, модель схемы, общие анализы, I/O, контейнеры UTF-8, валидация, буферы и низкоуровневые кодеки</td><td>не зависит от lexer/interpreter</td></tr><tr><td>qsl-lexer</td><td>Лексер, QSL/DEQ-парсер, загрузка, раскрытие шаблонов и сборщик схем</td><td>qsl-core</td></tr><tr><td>qsl-interpreter</td><td>Подготовка схемы для Rust и генерация исходного кода</td><td>qsl-lexer</td></tr><tr><td>qsl</td><td>Фасад исполнения, макросы и совместимые точки входа</td><td>core, lexer, interpreter, macro implementation</td></tr></tbody></table></div>
+<p>Старые модульные пути содержат только re-export и связанные тесты. Реализация хранится в core в одном экземпляре; тип QslError и контракты I/O едины. В core нет парсера и Rust-генератора. Зависимость будущего LLVM-backend от общей модели не требует исполнения interpreter.</p>
+<h2 id="migration-0.3.0-ru-3">Строки</h2>
+<div class="table-scroll"><table><thead><tr><th>Выбор</th><th>Rust-представление</th><th>Владение</th></tr></thead><tbody><tr><td>обычная строка</td><td>String</td><td>heap, владеющая</td></tr><tr><td>aggressive и конечная граница в STACK_LIMIT</td><td>StackString&lt;N&gt;</td><td>встроенная ёмкость</td></tr><tr><td>binary_opt=inline в STACK_LIMIT</td><td>InlineString&lt;N&gt;</td><td>встроенная ёмкость, отдельный заголовок длины</td></tr><tr><td>binary_opt=view</td><td>&amp;str</td><td>заимствование исходного UTF-8</td></tr></tbody></table></div>
+<p>New создаёт новое назначение. Reuse читает в инициализированное назначение; для String заранее готовится достаточная capacity. Это режимы методов, а не дополнительные строковые типы. binary_opt=guard и binary_opt=true отклоняются; Utf8Guard, Utf8CopyGuard и байтовая строка удалены. Явный &amp;str в Rust-макросе сохраняет соседние String владеющими. Фиксированные нативные байтовые поля сохраняют [u8; N].</p>
+<p>STACK_LIMIT по умолчанию равен 256 B. Обычные inline-строки сверх лимита восстанавливаются в String. Изменение лимита задаётся явно. Результат с &amp;str действителен только пока жив и неизменен исходный кадр.</p>
+<h2 id="migration-0.3.0-ru-4">Безопасность</h2>
+<p>Проверяемые методы по-прежнему проверяют границы, UTF-8, диапазоны, восстановленную длину сжатой строки и общий бюджет. Unchecked-методы сохранены; вызывающая сторона обеспечивает корректный кадр, время жизни, непересечение и достаточную память. Тесты включают поддельные длины, повреждённый UTF-8, все усечения и смешанное владение.</p>
+<h2 id="migration-0.3.0-ru-5">Новые измерения</h2>
+<p>Девять случаев Criterion отделяют String new/reuse, StackString new/reuse, InlineString new/reuse и &amp;str. Основной набор — 1024 символа кириллицы / 2048 полезных байт; контроль — 255 ASCII-символов. Для встроенных контейнеров в этом стенде явно выбран STACK_LIMIT=2048; это не стандартный бюджет. Проверки входа и подготовка буферов выполнены до измерения; new String включает выделение и Drop. 15 s прогрева, 10 s измерения, 200 выборок, 99% CI, ограничение процесса 8 GiB. См. <a href="index.html#measurements">интерактивный отчёт</a>.</p></main></body></html>

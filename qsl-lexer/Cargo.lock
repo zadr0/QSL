@@ -12,11 +12,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "qsl-core"
+version = "0.1.0"
+dependencies = [
+ "xxhash-rust",
+]
+
+[[package]]
 name = "qsl-lexer"
 version = "0.2.0"
 dependencies = [
+ "qsl-core",
  "syn",
- "xxhash-rust",
 ]
 
 [[package]]

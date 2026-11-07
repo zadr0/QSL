@@ -1,0 +1,42 @@
+{
+  "binarySha256": "AB3745819F9DDF58A64BC02772A55664E41686C3CA9F145E0CB10EC21649E547",
+  "exitCode": 0,
+  "elapsedSeconds": 323.5168351,
+  "processKernelSeconds": 159.203125,
+  "stackLimitBytes": 2048,
+  "ring": 1024,
+  "mainUsefulBytes": 2048,
+  "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)\r\nbinary: rustc\r\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\r\ncommit-date: 2026-08-18\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.98.0\r\nLLVM version: 22.1.8\r\n",
+  "unreadableProcessCount": 0.0,
+  "measurementSeconds": 10,
+  "smallUsefulBytes": 255,
+  "priority": "AboveNormal",
+  "otherProcessesObserved": 194.0,
+  "processCycles": 968390124600.0,
+  "date": "2026-11-08",
+  "limitGiB": 8,
+  "preBusyPercentPerCore": [
+    3.125,
+    5.426356589147287,
+    3.10077519379845,
+    2.3255813953488373
+  ],
+  "confidence": 0.99,
+  "uncheckedPrevalidated": true,
+  "otherProcessCpuSeconds": 64.234375,
+  "processUserSeconds": 163.65625,
+  "peakWorkingSetBytes": 20967424.0,
+  "includesAllocationAndDropForNewString": true,
+  "duringBusyPercentPerCore": [
+    10.972664928040182,
+    10.301361924079977,
+    11.14652757654786,
+    100.0
+  ],
+  "peakJobBytes": 16556032.0,
+  "affinityCore": 3,
+  "samples": 200,
+  "warmupSeconds": 15,
+  "mainUtf8Scalars": 1024,
+  "hotMetricsSampler": false
+}

@@ -52,3 +52,7 @@ P1: first validate with a narrow experiment. P2: schema/architecture dependent. 
 Detailed hypotheses and per-item controls are in the [Russian inventory](OPTIMIZATION_CANDIDATES.ru.md), with matching numbers and source anchors.
 
 Use one narrow experiment per hypothesis with the same data and wire contract. Compare default / tag-only opt_table / predict_seq / combined; checked / trusted; fresh / reused output. Collect ASM/LLVM and hardware events in separate diagnostic runs. Preserve size, length, UTF-8, range, tag and restored-size validation before unsafe decoding. Require repeatable improvement and retained source/raw evidence. Preliminary tag-dispatch timings did not include the new idle/noise controls and are not strict cross-protocol evidence.
+
+## After core extraction: StackString reuse
+
+The focused string harness exposes a separate reuse cost for StackString. This layout is not selected by prepared_read_layout; default Serializable::deserialize_reuse assigns a newly returned value. Candidate: write directly into initialized StackString storage without an intermediate return. This optimization has not been applied. Confirm the cause with assembly and an idle repeat; the first pass has background load.

@@ -12,7 +12,7 @@ class Page(HTMLParser):
   if tag=='script':self.current=None
  def handle_data(self,data):
   if self.current:self.scripts[self.current]+=data
-paths=[*root.glob('README*.md'),root/'SOURCE_AUDIT.md',*root.glob('docs/*.md'),*root.glob('docs/*.html'),*root.glob('docs/attributes/*/*.md'),*root.glob('docs/en/*.md'),*root.glob('docs/ru/*.md'),*root.glob('docs/releases/*'),root/'qsl-interpreter/tests/optional-v2/README.md']
+paths=[*root.glob('README*.md'),root/'SOURCE_AUDIT.md',*root.glob('docs/*.md'),*root.glob('docs/*.html'),*root.glob('docs/attributes/*/*.md'),*root.glob('docs/attributes/*/*.html'),*root.glob('docs/en/*.md'),*root.glob('docs/ru/*.md'),*root.glob('docs/releases/*'),root/'qsl-interpreter/tests/optional-v2/README.md']
 checked=0;errors=[]
 for p in paths:
  text=p.read_text(encoding='utf-8')
@@ -36,7 +36,7 @@ for row in api:
  assert 0<row['line']<=len(source.read_text(encoding='utf-8').splitlines()),row
 standalone=(root/'docs/QSL_standalone_RU_EN.html').read_text(encoding='utf-8')
 assert 'src="assets/' not in standalone and 'href="assets/' not in standalone
-assert 'QslBitmapDoc' in standalone
+assert 'QslManual' in standalone
 report={'current_files':len(paths),'checked_links':checked,'api_declarations':len(api),'broken':errors,'historical_archives':'preserved and excluded from current-link validation'}
 print(json.dumps(report,ensure_ascii=False))
 assert not errors

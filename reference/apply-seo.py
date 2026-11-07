@@ -1,17 +1,8 @@
 from pathlib import Path
 import html,json,re,os,secrets,urllib.parse,xml.etree.ElementTree as ET
 root=Path(__file__).resolve().parents[1]
-docs=root/'docs';base='https://zadr0.github.io/QSL/';tag='v0.2.0'
-# A real English HTML entry point is available before JavaScript executes.
-home=(docs/'index.html').read_text(encoding='utf-8');words=json.loads((docs/'data/full-words.json').read_text(encoding='utf-8'))
-def localized_open(m):
- attrs=re.sub(r'\s+hidden(?:="[^"]*")?','',m[2])
- return '<'+m[1]+attrs+(' hidden' if m[3]!='en' else '')+'>'
-en=re.sub(r'<([a-z][\w]*)([^>]*\bdata-locale="(ru|en)"[^>]*)>',localized_open,home)
-en=en.replace('<html lang="ru">','<html lang="en">',1)
-def translate(m):return m[1]+html.escape(words[m[3]][1])+m[5] if m[3] in words else m[0]
-en=re.sub(r'(<([a-z][\w]*)\b[^>]*\bdata-t="([^"]+)"[^>]*>)(.*?)(</\2>)',translate,en,flags=re.S)
-(docs/'en.html').write_text(en,encoding='utf-8')
+docs=root/'docs';base='https://zadr0.github.io/QSL/';tag='main'
+# Both language entry points are rendered explicitly by build-site.py.
 # Share images are deterministic typography, with no timing or ranking claims.
 card=docs/'assets/social-card.png'
 if not card.exists():
@@ -59,6 +50,8 @@ topics={
  'examples':(('Примеры QSL — схемы, UTF-8 и безопасное чтение','QSL examples — schemas, UTF-8 and checked decoding'),('Рабочие примеры QSL для Rust: числа, строки, optional-поля, QPS, RT, макросы и обработка повреждённых данных.','Runnable QSL Rust examples: numbers, strings, optional fields, QPS, RT, macros and rejection of malformed input.')),
  '0.2.0':(('QSL 0.2.0 — заметки выпуска и переход','QSL 0.2.0 — release notes and migration'),('Выпуск QSL 0.2.0: изменения формата и API, пакеты crates.io, проверки, исходники и документация RU/EN.','QSL 0.2.0 release: wire/API changes, crates.io packages, verification evidence, source tags and RU/EN documentation.')),
 }
+topics['migration-0.3.0']=(('Переход QSL к qsl-core и четырём строковым представлениям','QSL core extraction and four string representations'),('Изменения текущей ветки QSL: qsl-core, разделение парсера и генератора, String, &str, StackString, InlineString и new/reuse.','Current QSL source changes: qsl-core, separate frontend/backend, String, &str, StackString, InlineString and new/reuse.'))
+
 topics['SEO']=(('Поиск и индексация документации QSL','QSL documentation discovery and indexing'),('Техническое SEO документации QSL: canonical, RU/EN, sitemap, GitHub Pages, структурированные данные и границы индексации.','QSL documentation SEO: canonical URLs, RU/EN pages, sitemap, GitHub Pages, structured data and indexing boundaries.'))
 def url(path):return base+path.relative_to(docs).as_posix()
 def github_ref(path):
@@ -82,21 +75,26 @@ def rewrite_refs(text,path,origin):
   return m[1]+'='+m[2]+html.escape(new,quote=True)+m[2]
  return re.sub(r'(href|src)=(\x22|\x27)(.*?)\2',fix,text)
 records=[]
-paths=[docs/'index.html',docs/'en.html',*docs.glob('*.ru.html'),*docs.glob('*.en.html'),*docs.glob('releases/*.html'),*docs.glob('modernization-2026-11-06/*.html'),*docs.glob('reports/*.html'),docs/'QSL_standalone_RU_EN.html']
+paths=[docs/'index.html',docs/'en.html',*docs.glob('*.ru.html'),*docs.glob('*.en.html'),*docs.glob('releases/*.html'),*docs.glob('modernization-2026-11-06/*.html'),*docs.glob('reports/*.html'),*docs.glob('attributes/*/*.html'),docs/'QSL_standalone_RU_EN.html',docs/'QSL_standalone_EN.html']
 for path in dict.fromkeys(paths):
  relative=path.relative_to(docs).as_posix();text=path.read_text(encoding='utf-8')
- lang='en' if path.name=='en.html' or '.en.html' in path.name else 'ru'
+ lang='en' if path.name in ('en.html','QSL_standalone_EN.html') or '.en.html' in path.name or relative.startswith('attributes/en/') else 'ru'
  li=0 if lang=='ru' else 1;stem=re.sub(r'\.(ru|en)\.html$','',path.name)
- indexed='reports/' not in relative and 'modernization-' not in relative and path.name!='QSL_standalone_RU_EN.html'
- canonical=base if path.name in ('index.html','QSL_standalone_RU_EN.html') else url(path)
- if path.name in ('index.html','en.html','QSL_standalone_RU_EN.html'):
+ indexed='reports/' not in relative and 'modernization-' not in relative and path.name not in ('QSL_standalone_RU_EN.html','QSL_standalone_EN.html')
+ canonical=base if relative in ('index.html','QSL_standalone_RU_EN.html') else base+'en.html' if relative=='QSL_standalone_EN.html' else url(path)
+ if relative in ('index.html','en.html','QSL_standalone_RU_EN.html','QSL_standalone_EN.html'):
   title=('QSL — бинарная сериализация и компилятор схем Rust','QSL — Rust binary serialization and schema compiler')[li]
   description=('QSL генерирует Rust-кодеки по явной схеме: типы, UTF-8, optional-поля, проверка входа и подготовленные буферы. Документация RU/EN.','QSL is a Rust binary serialization library and schema compiler for explicit data layouts, UTF-8, optional fields and prepared buffers.')[li]
   alternates={'ru':base,'en':base+'en.html','x-default':base}
  else:
   default=((f'QSL — {stem}',f'QSL — {stem}'),('Документация проекта QSL и Rust-кодеков.','QSL project and Rust codec documentation.'))
   labels,descriptions=topics.get(stem,default);title=labels[li];description=descriptions[li]
-  other=path.with_name(path.name.replace('.ru.html','.en.html') if lang=='ru' else path.name.replace('.en.html','.ru.html'))
+  if relative.startswith('attributes/'):
+   stem=path.stem
+   title=('Атрибут '+stem+' — справочник QSL' if lang=='ru' else stem+' attribute — QSL reference') if stem!='index' else ('Атрибуты QSL — полный справочник' if lang=='ru' else 'QSL attributes — complete reference')
+   description=('Синтаксис, назначение и ограничения атрибута '+stem+' в текущей ветке QSL.' if lang=='ru' else 'Syntax, purpose and limitations of '+stem+' in current QSL source.')
+   other=path.parents[1]/('en' if lang=='ru' else 'ru')/path.name
+  else:other=path.with_name(path.name.replace('.ru.html','.en.html') if lang=='ru' else path.name.replace('.en.html','.ru.html'))
   alternates={lang:canonical}
   if other.exists() and other!=path:alternates['en' if lang=='ru' else 'ru']=url(other)
   alternates['x-default']=alternates.get('en',canonical)
@@ -105,18 +103,18 @@ for path in dict.fromkeys(paths):
  text=re.sub(r'<meta\b[^>]*(?:name|property)="(?:description|robots|og:[^"]+|twitter:[^"]+)"[^>]*>','',text)
  text=re.sub(r'<link\b[^>]*rel="(?:canonical|alternate|sitemap|icon)"[^>]*>','',text)
  text=re.sub(r'<script[^>]*id="seo-data"[^>]*>.*?</script>','',text,flags=re.S)
- image=base+'assets/social-card.png'
+ image=base+'assets/social-card-core.png'
  tags=['<title>'+html.escape(title)+'</title>','<meta name="description" content="'+html.escape(description,quote=True)+'">','<meta name="robots" content="'+('index,follow,max-image-preview:large' if indexed else 'noindex,follow')+'">','<link rel="canonical" href="'+canonical+'">','<link rel="sitemap" type="application/xml" href="'+base+'sitemap.xml">','<link rel="icon" type="image/svg+xml" href="'+base+'assets/favicon.svg">']
  for language,href in alternates.items():tags.append('<link rel="alternate" hreflang="'+language+'" href="'+href+'">')
- for prop,value in {'og:type':'website' if stem in ('index.html','en.html') else 'article','og:site_name':'QSL','og:title':title,'og:description':description,'og:url':canonical,'og:locale':'ru_RU' if lang=='ru' else 'en_US','og:image':image,'og:image:width':'1200','og:image:height':'630','og:image:alt':'QSL 0.2.0 — binary serialization for Rust'}.items():tags.append('<meta property="'+prop+'" content="'+html.escape(value,quote=True)+'">')
+ for prop,value in {'og:type':'website' if stem in ('index.html','en.html') else 'article','og:site_name':'QSL','og:title':title,'og:description':description,'og:url':canonical,'og:locale':'ru_RU' if lang=='ru' else 'en_US','og:image':image,'og:image:width':'1200','og:image:height':'630','og:image:alt':'QSL — core, lexer, interpreter and Rust codec facade'}.items():tags.append('<meta property="'+prop+'" content="'+html.escape(value,quote=True)+'">')
  for name,value in {'twitter:card':'summary_large_image','twitter:title':title,'twitter:description':description,'twitter:image':image}.items():tags.append('<meta name="'+name+'" content="'+html.escape(value,quote=True)+'">')
- graph={'@context':'https://schema.org','@graph':[{'@type':'SoftwareSourceCode','@id':base+'#software','name':'QSL','version':'0.2.0','description':'Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.','codeRepository':'https://github.com/zadr0/QSL','programmingLanguage':'Rust','runtimePlatform':'Rust 1.98+','url':base,'license':'https://spdx.org/licenses/MIT.html','isAccessibleForFree':True},{'@type':'WebPage','@id':canonical+'#webpage','url':canonical,'name':title,'description':description,'inLanguage':lang,'about':{'@id':base+'#software'}}]}
+ graph={'@context':'https://schema.org','@graph':[{'@type':'SoftwareSourceCode','@id':base+'#software','name':'QSL','version':'main after 0.2.0','description':'Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.','codeRepository':'https://github.com/zadr0/QSL','programmingLanguage':'Rust','runtimePlatform':'Rust 1.98+','url':base,'license':'https://spdx.org/licenses/MIT.html','isAccessibleForFree':True},{'@type':'WebPage','@id':canonical+'#webpage','url':canonical,'name':title,'description':description,'inLanguage':lang,'about':{'@id':base+'#software'}}]}
  tags.append('<script type="application/ld+json" id="seo-data">'+json.dumps(graph,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c')+'</script>')
  text=text.replace('</head>','\n'+'\n'.join(tags)+'\n</head>',1)
  text=re.sub(r'<html lang="[^"]+">','<html lang="'+lang+'">',text,count=1)
  text=rewrite_refs(text,path,origins.get(path.resolve(),path.resolve()))
  if lang=='en':text=text.replace('href="index.html">QSL','href="en.html">QSL').replace('href="../index.html">QSL','href="../en.html">QSL')
- if 'id="qsl-language-links"' not in text:
+ if 'id="qsl-language-links"' not in text and 'data-generation="3"' not in text:
   nav='<nav id="qsl-language-links" class="footer" aria-label="Documentation languages"><a href="'+base+'" hreflang="ru">Русский</a> · <a href="'+base+'en.html" hreflang="en">English</a> · <a href="'+base+'sitemap.xml">Sitemap</a></nav>'
   text=text.replace('</body>',nav+'</body>',1)
  path.write_text(text,encoding='utf-8')

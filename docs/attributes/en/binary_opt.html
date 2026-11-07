@@ -1,0 +1,32 @@
+<!doctype html><html lang="en" data-generation="3"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="../../assets/full.css?v=96f71b9057">
+<title>binary_opt attribute — QSL reference</title>
+<meta name="description" content="Syntax, purpose and limitations of binary_opt in current QSL source.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/attributes/en/binary_opt.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/binary_opt.html">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/binary_opt.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/binary_opt.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="binary_opt attribute — QSL reference">
+<meta property="og:description" content="Syntax, purpose and limitations of binary_opt in current QSL source.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/attributes/en/binary_opt.html">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL — core, lexer, interpreter and Rust codec facade">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="binary_opt attribute — QSL reference">
+<meta name="twitter:description" content="Syntax, purpose and limitations of binary_opt in current QSL source.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"main after 0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/attributes/en/binary_opt.html#webpage","url":"https://zadr0.github.io/QSL/attributes/en/binary_opt.html","name":"binary_opt attribute — QSL reference","description":"Syntax, purpose and limitations of binary_opt in current QSL source.","inLanguage":"en","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body data-data-version="6954f72e64ac"><main class="book"><nav class="doc-header"><a href="../../en.html">QSL / Attributes</a><a href="../ru/binary_opt.html">Русский</a></nav><h1 id="attribute-binary_opt-en-1">binary_opt</h1>
+<p>This modifier applies to string/str only. Supported values are false (ordinary String), inline (InlineString&lt;N&gt;) and view (&amp;str). Default storage is String; aggressive can select StackString&lt;N&gt; for a finite range within STACK_LIMIT. guard and true are no longer accepted.</p>
+<pre><code>&amp;Text[safety] {
+    str(1..100) name|binary_opt=view|;
+    str(1..100) owned;
+}</code></pre>
+<p>Bounds count UTF-8 bytes. &amp;str requires its source frame to remain alive. A compressed variable string cannot be returned as a borrowed &amp;str because restoration requires destination storage. Fixed native str(N) retains [u8; N]. New/reuse selects a decoding method and is not a binary_opt value.</p></main></body></html>

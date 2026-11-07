@@ -1,3 +1,5 @@
+> **Текущая ветка main:** общее исполнение и контракты схем вынесены в [qsl-core](qsl-core). Парсер и Rust-генератор остаются отдельными. Переменные строки: String, &str, StackString и InlineString; new/reuse — режимы методов. Эти изменения исходников следуют после опубликованного 0.2.0. [Архитектура](docs/architecture.ru.md) · [Переход](docs/migration-0.3.0.ru.md).
+
 # QSL 0.2.0
 
 [English](README.en.md) · [Полное руководство](https://zadr0.github.io/QSL/guide.ru.html) · [Установка](docs/quickstart.ru.md) · [GitHub Release](https://github.com/zadr0/QSL/releases/tag/v0.2.0)

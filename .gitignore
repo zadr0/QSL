@@ -13,3 +13,10 @@
 /qsl-interpreter/target/
 
 /examples/compiler-pipeline/target/
+/qsl-bench/strings/results/2026-11-08/
+/qsl-bench/strings/results/2026-11-08-idle/
+/qsl-bench/strings/results/2026-11-08-final/criterion/**/base/
+/qsl-bench/strings/results/2026-11-08-final/criterion/**/change/
+
+/qsl-core/target/
+/qsl-bench/strings/target/

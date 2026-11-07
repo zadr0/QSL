@@ -358,9 +358,9 @@ pub fn parse_qsl_raw_with_primitives(
                         }
                         p.expect("=")?;
                         let mode = p.ident()?;
-                        if !matches!(mode, "true" | "false" | "inline" | "guard" | "view") {
+                        if !matches!(mode, "false" | "inline" | "view") {
                             return Err(
-                                p.error("binary_opt must be true, false, inline, guard or view")
+                                p.error("binary_opt must be false (String), inline (InlineString) or view (&str); Guard and byte-string modes are unsupported")
                             );
                         }
                         binary_opt = Some(mode);
@@ -422,7 +422,7 @@ pub fn parse_qsl_raw_with_primitives(
                 if ty_name != "string" && ty_name != "str" && ty_name != "String" {
                     return Err(p.error("binary_opt is only valid on string/str fields"));
                 }
-                if matches!(mode, "true" | "guard" | "view")
+                if matches!(mode, "view")
                     && decompress == Some(true)
                     && !matches!(data, QslType::FixedCompressedString(_))
                 {
@@ -430,7 +430,7 @@ pub fn parse_qsl_raw_with_primitives(
                         "compressed bytes cannot borrow decoded storage; use binary_opt=inline",
                     ));
                 }
-                if matches!(mode, "true" | "guard" | "view")
+                if matches!(mode, "view")
                     && !matches!(
                         data,
                         QslType::FixedString(_) | QslType::FixedCompressedString(_)
@@ -441,16 +441,8 @@ pub fn parse_qsl_raw_with_primitives(
                         QslType::RangedString { min, max } => (min, Some(max)),
                         _ => return Err(p.error("invalid binary string")),
                     };
-                    data = if mode == "guard" {
-                        QslType::CopyGuardString { min, max }
-                    } else if mode == "view" {
-                        QslType::GuardString { min, max }
-                    } else {
-                        QslType::BinaryString { min, max }
-                    };
-                    if mode != "guard" {
-                        flags |= FLAG_FIELD_BORROW;
-                    }
+                    data = QslType::BorrowedString { min, max };
+                    flags |= FLAG_FIELD_BORROW;
                 } else if mode == "inline" && decompress != Some(true) {
                     data = match data {
                         QslType::RangedString { min, max } if max <= 65535 => {
@@ -754,11 +746,7 @@ mod lowlevel_tests {
         assert!(!a[0].lifetime());
         let a = parse_qsl("&A{str x|binary_opt=view|;}").unwrap();
         assert!(a[0].lifetime());
-        assert!(a[0].fields[0]
-            .data
-            .rust_type(true)
-            .unwrap()
-            .contains("Utf8Guard"));
+        assert!(a[0].fields[0].data.rust_type(true).unwrap().contains("str"));
     }
 }
 
@@ -782,24 +770,28 @@ mod fixed_utf8_tests {
 }
 
 #[cfg(test)]
-mod copy_guard_tests {
+mod string_modes_tests {
     use super::*;
     #[test]
-    fn guard_is_owned_and_view_is_explicitly_borrowed() {
-        for spec in ["str", "str(0..4096)"] {
-            let copy = parse_qsl(&format!("&A{{{spec} x|binary_opt=guard|;}}")).unwrap();
-            assert!(!copy[0].lifetime());
-            assert_eq!(
-                copy[0].fields[0].data.rust_type(false).unwrap(),
-                "::qsl::Utf8CopyGuard"
-            );
-            let view = parse_qsl(&format!("&A{{{spec} x|binary_opt=view|;}}")).unwrap();
-            assert!(view[0].lifetime());
+    fn retired_guard_and_byte_string_modes_are_rejected() {
+        for mode in ["guard", "true", "bytes", "Utf8Guard"] {
+            for spec in ["str", "str(0..100)", "str(10)"] {
+                assert!(parse_qsl(&format!("&A{{{spec} x|binary_opt={mode}|;}}")).is_err());
+            }
         }
-        let fixed = parse_qsl("&A{str(10) x|binary_opt=guard|;}").unwrap();
+    }
+    #[test]
+    fn explicit_view_generates_str_and_preserves_owned_siblings() {
+        let schemas =
+            parse_qsl("&A{str(0..100) text|binary_opt=view|;str(0..100) owned;}").unwrap();
+        assert!(schemas[0].lifetime());
         assert_eq!(
-            fixed[0].fields[0].data.rust_type(false).unwrap(),
-            "[u8; 10]"
+            schemas[0].fields[0].data.rust_type(false).unwrap(),
+            "&'a str"
+        );
+        assert_eq!(
+            schemas[0].fields[1].data.rust_type(false).unwrap(),
+            "String"
         );
     }
 }

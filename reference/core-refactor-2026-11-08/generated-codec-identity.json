@@ -1,0 +1,16 @@
+{
+  "measured_generated_sha256": [
+    "a7409ab12e86c868c065a43e8bcb76606abfa893a9d3db5d225e5b98bdb0b00d"
+  ],
+  "after_cold_generator_lint_cleanup": [
+    {
+      "sha256": "a7409ab12e86c868c065a43e8bcb76606abfa893a9d3db5d225e5b98bdb0b00d",
+      "matches_measured_generated_code": true
+    },
+    {
+      "sha256": "a7409ab12e86c868c065a43e8bcb76606abfa893a9d3db5d225e5b98bdb0b00d",
+      "matches_measured_generated_code": true
+    }
+  ],
+  "change": "Merged two identical cold code-generation branches. The generated string codec is byte-identical; the measured source archive remains unchanged."
+}

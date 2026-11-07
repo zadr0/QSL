@@ -1,0 +1,23 @@
+{
+  "ru_en_browser_verified": true,
+  "mobile_viewport": {
+    "width": 390,
+    "body_width": 384,
+    "document_width": 384
+  },
+  "memory_fallback": "String for StackString requested N=1024 with STACK_LIMIT=256",
+  "memory_inline": "StackString<1024>, 1028 B with STACK_LIMIT=2048",
+  "spare_bitmap_bit": "Safety rejects before reading optional fields",
+  "metric_switch": "P, B/ns; String_reuse waveform",
+  "api_filter": "3 / 792 for StackString",
+  "console_errors": [],
+  "static_links_checked": 1086,
+  "sitemap_canonical_urls": 80,
+  "source_api_declarations": 792,
+  "benchmark_cases": 9,
+  "registry_publication": "unchanged 0.2.0; source changes only",
+  "last_benchmark_os_background_percent": 8.155944317153995,
+  "strict_complete_run": false,
+  "publication_checkout_generated_contracts": 2,
+  "site_rebuild": "reference/build-site.py resolves the checkout from its own location"
+}

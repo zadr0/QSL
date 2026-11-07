@@ -4,7 +4,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let plain = OwnedText { text: text.clone() };
     let bytes = plain.serialize_checked()?;
     let borrowed = BorrowedText::deserialize_checked(&bytes)?;
-    let guard = GuardText::deserialize_checked(&bytes)?;
+    let guard = OwnedReuseText::deserialize_checked(&bytes)?;
     let inline = InlineText { text: text.clone() }.serialize_checked()?;
     let compressed = CompressedText { text: text.clone() }.serialize_checked()?;
     println!(

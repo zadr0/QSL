@@ -1,0 +1,38 @@
+<!doctype html><html lang="en" data-generation="3"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="assets/full.css?v=96f71b9057">
+<title>QSL core extraction and four string representations</title>
+<meta name="description" content="Current QSL source changes: qsl-core, separate frontend/backend, String, &amp;str, StackString, InlineString and new/reuse.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/migration-0.3.0.en.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/migration-0.3.0.en.html">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/migration-0.3.0.ru.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/migration-0.3.0.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="QSL core extraction and four string representations">
+<meta property="og:description" content="Current QSL source changes: qsl-core, separate frontend/backend, String, &amp;str, StackString, InlineString and new/reuse.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/migration-0.3.0.en.html">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL — core, lexer, interpreter and Rust codec facade">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="QSL core extraction and four string representations">
+<meta name="twitter:description" content="Current QSL source changes: qsl-core, separate frontend/backend, String, &amp;str, StackString, InlineString and new/reuse.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"main after 0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/migration-0.3.0.en.html#webpage","url":"https://zadr0.github.io/QSL/migration-0.3.0.en.html","name":"QSL core extraction and four string representations","description":"Current QSL source changes: qsl-core, separate frontend/backend, String, &str, StackString, InlineString and new/reuse.","inLanguage":"en","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body data-data-version="6954f72e64ac"><main class="book"><nav class="doc-header"><a href="en.html">QSL / Documentation</a><a href="migration-0.3.0.ru.html">Русский</a></nav><h1 id="migration-0.3.0-en-1">Current branch: qsl-core and string representations</h1>
+<p>These source changes follow release 0.2.0 on main. Published 0.2.0 packages are immutable. Use a repository checkout and local dependencies for the new architecture. Moving modules does not itself change BM v2 or ordinary string wire formats.</p>
+<h2 id="migration-0.3.0-en-2">Crate boundaries</h2>
+<div class="table-scroll"><table><thead><tr><th>Crate</th><th>Responsibility</th><th>Dependencies</th></tr></thead><tbody><tr><td>qsl-core</td><td>Errors, schema contracts, shared analyses, I/O, UTF-8 storage, validation, buffers and low-level codecs</td><td>no lexer/interpreter dependency</td></tr><tr><td>qsl-lexer</td><td>Tokens, QSL/DEQ parsing, loading, template expansion and schema builder</td><td>qsl-core</td></tr><tr><td>qsl-interpreter</td><td>Rust-specific preparation and Rust source generation</td><td>qsl-lexer</td></tr><tr><td>qsl</td><td>Application facade, macros and compatible entry points</td><td>core, lexer, interpreter, macro implementation</td></tr></tbody></table></div>
+<p>Old module paths contain re-exports and associated tests. Core owns each implementation once, including one QslError identity and I/O contracts. Core contains neither a source parser nor a Rust generator. A future LLVM backend can consume shared contracts without executing the interpreter.</p>
+<h2 id="migration-0.3.0-en-3">Strings</h2>
+<div class="table-scroll"><table><thead><tr><th>Choice</th><th>Rust representation</th><th>Ownership</th></tr></thead><tbody><tr><td>ordinary string</td><td>String</td><td>owned heap storage</td></tr><tr><td>aggressive, finite range within STACK_LIMIT</td><td>StackString&lt;N&gt;</td><td>inline capacity</td></tr><tr><td>binary_opt=inline within STACK_LIMIT</td><td>InlineString&lt;N&gt;</td><td>inline capacity and independent length header</td></tr><tr><td>binary_opt=view</td><td>&amp;str</td><td>borrowed UTF-8 from the input</td></tr></tbody></table></div>
+<p>New initializes a fresh destination. Reuse updates an initialized destination; prepare sufficient String capacity first. These are method modes, not additional string types. binary_opt=guard and binary_opt=true are rejected. Utf8Guard, Utf8CopyGuard and byte-string representations are removed. Explicit Rust &amp;str fields preserve owned String siblings. Fixed native byte fields retain [u8; N].</p>
+<p>STACK_LIMIT defaults to 256 B. Ordinary oversized inline strings fall back to String. Raising the budget is explicit. An &amp;str result requires its source frame to remain alive and immutable.</p>
+<h2 id="migration-0.3.0-en-4">Safety</h2>
+<p>Checked methods still enforce bounds, UTF-8, domains, actual decompressed lengths and aggregate budgets. Unchecked methods remain available with caller obligations for valid frames, lifetimes, disjoint storage and capacity. Tests cover forged lengths, invalid UTF-8, every truncation and mixed ownership.</p>
+<h2 id="migration-0.3.0-en-5">Current measurements</h2>
+<p>Nine Criterion cases separate String new/reuse, StackString new/reuse, InlineString new/reuse and &amp;str. The main set has 1024 Cyrillic scalars / 2048 useful bytes; the control has 255 ASCII scalars. This benchmark explicitly sets STACK_LIMIT=2048 for inline containers; it is not the default budget. Validation and buffer preparation precede timing; new String includes allocation and Drop. Warm-up 15 s, measurement 10 s, 200 samples, 99% CI, process memory limit 8 GiB. See the <a href="en.html#measurements">interactive report</a>.</p></main></body></html>

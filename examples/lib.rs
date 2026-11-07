@@ -104,10 +104,10 @@ mod tests {
         let a = BorrowedText { text: &text };
         assert_eq!(a.serialize_checked().unwrap(), wire);
         assert_eq!(BorrowedText::deserialize_checked(&wire).unwrap().text, text);
-        let a = GuardText { text: text.clone() };
+        let a = OwnedReuseText { text: text.clone() };
         assert_eq!(a.serialize_checked().unwrap(), wire);
         assert_eq!(
-            GuardText::deserialize_checked(&wire).unwrap().text.as_str(),
+            OwnedReuseText::deserialize_checked(&wire).unwrap().text.as_str(),
             text
         );
         let a = InlineText { text: text.clone() };

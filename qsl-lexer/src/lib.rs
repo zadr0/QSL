@@ -38,3 +38,5 @@ pub use schema_hash::{
 };
 pub use types::*;
 pub use wire::*;
+
+pub use qsl_core::{qsl_native_primitive, qsl_primitive};

@@ -1,57 +1,54 @@
-# Compiler architecture: one schema builder, independent backends
+# QSL architecture: core, lexer, interpreter and facade
 
-This contract is shipped in qsl 0.2.0 with qsl-lexer 0.2.0 and qsl-interpreter 0.2.0.
+This document describes current main after 0.2.0. [API changes](migration-0.3.0.en.md) · [Complete index](API.en.md).
 
-| Crate | Responsibility | Normal dependencies inside QSL |
-| --- | --- | --- |
-| qsl-lexer | Tokens, QSL/DEQ parsing, template expansion, shared schema model and analysis | none |
-| qsl-interpreter | Rust-specific storage lowering and Rust source generation | qsl-lexer |
-| qsl | Portable runtime, checked/trusted I/O, native-layout helpers and compiler facade | both compiler crates, qsl-macros-impl |
-| qsl-llvm (planned) | Target-specific LLVM lowering and compilation | qsl-lexer; other dependencies to be decided |
+## Crate boundaries
 
-## Collection and selection
+| Crate | Responsibility | QSL dependencies |
+|---|---|---|
+| qsl-core | Shared types/errors, schema contracts, range/length analyses, hashes, I/O, string containers, validation and output buffers | none |
+| qsl-lexer | Borrowed tokens, QSL/DEQ parsing, file loading, Rust-template expansion and schema builder | qsl-core |
+| qsl-interpreter | Rust representation selection; generation of structures, checked/unchecked methods and static tables | qsl-lexer |
+| qsl | Application facade, compatible imports and attribute macros | core, lexer, interpreter, qsl-macros-impl |
 
-The prototype's QslSchemaBuilder idea is adapted to the current parser and configuration model. There is one schema owner. `build_qsl_schem(path)` returns a validated collection; it does not choose a generator or write output. The collection contains owned schemas and DEQ settings and is accessible read-only. `AnalyzedModule` is a type alias for this same builder.
+The frontend no longer owns error or I/O implementations. Its compatible module paths forward to core. Runtime copies in the facade are re-exports too, preserving one QslError/QslCustom type identity through every import path.
 
-```rust,ignore
+Core neither depends on frontend/backend nor parses source text. Shared analyses consume an already constructed model and are not per-frame interpreters. Some compatibility model helpers still describe Rust storage; another backend must explicitly support or reject Rust-specific contracts.
+
+## One schema builder
+
+```rust
 use qsl_interpreter::prelude::*;
 let builder = build_qsl_schem("schemas")?;
 let rust = builder.use_interpreter()?;
-std::fs::write(output.join("qsl_gen.rs"), rust)?;
 ```
 
-For a source string use `QslSchemaBuilder::from_source`; for explicit file lists use `from_files` / `from_files_with_rust`. Directory collection sorts immediate QSL/DEQ paths. Explicit lists retain caller order. Duplicate declarations, conflicting configuration and malformed files return errors. Rust template sources remain explicit.
+QslSchemaBuilder owns validated schemas and configuration. use_interpreter borrows that collection, prepares Rust storage and returns generated source. The spelling-compatible use_interpenter alias remains. SchemaBackend provides associated result/error contracts for another backend. LLVM compilation is not implemented.
 
-## Backend contract
+## Pipeline
 
-`SchemaBackend` declares associated `Output` and `Error` types and a `compile(&mut self, &QslSchemaBuilder)` method. `use_backend` dispatches to a concrete implementation at build time. `RustGenerator` implements this trait and returns generated Rust bytes; `InterpreterBuilderExt` provides `use_interpreter()` and its spelling-compatible alias `use_interpenter()`.
+1. Lex borrowed tokens and byte spans; parse declarations and constants.
+2. Expand templates, assign tags and reject invalid names, cycles and field order.
+3. Core analyses calculate bit widths, length graphs, optional masks and schema identities.
+4. The Rust backend selects storage using STACK_LIMIT and native-region contracts.
+5. Generate concrete structures, codecs and static tables.
+6. rustc/LLVM compiles the source and determines the final native ABI.
 
-The backend borrows the collection. It performs target-specific lowering on a clone and cannot mutate the original through the public interface. The same builder can be sent to multiple backends or retried after a target failure. No backend selection, trait dispatch or schema parsing is added to generated hot paths.
+## Source map
 
-## LLVM boundary
+- qsl-core/src/io.rs and bit_io.rs: byte/bit cursors and exact register windows.
+- qsl-core/src/validation.rs: bounds, aggregate budgets, UTF-8 and actual string expansion.
+- qsl-core/src/strings.rs and modernization.rs: InlineString, StackString, native contracts and 8–128-bit loads.
+- qsl-core/src/schema_modernization.rs, types.rs and schema_hash.rs: shared models and analysis.
+- qsl-lexer/src/lexer.rs, parser.rs, deq.rs and builder.rs: source processing and schema collection.
+- qsl-interpreter/src/frontend.rs and codegen_*.rs: Rust preparation, codecs and dispatch.
 
-A future qsl-llvm crate can implement SchemaBackend and export its own extension trait with use_llvm(). It must choose its target architecture, data layout, ABI, intrinsics, object/JIT output and runtime linkage. There is no fake LLVM implementation or dependency in the current split.
+## Hot paths and safety
 
-Shared data records declared field order, domains, codecs, quantization and optional-field modes before Rust storage selection. Rust's PreparedModule contains its own lowering decisions. Existing Rust-facing annotations and compatibility helpers remain in the current schema model. Custom Rust codecs and native-layout assumptions are not automatically portable: a different backend must support them explicitly or reject them. Shared validation currently enforces the existing QSL language contracts; this is not a claim of arbitrary cross-target ABI support.
+Types, widths and rules are known before execution. Generated readers use prepared operations without parsing a schema. BM owns presence masks, predict_seq owns length-derived indices and opt_table dispatches readers. QPS packs values and does not predict optional presence.
 
-## Compatibility and verification
+Checked methods enforce cursor contracts before publishing values. Unchecked methods retain caller obligations for complete valid frames, capacity, disjoint storage and lifetimes. Moving an import does not weaken these conditions. Core has no platform-specific Windows socket/IPC modules; applications supply transport and interprocess memory.
 
-The qsl facade retains existing imports and checked/unchecked runtime methods. The legacy build_qsl_files helpers now delegate collection to QslSchemaBuilder and select Rust generation. Generated code continues to name ::qsl. Physical runtime I/O stays outside the frontend and generator crates.
+## Reproducibility
 
-The compiler-pipeline example has only qsl-interpreter as its build dependency and qsl as its runtime dependency. It exercises the shared builder, DEQ configuration, checked round-trip and truncated-input rejection. Tests check backend reuse, failure isolation and unchanged generated source. No new performance claims or broad benchmark runs accompany this structural change.
-
-## 0.2.0 lowering and dispatch
-
-`qsl-lexer/src/bitmap.rs` derives optional count, word width and marker bounds. `regions.rs` lowers each explicit native range into an independently named schema and one typed parent field, retaining the parent's ordinary tags. `rust_macro.rs`/`schema_macro.rs` expand reusable Rust field templates and retain explicitly native Rust definitions. Region names/layouts are checked before Rust emission.
-
-`qsl-interpreter/src/codegen_optional.rs` owns ordinary count/tag and BM cursor loops. Default match and static OT share the same unchecked field handlers; checked capture has its own fallible handlers. `codegen_qps.rs` retains PS/OT graph handlers. BM disables effective PS so the mask alone determines traversal. `codegen_native.rs` supplies region codec/NativeField adapters and validated views.
-
-`QslSchemaBuilder::with_primitive` registers explicit QslPrimitive layout facts before parser validation; imports reapply those facts after Rust expansion. qsl_primitive! uses typed constructors and a fixed whole-byte compact rank codec. It is not a blanket scalar replacement of arbitrary QslCustom implementations. Cross-target ABI facts are rechecked by generated target-side const assertions.
-
-The runtime no longer contains the Windows native module or any Windows-library dependency. SerOut uses the Rust allocator; RawSocket uses std TCP. Storage selection, register loads, COPY and LIFETIME do not require the removed Cargo feature. Application-owned IPC/TLS and a future LLVM backend are separate concerns.
-
-## Release and reproducibility
-
-qsl, qsl-lexer and qsl-interpreter are version 0.2.0. qsl-macros-impl stays 0.1.0 because its implementation did not change. BM v2 is a wire break; ordinary default/tag headers are preserved. Review the [migration contract](migration-0.2.0.en.md), [runtime safety](safety.en.md) and [source API index](API.en.md). The November 7 Criterion pass is explicitly rejected as a strict result, so this structural release claims no measured speedup.
-
-RT blocking uses std::sync::Mutex/Condvar; acquisition keeps its atomic counter. No direct kernel32 or platform syscall binding remains in QSL.
+The schema and wire-affecting options define the format. Moving Rust modules alone does not change a frame. BM v2 remains incompatible with former BM frames; ordinary raw/compact length rules remain unchanged. New string results retain source snapshots, binary SHA-256, Criterion settings and separate OS-noise evidence. Old timing profiles are not presented as current-source measurements.

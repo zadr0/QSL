@@ -71,6 +71,13 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/migration-0.2.0.en.html" />
   </url>
   <url>
+    <loc>https://zadr0.github.io/QSL/migration-0.3.0.ru.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/migration-0.3.0.ru.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/migration-0.3.0.en.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/migration-0.3.0.en.html" />
+  </url>
+  <url>
     <loc>https://zadr0.github.io/QSL/opt-table-control.ru.html</loc>
     <lastmod>2026-11-08</lastmod>
     <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/opt-table-control.ru.html" />
@@ -176,6 +183,13 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/migration-0.2.0.en.html" />
   </url>
   <url>
+    <loc>https://zadr0.github.io/QSL/migration-0.3.0.en.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/migration-0.3.0.en.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/migration-0.3.0.ru.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/migration-0.3.0.en.html" />
+  </url>
+  <url>
     <loc>https://zadr0.github.io/QSL/opt-table-control.en.html</loc>
     <lastmod>2026-11-08</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/opt-table-control.en.html" />
@@ -237,5 +251,313 @@
     <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/releases/0.2.0.ru.html" />
     <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/releases/0.2.0.en.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/releases/0.2.0.en.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/aggressive.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/aggressive.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/aggressive.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/aggressive.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/alignment.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/alignment.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/alignment.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/alignment.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/binary_opt.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/binary_opt.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/binary_opt.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/binary_opt.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/bitmap.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/bitmap.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/bitmap.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/bitmap.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/cache.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/cache.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/cache.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/cache.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/compact.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/compact.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/compact.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/compact.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/decompress.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/decompress.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/decompress.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/decompress.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/default.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/default.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/default.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/default.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/index.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/index.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/index.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/index.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/inline.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/inline.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/inline.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/inline.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/lifetime.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/lifetime.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/lifetime.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/lifetime.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/loyal_cache.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/loyal_cache.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/loyal_cache.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/loyal_cache.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/macros.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/macros.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/macros.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/macros.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/opt_table.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/opt_table.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/opt_table.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/opt_table.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/predict_seq.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/predict_seq.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/predict_seq.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/predict_seq.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/qps.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/qps.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/qps.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/qps.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/quant.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/quant.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/quant.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/quant.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/rt.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/rt.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/rt.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/rt.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/safety.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/safety.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/safety.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/safety.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/slots.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/slots.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/slots.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/slots.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/state_bits.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/state_bits.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/state_bits.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/state_bits.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/en/transmutate.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/transmutate.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/transmutate.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/transmutate.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/aggressive.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/aggressive.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/aggressive.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/aggressive.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/alignment.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/alignment.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/alignment.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/alignment.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/binary_opt.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/binary_opt.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/binary_opt.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/binary_opt.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/bitmap.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/bitmap.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/bitmap.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/bitmap.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/cache.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/cache.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/cache.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/cache.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/compact.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/compact.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/compact.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/compact.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/decompress.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/decompress.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/decompress.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/decompress.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/default.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/default.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/default.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/default.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/index.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/index.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/index.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/index.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/inline.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/inline.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/inline.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/inline.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/lifetime.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/lifetime.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/lifetime.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/lifetime.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/loyal_cache.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/loyal_cache.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/loyal_cache.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/loyal_cache.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/macros.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/macros.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/macros.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/macros.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/opt_table.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/opt_table.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/opt_table.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/opt_table.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/predict_seq.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/predict_seq.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/predict_seq.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/predict_seq.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/qps.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/qps.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/qps.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/qps.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/quant.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/quant.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/quant.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/quant.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/rt.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/rt.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/rt.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/rt.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/safety.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/safety.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/safety.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/safety.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/slots.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/slots.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/slots.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/slots.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/state_bits.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/state_bits.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/state_bits.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/state_bits.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/attributes/ru/transmutate.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/attributes/ru/transmutate.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/transmutate.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/attributes/en/transmutate.html" />
   </url>
 </urlset>

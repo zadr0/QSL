@@ -1,8 +1,7 @@
 //! Explicit Rust-source imports for schema field expansion. Syn parses real
 //! Rust syntax, so comments, raw identifiers and nested modules are not regexes.
 use crate::{
-    schema_macro::MacroError, QslField, QslSchema, QslType, FLAG_FIELD_BORROW, FLAG_LIFETIME,
-    FLAG_MACRO,
+    schema_macro::MacroError, QslField, QslSchema, QslType, FLAG_FIELD_BORROW, FLAG_MACRO,
 };
 use std::collections::{HashMap, HashSet};
 use syn::{Fields, GenericArgument, GenericParam, Item, ItemStruct, PathArguments, Type};
@@ -89,12 +88,11 @@ fn field_type(
                 *optional = true;
                 return field_type(inner, names, optional, borrow, borrow_str, owned_str);
             }
-            if name == "Utf8Guard" || name == "Utf8View" {
-                *borrow = true;
-                return Ok(QslType::GuardString { min: 0, max: None });
-            }
-            if name == "Utf8CopyGuard" {
-                return Ok(QslType::CopyGuardString { min: 0, max: None });
+            if matches!(name.as_str(), "Utf8Guard" | "Utf8View" | "Utf8CopyGuard") {
+                return Err(MacroError(
+                    "Guard strings are unsupported; use String, &str, StackString or InlineString"
+                        .into(),
+                ));
             }
             if name == "InlineString" {
                 let PathArguments::AngleBracketed(args) = &leaf.arguments else {
@@ -179,12 +177,11 @@ fn field_type(
             Type::Path(p) if p.path.is_ident("str") => {
                 *borrow = true;
                 *borrow_str = true;
-                Ok(QslType::String(0))
+                Ok(QslType::BorrowedString { min: 0, max: None })
             }
-            Type::Slice(s) if matches!(s.elem.as_ref(),Type::Path(p) if p.path.is_ident("u8")) => {
-                *borrow = true;
-                Ok(QslType::BinaryString { min: 0, max: None })
-            }
+            Type::Slice(_) => Err(MacroError(
+                "byte slices are not UTF-8 string representations; use &str for text".into(),
+            )),
             _ => Err(MacroError(
                 "only shared str and [u8] references are supported in Rust schema macros".into(),
             )),
@@ -328,12 +325,7 @@ pub fn parse_rust_macros(sources: &[&str]) -> Result<Vec<QslSchema>, MacroError>
                 default: None,
             });
         }
-        if borrowed_str && owned_str {
-            return Err(MacroError(format!("{} mixes String and &str: use Utf8Guard/Utf8CopyGuard for explicit per-field ownership",schema.name)));
-        }
-        if borrowed_str {
-            schema.flags |= FLAG_LIFETIME;
-        } else if borrow {
+        if borrow {
             schema.flags |= FLAG_FIELD_BORROW;
         }
         if native {
@@ -368,38 +360,6 @@ pub fn expand_with_rust(
 ) -> Result<Vec<QslSchema>, MacroError> {
     let mut all = schemas.to_vec();
     all.extend(parse_rust_macros(sources)?);
-    // A flattened Rust &str brings its lifetime into the generated schema.
-    // Never silently convert an existing owned String into a borrowed field.
-    loop {
-        let borrowed = all
-            .iter()
-            .filter(|s| s.borrow_strings())
-            .map(|s| s.name.as_str())
-            .collect::<HashSet<_>>();
-        let inherit=all.iter().map(|s|s.fields.iter().any(|f|matches!(&f.data,QslType::Custom{rust_type,..} if borrowed.contains(rust_type.as_str())))).collect::<Vec<_>>();
-        let mut changed = false;
-        for (s, inherit) in all.iter_mut().zip(inherit) {
-            if inherit && !s.borrow_strings() {
-                if s.fields.iter().any(|f| {
-                    matches!(
-                        f.data,
-                        QslType::String(_)
-                            | QslType::RangedString { .. }
-                            | QslType::Array(..)
-                            | QslType::FixedArray(..)
-                            | QslType::RangedArray { .. }
-                    )
-                }) {
-                    return Err(MacroError(format!("{}: a borrowed Rust &str macro would change owned field types; use explicit Utf8Guard/Utf8CopyGuard",s.name)));
-                }
-                s.flags |= FLAG_LIFETIME;
-                changed = true;
-            }
-        }
-        if !changed {
-            break;
-        }
-    }
     let mut expanded = crate::schema_macro::expand_macros(&all)?;
     expanded.truncate(schemas.len());
     Ok(expanded)
@@ -444,12 +404,15 @@ mod tests {
     fn borrowed_rust_fields_keep_ownership_and_lifetime() {
         let defs="#[qsl_macro] struct Base<'a>{text:&'a str} #[schem_macro] struct Meta<'a>{base:Base<'a>}";
         let s = parse("&P{Meta meta;}", defs).unwrap();
-        assert!(s[0].borrow_strings());
-        assert_eq!(s[0].fields[0].data.rust_type(true).unwrap(), "&'a str");
-        assert!(parse("&P{str owned;Meta meta;}", defs).is_err());
+        assert!(s[0].lifetime());
+        assert!(!s[0].borrow_strings());
+        assert_eq!(s[0].fields[0].data.rust_type(false).unwrap(), "&'a str");
+        let mixed = parse("&P{str owned;Meta meta;}", defs).unwrap();
+        assert_eq!(mixed[0].fields[0].data.rust_type(false).unwrap(), "String");
+        assert_eq!(mixed[0].fields[1].data.rust_type(false).unwrap(), "&'a str");
         let s = parse(
             "&P{Meta meta;}",
-            "#[qsl_macro] struct Meta<'a>{text:qsl::Utf8Guard<'a>,owned:String}",
+            "#[qsl_macro] struct Meta<'a>{text:&'a str,owned:String}",
         )
         .unwrap();
         assert!(s[0].lifetime());

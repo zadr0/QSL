@@ -31,12 +31,12 @@ for record in records:
  else:assert any(x.get('name')=='robots' and x.get('content')=='noindex,follow' for x in p.meta)
 namespace={'s':'http://www.sitemaps.org/schemas/sitemap/0.9'};tree=ET.parse(docs/'sitemap.xml');urls=[x.text for x in tree.findall('s:url/s:loc',namespace)]
 assert set(urls)==set(by_url) and len(urls)==len(set(urls))
-text=(docs/'en.html').read_text(encoding='utf-8');assert '<html lang="en">'in text
+text=(docs/'en.html').read_text(encoding='utf-8');assert '<html lang="en"'in text
 assert 'data-locale="en" hidden' not in text
-assert 'QSL: exchange of data described in advance' in text
+assert 'Exchange of data described in advance' in text
 assert not (docs/'robots.txt').exists(),'Project-local robots.txt must not masquerade as host-root policy'
 import struct
-png=(docs/'assets/social-card.png').read_bytes()
+png=(docs/'assets/social-card-core.png').read_bytes()
 assert png[:8]==b'\x89PNG\r\n\x1a\n'
 assert struct.unpack('>II',png[16:24])==(1200,630)
 print(json.dumps({'seo_pages':len(records),'canonical_sitemap_urls':len(urls),'reciprocal_languages':True,'ssr_english_home':True,'schema_json_ld':True,'preview_dimensions':[1200,630],'host_root_robots_scope_documented':True}))

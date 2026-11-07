@@ -22,5 +22,5 @@ all-features = true
 default = []
 rust-macros = ["dep:syn"]
 [dependencies]
-xxhash-rust = { version = "=0.8.15", default-features = false, features = ["xxh3"] }
+qsl-core = { version = "=0.1.0", path = "../qsl-core" }
 syn = { version = "=2.0.119", optional = true, default-features = false, features = ["full", "parsing"] }

@@ -1,3 +1,5 @@
+> **Текущая ветка main:** [qsl-core и строковые контракты](migration-0.3.0.ru.md). Переменные строки: String, &str, StackString и InlineString. Guard и байтовый строковый режим больше не поддерживаются. Изменения после опубликованного 0.2.0 доступны в исходниках.
+
 > **QSL 0.2.0:** [переход и текущие контракты](migration-0.2.0.ru.md). BM меняет формат; обычные теги без BM сохраняются. Платформенные Windows-модули и Cargo-feature native удалены. Старые главы измерений относятся к сохранённым исходникам.
 
 
@@ -47,7 +49,7 @@ include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
 ```qsl
 &Message[safety,opt_table] {
     u32 id;
-    str(0..4096) text|binary_opt=guard|;
+    str(0..4096) text;
     u16? code;
 }
 ```
@@ -147,15 +149,13 @@ predict_seq определяет присутствие по длине payload.
 |---|---|---|
 | Обычная строка | String | Создание и заполнение собственного хранилища |
 | lifetime | &'a str | Заимствование входных байтов |
-| binary_opt=true | &'a [u8] | Заимствование UTF-8-байтов |
-| binary_opt=view | Utf8Guard<'a> | Строкоподобный заимствованный вид |
-| binary_opt=guard | String / StackString | COPY; совместимый синтаксис, без отдельного Guard |
+| binary_opt=view | &'a str | Заимствование проверенного UTF-8 |
 | binary_opt=inline | InlineString<MAX> | Копирование во встроенную ёмкость |
 | decompress=true | InlineString<MAX>, либо [u8; N] для фиксированной | Восстановление raw/LZ в конечную область |
 
 Один символ Unicode может занимать несколько UTF-8-байтов. Поэтому в замерах отдельно подписаны 1024 символа и их фактический байтовый объём. Границы схемы и P относятся к байтам.
 
-CopyGuard не заимствует исходный кадр. Первый буфер может потребовать аллокацию; подготовленная достаточная ёмкость используется повторно. InlineString не выделяет отдельную строку, но большой MAX увеличивает размер нативного объекта и рабочий набор, даже если текущее значение короткое.
+New создаёт новое назначение; reuse обновляет готовое. Для String вызывающий код заранее выделяет достаточную ёмкость. StackString и InlineString копируют байты во встроенное хранилище; максимальная ёмкость увеличивает размер объекта независимо от текущей длины.
 
 Заимствованные режимы требуют подходящего lifetime и живого неизменяемого источника. Фиксированные строки остаются [u8; N] при любом binary_opt. Декомпрессированные байты нельзя заимствовать из исходного сжатого представления; нужен регион восстановления.
 
@@ -345,9 +345,7 @@ QslType — внутренняя модель генерации; ParserQslType 
 | String | String or borrowed &str | String.0: usize, прежний минимум; текстовый str использует ноль |
 | RangedString | String or borrowed &str | min/max: границы UTF-8-байтов |
 | CompressedString | InlineString<MAX> | min/max: границы восстановленных UTF-8-байтов |
-| BinaryString | &'a [u8] | min/max: границы UTF-8-байтов, опциональная верхняя граница |
-| GuardString | Utf8Guard<'a> | min/max: границы заимствованных UTF-8-байтов |
-| CopyGuardString | Utf8CopyGuard | min/max: границы собственных байтов |
+| BorrowedString | &'a str | min/max: границы UTF-8 в байтах |
 | InlineRawString | InlineString<MAX> | min/max: границы raw inline-байтов |
 | FixedCompressedString | [u8; N] | FixedCompressedString.0: usize, фиксированная восстановленная длина |
 | Array | Vec<T> or borrowed byte slice | Array.0: Box<QslType>, тип элемента; Array.1: usize, минимум элементов |

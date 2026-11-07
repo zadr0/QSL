@@ -182,14 +182,7 @@ pub(super) fn write(s: &QslSchema, p: &LengthGraph, out: &mut String) -> QslResu
             format!("if let Some(value)=self.{}.as_ref(){{", f.name),
         );
         if d.variable {
-            ln(
-                out,
-                if matches!(f.data, QslType::BinaryString { .. }) {
-                    "writer.write_bytes_unchecked(value);"
-                } else {
-                    "writer.write_bytes_unchecked(value.as_bytes());"
-                },
-            );
+            ln(out, "writer.write_bytes_unchecked(value.as_bytes());");
         } else {
             fast_stored_write(f, out, "value", f.bits, false)?;
         }

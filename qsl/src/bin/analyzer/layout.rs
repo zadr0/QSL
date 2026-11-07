@@ -33,9 +33,7 @@ fn bounds(t: &QslType, raw: bool) -> (Option<usize>, Option<usize>) {
     let string = match t {
         QslType::String(min) => (*min, None, 4),
         QslType::RangedString { min, max } => (*min, Some(*max), 4),
-        QslType::BinaryString { min, max }
-        | QslType::GuardString { min, max }
-        | QslType::CopyGuardString { min, max } => (*min, *max, 4),
+        QslType::BorrowedString { min, max } => (*min, *max, 4),
         QslType::InlineRawString { min, max } => (
             *min,
             Some(*max),

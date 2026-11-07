@@ -114,9 +114,7 @@ fn string_layout(ty: &QslType) -> Option<(usize, Option<usize>, usize, usize)> {
     match *ty {
         QslType::String(min) => Some((min, None, 4, 0)),
         QslType::RangedString { min, max } => Some((min, Some(max), 4, 0)),
-        QslType::BinaryString { min, max }
-        | QslType::GuardString { min, max }
-        | QslType::CopyGuardString { min, max } => Some((min, max, 4, 0)),
+        QslType::BorrowedString { min, max } => Some((min, max, 4, 0)),
         QslType::FixedString(n) => Some((n, Some(n), 0, 0)),
         QslType::FixedCompressedString(n) => Some((
             n,
@@ -274,9 +272,7 @@ fn min_literal(min: i128) -> String {
 
 fn minimum_field(s: &mut QslSizer, ty: &QslType, compact: bool, width: usize) -> QslResult<()> {
     match ty {
-        QslType::BinaryString { min, .. }
-        | QslType::GuardString { min, .. }
-        | QslType::CopyGuardString { min, .. } => {
+        QslType::BorrowedString { min, .. } => {
             return minimum_field(s, &QslType::String(*min), compact, width)
         }
         QslType::InlineRawString { min, max } => s.bytes(
@@ -507,9 +503,7 @@ fn emit_size_field(
     compact: bool,
 ) -> QslResult<()> {
     match ty {
-        QslType::BinaryString { min, .. }
-        | QslType::GuardString { min, .. }
-        | QslType::CopyGuardString { min, .. } => {
+        QslType::BorrowedString { min, .. } => {
             return emit_size_field(&QslType::String(*min), out, value, width, compact)
         }
         QslType::InlineRawString { .. } => {
@@ -782,8 +776,8 @@ fn fast_type_write(
     compact: bool,
 ) -> QslResult<()> {
     match ty {
-        QslType::BinaryString { .. } | QslType::GuardString { .. }
-        | QslType::CopyGuardString { .. } => {
+        QslType::BorrowedString { .. }
+         => {
             ln(out, format!("let __qsl_bytes: &[u8] = ({expr}).as_ref(); let __qsl_len = __qsl_bytes.len();"));
             if compact {
                 let min = ty.rank_base();
@@ -1378,9 +1372,7 @@ fn unchecked_read_supported(schema: &QslSchema) -> bool {
         | QslType::Integer { .. }
         | QslType::RangedInteger { .. }
         | QslType::Flags(_)
-        | QslType::GuardString { .. }
-        | QslType::CopyGuardString { .. }
-        | QslType::BinaryString { .. }
+        | QslType::BorrowedString { .. }
         | QslType::InlineRawString { .. }
         | QslType::FixedCompressedString(_)
         | QslType::CompressedString { .. }
@@ -1510,9 +1502,7 @@ fn required_numeric_run(s: &QslSchema, start: usize) -> (usize, usize, usize) {
             Some(f) if !f.optional => match f.data {
                 QslType::String(_)
                 | QslType::RangedString { .. }
-                | QslType::GuardString { .. }
-                | QslType::CopyGuardString { .. }
-                | QslType::BinaryString { .. } => 4,
+                | QslType::BorrowedString { .. } => 4,
                 QslType::InlineRawString { max, .. } => {
                     if max <= 127 {
                         1
@@ -1549,7 +1539,6 @@ fn emit_known_string(
         }
         crate::modernization::StorageKind::StrView => text.into(),
         _ => match f.data {
-            QslType::BinaryString { .. } => "bytes".into(),
             QslType::InlineRawString { max, .. } => {
                 format!("::qsl::InlineString::<{max}>::from_str_unchecked({text})")
             }
@@ -1574,9 +1563,7 @@ fn emit_unchecked_value(
     borrowed: bool,
 ) -> QslResult<()> {
     match ty {
-        QslType::BinaryString { min, .. }
-        | QslType::GuardString { min, .. }
-        | QslType::CopyGuardString { min, .. } => {
+        QslType::BorrowedString { min, .. } => {
             if compact {
                 ln(
                     out,
@@ -1585,10 +1572,8 @@ fn emit_unchecked_value(
             } else {
                 ln(out, "let __qsl_len = reader.read_u32() as usize;");
             }
-            if matches!(ty, QslType::CopyGuardString { .. }) {
-                ln(out, format!("let {name} = ::qsl::Utf8CopyGuard::from_bytes_unchecked(std::slice::from_raw_parts(reader.read_exact(__qsl_len), __qsl_len));"));
-            } else if matches!(ty, QslType::GuardString { .. }) {
-                ln(out, format!("let {name} = ::qsl::Utf8Guard::from_bytes_unchecked(std::slice::from_raw_parts(reader.read_exact(__qsl_len), __qsl_len));"));
+            if matches!(ty, QslType::BorrowedString { .. }) {
+                ln(out, format!("let {name} = std::str::from_utf8_unchecked(std::slice::from_raw_parts(reader.read_exact(__qsl_len), __qsl_len));"));
             } else {
                 ln(out, format!("let {name} = std::slice::from_raw_parts(reader.read_exact(__qsl_len), __qsl_len);"));
             }
@@ -1811,9 +1796,7 @@ fn emit_planned_write(
         }
         QslType::String(_)
         | QslType::RangedString { .. }
-        | QslType::BinaryString { .. }
-        | QslType::GuardString { .. }
-        | QslType::CopyGuardString { .. }
+        | QslType::BorrowedString { .. }
         | QslType::Array(_, _)
         | QslType::RangedArray { .. } => {
             if matches!(ty, QslType::String(_) | QslType::RangedString { .. }) {
@@ -1861,9 +1844,7 @@ fn emit_planned_value(
         }
         QslType::String(_)
         | QslType::RangedString { .. }
-        | QslType::BinaryString { .. }
-        | QslType::GuardString { .. }
-        | QslType::CopyGuardString { .. }
+        | QslType::BorrowedString { .. }
         | QslType::Array(_, _)
         | QslType::RangedArray { .. } => {
             emit_aligned_rank_read(out, "__qsl_rank", width);
@@ -1876,13 +1857,7 @@ fn emit_planned_value(
                 } else {
                     format!("{bytes}.to_vec()")
                 }
-            } else if matches!(ty, QslType::BinaryString { .. }) {
-                bytes.to_owned()
-            } else if matches!(ty, QslType::CopyGuardString { .. }) {
-                format!("::qsl::Utf8CopyGuard::from_bytes_unchecked({bytes})")
-            } else if matches!(ty, QslType::GuardString { .. }) {
-                format!("::qsl::Utf8Guard::from_bytes_unchecked({bytes})")
-            } else if borrowed {
+            } else if borrowed || matches!(ty, QslType::BorrowedString { .. }) {
                 format!("std::str::from_utf8_unchecked({bytes})")
             } else {
                 format!("String::from_utf8_unchecked({bytes}.to_vec())")
@@ -2490,8 +2465,7 @@ fn prepared_read_layout(schema: &QslSchema) -> bool {
         && schema.fields.iter().any(|f| {
             matches!(
                 f.data,
-                QslType::CopyGuardString { .. }
-                    | QslType::String(_)
+                QslType::String(_)
                     | QslType::RangedString { .. }
                     | QslType::InlineRawString { .. }
                     | QslType::CompressedString { .. }
@@ -2535,7 +2509,7 @@ fn emit_prepared_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
         }
         if matches!(
             field.data,
-            QslType::CopyGuardString { .. } | QslType::String(_) | QslType::RangedString { .. }
+            QslType::String(_) | QslType::RangedString { .. }
         ) {
             let min = field.data.rank_base();
             let width = field.data.rank_width(field.bits)?;
@@ -2552,9 +2526,7 @@ fn emit_prepared_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             } else {
                 ln(out, "let __qsl_len=reader.read_u32() as usize;");
             }
-            if matches!(field.data, QslType::CopyGuardString { .. }) {
-                ln(out,format!("output.{}.copy_from_raw_parts_unchecked(reader.read_exact(__qsl_len),__qsl_len);",field.name));
-            } else {
+            {
                 ln(out,format!("let target=output.{}.as_mut_vec(); debug_assert!(__qsl_len<=target.capacity()); std::ptr::copy_nonoverlapping(reader.read_exact(__qsl_len),target.as_mut_ptr(),__qsl_len); target.set_len(__qsl_len);",field.name));
             }
         } else if let QslType::InlineRawString { max, .. } = field.data {
@@ -2879,15 +2851,11 @@ impl QslInterpreter {
                     QslType::FixedString(n) | QslType::FixedCompressedString(n) => {
                         format!("[b' '; {n}]")
                     }
-                    QslType::CopyGuardString { min, .. } => {
-                        format!("::qsl::Utf8CopyGuard::copy_of(\"{}\")", " ".repeat(*min))
+
+                    QslType::BorrowedString { min, .. } => {
+                        format!("\"{}\"", " ".repeat(*min))
                     }
-                    QslType::GuardString { min, .. } => {
-                        format!("::qsl::Utf8Guard::from_str(\"{}\")", " ".repeat(*min))
-                    }
-                    QslType::BinaryString { min, .. } => {
-                        format!("b\"{}\" as &[u8]", " ".repeat(*min))
-                    }
+
                     QslType::InlineRawString { min, max }
                     | QslType::CompressedString { min, max } => {
                         format!("::qsl::InlineString::<{max}>::spaces::<{min}>()")
@@ -3068,9 +3036,7 @@ impl QslInterpreter {
                             f.data,
                             QslType::String(_)
                                 | QslType::RangedString { .. }
-                                | QslType::BinaryString { .. }
-                                | QslType::GuardString { .. }
-                                | QslType::CopyGuardString { .. }
+                                | QslType::BorrowedString { .. }
                         )
                     {
                         f.data.rank_width(f.bits)?

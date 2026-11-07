@@ -94,7 +94,7 @@ fn field(
         let (min, max) = match f.data {
             QslType::FixedString(n) => (n, Some(n)),
             QslType::InlineRawString { min, max } => (min, Some(max)),
-            QslType::GuardString { min, max } => (min, max),
+            QslType::BorrowedString { min, max } => (min, max),
             _ => return None,
         };
         let mut m = base(size_of::<&str>(), align_of::<&str>());
@@ -155,22 +155,15 @@ fn field(
         }
         QslType::String(min)
         | QslType::RangedString { min, .. }
-        | QslType::GuardString { min, .. }
-        | QslType::CopyGuardString { min, .. }
-        | QslType::BinaryString { min, .. } => {
+        | QslType::BorrowedString { min, .. } => {
             let max = match &f.data {
                 QslType::RangedString { max, .. } => Some(*max),
-                QslType::GuardString { max, .. }
-                | QslType::CopyGuardString { max, .. }
-                | QslType::BinaryString { max, .. } => *max,
+                QslType::BorrowedString { max, .. } => *max,
                 _ => None,
             };
             if let StorageKind::StackString(n) = f.storage {
                 base(round(4usize.checked_add(n)?, 4)?, 4)
-            } else if borrowed
-                || f.storage == StorageKind::StrView
-                || matches!(f.data, QslType::BinaryString { .. })
-            {
+            } else if borrowed || f.storage == StorageKind::StrView || false {
                 let mut m = base(size_of::<&str>(), align_of::<&str>());
                 m.borrow_min = *min;
                 m.borrow_max = max;
@@ -204,7 +197,7 @@ fn field(
         m.borrow_min = 0;
         // String/Vec and slices use the guaranteed null-pointer niche of their pointer.
         let niche = matches!(f.storage, StorageKind::StrView)
-            || ((borrowed || matches!(f.data, QslType::BinaryString { .. }))
+            || ((borrowed || false)
                 && !matches!(
                     f.data,
                     QslType::FixedString(_) | QslType::FixedCompressedString(_)

@@ -54,3 +54,4 @@ reference/compiler-split/** -text whitespace=cr-at-eol,-blank-at-eof
 reference/crates-release-0.1.2/** -text whitespace=cr-at-eol,-blank-at-eof
 
 reference/crates-release-0.2.0/** -text whitespace=cr-at-eol,-blank-at-eof
+reference/core-refactor-2026-11-08/** -text whitespace=cr-at-eol,-blank-at-eof

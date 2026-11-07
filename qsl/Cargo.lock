@@ -15,9 +15,17 @@ dependencies = [
 name = "qsl"
 version = "0.2.0"
 dependencies = [
+ "qsl-core",
  "qsl-interpreter",
  "qsl-lexer",
  "qsl-macros-impl",
+]
+
+[[package]]
+name = "qsl-core"
+version = "0.1.0"
+dependencies = [
+ "xxhash-rust",
 ]
 
 [[package]]
@@ -31,8 +39,8 @@ dependencies = [
 name = "qsl-lexer"
 version = "0.2.0"
 dependencies = [
+ "qsl-core",
  "syn",
- "xxhash-rust",
 ]
 
 [[package]]

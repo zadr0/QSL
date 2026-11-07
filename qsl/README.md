@@ -1,3 +1,5 @@
+> Current main: shared schema/runtime contracts are owned by qsl-core. Supported variable UTF-8 storage is String, &str, StackString and InlineString; new/reuse are method modes. Published 0.2.0 packages are immutable; these changes are available from this source checkout.
+
 # QSL
 
 QSL is a data-description language and a generator of specialized Rust binary codecs.

@@ -25,7 +25,7 @@ measured!(
     CompactNumbers,
     PackedNumbers,
     OwnedText,
-    GuardText,
+    OwnedReuseText,
     CompressedText,
     WholeText,
     Optional1Default,
@@ -607,11 +607,11 @@ fn measure(c: &mut Criterion) {
     owned(
         c,
         "strings_utf8_1024",
-        "CopyGuard",
+        "String_reuse",
         texts
             .iter()
-            .map(|s| GuardText {
-                text: qsl::Utf8CopyGuard::try_from_bytes(s.as_bytes()).unwrap(),
+            .map(|s| OwnedReuseText {
+                text: s.clone(),
             })
             .collect(),
         useful,

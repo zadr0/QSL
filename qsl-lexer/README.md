@@ -1,3 +1,5 @@
+> Current main: shared schema/runtime contracts are owned by qsl-core. Supported variable UTF-8 storage is String, &str, StackString and InlineString; new/reuse are method modes. Published 0.2.0 packages are immutable; these changes are available from this source checkout.
+
 # qsl-lexer
 
 The QSL frontend: lexical scanning, QSL/DEQ parsing, schema template expansion, schema hashes and build-time analysis. It collects schemas without selecting a code generator. It has no dependency on `qsl-interpreter` or the QSL runtime.

@@ -20,10 +20,11 @@ all-features = true
 
 [features]
 default = []
-diagnostics = []
+diagnostics = ["qsl-core/diagnostics"]
 rust-macros = ["qsl-lexer/rust-macros", "qsl-interpreter/rust-macros"]
 
 [dependencies]
+qsl-core = { version = "=0.1.0", path = "../qsl-core" }
 qsl-lexer = { version = "=0.2.0", path = "../qsl-lexer" }
 qsl-interpreter = { version = "=0.2.0", path = "../qsl-interpreter" }
 qsl-macros-impl = { version = "=0.1.0", path = "macros" }

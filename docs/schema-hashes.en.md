@@ -31,7 +31,7 @@ Fields retain declaration order; they are not sorted by name. `&A{u32 id;}` and 
 
 `inline`, `inline=always/never`, `safety`, lifetime, internal template markers, numeric `default`, `QSL_RT` and slot counts. These affect API availability, storage, memory preparation or compiler decisions rather than the selected encoding of explicitly supplied values.
 
-`String`, borrowed `&str`, `binary_opt=true`, `binary_opt=view` and `binary_opt=guard` normalize to the same UTF-8 descriptor when bounds match. `binary_opt=inline` remains distinct because it selects a different length header in this implementation. `decompress=true` selects a string codec; fixed strings below the compression threshold retain raw-format identity.
+`String`, borrowed `&str`, `StackString` with the ordinary codec and `binary_opt=view` normalize to the same UTF-8 descriptor when bounds match. Retired guard/true values are not valid current-branch string configurations. `binary_opt=inline` remains distinct because it selects a different length header in this implementation. `decompress=true` selects a string codec; fixed strings below the compression threshold retain raw-format identity.
 
 `[qps]`, `[qps=Q16]` and `[quant=Q16]` are equivalent. `[opt_table]` now has the default hash. `[predict_seq,opt_table]` retains mode 3 and the hashes of former mixed `[opt_table]`. This changes attribute selection; add predict_seq for old frames. The static `state_bits=Qn` table quantum is excluded, while the state_bits wire format remains included. Alignment without compact is excluded.
 

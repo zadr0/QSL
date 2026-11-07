@@ -40,7 +40,7 @@ fn codegen_policies_and_initializers_do_not_change_hashes() {
         );
     }
     let base = hashes("&P{str(1..100) text;}");
-    for mode in ["false", "true", "view", "guard"] {
+    for mode in ["false", "view"] {
         assert_eq!(
             base,
             hashes(&format!("&P{{str(1..100) text|binary_opt={mode}|;}}")),

@@ -1,0 +1,62 @@
+   Compiling qsl-lexer v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\qsl-lexer)
+   Compiling qsl-interpreter v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\qsl-interpreter)
+   Compiling qsl v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\proofs\qsl)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.57s
+     Running unittests src\lib.rs (.optimization/core-refactor-target\debug\deps\qsl-867656d47a86b2b4.exe)
+
+running 10 tests
+test modernization::tests::arrays_use_native_data_bytes_for_the_strict_limit ... ok
+test modernization::tests::drops_only_initialized ... ok
+test modernization::tests::exact_partial_register ... ok
+test modernization::tests::optional_accessor_collisions_are_rejected ... ok
+test modernization::tests::typed_loads_zero_extend_partial_unaligned_windows ... ok
+test modernization::tests::generated_registers_match_every_exact_window_width ... ok
+test qps::tests::default_quantum_is_sixteen ... ok
+test qps::tests::prediction_is_separately_selected ... ok
+test qps::tests::quant_alias_and_raw_fallback_are_explicit ... ok
+test qps::tests::required_only_qps_is_not_a_predictor ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+     Running unittests src\bin\qsl-analyze.rs (.optimization/core-refactor-target\debug\deps\qsl_analyze-3cf7287cdad957f1.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\qps_bytes_vectors.rs (.optimization/core-refactor-target\debug\deps\qps_bytes_vectors-a9f8c5ef54445eae.exe)
+
+running 2 tests
+test every_quantum_preserves_high_constant_base ... ok
+test qps_byte_frame_has_unquantized_length_and_exact_group_words ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+     Running tests\schema_hash.rs (.optimization/core-refactor-target\debug\deps\schema_hash-db49f24553c854d6.exe)
+
+running 12 tests
+test constants_are_hashed_after_evaluation_not_by_identifier ... ok
+test codegen_policies_and_initializers_do_not_change_hashes ... ok
+test canonical_v1_golden_hashes_are_stable_for_both_algorithms ... ok
+test changes_to_data_domains_order_and_wire_modes_change_both_hashes ... ok
+test descriptor_has_explicit_version_domain_and_little_endian_lengths ... ok
+test deq_hash_selection_is_validated_and_merged_independently ... ok
+test opaque_custom_codec_is_never_claimed_complete ... ok
+test qps_aliases_are_canonical_and_quantums_are_distinct ... ok
+test nested_rust_macros_are_hashed_after_expansion ... ok
+test strict_names_and_light_wire_identity_are_separate ... ok
+test tag_dispatch_preserves_default_identity_and_prediction_is_distinct ... ok
+test native_bridge_agrees_with_generation_across_processes_and_rejects_duplicate_config ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+   Doc-tests qsl
+
+running 4 tests
+test src\lib.rs - (line 40) ... ignored
+test src\lib.rs - (line 50) ... ignored
+test src\lib.rs - (line 163) ... ok
+test src\lib.rs - (line 133) ... ok
+
+test result: ok. 2 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.94s
+

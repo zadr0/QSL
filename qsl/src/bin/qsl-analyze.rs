@@ -315,9 +315,7 @@ fn main() {
                     | qsl::QslType::RangedString { min, max } => (min, Some(max), false),
                     qsl::QslType::FixedString(n) => (n, Some(n), false),
                     qsl::QslType::String(min) => (min, None, false),
-                    qsl::QslType::GuardString { min, max }
-                    | qsl::QslType::CopyGuardString { min, max }
-                    | qsl::QslType::BinaryString { min, max } => (min, max, false),
+                    qsl::QslType::BorrowedString { min, max } => (min, max, false),
                     _ => return None,
                 };
                 Some(json(&format!(

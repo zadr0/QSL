@@ -1,11 +1,11 @@
 # Optional dispatch and portable runtime contracts
 
-Run from the dev-qsl root. The publication checkout keeps qsl alongside both compiler crates. The harness patches all three to those local directories. No Windows/native runtime feature is enabled or defined.
+Run from the dev-qsl root. The root qsl directory is not needed: the harness patches qsl to the existing `proofs/qsl` and both compiler crates to their local directories. No Windows/native runtime feature is enabled or defined.
 
 ```powershell
 cargo test --manifest-path qsl-lexer/Cargo.toml --all-features --locked
 cargo test --manifest-path qsl-interpreter/Cargo.toml --all-features --locked
-cargo test --manifest-path qsl/Cargo.toml --all-features --locked
+cargo test --manifest-path proofs/qsl/Cargo.toml --all-features --locked
 cargo test --manifest-path qsl-interpreter/tests/optional-v2/Cargo.toml --all-features --locked
 cargo clippy --manifest-path qsl-interpreter/tests/optional-v2/Cargo.toml --all-features --all-targets --locked -- -D warnings
 ```

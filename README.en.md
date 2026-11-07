@@ -1,3 +1,5 @@
+> **Current main branch:** shared runtime and schema contracts now live in [qsl-core](qsl-core). The frontend and Rust backend remain separate. Variable UTF-8 storage is String, &str, StackString or InlineString; new/reuse are method modes. These source changes follow immutable crates.io release 0.2.0. [Current architecture](docs/architecture.en.md) · [Migration](docs/migration-0.3.0.en.md).
+
 # QSL 0.2.0
 
 [Русский](README.ru.md) · [Complete guide](https://zadr0.github.io/QSL/guide.en.html) · [Quick start](docs/quickstart.en.md) · [GitHub Release](https://github.com/zadr0/QSL/releases/tag/v0.2.0)

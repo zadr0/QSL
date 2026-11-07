@@ -30,7 +30,7 @@ pub(super) fn field(ty: &QslType, out: &mut String, width: usize, compact: bool)
         QslType::CompressedString{min,max}=>ln(out,format!("c.compressed::<{max}>({min},false,false)?;")),
         QslType::InlineRawString{min,max}=>ln(out,format!("c.compressed::<{max}>({min},true,false)?;")),
         QslType::FixedCompressedString(n)=>ln(out,format!("c.compressed::<{n}>({n},false,true)?;")),
-        QslType::String(_)|QslType::RangedString{..}|QslType::BinaryString{..}|QslType::GuardString{..}|QslType::CopyGuardString{..}=>{
+        QslType::String(_)|QslType::RangedString{..}|QslType::BorrowedString{..}=>{
             let(min,max,_,_)=string_layout(ty).ok_or(QslError::InvalidSchema)?;
             if compact {ln(out,format!("let length=(c.bits({width})? as usize).checked_add({min}).ok_or(::qsl::QslError::LengthOverflow)?;"));}
             else {ln(out,"let length=c.uint(4)? as usize;");}
@@ -336,26 +336,18 @@ pub(super) fn values(schema: &QslSchema, out: &mut String) -> QslResult<()> {
                 "value.as_bytes()"
             } else if matches!(
                 f.data,
-                QslType::BinaryString { .. }
-                    | QslType::FixedString(_)
-                    | QslType::FixedCompressedString(_)
+                QslType::FixedString(_) | QslType::FixedCompressedString(_)
             ) {
                 "value.as_slice()"
             } else {
                 "value.as_bytes()"
             };
             // &[u8] already is a slice; as_slice on a reference is unstable.
-            let bytes = if matches!(f.data, QslType::BinaryString { .. }) {
-                "*value"
-            } else {
-                bytes
-            };
+            let bytes = { bytes };
             ln(out,format!("let bytes={bytes};budget.charge(bytes.len())?;if !({min}..={}).contains(&bytes.len()){{return Err(::qsl::QslError::InvalidValue);}}",max.unwrap_or(u32::MAX as usize)));
             if matches!(
                 f.data,
-                QslType::BinaryString { .. }
-                    | QslType::FixedString(_)
-                    | QslType::FixedCompressedString(_)
+                QslType::FixedString(_) | QslType::FixedCompressedString(_)
             ) {
                 ln(
                     out,
