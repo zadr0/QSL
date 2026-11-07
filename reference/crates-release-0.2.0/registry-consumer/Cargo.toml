@@ -1,0 +1,12 @@
+[package]
+name="qsl-020-registry-check"
+version="0.0.0"
+edition="2021"
+publish=false
+[dependencies]
+qsl="=0.2.0"
+[build-dependencies]
+qsl="=0.2.0"
+[features]
+full=["qsl/rust-macros","qsl/diagnostics"]
+[workspace]

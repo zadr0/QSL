@@ -1,0 +1,12 @@
+    Updating crates.io index
+   Packaging qsl-interpreter v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter)
+    Updating crates.io index
+    Packaged 27 files, 311.7KiB (64.2KiB compressed)
+   Verifying qsl-interpreter v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter)
+ Downloading crates ...
+  Downloaded qsl-lexer v0.2.0
+   Compiling qsl-lexer v0.2.0
+   Compiling qsl-interpreter v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\release-0.2.0-package-target\package\qsl-interpreter-0.2.0)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 13.97s
+   Uploading qsl-interpreter v0.2.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter)
+warning: aborting upload due to dry run

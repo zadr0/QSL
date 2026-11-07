@@ -1,7 +1,7 @@
 {
   "release": "0.2.0",
   "date": "2026-11-08",
-  "phase": "pre-publication",
+  "phase": "published and registry-verified",
   "lexer_tests": 50,
   "interpreter_tests": 21,
   "runtime_unit_tests": 38,
@@ -16,5 +16,13 @@
   "seo_canonical_urls": 34,
   "api_source_declarations": 756,
   "benchmarks": "November 7 pass not accepted as strict",
-  "registry_consumer": "prepared; pending registry publication"
+  "registry_consumer": {
+    "default": "6 passed",
+    "full": "6 passed",
+    "local_patches": false,
+    "versions": "qsl/qsl-lexer/qsl-interpreter 0.2.0"
+  },
+  "registry_checksums": "all three archives match crates.io SHA-256",
+  "source_manifest": "all hashes match",
+  "package_source_commit": "82bb1de4c7bc461844a17336210dcfe2dade5087"
 }

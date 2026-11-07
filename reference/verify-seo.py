@@ -35,6 +35,8 @@ text=(docs/'en.html').read_text(encoding='utf-8');assert '<html lang="en">'in te
 assert 'data-locale="en" hidden' not in text
 assert 'QSL: exchange of data described in advance' in text
 assert not (docs/'robots.txt').exists(),'Project-local robots.txt must not masquerade as host-root policy'
-from PIL import Image
-assert Image.open(docs/'assets/social-card.png').size==(1200,630)
+import struct
+png=(docs/'assets/social-card.png').read_bytes()
+assert png[:8]==b'\x89PNG\r\n\x1a\n'
+assert struct.unpack('>II',png[16:24])==(1200,630)
 print(json.dumps({'seo_pages':len(records),'canonical_sitemap_urls':len(urls),'reciprocal_languages':True,'ssr_english_home':True,'schema_json_ld':True,'preview_dimensions':[1200,630],'host_root_robots_scope_documented':True}))

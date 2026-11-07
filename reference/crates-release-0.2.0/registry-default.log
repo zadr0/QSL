@@ -1,0 +1,28 @@
+    Updating crates.io index
+     Locking 9 packages to latest compatible versions
+      Adding xxhash-rust v0.8.15 (available: v0.8.19)
+ Downloading crates ...
+  Downloaded qsl v0.2.0
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling xxhash-rust v0.8.15
+   Compiling qsl-lexer v0.2.0
+   Compiling qsl-interpreter v0.2.0
+   Compiling syn v2.0.119
+   Compiling qsl-macros-impl v0.1.0
+   Compiling qsl v0.2.0
+   Compiling qsl-020-registry-check v0.0.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\release-0.2.0-registry-consumer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.01s
+     Running unittests src\main.rs (.optimization/release-0.2.0-registry-target\debug\deps\qsl_020_registry_check-1e6c94a682716bb8.exe)
+
+running 6 tests
+test tests::nested_region_type ... ok
+test tests::checked_owned_and_into ... ok
+test tests::qps_exact_values ... ok
+test tests::bitmap_order_and_errors ... ok
+test tests::validated_primitive_and_original_budget ... ok
+test tests::wide_bitmap_header_uses_u128 ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

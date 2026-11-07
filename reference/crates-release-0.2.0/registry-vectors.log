@@ -1,0 +1,4 @@
+   Compiling qsl-020-registry-check v0.0.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\release-0.2.0-registry-consumer)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.33s
+     Running `.optimization/release-0.2.0-registry-target\debug\qsl-020-registry-check.exe`
+{"version":"0.2.0","bitmapFrames":[[0, 9], [128, 9, 52, 18], [64, 9, 7], [192, 9, 7, 52, 18]]}

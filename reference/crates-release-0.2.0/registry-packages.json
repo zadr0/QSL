@@ -1,0 +1,64 @@
+[
+  {
+    "name": "qsl-lexer",
+    "version": "0.2.0",
+    "sha256": "13870e95ac90d684a367e2d5529f392eb7da8fe0fe80684f3a83e5a955f72909",
+    "bytes": 58141,
+    "registry_checksum": "13870e95ac90d684a367e2d5529f392eb7da8fe0fe80684f3a83e5a955f72909",
+    "features": {
+      "default": [],
+      "rust-macros": [
+        "dep:syn"
+      ]
+    },
+    "url": "https://crates.io/crates/qsl-lexer/0.2.0",
+    "package_vcs": {
+      "git": {
+        "sha1": "82bb1de4c7bc461844a17336210dcfe2dade5087"
+      },
+      "path_in_vcs": "qsl-lexer"
+    }
+  },
+  {
+    "name": "qsl-interpreter",
+    "version": "0.2.0",
+    "sha256": "671bfa0a1dd0c0f647eda91ccef854aa9ebdc6a94baed8621115c3ec000c42f9",
+    "bytes": 65728,
+    "registry_checksum": "671bfa0a1dd0c0f647eda91ccef854aa9ebdc6a94baed8621115c3ec000c42f9",
+    "features": {
+      "default": [],
+      "rust-macros": [
+        "qsl-lexer/rust-macros"
+      ]
+    },
+    "url": "https://crates.io/crates/qsl-interpreter/0.2.0",
+    "package_vcs": {
+      "git": {
+        "sha1": "82bb1de4c7bc461844a17336210dcfe2dade5087"
+      },
+      "path_in_vcs": "qsl-interpreter"
+    }
+  },
+  {
+    "name": "qsl",
+    "version": "0.2.0",
+    "sha256": "dab658b1956a3594421cffb84e364b62018b7dc0e783923d39c14c35bd787572",
+    "bytes": 65402,
+    "registry_checksum": "dab658b1956a3594421cffb84e364b62018b7dc0e783923d39c14c35bd787572",
+    "features": {
+      "default": [],
+      "diagnostics": [],
+      "rust-macros": [
+        "qsl-lexer/rust-macros",
+        "qsl-interpreter/rust-macros"
+      ]
+    },
+    "url": "https://crates.io/crates/qsl/0.2.0",
+    "package_vcs": {
+      "git": {
+        "sha1": "82bb1de4c7bc461844a17336210dcfe2dade5087"
+      },
+      "path_in_vcs": "qsl"
+    }
+  }
+]

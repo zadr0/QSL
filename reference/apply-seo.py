@@ -1,6 +1,5 @@
 from pathlib import Path
 import html,json,re,os,secrets,urllib.parse,xml.etree.ElementTree as ET
-from PIL import Image,ImageDraw,ImageFont
 root=Path(__file__).resolve().parents[1]
 docs=root/'docs';base='https://zadr0.github.io/QSL/';tag='v0.2.0'
 # A real English HTML entry point is available before JavaScript executes.
@@ -16,6 +15,7 @@ en=re.sub(r'(<([a-z][\w]*)\b[^>]*\bdata-t="([^"]+)"[^>]*>)(.*?)(</\2>)',translat
 # Share images are deterministic typography, with no timing or ranking claims.
 card=docs/'assets/social-card.png'
 if not card.exists():
+ from PIL import Image,ImageDraw,ImageFont
  image=Image.new('RGB',(1200,630),'#f4f5f7');draw=ImageDraw.Draw(image)
  draw.rounded_rectangle((38,38,1162,592),24,fill='#18232e')
  font=lambda size:ImageFont.truetype('C:/Windows/Fonts/times.ttf',size)

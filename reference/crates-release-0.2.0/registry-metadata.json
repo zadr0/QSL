@@ -1,0 +1,37 @@
+[
+  {
+    "name": "qsl",
+    "version": "0.2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "features": {
+      "default": [],
+      "diagnostics": [],
+      "rust-macros": [
+        "qsl-lexer/rust-macros",
+        "qsl-interpreter/rust-macros"
+      ]
+    }
+  },
+  {
+    "name": "qsl-interpreter",
+    "version": "0.2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "features": {
+      "default": [],
+      "rust-macros": [
+        "qsl-lexer/rust-macros"
+      ]
+    }
+  },
+  {
+    "name": "qsl-lexer",
+    "version": "0.2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "features": {
+      "default": [],
+      "rust-macros": [
+        "dep:syn"
+      ]
+    }
+  }
+]
