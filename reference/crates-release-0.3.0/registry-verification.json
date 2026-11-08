@@ -1,0 +1,60 @@
+{
+  "packages": [
+    {
+      "name": "qsl",
+      "version": "0.3.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index"
+    },
+    {
+      "name": "qsl-core",
+      "version": "0.1.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index"
+    },
+    {
+      "name": "qsl-interpreter",
+      "version": "0.3.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index"
+    },
+    {
+      "name": "qsl-lexer",
+      "version": "0.3.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index"
+    },
+    {
+      "name": "qsl-macros-impl",
+      "version": "0.1.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index"
+    }
+  ],
+  "default_tests": 8,
+  "full_tests": 8,
+  "path_overrides": false,
+  "bitmap_vectors_identical_to_0_2_0": true,
+  "vectors": {
+    "version": "0.3.0",
+    "bitmapFrames": [
+      [
+        0,
+        9
+      ],
+      [
+        128,
+        9,
+        52,
+        18
+      ],
+      [
+        64,
+        9,
+        7
+      ],
+      [
+        192,
+        9,
+        7,
+        52,
+        18
+      ]
+    ]
+  }
+}

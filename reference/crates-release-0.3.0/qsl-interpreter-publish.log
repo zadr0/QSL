@@ -1,0 +1,12 @@
+    Updating crates.io index
+   Packaging qsl-interpreter v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter)
+    Updating crates.io index
+    Packaged 27 files, 316.2KiB (64.4KiB compressed)
+   Verifying qsl-interpreter v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter)
+   Compiling qsl-interpreter v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\release-0.3.0-package-target\package\qsl-interpreter-0.3.0)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.46s
+   Uploading qsl-interpreter v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter)
+    Uploaded qsl-interpreter v0.3.0 to registry `crates-io`
+note: waiting for qsl-interpreter v0.3.0 to be available at registry `crates-io`
+help: you may press ctrl-c to skip waiting; the crate should be available shortly
+   Published qsl-interpreter v0.3.0 at registry `crates-io`

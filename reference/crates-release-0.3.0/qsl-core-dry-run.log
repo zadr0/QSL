@@ -1,0 +1,10 @@
+    Updating crates.io index
+   Packaging qsl-core v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-core)
+    Updating crates.io index
+    Packaged 34 files, 298.6KiB (67.9KiB compressed)
+   Verifying qsl-core v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-core)
+   Compiling xxhash-rust v0.8.15
+   Compiling qsl-core v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\release-0.3.0-package-target\package\qsl-core-0.1.0)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.54s
+   Uploading qsl-core v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-core)
+warning: aborting upload due to dry run

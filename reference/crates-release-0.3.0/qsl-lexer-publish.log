@@ -1,0 +1,12 @@
+    Updating crates.io index
+   Packaging qsl-lexer v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-lexer)
+    Updating crates.io index
+    Packaged 34 files, 132.7KiB (33.4KiB compressed)
+   Verifying qsl-lexer v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-lexer)
+   Compiling qsl-lexer v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\release-0.3.0-package-target\package\qsl-lexer-0.3.0)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.54s
+   Uploading qsl-lexer v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-lexer)
+    Uploaded qsl-lexer v0.3.0 to registry `crates-io`
+note: waiting for qsl-lexer v0.3.0 to be available at registry `crates-io`
+help: you may press ctrl-c to skip waiting; the crate should be available shortly
+   Published qsl-lexer v0.3.0 at registry `crates-io`

@@ -1,0 +1,82 @@
+[
+  {
+    "name": "qsl-core",
+    "version": "0.1.0",
+    "sha256": "3891631cec7a3cf3a4409aa092e6fede5d3e3aa92628c6c2dfa64d1efab27957",
+    "bytes": 69553,
+    "registry_checksum": "3891631cec7a3cf3a4409aa092e6fede5d3e3aa92628c6c2dfa64d1efab27957",
+    "created_at": "2026-11-08T00:25:24.943438Z",
+    "vcs": {
+      "git": {
+        "sha1": "9a67e315c47beba134bcf2a9ab475c9bbe0725ed"
+      },
+      "path_in_vcs": "qsl-core"
+    },
+    "url": "https://crates.io/crates/qsl-core/0.1.0",
+    "file": "qsl-core-0.1.0.crate",
+    "docs_rs": {
+      "doc_status": true,
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "qsl-lexer",
+    "version": "0.3.0",
+    "sha256": "414e3f22574bf28a8070a3f8c591eb55b974e87773a4c5d29acc600a2645de1d",
+    "bytes": 34238,
+    "registry_checksum": "414e3f22574bf28a8070a3f8c591eb55b974e87773a4c5d29acc600a2645de1d",
+    "created_at": "2026-11-08T00:25:38.294587Z",
+    "vcs": {
+      "git": {
+        "sha1": "9a67e315c47beba134bcf2a9ab475c9bbe0725ed"
+      },
+      "path_in_vcs": "qsl-lexer"
+    },
+    "url": "https://crates.io/crates/qsl-lexer/0.3.0",
+    "file": "qsl-lexer-0.3.0.crate",
+    "docs_rs": {
+      "doc_status": true,
+      "version": "0.3.0"
+    }
+  },
+  {
+    "name": "qsl-interpreter",
+    "version": "0.3.0",
+    "sha256": "9a9fa601571ced3e7dd58af564298103082f142c1f7901bf33c8393c8ced49a1",
+    "bytes": 65954,
+    "registry_checksum": "9a9fa601571ced3e7dd58af564298103082f142c1f7901bf33c8393c8ced49a1",
+    "created_at": "2026-11-08T00:25:54.772811Z",
+    "vcs": {
+      "git": {
+        "sha1": "9a67e315c47beba134bcf2a9ab475c9bbe0725ed"
+      },
+      "path_in_vcs": "qsl-interpreter"
+    },
+    "url": "https://crates.io/crates/qsl-interpreter/0.3.0",
+    "file": "qsl-interpreter-0.3.0.crate",
+    "docs_rs": {
+      "doc_status": true,
+      "version": "0.3.0"
+    }
+  },
+  {
+    "name": "qsl",
+    "version": "0.3.0",
+    "sha256": "87fd2bdb36ee72d03ec78c3593c34734ab830a79bc0b34de5eb0861c9597eff3",
+    "bytes": 23550,
+    "registry_checksum": "87fd2bdb36ee72d03ec78c3593c34734ab830a79bc0b34de5eb0861c9597eff3",
+    "created_at": "2026-11-08T00:26:16.172184Z",
+    "vcs": {
+      "git": {
+        "sha1": "9a67e315c47beba134bcf2a9ab475c9bbe0725ed"
+      },
+      "path_in_vcs": "qsl"
+    },
+    "url": "https://crates.io/crates/qsl/0.3.0",
+    "file": "qsl-0.3.0.crate",
+    "docs_rs": {
+      "doc_status": true,
+      "version": "0.3.0"
+    }
+  }
+]

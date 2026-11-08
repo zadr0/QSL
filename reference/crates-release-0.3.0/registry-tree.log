@@ -1,0 +1,24 @@
+qsl-030-registry-check v0.0.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\release-0.3.0-registry-consumer)
+├── qsl v0.3.0
+│   ├── qsl-core v0.1.0
+│   │   └── xxhash-rust v0.8.15
+│   ├── qsl-interpreter v0.3.0
+│   │   └── qsl-lexer v0.3.0
+│   │       ├── qsl-core v0.1.0 (*)
+│   │       └── syn v2.0.119
+│   │           ├── proc-macro2 v1.0.107
+│   │           │   └── unicode-ident v1.0.27
+│   │           └── unicode-ident v1.0.27
+│   ├── qsl-lexer v0.3.0 (*)
+│   └── qsl-macros-impl v0.1.0 (proc-macro)
+│       ├── quote v1.0.47
+│       │   └── proc-macro2 v1.0.107
+│       │       └── unicode-ident v1.0.27
+│       └── syn v2.0.119
+│           ├── proc-macro2 v1.0.107 (*)
+│           ├── quote v1.0.47 (*)
+│           └── unicode-ident v1.0.27
+├── qsl-core v0.1.0 (*)
+└── qsl-lexer v0.3.0 (*)
+[build-dependencies]
+└── qsl v0.3.0 (*)
