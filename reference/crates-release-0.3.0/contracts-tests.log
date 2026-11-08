@@ -1,0 +1,53 @@
+   Compiling qsl-lexer v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-lexer)
+   Compiling qsl-interpreter v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter)
+   Compiling qsl v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+   Compiling qsl-optional-v2-contracts v0.0.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter\tests\optional-v2)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 24.68s
+     Running unittests src\lib.rs (C:\Users\Guild\Desktop\dev-qsl\.optimization\core-publication-target\debug\deps\qsl_optional_v2_contracts-f99123bf4081038a.exe)
+
+running 36 tests
+test contracts::macro_tests::native_rust_macro_reuses_its_type_without_flattening_parent ... ok
+test contracts::native_tests::native_borrow_validates_layout_alignment_and_utf8_before_view ... ok
+test compact_primitive_tests::opt_in_macro_compresses_rank_and_rejects_invalid_codes ... ok
+test arrays_and_lz_use_the_same_dynamic_optional_dispatch ... ok
+test contracts::primitive_tests::native_primitive_macro_checks_region_values ... ok
+test contracts::primitive_tests::custom_optional_scopes_do_not_share_marker_indices ... ok
+test contracts::primitive_tests::registered_primitive_keeps_its_validated_custom_codec ... ok
+test contracts::native_tests::regions_are_real_nested_fields_and_preserve_wire ... ok
+test contracts::tests::roundtrip_Bm0Match ... ok
+test contracts::tests::bitmap_wire_order_and_spare_bits ... ok
+test contracts::tests::roundtrip_Bm0Table ... ok
+test contracts::tests::bitmap_compact_and_borrowed_fields ... ok
+test contracts::tests::roundtrip_Bm16Match ... ok
+test contracts::tests::roundtrip_Bm16Table ... ok
+test contracts::tests::roundtrip_Bm128Match ... ok
+test contracts::tests::roundtrip_Bm128Table ... ok
+test contracts::tests::roundtrip_Bm17Table ... ok
+test contracts::tests::roundtrip_Bm17Match ... ok
+test contracts::tests::roundtrip_Bm1Match ... ok
+test contracts::tests::roundtrip_Bm1Table ... ok
+test contracts::tests::roundtrip_Bm32Match ... ok
+test contracts::tests::roundtrip_Bm32Table ... ok
+test contracts::tests::roundtrip_Bm33Table ... ok
+test contracts::tests::roundtrip_Bm64Match ... ok
+test contracts::tests::roundtrip_Bm64Table ... ok
+test contracts::tests::roundtrip_Bm33Match ... ok
+test contracts::tests::roundtrip_Bm8Match ... ok
+test contracts::tests::roundtrip_Bm65Match ... ok
+test contracts::tests::roundtrip_Bm8Table ... ok
+test contracts::tests::roundtrip_Bm65Table ... ok
+test custom_arrays_use_the_codec_compact_width_and_validate_each_value ... ok
+test contracts::tests::roundtrip_Bm9Table ... ok
+test contracts::tests::table_preserves_the_ordinary_tag_wire ... ok
+test contracts::tests::roundtrip_Bm9Match ... ok
+test decoded_budget_tests::compact_primitive_cannot_hide_its_original_data_width ... ok
+test malformed_frames_do_not_panic_or_publish_destination_values ... ok
+
+test result: ok. 36 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+   Doc-tests qsl_optional_v2_contracts
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

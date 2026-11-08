@@ -1,0 +1,9 @@
+   Compiling proc-macro2 v1.0.107
+    Checking qsl-core v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-core)
+   Compiling quote v1.0.47
+   Compiling syn v2.0.119
+    Checking qsl-lexer v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-lexer)
+    Checking qsl-interpreter v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter)
+   Compiling qsl-macros-impl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl\macros)
+    Checking qsl v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.80s

@@ -2,7 +2,7 @@
 
 [Русский](API.ru.md) · [Architecture](architecture.en.md)
 
-792 explicitly public declarations and trait method signatures from current sources. This is a source index, not reflection of every platform export. rust-macros/diagnostics feature gates still apply; no native/Windows dependency remains; generator string literals are excluded. Paths/lines refer to the local snapshot in the [manifest](../reference/core-refactor-2026-11-08/source-manifest.json). This index follows current main, including qsl-core extraction after published 0.2.0.
+792 explicitly public declarations and trait method signatures from current sources. This is a source index, not reflection of every platform export. rust-macros/diagnostics feature gates still apply; no native/Windows dependency remains; generator string literals are excluded. Paths/lines refer to the local snapshot in the [manifest](../reference/crates-release-0.3.0/source-manifest.json). This index covers QSL 0.3.0 and qsl-core 0.1.0.
 
 ## qsl-core/src/analysis.rs
 

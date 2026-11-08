@@ -1,0 +1,18 @@
+   Compiling qsl-macros-impl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl\macros)
+   Compiling qsl v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+   Compiling qsl-030-registry-check v0.0.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\release-0.3.0-local-consumer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.33s
+     Running unittests src\main.rs (C:\Users\Guild\Desktop\dev-qsl\.optimization\core-publication-target\debug\deps\qsl_030_registry_check-a50b08f9b7e1ce3a.exe)
+
+running 8 tests
+test core_string_contracts::four_strings_mixed_ownership_and_reuse ... ok
+test core_string_contracts::shared_error_identity_and_untrusted_strings ... ok
+test tests::bitmap_order_and_errors ... ok
+test tests::checked_owned_and_into ... ok
+test tests::nested_region_type ... ok
+test tests::qps_exact_values ... ok
+test tests::validated_primitive_and_original_budget ... ok
+test tests::wide_bitmap_header_uses_u128 ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+

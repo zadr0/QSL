@@ -1,6 +1,6 @@
 [package]
 name = "qsl-lexer"
-version = "0.2.0"
+version = "0.3.0"
 description = "Schema lexer, parser and build-time analysis for QSL binary serialization."
 edition = "2021"
 rust-version = "1.98"

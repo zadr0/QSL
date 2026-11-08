@@ -1,0 +1,40 @@
+<!doctype html><html lang="ru" data-generation="3"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="../assets/full.css?v=9848d7e29e"><link rel="stylesheet" href="../assets/manual.css?v=4066728060">
+<title>QSL 0.3.0 — общее ядро и UTF-8 API</title>
+<meta name="description" content="Выпуск QSL 0.3.0: qsl-core, четыре строковых представления, crates.io, ограничения и переход.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/releases/0.3.0.ru.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/releases/0.3.0.ru.html">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/releases/0.3.0.en.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/releases/0.3.0.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="QSL 0.3.0 — общее ядро и UTF-8 API">
+<meta property="og:description" content="Выпуск QSL 0.3.0: qsl-core, четыре строковых представления, crates.io, ограничения и переход.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/releases/0.3.0.ru.html">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL — core, lexer, interpreter and Rust codec facade">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="QSL 0.3.0 — общее ядро и UTF-8 API">
+<meta name="twitter:description" content="Выпуск QSL 0.3.0: qsl-core, четыре строковых представления, crates.io, ограничения и переход.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.3.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/releases/0.3.0.ru.html#webpage","url":"https://zadr0.github.io/QSL/releases/0.3.0.ru.html","name":"QSL 0.3.0 — общее ядро и UTF-8 API","description":"Выпуск QSL 0.3.0: qsl-core, четыре строковых представления, crates.io, ограничения и переход.","inLanguage":"ru","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body data-data-version="6954f72e64ac"><main class="book"><a href="../index.html">QSL</a><h1 id="releases-ru-1">QSL 0.3.0</h1>
+<h2 id="releases-ru-2">Общее ядро и строки</h2>
+<p>qsl, qsl-lexer и qsl-interpreter имеют версию 0.3.0; новый qsl-core — 0.1.0. Реализация атрибутных макросов остаётся 0.1.0. Требуется Rust 1.98+. Лицензия MIT.</p>
+<p>Общие типы схем, ошибки, конфигурация, wire-анализ, I/O, валидация, строки и буферы принадлежат qsl-core. Он не зависит от парсера или генератора. Прежние пути импорта сохраняются через re-export.</p>
+<p>Переменные UTF-8 строки: String, &amp;str, StackString и InlineString. Guard и байтовые строковые режимы удалены. binary_opt=view возвращает &amp;str; соседние String сохраняют владение. New/reuse — режимы назначения. STACK_LIMIT по умолчанию 256 B; превышение переводит обычное встроенное хранение в String. Checked- и unsafe-методы сохранены.</p>
+<h2 id="releases-ru-3">Совместимость и установка</h2>
+<p>Это несовместимое изменение API до 1.0. Для обычных строк и BM v2 перенос модулей не меняет байты кадра. Схема и влияющие на формат опции должны совпадать у сторон.</p>
+<pre><code>[dependencies]
+qsl = &quot;=0.3.0&quot;
+
+[build-dependencies]
+qsl = &quot;=0.3.0&quot;</code></pre>
+<p><a href="../migration-0.3.0.ru.html">Полный переход</a> · <a href="../quickstart.ru.html">Установка</a> · <a href="../architecture.ru.html">Архитектура</a> · <a href="../index.html">Документация</a>.</p>
+<h2 id="releases-ru-4">Проверки и измерения</h2>
+<p>Проверяются четыре пакета, сгенерированные структуры, владение строками, повреждённые длины/UTF-8 и независимый потребитель реестра. Результаты публикации и логи находятся в reference/crates-release-0.3.0. Девять сохранённых замеров Criterion относятся к явно указанным входам и снимку исходников до изменения метаданных версии. Фон 8,2% не позволяет считать прогон строгим доказательством скорости. Новое ускорение публикацией не заявляется.</p></main></body></html>

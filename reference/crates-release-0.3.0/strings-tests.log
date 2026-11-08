@@ -1,0 +1,16 @@
+   Compiling qsl-strings-bench v0.0.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-bench\strings)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.72s
+     Running unittests src\lib.rs (C:\Users\Guild\Desktop\dev-qsl\.optimization\core-publication-target\debug\deps\qsl_strings_bench-811ebfa3eaff5b0d.exe)
+
+running 2 tests
+test contracts::checked_models_reject_forged_lengths_invalid_utf8_and_truncation ... ok
+test contracts::string_models_and_mixed_ownership_are_real_generated_types ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests qsl_strings_bench
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

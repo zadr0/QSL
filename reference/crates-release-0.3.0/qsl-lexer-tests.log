@@ -1,0 +1,70 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling qsl-core v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-core)
+   Compiling syn v2.0.119
+   Compiling qsl-lexer v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-lexer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.56s
+     Running unittests src\lib.rs (C:\Users\Guild\Desktop\dev-qsl\.optimization\core-publication-target\debug\deps\qsl_lexer-d3ee8b565242a294.exe)
+
+running 51 tests
+test compat::tests::retains_old_number_shape_and_negative_minimum ... ok
+test bitmap::tests::traversal_matches_reverse_markers ... ok
+test bitmap::tests::boundaries_and_spare_bits ... ok
+test analysis::tests::bit_windows_and_byte_barriers_select_minimal_registers ... ok
+test deq::tests::maximum_data_size_has_a_safe_default_and_checked_arithmetic ... ok
+test deq::tests::checks_types_and_duplicates ... ok
+test deq::tests::generation_configs_are_explicit_and_bounded ... ok
+test deq::tests::arithmetic_precedence_is_shared_with_qsl ... ok
+test deq::tests::typed_constants_and_dependencies ... ok
+test frontend::tests::analysis_keeps_storage_unselected_and_input_owned ... ok
+test frontend::tests::analysis_keeps_declared_overlay_intent_for_each_backend ... ok
+test deq::tests::rejects_untyped_or_build_directives ... ok
+test lexer::tests::borrowed_tokens_keep_absolute_byte_spans_and_longest_symbols ... ok
+test length_graph::tests::two_equal_scalars_form_three_events ... ok
+test length_graph::tests::string_ranges_force_some_fields_without_erasing_ambiguity ... ok
+test length_graph::tests::many_equal_scalars_need_no_exponential_state_enumeration ... ok
+test lexer::tests::errors_preserve_offsets_and_stop_iteration ... ok
+test lexer::tests::constants_and_region_delimiters_are_lexical_data ... ok
+test parser::fixed_utf8_tests::fixed_byte_representation_includes_equal_bounds_and_guard_modifiers ... ok
+test parser::lowlevel_tests::binary_and_sequence_modifiers_are_validated ... ok
+test parser::string_modes_tests::retired_guard_and_byte_string_modes_are_rejected ... ok
+test parser::tests::assigns_tags_in_field_order_and_preserves_defaults ... ok
+test parser::tests::compressed_strings_require_finite_byte_bounds_and_boolean_attribute ... ok
+test parser::string_modes_tests::explicit_view_generates_str_and_preserves_owned_siblings ... ok
+test parser_util::tests::block_offsets_are_absolute ... ok
+test parser::tests::qsl_extension_form_and_constant_folding ... ok
+test parser::tests::rejects_invalid_tag_and_missing_bracket ... ok
+test parser::tests::negative_range_and_multischema ... ok
+test parser_util::tests::overflow_checks ... ok
+test parser_util::tests::parser_no_longer_maps_u32_to_u64 ... ok
+test primitive_macro::tests::compact_macro_preserves_domain_endpoints_and_zero_width_values ... ok
+test parser_util::tests::inclusive_range_bits ... ok
+test primitive_macro::tests::wrapper_validation_and_safe_construction ... ok
+test primitive_macro::tests::metadata_is_applied_before_parser_validation ... ok
+test regions::tests::explicit_regions_remain_nested_and_idempotent ... ok
+test primitive_macro::tests::native_custom_array_obeys_the_same_stack_limit ... ok
+test rust_macro::tests::rust_markers_expand_nested_fields_without_duplicate_types ... ok
+test rust_macro::tests::cycles_collisions_group_presence_and_field_order_are_errors ... ok
+test rust_macro::tests::borrowed_rust_fields_keep_ownership_and_lifetime ... ok
+test regions::tests::incompatible_recursive_and_conflicting_regions_are_rejected ... ok
+test schema_macro::tests::nested_forward_and_repeated_macros_flatten_with_fresh_tags ... ok
+test schema_macro::tests::cycles_collisions_group_presence_and_expanded_order_are_errors ... ok
+test rust_macro::tests::source_constraints_are_explicit ... ok
+test rust_macro::tests::shared_rust_dag_has_bounded_expansion_work ... ok
+test schema_macro::tests::nested_lifetime_modes_are_checked_after_expansion ... ok
+test static_index::tests::bit_capacity_and_unsupported_layouts_are_explicit ... ok
+test schema_macro::tests::shared_empty_macro_dag_is_expanded_once_per_definition ... ok
+test static_index::tests::exact_states_including_empty_are_exhaustive ... ok
+test static_index::tests::collisions_and_zero_presence_are_counted ... ok
+test types::tests::widths ... ok
+test static_index::tests::exact_quantums_and_rejected_derivatives ... ok
+
+test result: ok. 51 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+
+   Doc-tests qsl_lexer
+
+running 1 test
+test src\lib.rs - (line 5) ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.61s
+

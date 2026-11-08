@@ -253,6 +253,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/releases/0.2.0.en.html" />
   </url>
   <url>
+    <loc>https://zadr0.github.io/QSL/releases/0.3.0.en.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/releases/0.3.0.en.html" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/releases/0.3.0.ru.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/releases/0.3.0.en.html" />
+  </url>
+  <url>
+    <loc>https://zadr0.github.io/QSL/releases/0.3.0.ru.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/releases/0.3.0.ru.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/releases/0.3.0.en.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/releases/0.3.0.en.html" />
+  </url>
+  <url>
     <loc>https://zadr0.github.io/QSL/attributes/en/aggressive.html</loc>
     <lastmod>2026-11-08</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/attributes/en/aggressive.html" />

@@ -1,4 +1,4 @@
-> **Current main branch:** [qsl-core and string contracts](migration-0.3.0.en.md). Variable strings use String, &str, StackString and InlineString. Guard and byte-string modes are no longer supported. Changes after published 0.2.0 are available from source.
+> **QSL 0.3.0:** [qsl-core and string contracts](migration-0.3.0.en.md). Variable strings use String, &str, StackString and InlineString. Guard and byte-string modes are no longer supported. These contracts belong to qsl 0.3.0 and qsl-core 0.1.0.
 
 > **QSL 0.2.0:** [migration and current contracts](migration-0.2.0.en.md). BM changes format; ordinary non-BM tags are preserved. Windows-specific runtime modules and the native Cargo feature are removed. Historical measurement chapters retain their captured versions.
 
@@ -27,10 +27,10 @@ Schema QPS packs scalar numeric fields only; strings, arrays and lengths are not
 
 ```toml
 [dependencies]
-qsl = "=0.2.0"
+qsl = "=0.3.0"
 
 [build-dependencies]
-qsl = "=0.2.0"
+qsl = "=0.3.0"
 ```
 
 [Four-file quick start](quickstart.en.md). Both dependencies are required: build.rs generates the codec and the application uses it.

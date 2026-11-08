@@ -1,6 +1,6 @@
 <!doctype html><html lang="en" data-generation="3"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="assets/full.css?v=9848d7e29e"><link rel="stylesheet" href="assets/manual.css?v=4066728060">
 <title>QSL for Rust — installation and quick start</title>
-<meta name="description" content="Install QSL 0.2.0, describe a schema and build your first Rust binary codec with checked serialization and deserialization.">
+<meta name="description" content="Install QSL 0.3.0, describe a schema and build your first Rust binary codec with checked serialization and deserialization.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://zadr0.github.io/QSL/quickstart.en.html">
 <link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
@@ -11,7 +11,7 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="QSL">
 <meta property="og:title" content="QSL for Rust — installation and quick start">
-<meta property="og:description" content="Install QSL 0.2.0, describe a schema and build your first Rust binary codec with checked serialization and deserialization.">
+<meta property="og:description" content="Install QSL 0.3.0, describe a schema and build your first Rust binary codec with checked serialization and deserialization.">
 <meta property="og:url" content="https://zadr0.github.io/QSL/quickstart.en.html">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
@@ -20,9 +20,9 @@
 <meta property="og:image:alt" content="QSL — core, lexer, interpreter and Rust codec facade">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="QSL for Rust — installation and quick start">
-<meta name="twitter:description" content="Install QSL 0.2.0, describe a schema and build your first Rust binary codec with checked serialization and deserialization.">
+<meta name="twitter:description" content="Install QSL 0.3.0, describe a schema and build your first Rust binary codec with checked serialization and deserialization.">
 <meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
-<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"main after 0.2.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/quickstart.en.html#webpage","url":"https://zadr0.github.io/QSL/quickstart.en.html","name":"QSL for Rust — installation and quick start","description":"Install QSL 0.2.0, describe a schema and build your first Rust binary codec with checked serialization and deserialization.","inLanguage":"en","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.3.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/quickstart.en.html#webpage","url":"https://zadr0.github.io/QSL/quickstart.en.html","name":"QSL for Rust — installation and quick start","description":"Install QSL 0.3.0, describe a schema and build your first Rust binary codec with checked serialization and deserialization.","inLanguage":"en","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
 </head><body data-data-version="6954f72e64ac"><main class="book"><nav class="doc-header"><a href="en.html">QSL / Documentation</a><a href="quickstart.ru.html">Русский</a></nav><h1 id="quickstart-en-1">QSL: quick start</h1>
 <p><a href="quickstart.ru.html">Russian</a> · <a href="quickstart.en.html">English</a></p>
 <p>QSL is a data-description language and a generator of specialized Rust binary codecs. Peers agree on field order, value ranges, lengths and codecs. QSL analyzes the schema during the Cargo build and emits concrete Rust structures and methods for exchanging bytes.</p>
@@ -32,10 +32,10 @@
 <p>Create an application with cargo new qsl-demo, then add the four files below. Keep the package section generated by Cargo. Use the same QSL version in application and build dependencies.</p>
 <h3 id="quickstart-en-3">1. Cargo.toml</h3>
 <pre><code>[dependencies]
-qsl = &quot;=0.2.0&quot;
+qsl = &quot;=0.3.0&quot;
 
 [build-dependencies]
-qsl = &quot;=0.2.0&quot;</code></pre>
+qsl = &quot;=0.3.0&quot;</code></pre>
 <h3 id="quickstart-en-4">2. user.qsl</h3>
 <pre><code>&amp;User[safety] {
     u64 id;

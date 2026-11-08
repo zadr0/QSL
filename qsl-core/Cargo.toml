@@ -12,6 +12,12 @@ documentation = "https://docs.rs/qsl-core"
 readme = "README.md"
 keywords = ["serialization", "binary", "schema", "protocol"]
 categories = ["encoding"]
+publish = ["crates-io"]
+include = ["src/**", "Cargo.toml", "Cargo.lock", "README.md", "CHANGELOG.md", "LICENSE"]
+
+[package.metadata.docs.rs]
+all-features = true
+
 [features]
 default = []
 diagnostics = []

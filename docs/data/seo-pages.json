@@ -186,7 +186,7 @@
     "url": "https://zadr0.github.io/QSL/quickstart.ru.html",
     "lang": "ru",
     "title": "QSL для Rust — установка и первый пример",
-    "description": "Установите QSL 0.2.0, опишите схему и соберите первый Rust-кодек с проверяемой сериализацией и восстановлением.",
+    "description": "Установите QSL 0.3.0, опишите схему и соберите первый Rust-кодек с проверяемой сериализацией и восстановлением.",
     "index": true,
     "alternates": {
       "ru": "https://zadr0.github.io/QSL/quickstart.ru.html",
@@ -394,7 +394,7 @@
     "url": "https://zadr0.github.io/QSL/quickstart.en.html",
     "lang": "en",
     "title": "QSL for Rust — installation and quick start",
-    "description": "Install QSL 0.2.0, describe a schema and build your first Rust binary codec with checked serialization and deserialization.",
+    "description": "Install QSL 0.3.0, describe a schema and build your first Rust binary codec with checked serialization and deserialization.",
     "index": true,
     "alternates": {
       "en": "https://zadr0.github.io/QSL/quickstart.en.html",
@@ -465,6 +465,32 @@
       "ru": "https://zadr0.github.io/QSL/releases/0.2.0.ru.html",
       "en": "https://zadr0.github.io/QSL/releases/0.2.0.en.html",
       "x-default": "https://zadr0.github.io/QSL/releases/0.2.0.en.html"
+    }
+  },
+  {
+    "path": "releases/0.3.0.en.html",
+    "url": "https://zadr0.github.io/QSL/releases/0.3.0.en.html",
+    "lang": "en",
+    "title": "QSL 0.3.0 — shared core and UTF-8 APIs",
+    "description": "QSL 0.3.0 release: qsl-core, four string representations, crates.io packages, constraints and migration.",
+    "index": true,
+    "alternates": {
+      "en": "https://zadr0.github.io/QSL/releases/0.3.0.en.html",
+      "ru": "https://zadr0.github.io/QSL/releases/0.3.0.ru.html",
+      "x-default": "https://zadr0.github.io/QSL/releases/0.3.0.en.html"
+    }
+  },
+  {
+    "path": "releases/0.3.0.ru.html",
+    "url": "https://zadr0.github.io/QSL/releases/0.3.0.ru.html",
+    "lang": "ru",
+    "title": "QSL 0.3.0 — общее ядро и UTF-8 API",
+    "description": "Выпуск QSL 0.3.0: qsl-core, четыре строковых представления, crates.io, ограничения и переход.",
+    "index": true,
+    "alternates": {
+      "ru": "https://zadr0.github.io/QSL/releases/0.3.0.ru.html",
+      "en": "https://zadr0.github.io/QSL/releases/0.3.0.en.html",
+      "x-default": "https://zadr0.github.io/QSL/releases/0.3.0.en.html"
     }
   },
   {

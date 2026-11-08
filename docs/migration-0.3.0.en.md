@@ -1,6 +1,6 @@
-# Current branch: qsl-core and string representations
+# QSL 0.3.0: qsl-core and string representations
 
-These source changes follow release 0.2.0 on main. Published 0.2.0 packages are immutable. Use a repository checkout and local dependencies for the new architecture. Moving modules does not itself change BM v2 or ordinary string wire formats.
+QSL 0.3.0 moves shared contracts into qsl-core 0.1.0 and removes retired string APIs. Update qsl, qsl-lexer and qsl-interpreter together to 0.3.0. The procedural implementation remains qsl-macros-impl 0.1.0. Moving modules does not itself change BM v2 or ordinary string wire formats.
 
 ## Crate boundaries
 

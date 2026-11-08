@@ -1,0 +1,67 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling qsl-core v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-core)
+   Compiling quote v1.0.47
+   Compiling syn v2.0.119
+   Compiling qsl-lexer v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-lexer)
+   Compiling qsl-interpreter v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl-interpreter)
+   Compiling qsl-macros-impl v0.1.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl\macros)
+   Compiling qsl v0.3.0 (C:\Users\Guild\Desktop\dev-qsl\.optimization\qsl-public-docs\qsl)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.47s
+     Running unittests src\lib.rs (C:\Users\Guild\Desktop\dev-qsl\.optimization\core-publication-target\debug\deps\qsl-0b4b1c004e86b8b7.exe)
+
+running 10 tests
+test modernization::tests::exact_partial_register ... ok
+test modernization::tests::drops_only_initialized ... ok
+test modernization::tests::arrays_use_native_data_bytes_for_the_strict_limit ... ok
+test modernization::tests::typed_loads_zero_extend_partial_unaligned_windows ... ok
+test qps::tests::default_quantum_is_sixteen ... ok
+test modernization::tests::optional_accessor_collisions_are_rejected ... ok
+test qps::tests::quant_alias_and_raw_fallback_are_explicit ... ok
+test qps::tests::required_only_qps_is_not_a_predictor ... ok
+test qps::tests::prediction_is_separately_selected ... ok
+test modernization::tests::generated_registers_match_every_exact_window_width ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src\bin\qsl-analyze.rs (C:\Users\Guild\Desktop\dev-qsl\.optimization\core-publication-target\debug\deps\qsl_analyze-7e188ab841e5744f.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\qps_bytes_vectors.rs (C:\Users\Guild\Desktop\dev-qsl\.optimization\core-publication-target\debug\deps\qps_bytes_vectors-1935d507c5c50dbb.exe)
+
+running 2 tests
+test every_quantum_preserves_high_constant_base ... ok
+test qps_byte_frame_has_unquantized_length_and_exact_group_words ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\schema_hash.rs (C:\Users\Guild\Desktop\dev-qsl\.optimization\core-publication-target\debug\deps\schema_hash-2d08dc2b9f19e44c.exe)
+
+running 12 tests
+test constants_are_hashed_after_evaluation_not_by_identifier ... ok
+test canonical_v1_golden_hashes_are_stable_for_both_algorithms ... ok
+test descriptor_has_explicit_version_domain_and_little_endian_lengths ... ok
+test codegen_policies_and_initializers_do_not_change_hashes ... ok
+test deq_hash_selection_is_validated_and_merged_independently ... ok
+test changes_to_data_domains_order_and_wire_modes_change_both_hashes ... ok
+test opaque_custom_codec_is_never_claimed_complete ... ok
+test nested_rust_macros_are_hashed_after_expansion ... ok
+test qps_aliases_are_canonical_and_quantums_are_distinct ... ok
+test strict_names_and_light_wire_identity_are_separate ... ok
+test tag_dispatch_preserves_default_identity_and_prediction_is_distinct ... ok
+test native_bridge_agrees_with_generation_across_processes_and_rejects_duplicate_config ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+   Doc-tests qsl
+
+running 4 tests
+test src\lib.rs - (line 40) ... ignored
+test src\lib.rs - (line 50) ... ignored
+test src\lib.rs - (line 163) ... ok
+test src\lib.rs - (line 133) ... ok
+
+test result: ok. 2 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.70s
+

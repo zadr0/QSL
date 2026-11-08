@@ -22,10 +22,10 @@ and build dependencies.
 
 ```toml
 [dependencies]
-qsl = "=0.2.0"
+qsl = "=0.3.0"
 
 [build-dependencies]
-qsl = "=0.2.0"
+qsl = "=0.3.0"
 ```
 
 ### 2. user.qsl

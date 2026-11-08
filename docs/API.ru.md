@@ -2,7 +2,7 @@
 
 [English](API.en.md) · [Архитектура](architecture.ru.md)
 
-Найдено 792 явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Учитывайте feature rust-macros/diagnostics; native/Windows зависимость удалена; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из [manifest](../reference/core-refactor-2026-11-08/source-manifest.json). Индекс относится к текущей ветке main с qsl-core после опубликованного 0.2.0.
+Найдено 792 явно публичных объявлений и сигнатур методов trait в текущих исходниках. Это source-index, а не отражение всех платформенных export-символов. Учитывайте feature rust-macros/diagnostics; native/Windows зависимость удалена; кодогенераторские строковые литералы не считаются API. Пути и строки относятся к локальному снимку из [manifest](../reference/crates-release-0.3.0/source-manifest.json). Индекс относится к QSL 0.3.0 и qsl-core 0.1.0.
 
 ## qsl-core/src/analysis.rs
 

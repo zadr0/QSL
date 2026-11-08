@@ -1,6 +1,6 @@
 # QSL architecture: core, lexer, interpreter and facade
 
-This document describes current main after 0.2.0. [API changes](migration-0.3.0.en.md) · [Complete index](API.en.md).
+This document describes QSL 0.3.0 and qsl-core 0.1.0. [API changes](migration-0.3.0.en.md) · [Complete index](API.en.md).
 
 ## Crate boundaries
 

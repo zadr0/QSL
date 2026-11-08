@@ -20,14 +20,14 @@ dependencies = [
 
 [[package]]
 name = "qsl-interpreter"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "qsl-lexer",
 ]
 
 [[package]]
 name = "qsl-lexer"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "qsl-core",
  "syn",

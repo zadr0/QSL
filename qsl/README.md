@@ -1,5 +1,3 @@
-> Current main: shared schema/runtime contracts are owned by qsl-core. Supported variable UTF-8 storage is String, &str, StackString and InlineString; new/reuse are method modes. Published 0.2.0 packages are immutable; these changes are available from this source checkout.
-
 # QSL
 
 QSL is a data-description language and a generator of specialized Rust binary codecs.
@@ -22,10 +20,10 @@ and build dependencies.
 
 ```toml
 [dependencies]
-qsl = "=0.2.0"
+qsl = "=0.3.0"
 
 [build-dependencies]
-qsl = "=0.2.0"
+qsl = "=0.3.0"
 ```
 
 ### 2. user.qsl
@@ -117,18 +115,18 @@ predict_seq and opt_table are independent mechanisms and may be combined.
 The attributes qsl::qsl_macro and qsl::schem_macro are re-exported by qsl.
 During the pre-1.0 series, coordinate API and wire choices explicitly.
 
-[Complete English guide](https://github.com/zadr0/QSL/blob/main/docs/guide.en.md)
-· [Architecture](https://github.com/zadr0/QSL/blob/main/docs/architecture.en.md)
-· [Checked input](https://github.com/zadr0/QSL/blob/main/docs/safety.en.md)
-· [Runnable examples](https://github.com/zadr0/QSL/tree/main/examples)
+[Complete English guide](https://github.com/zadr0/QSL/blob/v0.3.0/docs/guide.en.md)
+· [Architecture](https://github.com/zadr0/QSL/blob/v0.3.0/docs/architecture.en.md)
+· [Checked input](https://github.com/zadr0/QSL/blob/v0.3.0/docs/safety.en.md)
+· [Runnable examples](https://github.com/zadr0/QSL/tree/v0.3.0/examples)
 · [Source](https://github.com/zadr0/QSL)
 
-[MIT license](https://github.com/zadr0/QSL/blob/main/LICENSE).
+[MIT license](https://github.com/zadr0/QSL/blob/v0.3.0/LICENSE).
 
 
-## Compiler crates in 0.2.0
+## Compiler crates in 0.3.0
 
-The compiler is separated into `qsl-lexer` (source collection and analysis) and `qsl-interpreter` (Rust generation). `qsl` retains runtime I/O and compatible public imports. The facade and both compiler crates are version 0.2.0. The unchanged procedural implementation crate remains at 0.1.0.
+The compiler is separated into `qsl-lexer` (source collection and analysis) and `qsl-interpreter` (Rust generation). `qsl-core` owns shared schema/runtime contracts and I/O. `qsl` preserves application imports through re-exports. The facade and both compiler crates are version 0.3.0; qsl-core starts at 0.1.0. The unchanged procedural implementation crate remains at 0.1.0.
 
 One `QslSchemaBuilder` owns the schemas and DEQ settings. Backends borrow this data through `SchemaBackend`; each backend owns its output and error types. Import the extension trait to choose Rust generation:
 
@@ -169,3 +167,11 @@ assert!(DeviceId(0).qsl_validate_values().is_err());
 ```
 
 The macro checks an integer tuple wrapper's representation and domain, retains QslCustom hooks and supplies a compact whole-byte rank codec. Register the same type with `QslSchemaBuilder::new().with_primitive::<DeviceId>("DeviceId")?` before `.with_source(...)`. For native regions, explicitly opt into `qsl::qsl_native_primitive!(DeviceId,u32);`. Arbitrary user codecs are not automatically reinterpreted or merged into scalar register groups. [Complete migration and constraints](https://github.com/zadr0/QSL/blob/v0.2.0/docs/migration-0.2.0.en.md).
+
+## 0.3.0: shared core and UTF-8 storage
+
+Shared schema types, errors, wire contracts, I/O, UTF-8 containers, validation and buffers now belong to qsl-core 0.1.0. Compatible module paths re-export those same definitions. Core has no lexer/interpreter dependency.
+
+Variable UTF-8 fields use String, &str, `StackString<N>` or `InlineString<N>`. New/reuse are destination modes, not additional types. binary_opt=view generates &str and preserves owned String siblings; binary_opt=inline selects InlineString within STACK_LIMIT. Bounded aggressive storage uses StackString within that budget. STACK_LIMIT defaults to 256 B; larger ordinary inline strings fall back to String. Fixed native string fields retain [u8; N]. Guard containers and binary_opt=guard/true/bytes are rejected. Ordinary String and borrowed &str keep the same wire encoding; InlineString has its own schema-selected length header.
+
+Checked APIs retain UTF-8, length, value-domain, optional metadata, decompressed-size and aggregate-budget checks. Unchecked APIs remain explicit caller contracts. [0.3.0 migration](https://github.com/zadr0/QSL/blob/v0.3.0/docs/migration-0.3.0.en.md).

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0 — 2026-11-08
+
+- Extract shared schema/runtime contracts into qsl-core 0.1.0; retain compatible re-exports and one error/type identity.
+- Retain String, &str, StackString and InlineString as variable UTF-8 representations; remove Guard and binary byte-string modes.
+- Preserve per-field borrowing alongside owned String fields; retain checked and explicit unchecked APIs.
+- Publish English package documentation with the current architecture, storage budgets and migration contract.
+
+This is a breaking pre-1.0 API release. Existing ordinary String and BM v2 encoding remains unchanged; peers must still agree on schema and wire-affecting options.
+
 ## 0.2.0 — 2026-11-08
 
 - Change BM to optional-only masks selected from u8/u16/u32/u64/u128 and descending set-bit traversal. Validate spare bits once before dispatch; suppress PS ordering under BM.
