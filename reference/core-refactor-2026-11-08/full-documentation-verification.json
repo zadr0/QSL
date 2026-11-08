@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-08",
+  "style_baseline_commit": "a102fb3f5d1bc480dfd2c0c4c38d57eb01b1f86a",
+  "baseline_stylesheet_sha256": "9848d7e29eb41b7e07dce9b38a28350567d82a7fd046274edc01496b63ebd233",
+  "baseline_stylesheet_unchanged": true,
+  "full_guide": "visible inline in both RU and EN; no disclosure interaction required",
+  "configuration_keys": [
+    "USE_HASH",
+    "MAX_DATA_SIZE",
+    "QSL_RT",
+    "QSL_RT_DEFAULT",
+    "STACK_LIMIT"
+  ],
+  "source_declarations": 792,
+  "links_checked": 1348,
+  "broken_links": 0,
+  "mobile": {
+    "viewport": 390,
+    "document_client_width": 375,
+    "body_scroll_width": 375
+  },
+  "browser_models": {
+    "compact_corruption": "InvalidPadding",
+    "raw_layout_bytes": 4,
+    "Q2_repeated_128_bytes": "80 B",
+    "Q8_repeated_128_bytes": "32 B",
+    "PS_two_present_fields": "I=2; no tag read; 7 B frame",
+    "bounded_inline_fallback": "StackString request N=1024, budget256 -> String"
+  },
+  "console_errors": [],
+  "tests": [
+    "reference/test-manual.cjs",
+    "reference/test-workshop.cjs",
+    "reference/verify-site.py",
+    "reference/verify-seo.py"
+  ],
+  "historical_interactive_snapshot": "docs/archive/2026-11-07/index.html; noindex,follow; captured APIs and measurements are labelled historical"
+}

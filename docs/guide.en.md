@@ -56,6 +56,17 @@ include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
 
 Checked deserialization requires [safety]. opt_table selects optional readers by tag; predict_seq,opt_table enables the length graph. These attributes do not make an arbitrary pointer safe or remove a custom codec's obligations.
 
+## Four-crate architecture
+
+| Crate | Responsibility |
+|---|---|
+| qsl-core | Schema types, errors, configuration, wire contracts, I/O, strings, buffers and validation |
+| qsl-lexer | QSL/DEQ lexer and parser, schema builder and Rust-template expansion |
+| qsl-interpreter | Concrete Rust structure and method generation from analyzed schemas |
+| qsl | Application facade, attribute macros and compatible generated-code paths |
+
+qsl-core does not depend on the lexer/interpreter or parse schema text. Former facade/lexer modules retain compatible re-exports. The builder stores schemas and a backend implements SchemaBackend; a future LLVM backend is not implemented. See the [architecture reference](architecture.en.md) for the current source layout.
+
 ## Build pipeline
 
 1. DEQ parses typed constants and optional generation settings.
@@ -150,8 +161,9 @@ PS is inactive when BM is selected and cannot reorder its traversal. QPS does no
 | Ordinary string | String | Creates and fills owned storage |
 | lifetime | &'a str | Borrows input bytes |
 | binary_opt=view | &'a str | Borrowed validated UTF-8 |
+| aggressive, bounded string | StackString<MAX> | Copies; falls back to String above STACK_LIMIT |
 | binary_opt=inline | InlineString<MAX> | Copies into inline capacity |
-| decompress=true | InlineString<MAX>, or [u8; N] for fixed strings | Restores raw/LZ into final storage |
+| decompress=true | InlineString<MAX> / String, or [u8; N] for fixed strings | Restores raw/LZ; inline capacity is bounded by STACK_LIMIT |
 
 A Unicode scalar can occupy multiple UTF-8 bytes. Measurements therefore distinguish 1024 characters from their actual byte count. Schema bounds and P use bytes.
 
@@ -210,7 +222,21 @@ The general path is explicit through these APIs or ByteQps; existing Serializabl
 
 Three logical regions exist: the source native object, encoded frame and scratch/restoration. Scratch and restoration may reuse storage in different phases. encode_to/decode_to do not allocate these buffers internally. ByteFrame borrows output. A small schema may not repay 16 B; the codec never assumes a smaller destination blindly.
 
+## Complete DEQ generation configuration
+
+| !config | Default | Contract |
+|---|---|---|
+| USE_HASH | xxHash | XXH3-64; xxHash128 selects 128-bit schema identity |
+| MAX_DATA_SIZE | 65535 | Positive aggregate input/restoration/value budget, at most isize::MAX |
+| QSL_RT | false | Optional static-slot generation for bounded schemas |
+| QSL_RT_DEFAULT | 16 | Slots per schema, 1..64 |
+| STACK_LIMIT | 256 | Inline string/array capacity budget in bytes; accepts 0..u32::MAX |
+
+Use `!config NAME = value;`. Unknown names and duplicate settings are rejected. STACK_LIMIT controls storage selection, not the thread's aggregate stack use; padding, length fields and other members still consume memory. Above this budget ordinary inline strings fall back to String and arrays to dynamic storage. Explicit binary_opt=inline or decompress=true does not override the budget. The wire codec and storage ownership remain separate choices.
+
 ## Specialized prepared methods
+
+The 8 November 2026 profile contains nine decoding cases after qsl-core extraction. Main input: 1024 Cyrillic scalars, 2048 useful bytes; control: 255 ASCII bytes. Warm-up 15 s, measurement 10 s, 200 samples, 99% CI. Average background CPU was 8.2%, so this profile is not accepted as strict speed evidence. Preparation and validation precede timing. [Data and intervals](data/strings-current.json) and [repeat commands](../qsl-bench/strings/README.md) are available separately.
 
 Numeric QuantizedFrame is distinct from legacy ByteFrame. Generated prepared reads now have QUANT_PADDING_BYTES = 0 and physically read exact available byte widths.
 
