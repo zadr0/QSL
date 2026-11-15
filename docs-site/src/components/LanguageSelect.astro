@@ -84,7 +84,7 @@ const active = languages.find(({ key }) => key === current) ?? languages[0];
 				try {
 					localStorage.setItem(LOCALE_STORAGE_KEY, locale);
 				} catch {
-					// Without storage the browser languages pick the language at /QSL/.
+					// Without storage the entry point opens English.
 				}
 			});
 		}

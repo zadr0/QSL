@@ -43,4 +43,4 @@ qsl-core работает в no_std; feature alloc предоставляет St
 
 [qsl-core](qsl-core) · [qsl-lexer](qsl-lexer) · [qsl-interpreter](qsl-interpreter) · [qsl-rt](qsl-rt) · [Builder](examples/08-builders) · [BMI2](examples/09-bmi2) · [Lean](proofs)
 
-[Документация](https://zadr0.github.io/QSL/ru/) · [English](README.en.md) · [crates.io](https://crates.io/crates/qsl) · [Rust API](https://docs.rs/qsl)
+[Исходники документации](docs-site/src/content/docs/ru/start/introduction.md) · [English](README.md) · [crates.io](https://crates.io/crates/qsl) · [Rust API](https://docs.rs/qsl)

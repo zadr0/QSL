@@ -5,9 +5,7 @@ Schema-driven binary serialization for Rust.
 
 ## Purpose and invariants
 
-:::note[Local edition]
-The dev-qsl working tree on November 14, 2026. New APIs differ from the published qsl 0.3.0 crate.
-:::
+This documentation describes QSL 0.4.0 with qsl-core 0.2.0.
 
 QSL exchanges explicitly described data between peers that control the schema, value bounds and memory contract. Build-time analysis produces concrete Rust types and specialized binary methods. The project develops as an independent implementation based on practical experience and a logical model.
 

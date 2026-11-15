@@ -7,7 +7,7 @@
 /** Stable production hostname supplied by Vercel during a build. */
 const vercelHost = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
 
-/** Public origin; GitHub Pages remains the default for local and GitHub builds. */
+/** Public origin; local previews do not imply a production deployment. */
 export const SITE_URL =
 	process.env.QSL_SITE_URL || (vercelHost ? `https://${vercelHost}` : 'http://127.0.0.1:4322');
 
@@ -35,7 +35,7 @@ export const DOCS_RS_URL = `https://docs.rs/qsl/${QSL_VERSION}/qsl/`;
 /**
  * Content locales, keyed by URL segment. Every language, English included,
  * has its own folder `src/content/docs/<key>/` and URL prefix `/QSL/<key>/`.
- * `/QSL/` itself sends readers to their browser's language (src/pages/index.astro).
+ * `/QSL/` opens English unless a language was explicitly selected (src/pages/index.astro).
  *
  * To add a language: add an entry here, add translated sidebar labels in
  * `config/sidebar.mjs`, then add `src/content/docs/<key>/` and

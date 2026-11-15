@@ -1,13 +1,9 @@
 ---
 /**
- * `/QSL/`: sends the reader to the home page in their language.
- *
- * Every language lives under its own prefix (`/QSL/en/`, `/QSL/ru/`, ...).
- * This page picks one with `pickLocale`: the language chosen earlier in the
- * language menu, else the browser's languages, else English. Without
- * JavaScript it forwards to English at once. The list of languages is
- * visible for the moment before the redirect and serves crawlers, together
- * with the `hreflang` links.
+ * The entry point opens English unless the reader explicitly chose another
+ * language in the menu. English is listed first, followed by Russian.
+ * Every translation has an explicit URL prefix. Without JavaScript the
+ * entry point forwards to English.
  */
 import { BASE_PATH, DEFAULT_LOCALE, LOCALES, SITE_URL } from '../../config/site.mjs';
 
@@ -124,11 +120,10 @@ const tags = Object.fromEntries(Object.entries(LOCALES).map(([key, { lang }]) =>
 			try {
 				stored = localStorage.getItem(LOCALE_STORAGE_KEY);
 			} catch {
-				// Storage can be unavailable (private mode); the browser languages decide.
+				// Without storage the English default applies.
 			}
 			const key = pickLocale(
 				config.tags,
-				navigator.languages ?? [navigator.language],
 				stored,
 				config.fallback,
 			);
