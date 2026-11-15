@@ -1,0 +1,40 @@
+<!doctype html><html lang="en" data-generation="3"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="../assets/full.css?v=9848d7e29e"><link rel="stylesheet" href="../assets/manual.css?v=4066728060">
+<title>QSL 0.3.0 — shared core and UTF-8 APIs</title>
+<meta name="description" content="QSL 0.3.0 release: qsl-core, four string representations, crates.io packages, constraints and migration.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/releases/0.3.0.en.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/releases/0.3.0.en.html">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/releases/0.3.0.ru.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/releases/0.3.0.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="QSL 0.3.0 — shared core and UTF-8 APIs">
+<meta property="og:description" content="QSL 0.3.0 release: qsl-core, four string representations, crates.io packages, constraints and migration.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/releases/0.3.0.en.html">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL — core, lexer, interpreter and Rust codec facade">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="QSL 0.3.0 — shared core and UTF-8 APIs">
+<meta name="twitter:description" content="QSL 0.3.0 release: qsl-core, four string representations, crates.io packages, constraints and migration.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.3.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/releases/0.3.0.en.html#webpage","url":"https://zadr0.github.io/QSL/releases/0.3.0.en.html","name":"QSL 0.3.0 — shared core and UTF-8 APIs","description":"QSL 0.3.0 release: qsl-core, four string representations, crates.io packages, constraints and migration.","inLanguage":"en","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body data-data-version="6954f72e64ac"><main class="book"><a href="../en.html">QSL</a><h1 id="releases-en-1">QSL 0.3.0</h1>
+<h2 id="releases-en-2">Shared core and UTF-8 storage</h2>
+<p>qsl, qsl-lexer and qsl-interpreter are 0.3.0; the new qsl-core starts at 0.1.0. The unchanged procedural implementation remains 0.1.0. Requires Rust 1.98+. MIT licensed.</p>
+<p>Shared schema types, errors, configuration, wire analysis, I/O, validation, strings and buffers belong to qsl-core. Core does not depend on the parser or Rust generator. Compatible module paths retain re-exports.</p>
+<p>Variable UTF-8 fields use String, &amp;str, StackString and InlineString. Guard and byte-string modes are removed. binary_opt=view returns &amp;str while sibling String fields remain owned. New/reuse are destination modes. STACK_LIMIT defaults to 256 B; larger ordinary inline storage falls back to String. Checked and explicit unsafe methods remain available.</p>
+<h2 id="releases-en-3">Compatibility and installation</h2>
+<p>This is a breaking pre-1.0 API change. Module extraction preserves existing ordinary-string and BM v2 wire encodings. Peers must agree on schemas and wire-affecting options.</p>
+<pre><code>[dependencies]
+qsl = &quot;=0.3.0&quot;
+
+[build-dependencies]
+qsl = &quot;=0.3.0&quot;</code></pre>
+<p><a href="../migration-0.3.0.en.html">Full migration</a> · <a href="../quickstart.en.html">Quick start</a> · <a href="../architecture.en.html">Architecture</a> · <a href="../en.html">Documentation</a>.</p>
+<h2 id="releases-en-4">Verification and measurements</h2>
+<p>Verification covers all four packages, generated structures, string ownership, malformed lengths/UTF-8 and an independent registry consumer. Publication records and logs are retained under reference/crates-release-0.3.0. The nine recorded Criterion cases identify their inputs and the measured source snapshot before release-metadata changes. Background CPU of 8.2% prevents accepting that run as strict speed evidence. Publishing this release does not establish a new speedup.</p></main></body></html>

@@ -1,0 +1,45 @@
+<!doctype html><html lang="ru" data-generation="3"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="assets/full.css?v=9848d7e29e"><link rel="stylesheet" href="assets/manual.css?v=4066728060">
+<title>Архитектура QSL — lexer, interpreter и runtime Rust</title>
+<meta name="description" content="Архитектура компилятора QSL: общий сборщик схем, независимые backend, статические таблицы и переносимый runtime.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://zadr0.github.io/QSL/architecture.ru.html">
+<link rel="sitemap" type="application/xml" href="https://zadr0.github.io/QSL/sitemap.xml">
+<link rel="icon" type="image/svg+xml" href="https://zadr0.github.io/QSL/assets/favicon.svg">
+<link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/architecture.ru.html">
+<link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/architecture.en.html">
+<link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/architecture.en.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="QSL">
+<meta property="og:title" content="Архитектура QSL — lexer, interpreter и runtime Rust">
+<meta property="og:description" content="Архитектура компилятора QSL: общий сборщик схем, независимые backend, статические таблицы и переносимый runtime.">
+<meta property="og:url" content="https://zadr0.github.io/QSL/architecture.ru.html">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QSL — core, lexer, interpreter and Rust codec facade">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Архитектура QSL — lexer, interpreter и runtime Rust">
+<meta name="twitter:description" content="Архитектура компилятора QSL: общий сборщик схем, независимые backend, статические таблицы и переносимый runtime.">
+<meta name="twitter:image" content="https://zadr0.github.io/QSL/assets/social-card-core.png">
+<script type="application/ld+json" id="seo-data">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://zadr0.github.io/QSL/#software","name":"QSL","version":"0.3.0","description":"Schema-driven binary serialization and specialized Rust code generation for explicit data layouts.","codeRepository":"https://github.com/zadr0/QSL","programmingLanguage":"Rust","runtimePlatform":"Rust 1.98+","url":"https://zadr0.github.io/QSL/","license":"https://spdx.org/licenses/MIT.html","isAccessibleForFree":true},{"@type":"WebPage","@id":"https://zadr0.github.io/QSL/architecture.ru.html#webpage","url":"https://zadr0.github.io/QSL/architecture.ru.html","name":"Архитектура QSL — lexer, interpreter и runtime Rust","description":"Архитектура компилятора QSL: общий сборщик схем, независимые backend, статические таблицы и переносимый runtime.","inLanguage":"ru","about":{"@id":"https://zadr0.github.io/QSL/#software"}}]}</script>
+</head><body data-data-version="6954f72e64ac"><main class="book"><nav class="doc-header"><a href="index.html">QSL / Документация</a><a href="architecture.en.html">English</a></nav><h1 id="architecture-ru-1">Архитектура QSL: core, lexer, interpreter и фасад</h1>
+<p>Документ описывает QSL 0.3.0 и qsl-core 0.1.0. <a href="migration-0.3.0.ru.html">Изменения API</a> · <a href="API.ru.html">Полный индекс</a>.</p>
+<h2 id="architecture-ru-2">Границы крейтов</h2>
+<div class="table-scroll"><table><thead><tr><th>Крейт</th><th>Содержимое</th><th>Зависимости внутри QSL</th></tr></thead><tbody><tr><td>qsl-core</td><td>Общие типы и ошибки, модель схемы, анализы диапазонов/длин, хэши, I/O, строковые контейнеры, валидация и выходные буферы</td><td>нет</td></tr><tr><td>qsl-lexer</td><td>Заимствованные токены, парсер QSL/DEQ, загрузка файлов, раскрытие Rust-шаблонов, сборщик схем</td><td>qsl-core</td></tr><tr><td>qsl-interpreter</td><td>Подготовка представления для Rust, кодогенерация структур, checked/unchecked методов и таблиц</td><td>qsl-lexer</td></tr><tr><td>qsl</td><td>Фасад приложения, совместимые импорты и атрибутные макросы</td><td>core, lexer, interpreter, qsl-macros-impl</td></tr></tbody></table></div>
+<p>Реализация ошибок и I/O больше не хранится в lexer. Его старые модульные пути перенаправляют к core. Копии runtime в фасаде также заменены re-export. Поэтому значения QslError и QslCustom, импортированные через разные совместимые пути, имеют одну идентичность типа.</p>
+<p>Core не зависит от frontend/backend и не разбирает исходный текст. Общие анализы используют уже построенную модель. Они не являются динамическим интерпретатором каждого кадра. Некоторые совместимые методы модели ещё описывают Rust-представление; другой backend обязан явно обработать или отвергнуть Rust-специфичные контракты.</p>
+<h2 id="architecture-ru-3">Один сборщик</h2>
+<pre><code>use qsl_interpreter::prelude::*;
+let builder = build_qsl_schem(&quot;schemas&quot;)?;
+let rust = builder.use_interpreter()?;</code></pre>
+<p>QslSchemaBuilder владеет проверенными схемами и конфигурацией. use_interpreter заимствует коллекцию, подготавливает Rust-хранение и возвращает исходный код. Совместимый вариант use_interpenter сохранён. Общий SchemaBackend задаёт типы результата и ошибки; будущий backend LLVM сможет реализовать этот контракт. LLVM-компилятор пока не реализован.</p>
+<h2 id="architecture-ru-4">Этапы</h2>
+<ol><li>Лексер выдаёт токены и байтовые диапазоны; парсер вычисляет объявления и константы.</li><li>Сборщик раскрывает шаблоны, назначает теги, проверяет имена, циклы и порядок полей.</li><li>Общие анализы core вычисляют разрядности, граф длин, маски optional-полей и идентичность схемы.</li><li>Rust-backend выбирает хранение с учётом STACK_LIMIT и native-регионов.</li><li>Генератор записывает конкретные структуры, методы и статические таблицы.</li><li>rustc/LLVM компилирует код и определяет окончательную нативную раскладку.</li></ol>
+<h2 id="architecture-ru-5">Где лежит код</h2>
+<ul><li>qsl-core/src/io.rs и bit_io.rs: байтовые и битовые курсоры, точные регистровые окна.</li><li>qsl-core/src/validation.rs: границы, бюджет данных, UTF-8 и фактическое расширение сжатой строки.</li><li>qsl-core/src/strings.rs и modernization.rs: InlineString, StackString, нативные контракты и загрузки 8–128 бит.</li><li>qsl-core/src/schema_modernization.rs, types.rs и schema_hash.rs: общие модели и анализ.</li><li>qsl-lexer/src/lexer.rs, parser.rs, deq.rs, builder.rs: исходный текст и сбор схем.</li><li>qsl-interpreter/src/frontend.rs и codegen_*.rs: Rust-представление, кодеки и диспетчеризация.</li></ul>
+<h2 id="architecture-ru-6">Горячий путь и безопасность</h2>
+<p>Типы, ширины и правила известны до запуска. Сгенерированный код использует готовые операции; отдельного разбора схемы в чтении нет. BM отвечает за маску, predict_seq — за индекс длины, opt_table — за вызов читателя. QPS упаковывает значения и не определяет присутствие optional-поля.</p>
+<p>Checked-методы создают значения только после допустимых проверок курсора. Unchecked-методы сохранены и требуют корректного полного кадра, достаточной памяти и подходящих времён жизни. Переименование импорта не ослабляет эти условия. В core нет платформенных Windows socket/IPC модулей; транспорт и межпроцессная память остаются ответственностью приложения.</p>
+<h2 id="architecture-ru-7">Воспроизводимость</h2>
+<p>Формат задают схема и влияющие на wire-данные опции. Перенос Rust-модулей сам по себе не меняет кадр. BM v2 остаётся несовместимым с прежним BM; обычные raw/compact длины сохраняют свои правила. Новые результаты строк хранят исходники, бинарный SHA-256, параметры Criterion и отдельные сведения о шуме ОС. Измерения старых версий не выдаются за измерения текущей ветки.</p></main></body></html>

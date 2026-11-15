@@ -1,0 +1,43 @@
+> **0.2.0:** [текущие контракты](migration-0.2.0.ru.md). Таблицы ниже относятся к сохранённым историческим исходникам. [Прогон 7 ноября](../qsl-interpreter/tests/optional-v2/results/2026-11-07.md) не принят как строгий и не подтверждает ускорение.
+
+# Свежие замеры: только QSL
+
+> Исторический профиль: подпись `opt_table` здесь обозначает прежний смешанный граф длин. Его формат сохраняет `[predict_seq,opt_table]`; новый отдельный `[opt_table]` выбирает читателя по тегу. [Разделение и переход](optional-modes.ru.md).
+
+[English](performance.en.md) · [Архитектура](architecture.ru.md)
+
+Профиль QPS: четыре случая одной схемы, 02.11.2026: подготовленное чтение и запись с QPS и без него. Другие кодеки, сокеты и k6 не запускались.
+
+| Операция | Вариант | нс/кадр | CI 99%, нс |
+|---|---|---:|---:|
+| `deserialize_into` | QSL + opt_table | 15.5670 | 15.4188–15.7210 |
+| `deserialize_into` | QSL + QPS Q16 + opt_table | 9.5583 | 9.4735–9.6470 |
+| `serialize_into` | QSL + opt_table | 7.4147 | 7.3280–7.5082 |
+| `serialize_into` | QSL + QPS Q16 + opt_table | 13.6984 | 13.5434–13.8676 |
+
+QPS изменяет время чтения на -38.6%, записи — на +84.7% относительно текущего raw opt_table. В этом профиле чтение быстрее, запись дороже. Это не сравнение с историческими числами и не универсальный рейтинг.
+
+Windows 11 Pro x86-64; i5-7400, 4 ядра / 4 потока; RAM 24 GiB, 2133 MHz. Rust 1.98.0 / LLVM 22.1.8; Criterion 0.8.2; release opt-level=3, debug info включён, RUSTFLAGS не заданы. Affinity не закреплена, ОС не изолирована.
+
+Прогрев каждого случая — 15 s, измерение — 10 s, 200 выборок, CI 99%. Циклически перебираются все 16 масок. Буферы wire и конечного назначения выровнены на 64 B; исходные объекты для записи находятся в Vec с естественным выравниванием. Подготовка, аллокации и валидация исключены, выбор кадра и black_box включены. Это не тест строк в 1024 символа и не сетевой throughput.
+
+Модель: i64(-10..10), u64(0..15), optional u64(0..1000), i64(-100..100), u64(7..7), полный u64. Raw — 17–49 B; QPS — 3–13 B. Подготовленное QPS-чтение использует отдельный инициализированный хвост 16 B, который не передаётся. Rust-объект — 80 B в обоих вариантах. Wire-ёмкость теста одинакова: 128 B. Уменьшение RSS этим опытом не доказывается.
+
+Лимит измеряемого процесса и потомков — 8 GiB; peak job commit — 6.83 MiB. Компиляция выполнена до назначения этого лимита. Source manifest снят до прогона, после него хеши сверены. Исполняемый файл определяется SHA-256.
+
+В выбранных x86-64 release-обёртках QPS нет условных переходов и вызовов; raw reader имеет один косвенный вызов события. Это не утверждение обо всём checked API. Число инструкций не равно числу тактов. Q2/Q4/Q8 проверены golden vectors и обратимостью; свежая скорость измерена только для Q16.
+
+```powershell
+# Matching dev-qsl checkout; only four cases; 8 GiB measured-process limit.
+.\qsl-bench\tools\run-payload.ps1 -Benchmark current_qsl -ManifestPath .\qsl-bench\current\Cargo.toml -ResultDirectory .\qsl-bench\target\criterion-qps-v2-repeat
+cargo test --manifest-path qsl-bench/current/Cargo.toml --locked
+cargo rustc --manifest-path qsl-bench/current/Cargo.toml --example asm_current --release --locked -- --emit=asm
+```
+
+[JSON](data/current-qsl.json) · [CSV](data/current-qsl.csv) · [Сырые выборки](data/qsl-current-raw/) · [Журнал](data/qsl-current-run.log) · [ASM](data/qsl-current-asm/) · [Стенд](../reference/current-benchmark/) · [Хеши](../reference/current-source-manifest.json)
+
+Исторические all-estimates, profiles и smoke-файлы сохранены как архив; свежий график использует только эти четыре наблюдения.
+
+## Отдельный контроль относительно обычного режима
+
+[default против opt_table](opt-table-control.ru.md): N=1/2/3/5/10 опциональных u64 после одного обязательного u32; двадцать парных случаев чтения и записи только QSL. QPS в этой группе выключен. Схема и рабочий набор отличаются; абсолютные времена разных групп не сравниваются.

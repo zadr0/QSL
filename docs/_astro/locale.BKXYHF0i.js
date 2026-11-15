@@ -1,1 +1,0 @@
-var e=`qsl-locale`;function t(e,t,n,r){if(n&&n in e)return n;let i=Object.entries(e).map(([e,t])=>[e,t.toLowerCase()]),a=e=>e.toLowerCase().split(`-`)[0];for(let e of t){let t=i.find(([,t])=>t===e.toLowerCase());if(t)return t[0];let n=i.find(([,t])=>a(t)===a(e));if(n)return n[0]}return r}export{t as n,e as t};
