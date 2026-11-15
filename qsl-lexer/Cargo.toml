@@ -1,6 +1,6 @@
 [package]
 name = "qsl-lexer"
-version = "0.3.0"
+version = "0.4.0"
 description = "Schema lexer, parser and build-time analysis for QSL binary serialization."
 edition = "2021"
 rust-version = "1.98"
@@ -22,5 +22,5 @@ all-features = true
 default = []
 rust-macros = ["dep:syn"]
 [dependencies]
-qsl-core = { version = "=0.1.0", path = "../qsl-core" }
+qsl-core = { version = "=0.2.0", path = "../qsl-core", default-features=false }
 syn = { version = "=2.0.119", optional = true, default-features = false, features = ["full", "parsing"] }

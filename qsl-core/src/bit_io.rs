@@ -1,10 +1,10 @@
 //! Concrete bit accumulators selected by QslIoPlan during code generation.
 //! The legacy runtime-width API remains available in io.rs.
-use std::ptr;
+use core::ptr;
 /// Exact native loads for a partial register; no memcpy call or tail overread.
 #[inline(always)]
 unsafe fn load_tail<const BYTES: usize>(input: *const u8, n: usize) -> u64 {
-    std::hint::assert_unchecked(n <= BYTES);
+    core::hint::assert_unchecked(n <= BYTES);
     match n {
         0 => 0,
         1 => input.read() as u64,
@@ -28,13 +28,13 @@ unsafe fn load_tail<const BYTES: usize>(input: *const u8, n: usize) -> u64 {
                 | ((input.add(6).read() as u64) << 48)
         }
         8 => u64::from_le(ptr::read_unaligned(input.cast())),
-        _ => std::hint::unreachable_unchecked(),
+        _ => core::hint::unreachable_unchecked(),
     }
 }
 /// Exact native stores for a committed partial register.
 #[inline(always)]
 unsafe fn store_tail<const BYTES: usize>(output: *mut u8, value: u64, n: usize) {
-    std::hint::assert_unchecked(n <= BYTES);
+    core::hint::assert_unchecked(n <= BYTES);
     match n {
         0 => {}
         1 => output.write(value as u8),
@@ -58,11 +58,24 @@ unsafe fn store_tail<const BYTES: usize>(output: *mut u8, value: u64, n: usize) 
             output.add(6).write((value >> 48) as u8);
         }
         8 => ptr::write_unaligned(output.cast(), value.to_le()),
-        _ => std::hint::unreachable_unchecked(),
+        _ => core::hint::unreachable_unchecked(),
     }
 }
 macro_rules! byte_reader_methods {
     () => {
+        /// Read up to 128 LSB-first bits as two exact scalar chunks.
+        /// # Safety
+        /// width<=128; both <=64-bit chunks fit the selected register and input.
+        #[inline(always)]
+        pub unsafe fn read_bits128(&mut self, width: u32) -> u128 {
+            let low = self.read_bits(width.min(64)) as u128;
+            if width > 64 {
+                low | ((self.read_bits(width - 64) as u128) << 64)
+            } else {
+                low
+            }
+        }
+
         /// Decode using a native length word fixed by schema analysis.
         /// # Safety
         /// The next frame is valid for MAX and H; output follows decode_into's contract.
@@ -204,12 +217,23 @@ macro_rules! byte_reader_methods {
 }
 macro_rules! byte_writer_methods {
     () => {
+        /// Write up to 128 LSB-first bits without rounding the output window.
+        /// # Safety
+        /// width<=128, value fits width; both chunks fit this cursor and output.
+        #[inline(always)]
+        pub unsafe fn write_bits128_unchecked(&mut self, value: u128, width: u32) {
+            self.write_bits_unchecked(value as u64, width.min(64));
+            if width > 64 {
+                self.write_bits_unchecked((value >> 64) as u64, width - 64);
+            }
+        }
+
         /// # Safety
         /// Raw-size capacity remains for MAX and H; source/output do not overlap.
         #[inline(always)]
         pub unsafe fn write_inline_string_with<const MAX: usize, H: crate::StringHeader>(
             &mut self,
-            value: &crate::InlineString<MAX>,
+            value: &crate::InlineString<MAX, impl crate::storage::LengthWord>,
         ) {
             self.flush_unchecked();
             let n = value.encode_to_with::<H>(self.ptr);
@@ -253,7 +277,7 @@ macro_rules! byte_writer_methods {
         #[inline(always)]
         pub unsafe fn write_inline_string<const MAX: usize>(
             &mut self,
-            value: &crate::InlineString<MAX>,
+            value: &crate::InlineString<MAX, impl crate::storage::LengthWord>,
         ) {
             self.flush_unchecked();
             let n = value.encode_to(self.ptr);
@@ -277,7 +301,7 @@ impl QslByteReader {
     /// Only a zero-width field is permitted in a byte-only cursor.
     #[inline(always)]
     pub unsafe fn read_bits(&mut self, width: u32) -> u64 {
-        std::hint::assert_unchecked(width == 0);
+        core::hint::assert_unchecked(width == 0);
         0
     }
     byte_reader_methods!();
@@ -298,7 +322,7 @@ impl QslByteWriter {
     /// Only a zero-width field is permitted in a byte-only cursor.
     #[inline(always)]
     pub unsafe fn write_bits_unchecked(&mut self, _value: u64, width: u32) {
-        std::hint::assert_unchecked(width == 0);
+        core::hint::assert_unchecked(width == 0);
     }
     byte_writer_methods!();
 }
@@ -331,10 +355,10 @@ macro_rules! bit_cursors {
             /// width<=64; the buffered/new bits fit this register; bytes consumed are readable.
             #[inline(always)]
             pub unsafe fn read_bits(&mut self, width: u32) -> u64 {
-                std::hint::assert_unchecked(width <= 64 && self.remaining < 8);
+                core::hint::assert_unchecked(width <= 64 && self.remaining < 8);
                 let n = ((width.saturating_sub(self.remaining as u32) + 7) >> 3) as usize;
                 let total = self.remaining as u32 + n as u32 * 8;
-                std::hint::assert_unchecked(total <= <$word>::BITS);
+                core::hint::assert_unchecked(total <= <$word>::BITS);
                 let loaded = load_tail::<$bytes>(self.ptr, n);
                 self.ptr = self.ptr.add(n);
                 self.reg |= (loaded as $word) << self.remaining;
@@ -365,9 +389,9 @@ macro_rules! bit_cursors {
             /// width<=64, used+width fits this register, and output capacity is sufficient.
             #[inline(always)]
             pub unsafe fn write_bits_unchecked(&mut self, value: u64, width: u32) {
-                std::hint::assert_unchecked(width <= 64 && self.used < 8);
+                core::hint::assert_unchecked(width <= 64 && self.used < 8);
                 let total = self.used as u32 + width;
-                std::hint::assert_unchecked(total <= <$word>::BITS);
+                core::hint::assert_unchecked(total <= <$word>::BITS);
                 let value = ((value as $wide) & (((1 as $wide) << width) - 1)) as $word;
                 self.reg |= value << self.used;
                 let n = (total >> 3) as usize;
@@ -399,6 +423,8 @@ bit_cursors!(QslBitReader128, QslBitWriter128, u128, u128, u64, 8);
 
 #[cfg(test)]
 mod tests {
+    #[allow(unused_imports)]
+    use std::vec;
     #[test]
     fn every_register_matches_legacy_wire_and_exact_tail() {
         macro_rules! check {
@@ -440,5 +466,71 @@ mod tests {
         check!(QslBitReader32, QslBitWriter32, 32);
         check!(QslBitReader64, QslBitWriter64, 64);
         check!(QslBitReader128, QslBitWriter128, 128);
+    }
+}
+
+#[cfg(test)]
+mod wide_window_tests {
+    use super::*;
+    #[allow(unused_imports)]
+    use std::vec;
+    #[test]
+    fn all_wide_chunks_keep_exact_lsb_order_and_output_canaries() {
+        let mut seed = 71u128;
+        for prefix in 0..8u32 {
+            for width in 0..=128u32 {
+                for _ in 0..4 {
+                    seed ^= seed << 13;
+                    seed ^= seed >> 7;
+                    seed ^= seed << 17;
+                    let value = seed & crate::domain::low_mask(width as u16);
+                    let mut out = [0xa5u8; 24];
+                    let base = unsafe { out.as_mut_ptr().add(1) };
+                    let mut w = unsafe { QslBitWriter128::from_raw(base) };
+                    unsafe {
+                        w.write_bits_unchecked(
+                            crate::domain::low_mask(prefix as u16) as u64,
+                            prefix,
+                        );
+                        w.write_bits128_unchecked(value, width);
+                        w.write_bits_unchecked(5, 3);
+                        w.flush_unchecked();
+                    }
+                    let bytes = unsafe { w.as_mut_ptr().offset_from(base) } as usize;
+                    let mut expected = vec![0u8; ((prefix + width + 3) as usize).div_ceil(8)];
+                    for bit in 0..prefix + width + 3 {
+                        let one = if bit < prefix {
+                            1
+                        } else if bit < prefix + width {
+                            ((value >> (bit - prefix)) & 1) as u8
+                        } else {
+                            (5 >> (bit - prefix - width)) & 1
+                        };
+                        expected[(bit / 8) as usize] |= one << (bit % 8);
+                    }
+                    assert_eq!(bytes, expected.len());
+                    assert_eq!(&out[1..1 + bytes], expected);
+                    assert_eq!(out[0], 0xa5);
+                    assert!(out[1 + bytes..].iter().all(|&n| n == 0xa5));
+                    let mut r = unsafe { QslBitReader128::new(base) };
+                    unsafe {
+                        assert_eq!(
+                            r.read_bits(prefix),
+                            crate::domain::low_mask(prefix as u16) as u64
+                        );
+                        assert_eq!(r.read_bits128(width), value);
+                        assert_eq!(r.read_bits(3), 5);
+                    }
+                    let mut checked = crate::validation::ValidationCursor::new(&out[1..1 + bytes]);
+                    assert_eq!(
+                        checked.bits(prefix as usize).unwrap(),
+                        crate::domain::low_mask(prefix as u16) as u64
+                    );
+                    assert_eq!(checked.bits128(width as usize).unwrap(), value);
+                    assert_eq!(checked.bits(3).unwrap(), 5);
+                    checked.finish().unwrap();
+                }
+            }
+        }
     }
 }

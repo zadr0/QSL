@@ -11,24 +11,25 @@ fn bounds(t: &QslType, raw: bool) -> (Option<usize>, Option<usize>) {
     if let QslType::Array(e, min)
     | QslType::RangedArray {
         element: e, min, ..
-    } = t
+    }
+    | QslType::FixedArray(e, min) = t
     {
-        let unit = e.fixed_wire_size().ok().flatten();
-        let low = unit
-            .and_then(|n| n.checked_mul(*min))
-            .and_then(|n| n.checked_add(4))
-            .and_then(|n| n.checked_mul(8));
-        let max = if let QslType::RangedArray { max, .. } = t {
-            Some(*max)
-        } else {
-            None
+        let (element_min, element_max) = bounds(e, false);
+        let fixed = matches!(t, QslType::FixedArray(..));
+        let header = if fixed { 0 } else { 32 };
+        let max = match t {
+            QslType::RangedArray { max, .. } | QslType::FixedArray(_, max) => Some(*max),
+            _ => None,
         };
-        let high = unit
-            .zip(max)
-            .and_then(|(n, m)| n.checked_mul(m))
-            .and_then(|n| n.checked_add(4))
-            .and_then(|n| n.checked_mul(8));
-        return (low, high);
+        return (
+            element_min
+                .and_then(|n| n.checked_mul(*min))
+                .and_then(|n| n.checked_add(header)),
+            element_max
+                .zip(max)
+                .and_then(|(n, m)| n.checked_mul(m))
+                .and_then(|n| n.checked_add(header)),
+        );
     }
     let string = match t {
         QslType::String(min) => (*min, None, 4),
@@ -98,7 +99,7 @@ pub(super) fn describe(s: &QslSchema) -> String {
     if let Ok(Some(p)) = qsl::hybrid::HybridPlan::analyze(s) {
         return hybrid(s, &p);
     }
-    let quant = qsl::payload_quant::PayloadQuantPlan::analyze(s).ok();
+    let quant = qsl::PayloadQuantPlan::analyze(s).ok();
     let packed = quant.as_ref().is_some_and(|q| q.active);
     let graph = if s.predicted_opt_table() && !packed {
         qsl::static_optional::StaticOptionalPlan::analyze(s).ok()
@@ -144,7 +145,9 @@ pub(super) fn describe(s: &QslSchema) -> String {
                 QslType::Byte
                 | QslType::Integer { .. }
                 | QslType::RangedInteger { .. }
-                | QslType::Flags(_) => {
+                | QslType::DomainInteger(_)
+                | QslType::Flags(_)
+                | QslType::BitPadding(_) => {
                     let w = f.data.rank_width(f.bits).ok();
                     (w, w)
                 }
@@ -153,8 +156,7 @@ pub(super) fn describe(s: &QslSchema) -> String {
         } else {
             bounds(&f.data, f.optional && (raw || s.state_bits()))
         };
-        let ty = qsl::modernization::field_rust_type(f, s.borrow_strings())
-            .unwrap_or_else(|_| "?".into());
+        let ty = qsl::layout::field_rust_type(f, s.borrow_strings()).unwrap_or_else(|_| "?".into());
         let ty = if f.optional {
             format!("Option<{ty}>")
         } else {
@@ -178,7 +180,7 @@ pub(super) fn describe(s: &QslSchema) -> String {
 }
 
 fn hybrid(s: &QslSchema, p: &qsl::hybrid::HybridPlan) -> String {
-    let q = qsl::payload_quant::PayloadQuantPlan::analyze(&p.prefix).unwrap();
+    let q = qsl::PayloadQuantPlan::analyze(&p.prefix).unwrap();
     let h = (p.length_header + q.header_bytes) * 8;
     let (mut low, mut high) = (Some(h), Some(h));
     let mut rows = Vec::new();
@@ -188,7 +190,7 @@ fn hybrid(s: &QslSchema, p: &qsl::hybrid::HybridPlan) -> String {
                low: Option<usize>,
                high: Option<usize>,
                expr: &str| {
-        let ty = qsl::modernization::field_rust_type(f, s.borrow_strings()).unwrap_or("?".into());
+        let ty = qsl::layout::field_rust_type(f, s.borrow_strings()).unwrap_or("?".into());
         let ty = if f.optional {
             format!("Option<{ty}>")
         } else {

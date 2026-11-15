@@ -1,0 +1,11 @@
+[package]
+name="qsl-no-std-alloc-check"
+version="0.0.0"
+edition="2021"
+publish=false
+[workspace]
+resolver="2"
+[dependencies]
+qsl={path="../../../qsl",default-features=false,features=["alloc"]}
+[build-dependencies]
+qsl-interpreter={path="../../../qsl-interpreter"}

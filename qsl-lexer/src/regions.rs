@@ -1,5 +1,5 @@
 //! Structured lowering of native regions. Flat source ranges become named typed fields.
-use crate::modernization::{native_type_layout, NativeRegion, NativeTypeLayout};
+use crate::layout::{native_type_layout, NativeRegion, NativeTypeLayout};
 use crate::{QslField, QslSchema, QslType, FLAG_SAFETY};
 use std::collections::{BTreeMap, HashMap, HashSet};
 #[derive(Debug)]
@@ -93,6 +93,16 @@ fn layout(
         leaves,
     })
 }
+// Native regions use ordinary byte codecs. Compact scratch widths and previously
+// selected storage do not change their type, codec, or ABI and must not split definitions.
+fn fingerprint(schema: &QslSchema) -> String {
+    let mut fields = schema.fields.clone();
+    for field in &mut fields {
+        field.bits = 0;
+        field.storage = Default::default();
+    }
+    format!("{:?}|{:?}", fields, schema.options.native_alignment)
+}
 struct Context<'a> {
     names: HashSet<&'a str>,
     types: BTreeMap<String, NativeTypeLayout>,
@@ -176,18 +186,25 @@ impl Context<'_> {
             };
             child.options.transmutate = true;
             child.options.generated_region = true;
-            child.options.external_definition = region.external;
+            child.options.external_definition = region.external
+                || source
+                    .options
+                    .externally_defined_types
+                    .contains(&region.rust_type);
             child.options.native_alignment = region.alignment;
-            let fingerprint = format!(
-                "{:?}|{}|{:?}",
-                child.fields, child.options.external_definition, child.options.native_alignment
-            );
+            let fingerprint = fingerprint(&child);
             if let Some(old) = self.fingerprints.get(&child.name) {
                 if old != &fingerprint {
                     return Err(error(format!(
                         "conflicting native region definitions named {}",
                         child.name
                     )));
+                }
+                if child.options.external_definition {
+                    // Preserve codec and ABI checks while using the marked Rust type.
+                    if let Some(existing) = self.defs.iter_mut().find(|s| s.name == child.name) {
+                        existing.options.external_definition = true;
+                    }
                 }
             } else {
                 let l = layout(&child, &self.types)?;
@@ -197,6 +214,7 @@ impl Context<'_> {
             }
             let l = &self.types[&child.name];
             result.push(QslField {
+                shifted_length: false,
                 name: if region.external {
                     region
                         .field_prefix
@@ -233,15 +251,7 @@ pub fn lower_regions(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, RegionErro
         fingerprints: schemas
             .iter()
             .filter(|s| s.options.generated_region)
-            .map(|s| {
-                (
-                    s.name.clone(),
-                    format!(
-                        "{:?}|{}|{:?}",
-                        s.fields, s.options.external_definition, s.options.native_alignment
-                    ),
-                )
-            })
+            .map(|s| (s.name.clone(), fingerprint(s)))
             .collect(),
         stack: Vec::new(),
     };
@@ -294,6 +304,17 @@ mod tests {
         assert_eq!(outer.fields[0].name, "Inner");
         assert!(matches!(outer.fields[0].data, QslType::Custom { .. }));
         assert_eq!(super::lower_regions(&schemas).unwrap().len(), schemas.len());
+    }
+    #[test]
+    fn compact_scratch_width_does_not_split_an_ordinary_native_definition() {
+        let mut schemas=crate::parser::parse_qsl_raw_with_constants("&P{#region(aggressive_transmutate=\"R\");str(4) tag;#end_region;}&Q{#region(aggressive_transmutate=\"R\");str(4) tag;#end_region;}",&Default::default()).unwrap();
+        schemas[1].fields[0].bits = 32;
+        schemas[1].options.regions[0].external = true;
+        schemas[1].options.regions[0].field_prefix = "meta_".into();
+        schemas[1].fields[0].name = "meta_tag".into();
+        let lowered = super::lower_regions(&schemas).unwrap();
+        assert_eq!(lowered.iter().filter(|s| s.name == "R").count(), 1);
+        assert_eq!(super::lower_regions(&lowered).unwrap().len(), lowered.len());
     }
     #[test]
     fn incompatible_recursive_and_conflicting_regions_are_rejected() {

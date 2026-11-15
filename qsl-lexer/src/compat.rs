@@ -3,8 +3,8 @@
 //! The parser's public enum and schema shape must not be silently replaced
 //! with interpreter-only range variants. `bits` is the precomputed rank width.
 
-use crate::io::{QslError, QslResult};
 use crate::types::{QslField, QslSchema, QslType};
+use qsl_core::io::{QslError, QslResult};
 
 #[derive(Default, Debug, Clone)]
 pub enum ParserQslType {
@@ -109,6 +109,7 @@ impl TryFrom<&ParserQslSchema> for QslSchema {
         for (index, f) in source.fields.iter().enumerate() {
             let tag = if f.tag == 0 { index + 1 } else { f.tag };
             fields.push(QslField {
+                shifted_length: false,
                 storage: Default::default(),
                 optional: f.optional,
                 bits: f.bits,

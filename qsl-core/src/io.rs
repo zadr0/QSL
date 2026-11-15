@@ -1,4 +1,4 @@
-use std::ptr;
+use core::ptr;
 
 #[cfg(feature = "diagnostics")]
 #[path = "io_checked.rs"]
@@ -23,12 +23,12 @@ pub enum QslError {
     AllocationFailed,
 }
 
-impl std::fmt::Display for QslError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for QslError {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "QSL error: {self:?}")
     }
 }
-impl std::error::Error for QslError {}
+impl core::error::Error for QslError {}
 
 /// Exact output length for interleaved bit and byte writes.
 #[derive(Debug, Default, Clone, Copy)]
@@ -60,6 +60,42 @@ impl QslSizer {
     pub fn bytes(&mut self, n: usize) -> QslResult<()> {
         self.align()?;
         self.bytes = self.bytes.checked_add(n).ok_or(QslError::LengthOverflow)?;
+        Ok(())
+    }
+    /// Repeat a deterministic build-time sizing step. The step may depend on
+    /// the pending bit residue but not on the absolute byte position.
+    /// Complete residue cycles are skipped with checked arithmetic.
+    pub fn repeat(
+        &mut self,
+        count: usize,
+        mut step: impl FnMut(&mut Self) -> QslResult<()>,
+    ) -> QslResult<()> {
+        let mut seen: [Option<(usize, usize)>; 8] = [None; 8];
+        let mut done = 0usize;
+        while done < count {
+            if let Some((previous, bytes)) = seen[self.bits] {
+                let period = done - previous;
+                let cycles = (count - done) / period;
+                if cycles != 0 {
+                    let delta = self
+                        .bytes
+                        .checked_sub(bytes)
+                        .ok_or(QslError::LengthOverflow)?;
+                    self.bytes = self
+                        .bytes
+                        .checked_add(delta.checked_mul(cycles).ok_or(QslError::LengthOverflow)?)
+                        .ok_or(QslError::LengthOverflow)?;
+                    done += cycles * period;
+                    if done == count {
+                        break;
+                    }
+                }
+            } else {
+                seen[self.bits] = Some((done, self.bytes));
+            }
+            step(self)?;
+            done += 1;
+        }
         Ok(())
     }
     /// Return the final whole-byte size, including the last partial byte.
@@ -322,6 +358,18 @@ impl QslFastBitsReader {
         }
     }
 
+    /// Read up to 128 LSB-first bits as two exact scalar chunks.
+    /// # Safety
+    /// width<=128; both <=64-bit chunks fit the selected register and input.
+    #[inline(always)]
+    pub unsafe fn read_bits128(&mut self, width: u32) -> u128 {
+        let low = self.read_bits(width.min(64)) as u128;
+        if width > 64 {
+            low | ((self.read_bits(width - 64) as u128) << 64)
+        } else {
+            low
+        }
+    }
     /// Extract `width` low-order bits from the current bitstream position.
     /// The decoded bit order is LSB-first and the requested width is static
     /// in ordinary generated QSL code.
@@ -456,7 +504,7 @@ impl QslUncheckedWriter {
     #[inline(always)]
     pub unsafe fn write_inline_string_with<const MAX: usize, H: crate::StringHeader>(
         &mut self,
-        value: &crate::InlineString<MAX>,
+        value: &crate::InlineString<MAX, impl crate::storage::LengthWord>,
     ) {
         self.flush_unchecked();
         let n = value.encode_to_with::<H>(self.ptr);
@@ -474,7 +522,7 @@ impl QslUncheckedWriter {
     #[inline(always)]
     pub unsafe fn write_inline_string<const MAX: usize>(
         &mut self,
-        value: &crate::InlineString<MAX>,
+        value: &crate::InlineString<MAX, impl crate::storage::LengthWord>,
     ) {
         self.flush_unchecked();
         self.ptr = self.ptr.add(value.encode_to(self.ptr));
@@ -532,6 +580,16 @@ impl QslUncheckedWriter {
         self.ptr = self.ptr.add(count);
     }
 
+    /// Write up to 128 LSB-first bits without rounding the output window.
+    /// # Safety
+    /// width<=128, value fits width; both chunks fit this cursor and output.
+    #[inline(always)]
+    pub unsafe fn write_bits128_unchecked(&mut self, value: u128, width: u32) {
+        self.write_bits_unchecked(value as u64, width.min(64));
+        if width > 64 {
+            self.write_bits_unchecked((value >> 64) as u64, width - 64);
+        }
+    }
     /// Append `width` low bits of the rank, without per-byte iteration.
     /// # Safety
     /// Width must be at most 64; buffer capacity and range are caller-guaranteed.
@@ -788,5 +846,50 @@ mod tests {
             assert_eq!(reader.read_u32(), 0xDEAD_BEEF);
             assert_eq!(reader.read_u64(), 0x0123_4567_89AB_CDEF);
         }
+    }
+}
+
+#[cfg(test)]
+mod repeated_sizing_tests {
+    use super::*;
+    #[test]
+    fn residue_cycles_match_each_interleaved_sizing_step() {
+        for offset in 0..8 {
+            for count in 0..257 {
+                for width in [0, 1, 7, 8, 12, 63, 64, 127, 128] {
+                    for barrier in [false, true] {
+                        let mut a = QslSizer::default();
+                        a.bits(offset).unwrap();
+                        let mut b = a;
+                        for _ in 0..count {
+                            a.bits(width).unwrap();
+                            if barrier {
+                                a.bytes(3).unwrap();
+                            }
+                        }
+                        b.repeat(count, |s| {
+                            s.bits(width)?;
+                            if barrier {
+                                s.bytes(3)?;
+                            }
+                            Ok(())
+                        })
+                        .unwrap();
+                        assert_eq!(a.finish(), b.finish());
+                    }
+                }
+            }
+        }
+    }
+    #[test]
+    fn huge_repeat_is_bounded_and_overflow_is_reported() {
+        let mut s = QslSizer::default();
+        s.repeat(usize::MAX, |s| s.bits(0)).unwrap();
+        assert_eq!(s.finish().unwrap(), 0);
+        let mut s = QslSizer::default();
+        assert_eq!(
+            s.repeat(usize::MAX, |s| s.bytes(2)),
+            Err(QslError::LengthOverflow)
+        );
     }
 }

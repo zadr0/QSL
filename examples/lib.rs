@@ -21,10 +21,7 @@ pub fn texts() -> Vec<String> {
 }
 /// Establish the constructor's capacity and UTF-8 preconditions in safe code.
 pub fn inline<const N: usize>(text: &str) -> qsl::QslResult<qsl::InlineString<N>> {
-    if N > u16::MAX as usize || text.len() > N {
-        return Err(qsl::QslError::InvalidValue);
-    }
-    Ok(unsafe { qsl::InlineString::from_str_unchecked(text) })
+    qsl::InlineString::try_from_str(text)
 }
 pub fn numbers(seed: usize) -> Numbers {
     Numbers {
@@ -107,22 +104,60 @@ mod tests {
         let a = OwnedReuseText { text: text.clone() };
         assert_eq!(a.serialize_checked().unwrap(), wire);
         assert_eq!(
-            OwnedReuseText::deserialize_checked(&wire).unwrap().text.as_str(),
-            text
-        );
-        let a = InlineText { text: text.clone() };
-        assert_eq!(
-            InlineText::deserialize_checked(&a.serialize_checked().unwrap())
+            OwnedReuseText::deserialize_checked(&wire)
                 .unwrap()
                 .text
                 .as_str(),
             text
         );
-        let a = CompressedText { text: text.clone() };
+        let a = CompressedText {
+            text: qsl::InlineString::try_boxed_from_str(&text).unwrap(),
+        };
         let compressed = a.serialize_checked().unwrap();
-        assert!(compressed.len() < wire.len());
+        // A shorter header alone is not evidence that the payload was compressed.
+        assert!(compressed.len() <= text.len() + qsl::InlineString::<4096>::HEADER_BYTES);
         assert_eq!(
             CompressedText::deserialize_checked(&compressed)
+                .unwrap()
+                .text
+                .as_str(),
+            text
+        );
+    }
+    #[test]
+    fn small_strings_and_frames_stay_inline_large_schemas_use_heap() {
+        let text = "Рад, так Рад!";
+        let small = InlineText {
+            text: inline(text).unwrap(),
+        };
+        let _: &qsl::InlineString<55> = &small.text;
+        let wire: qsl::StackOut<56> = small.serialize_checked().unwrap();
+        assert_eq!(
+            InlineText::deserialize_checked(&wire)
+                .unwrap()
+                .text
+                .as_str(),
+            text
+        );
+        let raw = AggressiveText {
+            text: qsl::StackString::try_from_str(text).unwrap(),
+        };
+        let _: &qsl::StackString<55> = &raw.text;
+        let wire: qsl::StackOut<59> = raw.serialize_checked().unwrap();
+        assert_eq!(
+            AggressiveText::deserialize_checked(&wire)
+                .unwrap()
+                .text
+                .as_str(),
+            text
+        );
+        // A short current value does not change the 4096-byte schema capacity.
+        let heap: Box<qsl::InlineString<4096>> =
+            qsl::InlineString::try_boxed_from_str(text).unwrap();
+        let large = CompressedText { text: heap };
+        let wire: Vec<u8> = large.serialize_checked().unwrap();
+        assert_eq!(
+            CompressedText::deserialize_checked(&wire)
                 .unwrap()
                 .text
                 .as_str(),
@@ -159,7 +194,9 @@ pub fn uniform_texts() -> Vec<String> {
 #[test]
 fn uniform_utf8_really_uses_lz_instead_of_a_shorter_raw_header() {
     for text in uniform_texts().iter().take(32) {
-        let value = CompressedText { text: text.clone() };
+        let value = CompressedText {
+            text: qsl::InlineString::try_boxed_from_str(text).unwrap(),
+        };
         let bytes = value.serialize_checked().unwrap();
         assert!(
             bytes.len() < text.len() / 2,

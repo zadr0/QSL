@@ -37,15 +37,15 @@ macro_rules! qsl_primitive {
             integer::<$repr>();
         };
         const _:()={
-            assert!(::std::mem::size_of::<$name>()==::std::mem::size_of::<$repr>(),"QSL primitive size mismatch");
-            assert!(::std::mem::align_of::<$name>()==::std::mem::align_of::<$repr>(),"QSL primitive alignment mismatch");
-            assert!(::std::mem::offset_of!($name,0)==0,"QSL primitive field must start at offset zero");
-            assert!(!::std::mem::needs_drop::<$name>(),"QSL primitive cannot have Drop");
-            assert!(::std::mem::size_of::<$repr>()<=8,"QSL primitive scalar exceeds 64 bits");
+            assert!(::core::mem::size_of::<$name>()==::core::mem::size_of::<$repr>(),"QSL primitive size mismatch");
+            assert!(::core::mem::align_of::<$name>()==::core::mem::align_of::<$repr>(),"QSL primitive alignment mismatch");
+            assert!(::core::mem::offset_of!($name,0)==0,"QSL primitive field must start at offset zero");
+            assert!(!::core::mem::needs_drop::<$name>(),"QSL primitive cannot have Drop");
+            assert!(::core::mem::size_of::<$repr>()<=8,"QSL primitive scalar exceeds 64 bits");
             assert!(($min as i128)<=($max as i128)&&($min as i128)>=(<$repr>::MIN as i128)&&($max as i128)<=(<$repr>::MAX as i128),"QSL primitive domain is invalid");
         };
         impl $crate::QslCustom for $name {
-            const SIZE:usize=::std::mem::size_of::<$repr>();
+            const SIZE:usize=::core::mem::size_of::<$repr>();
             const COMP_SIZE:usize={let delta=(($max as i128)-($min as i128))as u64;((64-delta.leading_zeros())as usize+7)>>3};
             fn qsl_validate(bytes:&[u8],compact:bool)->$crate::QslResult<()>{
                 let raw=if compact{
@@ -59,24 +59,24 @@ macro_rules! qsl_primitive {
                 if !(($min as i128)..=($max as i128)).contains(&(raw as i128)){return Err($crate::QslError::InvalidValue)}Ok(())
             }
             unsafe fn qsl_write_unchecked(&self,to:*mut u8){
-                let bytes=self.0.to_le_bytes();::std::ptr::copy_nonoverlapping(bytes.as_ptr(),to,bytes.len());
+                let bytes=self.0.to_le_bytes();::core::ptr::copy_nonoverlapping(bytes.as_ptr(),to,bytes.len());
             }
             unsafe fn qsl_read_unchecked(from:*const u8)->Self{
-                let bytes=::std::ptr::read_unaligned(from.cast::<[u8;::std::mem::size_of::<$repr>()]>());
+                let bytes=::core::ptr::read_unaligned(from.cast::<[u8;::core::mem::size_of::<$repr>()]>());
                 Self(<$repr>::from_le_bytes(bytes))
             }
             unsafe fn qsl_comp_write_unchecked(&self,to:*mut u8){
-                let rank=((self.0 as i128)-($min as i128))as u64;let bytes=rank.to_le_bytes();::std::ptr::copy_nonoverlapping(bytes.as_ptr(),to,Self::COMP_SIZE);
+                let rank=((self.0 as i128)-($min as i128))as u64;let bytes=rank.to_le_bytes();::core::ptr::copy_nonoverlapping(bytes.as_ptr(),to,Self::COMP_SIZE);
             }
             unsafe fn qsl_comp_read_unchecked(from:*const u8)->Self{
-                let mut bytes=[0u8;8];::std::ptr::copy_nonoverlapping(from,bytes.as_mut_ptr(),Self::COMP_SIZE);Self(((u64::from_le_bytes(bytes)as i128)+($min as i128))as $repr)
+                let mut bytes=[0u8;8];::core::ptr::copy_nonoverlapping(from,bytes.as_mut_ptr(),Self::COMP_SIZE);Self(((u64::from_le_bytes(bytes)as i128)+($min as i128))as $repr)
             }
         }
         // The tuple constructor checks the scalar field's Rust type. Const
         // assertions above establish the representation facts per target.
         unsafe impl $crate::QslPrimitive for $name {
             const REPRESENTATION:$crate::PrimitiveRepr=$crate::PrimitiveRepr{
-                bits:(::std::mem::size_of::<$repr>()*8)as u8,
+                bits:(::core::mem::size_of::<$repr>()*8)as u8,
                 signed:(<$repr>::MIN as i128)<0,min:$min as i128,max:$max as i128,
             };
             fn qsl_to_bits(&self)->u64{let raw:$repr=self.0;raw as u64}
@@ -95,21 +95,21 @@ macro_rules! qsl_native_primitive {
         const _: () = {
             let descriptor = <$name as $crate::QslPrimitive>::REPRESENTATION;
             assert!(
-                descriptor.bits == (::std::mem::size_of::<$repr>() * 8) as u8
+                descriptor.bits == (::core::mem::size_of::<$repr>() * 8) as u8
                     && descriptor.signed == ((<$repr>::MIN as i128) < 0)
             );
             assert!(
-                ::std::mem::size_of::<$name>() == ::std::mem::size_of::<$repr>()
-                    && ::std::mem::align_of::<$name>() == ::std::mem::align_of::<$repr>()
-                    && ::std::mem::offset_of!($name, 0) == 0
-                    && !::std::mem::needs_drop::<$name>()
+                ::core::mem::size_of::<$name>() == ::core::mem::size_of::<$repr>()
+                    && ::core::mem::align_of::<$name>() == ::core::mem::align_of::<$repr>()
+                    && ::core::mem::offset_of!($name, 0) == 0
+                    && !::core::mem::needs_drop::<$name>()
             );
         };
-        unsafe impl ::qsl::modernization::NativeField for $name {
-            const NATIVE_LAYOUT: ::qsl::modernization::NativeLayout =
-                <$repr as ::qsl::modernization::NativeField>::NATIVE_LAYOUT;
-            unsafe fn validate_native_fields(address: *const u8) -> ::qsl::QslResult<()> {
-                let raw = ::std::ptr::read_unaligned(address.cast::<$repr>());
+        unsafe impl $crate::storage::NativeField for $name {
+            const NATIVE_LAYOUT: $crate::storage::NativeLayout =
+                <$repr as $crate::storage::NativeField>::NATIVE_LAYOUT;
+            unsafe fn validate_native_fields(address: *const u8) -> $crate::QslResult<()> {
+                let raw = ::core::ptr::read_unaligned(address.cast::<$repr>());
                 let bytes = raw.to_le_bytes();
                 <$name as $crate::QslCustom>::qsl_validate(&bytes, false)
             }

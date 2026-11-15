@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.0 — 2026-11-15
+
+- Expose optional compiler, alloc and macro features through the facade.
+- Use qsl-core 0.2.0, compiler crates 0.4.0, qsl-rt 0.1.0 and qsl-macros-impl 0.1.1.
+- Keep generated small outputs on the stack and large outputs allocator-backed.
+- Include runnable Builder, UTF-8 storage and BMI2 examples.
+
+### Development notes — 2026-11-14
+
+- Keep runtime I/O, codec/primitive contracts, validation and owned containers in always-no_std qsl-core; make alloc explicit and compiler support optional in the facade.
+- Add no_std qsl-rt storage providers, core buffer contracts, direct heap InlineString restoration and optional NonZero InlineArray lengths.
+- Verify actual generated code in separate no_std allocation-free and alloc fixtures.
+
+
 ## 0.3.0 — 2026-11-08
 
 - Extract shared schema/runtime contracts into qsl-core 0.1.0; retain compatible re-exports and one error/type identity.

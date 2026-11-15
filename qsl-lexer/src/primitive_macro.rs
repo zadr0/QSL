@@ -1,5 +1,4 @@
-//! Compatibility path; implementation is owned by qsl-core.
-
+//! Frontend registration tests; runtime primitive implementations live in qsl-core.
 #[cfg(test)]
 mod tests {
 
@@ -57,8 +56,8 @@ mod tests {
             .find(|s| s.name == "Large")
             .unwrap();
         // Storage policy depends on the configured backend limit, not parsing.
-        assert!(crate::modernization::check_storage_limit(native, 256).is_err());
-        assert!(crate::modernization::check_storage_limit(native, 512).is_ok());
+        assert!(crate::layout::check_storage_limit(native, 256).is_err());
+        assert!(crate::layout::check_storage_limit(native, 512).is_ok());
     }
     #[test]
     fn metadata_is_applied_before_parser_validation() {

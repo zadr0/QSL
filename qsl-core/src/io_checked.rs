@@ -2,8 +2,8 @@
 //! Enable with the Cargo `diagnostics` feature when inspecting untrusted data.
 
 use super::{QslError, QslResult};
-use std::marker::PhantomData;
-use std::ptr;
+use core::marker::PhantomData;
+use core::ptr;
 
 /// All writes use raw pointer copies. Safe constructors still bound-check them.
 pub struct QslCheckedWriter<'a> {
@@ -27,7 +27,7 @@ impl<'a> QslCheckedWriter<'a> {
             _borrow: PhantomData,
         }
     }
-    pub fn from_raw(out: &'a mut crate::serialize::SerOut) -> Self {
+    pub fn from_raw(out: &'a mut impl core::ops::DerefMut<Target = [u8]>) -> Self {
         Self::from(out)
     }
     pub fn position(&self) -> usize {
@@ -116,7 +116,7 @@ impl<'a> QslCheckedReader<'a> {
         if end > self.len {
             return Err(QslError::UnexpectedEof);
         }
-        let result = unsafe { std::slice::from_raw_parts(self.ptr.add(self.pos), n) };
+        let result = unsafe { core::slice::from_raw_parts(self.ptr.add(self.pos), n) };
         self.pos = end;
         Ok(result)
     }
@@ -172,7 +172,7 @@ impl<'a> QslCheckedBitsWriter<'a> {
             _borrow: PhantomData,
         }
     }
-    pub fn from_raw(out: &'a mut crate::serialize::SerOut) -> Self {
+    pub fn from_raw(out: &'a mut impl core::ops::DerefMut<Target = [u8]>) -> Self {
         Self::from(out)
     }
     pub fn position(&self) -> usize {
@@ -341,7 +341,7 @@ impl<'a> QslCheckedBitsReader<'a> {
         if end > self.len {
             return Err(QslError::UnexpectedEof);
         }
-        let value = unsafe { std::slice::from_raw_parts(self.ptr.add(self.pos), n) };
+        let value = unsafe { core::slice::from_raw_parts(self.ptr.add(self.pos), n) };
         self.pos = end;
         Ok(value)
     }

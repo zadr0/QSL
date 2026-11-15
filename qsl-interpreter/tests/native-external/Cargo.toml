@@ -1,0 +1,10 @@
+[package]
+name="qsl-native-external-contracts"
+version="0.0.0"
+edition="2021"
+publish=false
+[workspace]
+[dependencies]
+qsl={path="../../../qsl"}
+[build-dependencies]
+qsl={path="../../../qsl",features=["rust-macros"]}

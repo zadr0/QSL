@@ -1,9 +1,15 @@
 name = "qps-proofs"
 version = "0.1.0"
-defaultTargets = ["QPS", "Modernization"]
+defaultTargets = ["QPS", "Modernization", "UnifiedOptimizer", "Overview"]
 
 [[lean_lib]]
 name = "QPS"
 
 [[lean_lib]]
 name = "Modernization"
+
+[[lean_lib]]
+name = "UnifiedOptimizer"
+
+[[lean_lib]]
+name = "Overview"

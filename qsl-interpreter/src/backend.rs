@@ -51,7 +51,7 @@ mod tests {
         );
         assert_eq!(
             builder.schemas()[0].fields[1].storage,
-            crate::modernization::StorageKind::Default
+            qsl_lexer::layout::StorageKind::Default
         );
     }
     #[test]
@@ -62,7 +62,7 @@ mod tests {
         assert_eq!(builder.schemas()[0].name, "P");
         assert_eq!(
             builder.schemas()[0].fields[0].storage,
-            crate::modernization::StorageKind::Default
+            qsl_lexer::layout::StorageKind::Default
         );
     }
 }

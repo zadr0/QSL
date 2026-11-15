@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.0 — 2026-11-15
+
+- Keep parsing and analysis separate from runtime execution.
+- Analyze typed builders, exact domains, storage bounds, physical layouts and independent read/write ISA candidates.
+- Use qsl-core 0.2.0 contracts without carrying I/O implementations into the frontend.
+
+### Development notes — 2026-11-14
+
+- Keep runtime I/O, codec/primitive contracts, validation and owned containers in always-no_std qsl-core; make alloc explicit and compiler support optional in the facade.
+- Add no_std qsl-rt storage providers, core buffer contracts, direct heap InlineString restoration and optional NonZero InlineArray lengths.
+- Verify actual generated code in separate no_std allocation-free and alloc fixtures.
+
+
+### Development notes — 2026-11-13
+
+- Parse exact 128-bit literals and expressions; add positive step and canonical finite-set modifiers with checked defaults.
+- Extend the existing schema Builder and Rust macro importer; reject unreachable progression endpoints.
+
+
+
 ## 0.3.0 — 2026-11-08
 
 - Extract shared schema/runtime contracts into qsl-core 0.1.0; retain compatible re-exports and one error/type identity.

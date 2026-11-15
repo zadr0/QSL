@@ -243,6 +243,7 @@ dependencies = [
  "qsl-interpreter",
  "qsl-lexer",
  "qsl-macros-impl",
+ "qsl-rt",
 ]
 
 [[package]]
@@ -256,7 +257,10 @@ dependencies = [
 name = "qsl-interpreter"
 version = "0.3.0"
 dependencies = [
+ "proc-macro2",
+ "qsl-core",
  "qsl-lexer",
+ "syn 2.0.119",
 ]
 
 [[package]]
@@ -283,6 +287,13 @@ dependencies = [
  "qsl",
  "qsl-interpreter",
  "qsl-lexer",
+]
+
+[[package]]
+name = "qsl-rt"
+version = "0.1.0"
+dependencies = [
+ "qsl-core",
 ]
 
 [[package]]

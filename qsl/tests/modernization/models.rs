@@ -36,13 +36,13 @@ pub struct CountedMeta {
 
 // SAFETY: Meta has the same repr(C) fields, offsets and size. Its validator
 // inspects only initialized leaves and accepts only valid CountedMeta values.
-unsafe impl qsl::modernization::NativeField for CountedMeta {
-    const NATIVE_LAYOUT: qsl::modernization::NativeLayout =
-        <Meta as qsl::modernization::NativeField>::NATIVE_LAYOUT;
+unsafe impl qsl::storage::NativeField for CountedMeta {
+    const NATIVE_LAYOUT: qsl::storage::NativeLayout =
+        <Meta as qsl::storage::NativeField>::NATIVE_LAYOUT;
 
     unsafe fn validate_native_fields(address: *const u8) -> qsl::QslResult<()> {
         #[cfg(test)]
         crate::native_validation_probe::record();
-        <Meta as qsl::modernization::NativeField>::validate_native_fields(address)
+        <Meta as qsl::storage::NativeField>::validate_native_fields(address)
     }
 }

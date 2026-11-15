@@ -1,3 +1,6 @@
+//! Runtime serialization contracts and caller/allocator-backed output.
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 /// Flat, trusted record serialization. No dynamic dispatch, runtime validation
 /// or `Result` is part of this API. The caller supplies schema-valid data.
 pub trait Serializable: Sized {
@@ -14,18 +17,20 @@ pub trait Serializable: Sized {
     /// `serialize_into_unsafe`/`serialize_to` as the initialized wire length.
     fn serialized_size(&self) -> usize;
 
-    /// Single-allocation Vec encoder. No intermediate buffers or validations.
+    /// Encode to the output storage selected during schema analysis. No value validation.
     /// Each encoded byte is initialized by the writer, avoiding a zero-fill pass.
     /// # Safety
     /// Every field must satisfy its declared QSL range and exact-length contract.
-    /// The combined encoded size must fit isize::MAX.
-    unsafe fn serialize(&self) -> Vec<u8> {
-        let len = self.serialized_size();
-        let mut out = Vec::with_capacity(len);
-        unsafe {
-            let written = self.serialize_into_unsafe(out.as_mut_ptr());
-            out.set_len(written);
-        }
+    /// The combined encoded size must fit isize::MAX and the selected output capacity.
+    unsafe fn serialize(&self) -> <Self as SerializeOutput>::Output
+    where
+        Self: SerializeOutput,
+    {
+        let mut out = <<Self as SerializeOutput>::Output as OutputBuffer>::with_capacity_unchecked(
+            self.serialized_size(),
+        );
+        let written = self.serialize_into_unsafe(crate::FrameStorage::writable_ptr(&mut out));
+        crate::FrameStorage::set_initialized_len(&mut out, written);
         out
     }
 
@@ -70,7 +75,7 @@ pub trait Serializable: Sized {
     /// Other layouts replace the value and may allocate normally.
     /// # Safety
     /// input must be one schema-valid record and not overlap any destination storage.
-    /// For a generated reuse layout, every retained string capacity must fit its decoded payload.
+    /// For a generated reuse layout, every retained string/array capacity must fit its decoded field.
     #[inline(always)]
     unsafe fn deserialize_reuse(input: &[u8], output: &mut Self) {
         *output = Self::deserialize(input);
@@ -81,7 +86,7 @@ pub trait Serializable: Sized {
     /// Every retained destination buffer must have capacity for its decoded field.
     #[inline(always)]
     unsafe fn deserialize_prepared_into(bytes: *const u8, len: usize, output: &mut Self) {
-        Self::deserialize_reuse(std::slice::from_raw_parts(bytes, len), output);
+        Self::deserialize_reuse(core::slice::from_raw_parts(bytes, len), output);
     }
     /// True when the generated decoder updates required buffer/array fields directly.
     const REUSES_STORAGE: bool = false;
@@ -110,17 +115,19 @@ pub trait BorrowSerializable<'a>: Sized {
     /// Required output capacity; compressed strings use their raw-size bound.
     fn serialized_size(&self) -> usize;
 
-    /// Allocate once and encode into bytes initialized by the generated writer.
+    /// Encode into the schema-selected stack or heap output.
     /// # Safety
     /// Values must satisfy all QSL bounds and exact byte lengths.
     /// The combined encoded size must fit isize::MAX.
-    unsafe fn serialize(&self) -> Vec<u8> {
-        let len = self.serialized_size();
-        let mut out = Vec::with_capacity(len);
-        unsafe {
-            let written = self.serialize_into_unsafe(out.as_mut_ptr());
-            out.set_len(written);
-        }
+    unsafe fn serialize(&self) -> <Self as SerializeOutput>::Output
+    where
+        Self: SerializeOutput,
+    {
+        let mut out = <<Self as SerializeOutput>::Output as OutputBuffer>::with_capacity_unchecked(
+            self.serialized_size(),
+        );
+        let written = self.serialize_into_unsafe(crate::FrameStorage::writable_ptr(&mut out));
+        crate::FrameStorage::set_initialized_len(&mut out, written);
         out
     }
     /// # Safety
@@ -171,160 +178,165 @@ pub trait BorrowSerializable<'a>: Sized {
     }
 }
 
-pub struct SerOut {
-    ptr: std::ptr::NonNull<u8>,
-    layout: std::alloc::Layout,
-    len: usize,
-}
-
-impl SerOut {
-    /// Allocate initialized zero-filled bytes using the global Rust allocator.
-    pub fn new(len: usize) -> Self {
-        use std::alloc::{alloc_zeroed, handle_alloc_error, Layout};
-        // alloc_zeroed is not valid for a zero-sized layout.
-        if len == 0 {
-            return Self::with_capacity_aligned(0, 4);
-        }
-        let layout = Layout::from_size_align(len, 4).expect("QSL: allocation overflow");
-        let ptr = unsafe { alloc_zeroed(layout) };
-        let ptr = std::ptr::NonNull::new(ptr).unwrap_or_else(|| handle_alloc_error(layout));
-        Self { ptr, layout, len }
+#[cfg(feature = "alloc")]
+mod owned {
+    pub struct SerOut {
+        ptr: core::ptr::NonNull<u8>,
+        layout: alloc::alloc::Layout,
+        len: usize,
     }
 
-    /// Allocate reusable storage with architecture-selected power-of-two alignment.
-    /// The initialized slice is initially empty; capacity is retained after reuse.
-    pub fn with_capacity_aligned(capacity: usize, alignment: usize) -> Self {
-        use std::alloc::{alloc, handle_alloc_error, Layout};
-        let layout =
-            Layout::from_size_align(capacity, alignment).expect("QSL: invalid buffer layout");
-        let ptr = if capacity == 0 {
-            std::ptr::NonNull::new(alignment as *mut u8).unwrap()
-        } else {
-            let raw = unsafe { alloc(layout) };
-            std::ptr::NonNull::new(raw).unwrap_or_else(|| handle_alloc_error(layout))
-        };
-        Self {
-            ptr,
-            layout,
-            len: 0,
+    impl SerOut {
+        /// Allocate initialized zero-filled bytes using the global Rust allocator.
+        pub fn new(len: usize) -> Self {
+            use alloc::alloc::{alloc_zeroed, handle_alloc_error, Layout};
+            // alloc_zeroed is not valid for a zero-sized layout.
+            if len == 0 {
+                return Self::with_capacity_aligned(0, 4);
+            }
+            let layout = Layout::from_size_align(len, 4).expect("QSL: allocation overflow");
+            let ptr = unsafe { alloc_zeroed(layout) };
+            let ptr = core::ptr::NonNull::new(ptr).unwrap_or_else(|| handle_alloc_error(layout));
+            Self { ptr, layout, len }
+        }
+
+        /// Allocate reusable storage with architecture-selected power-of-two alignment.
+        /// The initialized slice is initially empty; capacity is retained after reuse.
+        pub fn with_capacity_aligned(capacity: usize, alignment: usize) -> Self {
+            use alloc::alloc::{alloc, handle_alloc_error, Layout};
+            let layout =
+                Layout::from_size_align(capacity, alignment).expect("QSL: invalid buffer layout");
+            let ptr = if capacity == 0 {
+                core::ptr::NonNull::new(alignment as *mut u8).unwrap()
+            } else {
+                let raw = unsafe { alloc(layout) };
+                core::ptr::NonNull::new(raw).unwrap_or_else(|| handle_alloc_error(layout))
+            };
+            Self {
+                ptr,
+                layout,
+                len: 0,
+            }
+        }
+        #[inline(always)]
+        pub fn capacity(&self) -> usize {
+            self.layout.size()
+        }
+        #[inline(always)]
+        pub fn alignment(&self) -> usize {
+            self.layout.align()
+        }
+        #[inline(always)]
+        pub fn clear(&mut self) {
+            self.len = 0;
+        }
+        /// Publish bytes initialized by a native producer, e.g. a socket receive.
+        /// # Safety
+        /// The first len bytes must be initialized and len must not exceed capacity.
+        #[inline(always)]
+        pub unsafe fn set_len(&mut self, len: usize) {
+            debug_assert!(len <= self.capacity());
+            self.len = len;
+        }
+        /// Takes ownership of a caller allocation with the exact given layout.
+        /// # Safety
+        /// Must exclusively own an allocation obtained with the same layout/global allocator.
+        /// The first len bytes must be initialized and len must not exceed layout.size().
+        pub unsafe fn from_raw(ptr: *mut u8, layout: alloc::alloc::Layout, len: usize) -> Self {
+            assert!(len <= layout.size() && layout.size() > 0);
+            Self {
+                ptr: core::ptr::NonNull::new(ptr).expect("QSL: null pointer"),
+                layout,
+                len,
+            }
+        }
+        /// Return the stable output allocation pointer; does not advance a cursor.
+        #[inline(always)]
+        pub fn as_mut_ptr(&mut self) -> *mut u8 {
+            self.ptr.as_ptr()
         }
     }
-    #[inline(always)]
-    pub fn capacity(&self) -> usize {
-        self.layout.size()
-    }
-    #[inline(always)]
-    pub fn alignment(&self) -> usize {
-        self.layout.align()
-    }
-    #[inline(always)]
-    pub fn clear(&mut self) {
-        self.len = 0;
-    }
-    /// Publish bytes initialized by a native producer, e.g. a socket receive.
-    /// # Safety
-    /// The first len bytes must be initialized and len must not exceed capacity.
-    #[inline(always)]
-    pub unsafe fn set_len(&mut self, len: usize) {
-        debug_assert!(len <= self.capacity());
-        self.len = len;
-    }
-    /// Takes ownership of a caller allocation with the exact given layout.
-    /// # Safety
-    /// Must exclusively own an allocation obtained with the same layout/global allocator.
-    /// The first len bytes must be initialized and len must not exceed layout.size().
-    pub unsafe fn from_raw(ptr: *mut u8, layout: std::alloc::Layout, len: usize) -> Self {
-        assert!(len <= layout.size() && layout.size() > 0);
-        Self {
-            ptr: std::ptr::NonNull::new(ptr).expect("QSL: null pointer"),
-            layout,
-            len,
+    impl core::ops::Deref for SerOut {
+        type Target = [u8];
+        #[inline(always)]
+        fn deref(&self) -> &Self::Target {
+            unsafe { core::slice::from_raw_parts(self.ptr.as_ptr(), self.len) }
         }
     }
-    /// Return the stable output allocation pointer; does not advance a cursor.
-    #[inline(always)]
-    pub fn as_mut_ptr(&mut self) -> *mut u8 {
-        self.ptr.as_ptr()
+    impl core::ops::DerefMut for SerOut {
+        #[inline(always)]
+        fn deref_mut(&mut self) -> &mut Self::Target {
+            unsafe { core::slice::from_raw_parts_mut(self.ptr.as_ptr(), self.len) }
+        }
     }
-}
-impl std::ops::Deref for SerOut {
-    type Target = [u8];
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        unsafe { std::slice::from_raw_parts(self.ptr.as_ptr(), self.len) }
+    impl Drop for SerOut {
+        fn drop(&mut self) {
+            unsafe {
+                if self.layout.size() != 0 {
+                    alloc::alloc::dealloc(self.ptr.as_ptr(), self.layout);
+                }
+            }
+        }
     }
-}
-impl std::ops::DerefMut for SerOut {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        unsafe { std::slice::from_raw_parts_mut(self.ptr.as_ptr(), self.len) }
+
+    // SerOut uniquely owns a global-allocator byte allocation. Only &mut exposes mutation.
+    unsafe impl Send for SerOut {}
+    unsafe impl Sync for SerOut {}
+    impl Default for SerOut {
+        fn default() -> Self {
+            Self::with_capacity_aligned(0, 1)
+        }
     }
-}
-impl Drop for SerOut {
-    fn drop(&mut self) {
-        unsafe {
-            if self.layout.size() != 0 {
-                std::alloc::dealloc(self.ptr.as_ptr(), self.layout);
+    impl core::fmt::Debug for SerOut {
+        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+            f.debug_struct("SerOut")
+                .field("len", &self.len)
+                .field("capacity", &self.capacity())
+                .finish()
+        }
+    }
+    impl SerOut {
+        #[inline(always)]
+        pub fn len(&self) -> usize {
+            self.len
+        }
+        #[inline(always)]
+        pub fn is_empty(&self) -> bool {
+            self.len == 0
+        }
+        /// Copy bytes into retained storage. Failure preserves the previous initialized contents.
+        #[inline]
+        pub fn copy_from_slice(&mut self, bytes: &[u8]) -> crate::QslResult<()> {
+            if bytes.len() > self.capacity() {
+                return Err(crate::QslError::BufferTooSmall);
+            }
+            unsafe {
+                self.copy_from_raw_parts(bytes.as_ptr(), bytes.len());
+            }
+            Ok(())
+        }
+        /// Copy exactly len bytes, publishing the initialized prefix after the copy.
+        /// # Safety
+        /// source addresses len initialized, readable bytes disjoint from this allocation;
+        /// len <= capacity. No alias may mutate source during the copy.
+        #[inline(always)]
+        pub unsafe fn copy_from_raw_parts(&mut self, source: *const u8, len: usize) {
+            debug_assert!(len <= self.capacity());
+            core::ptr::copy_nonoverlapping(source, self.ptr.as_ptr(), len);
+            self.len = len;
+        }
+        pub fn spare_capacity_mut(&mut self) -> &mut [core::mem::MaybeUninit<u8>] {
+            unsafe {
+                core::slice::from_raw_parts_mut(
+                    self.ptr.as_ptr().add(self.len).cast(),
+                    self.capacity() - self.len,
+                )
             }
         }
     }
 }
-
-// SerOut uniquely owns a global-allocator byte allocation. Only &mut exposes mutation.
-unsafe impl Send for SerOut {}
-unsafe impl Sync for SerOut {}
-impl Default for SerOut {
-    fn default() -> Self {
-        Self::with_capacity_aligned(0, 1)
-    }
-}
-impl std::fmt::Debug for SerOut {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("SerOut")
-            .field("len", &self.len)
-            .field("capacity", &self.capacity())
-            .finish()
-    }
-}
-impl SerOut {
-    #[inline(always)]
-    pub fn len(&self) -> usize {
-        self.len
-    }
-    #[inline(always)]
-    pub fn is_empty(&self) -> bool {
-        self.len == 0
-    }
-    /// Copy bytes into retained storage. Failure preserves the previous initialized contents.
-    #[inline]
-    pub fn copy_from_slice(&mut self, bytes: &[u8]) -> crate::QslResult<()> {
-        if bytes.len() > self.capacity() {
-            return Err(crate::QslError::BufferTooSmall);
-        }
-        unsafe {
-            self.copy_from_raw_parts(bytes.as_ptr(), bytes.len());
-        }
-        Ok(())
-    }
-    /// Copy exactly len bytes, publishing the initialized prefix after the copy.
-    /// # Safety
-    /// source addresses len initialized, readable bytes disjoint from this allocation;
-    /// len <= capacity. No alias may mutate source during the copy.
-    #[inline(always)]
-    pub unsafe fn copy_from_raw_parts(&mut self, source: *const u8, len: usize) {
-        debug_assert!(len <= self.capacity());
-        std::ptr::copy_nonoverlapping(source, self.ptr.as_ptr(), len);
-        self.len = len;
-    }
-    pub fn spare_capacity_mut(&mut self) -> &mut [std::mem::MaybeUninit<u8>] {
-        unsafe {
-            std::slice::from_raw_parts_mut(
-                self.ptr.as_ptr().add(self.len).cast(),
-                self.capacity() - self.len,
-            )
-        }
-    }
-}
+#[cfg(feature = "alloc")]
+pub use owned::SerOut;
 
 mod destination_private {
     pub trait Sealed {}
@@ -351,5 +363,218 @@ impl<T: Serializable> DeserializeDestination<T> for &mut T {
     #[inline(always)]
     unsafe fn decode_into(self, bytes: *const u8, len: usize) {
         T::deserialize_prepared_into(bytes, len, self);
+    }
+}
+
+// Caller-owned output storage. No allocation or allocator interface is used.
+use crate::{QslError, QslResult};
+pub struct SliceOut<'a> {
+    bytes: &'a mut [u8],
+    written: usize,
+}
+impl<'a> SliceOut<'a> {
+    pub fn new(bytes: &'a mut [u8]) -> Self {
+        Self { bytes, written: 0 }
+    }
+    pub fn capacity(&self) -> usize {
+        self.bytes.len()
+    }
+    pub fn frame(&self) -> &[u8] {
+        &self.bytes[..self.written]
+    }
+    pub fn commit(&mut self, written: usize) -> QslResult<()> {
+        if written > self.bytes.len() {
+            return Err(QslError::BufferTooSmall);
+        }
+        self.written = written;
+        Ok(())
+    }
+}
+impl core::ops::Deref for SliceOut<'_> {
+    type Target = [u8];
+    fn deref(&self) -> &[u8] {
+        self.bytes
+    }
+}
+impl core::ops::DerefMut for SliceOut<'_> {
+    fn deref_mut(&mut self) -> &mut [u8] {
+        self.bytes
+    }
+}
+
+#[cfg(feature = "alloc")]
+unsafe impl crate::FrameStorage for SerOut {
+    fn capacity(&self) -> usize {
+        self.capacity()
+    }
+    fn as_bytes(&self) -> &[u8] {
+        self
+    }
+    unsafe fn writable_ptr(&mut self) -> *mut u8 {
+        self.as_mut_ptr()
+    }
+    unsafe fn set_initialized_len(&mut self, len: usize) {
+        self.set_len(len)
+    }
+}
+
+/// Build-time choice of an owned wire buffer. No runtime stack/heap branch.
+pub trait SerializeOutput {
+    type Output: OutputBuffer;
+}
+/// Construct output capacity without exposing uninitialized bytes.
+pub trait OutputBuffer: crate::FrameStorage + AsRef<[u8]> {
+    fn try_with_capacity(capacity: usize) -> crate::QslResult<Self>
+    where
+        Self: Sized;
+    /// # Safety
+    /// capacity fits this output type and isize::MAX.
+    unsafe fn with_capacity_unchecked(capacity: usize) -> Self
+    where
+        Self: Sized,
+    {
+        Self::try_with_capacity(capacity).expect("QSL output allocation/capacity")
+    }
+}
+/// Small owned frame. Only its written prefix is exposed; the spare tail is uninitialized.
+#[repr(C)]
+pub struct StackOut<const N: usize> {
+    bytes: core::mem::MaybeUninit<[u8; N]>,
+    len: u32,
+}
+impl<const N: usize> StackOut<N> {
+    pub const fn new() -> Self {
+        assert!(N <= u32::MAX as usize);
+        Self {
+            bytes: core::mem::MaybeUninit::uninit(),
+            len: 0,
+        }
+    }
+    pub const fn capacity(&self) -> usize {
+        N
+    }
+    pub fn len(&self) -> usize {
+        self.len as usize
+    }
+    pub fn is_empty(&self) -> bool {
+        self.len == 0
+    }
+    pub fn as_slice(&self) -> &[u8] {
+        unsafe { core::slice::from_raw_parts(self.bytes.as_ptr().cast(), self.len()) }
+    }
+    pub fn as_mut_ptr(&mut self) -> *mut u8 {
+        self.bytes.as_mut_ptr().cast()
+    }
+    /// # Safety
+    /// len <= N and the entire published prefix is initialized.
+    pub unsafe fn set_len(&mut self, len: usize) {
+        debug_assert!(len <= N);
+        self.len = len as u32;
+    }
+}
+impl<const N: usize> Default for StackOut<N> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+impl<const N: usize> core::ops::Deref for StackOut<N> {
+    type Target = [u8];
+    fn deref(&self) -> &[u8] {
+        self.as_slice()
+    }
+}
+impl<const N: usize> core::ops::DerefMut for StackOut<N> {
+    fn deref_mut(&mut self) -> &mut [u8] {
+        unsafe { core::slice::from_raw_parts_mut(self.as_mut_ptr(), self.len()) }
+    }
+}
+impl<const N: usize> AsRef<[u8]> for StackOut<N> {
+    fn as_ref(&self) -> &[u8] {
+        self.as_slice()
+    }
+}
+impl<const N: usize> Clone for StackOut<N> {
+    fn clone(&self) -> Self {
+        let mut out = Self::new();
+        unsafe {
+            core::ptr::copy_nonoverlapping(self.as_ptr(), out.as_mut_ptr(), self.len());
+            out.set_len(self.len());
+        }
+        out
+    }
+}
+impl<const N: usize> core::fmt::Debug for StackOut<N> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        self.as_slice().fmt(f)
+    }
+}
+impl<const N: usize, T: AsRef<[u8]> + ?Sized> PartialEq<T> for StackOut<N> {
+    fn eq(&self, other: &T) -> bool {
+        self.as_slice() == other.as_ref()
+    }
+}
+impl<const N: usize> Eq for StackOut<N> {}
+// The private length only publishes initialized bytes; raw writes require exclusive access.
+unsafe impl<const N: usize> crate::FrameStorage for StackOut<N> {
+    fn capacity(&self) -> usize {
+        N
+    }
+    fn as_bytes(&self) -> &[u8] {
+        self.as_slice()
+    }
+    unsafe fn writable_ptr(&mut self) -> *mut u8 {
+        self.as_mut_ptr()
+    }
+    unsafe fn set_initialized_len(&mut self, len: usize) {
+        self.set_len(len)
+    }
+}
+impl<const N: usize> OutputBuffer for StackOut<N> {
+    fn try_with_capacity(cap: usize) -> crate::QslResult<Self> {
+        if cap > N {
+            return Err(crate::QslError::BufferTooSmall);
+        }
+        Ok(Self::new())
+    }
+    unsafe fn with_capacity_unchecked(cap: usize) -> Self {
+        core::hint::assert_unchecked(cap <= N);
+        Self::new()
+    }
+}
+#[cfg(feature = "alloc")]
+unsafe impl crate::FrameStorage for Vec<u8> {
+    fn capacity(&self) -> usize {
+        Vec::capacity(self)
+    }
+    fn as_bytes(&self) -> &[u8] {
+        self.as_slice()
+    }
+    unsafe fn writable_ptr(&mut self) -> *mut u8 {
+        self.as_mut_ptr()
+    }
+    unsafe fn set_initialized_len(&mut self, len: usize) {
+        self.set_len(len)
+    }
+}
+#[cfg(feature = "alloc")]
+impl OutputBuffer for Vec<u8> {
+    fn try_with_capacity(cap: usize) -> crate::QslResult<Self> {
+        crate::validation::check_size(cap, isize::MAX as usize)?;
+        let mut out = Vec::new();
+        out.try_reserve_exact(cap)
+            .map_err(|_| crate::QslError::AllocationFailed)?;
+        Ok(out)
+    }
+}
+#[cfg(feature = "alloc")]
+impl<const N: usize> PartialEq<StackOut<N>> for Vec<u8> {
+    fn eq(&self, other: &StackOut<N>) -> bool {
+        self.as_slice() == other.as_slice()
+    }
+}
+
+impl<const N: usize> PartialEq<StackOut<N>> for &[u8] {
+    fn eq(&self, other: &StackOut<N>) -> bool {
+        *self == other.as_slice()
     }
 }

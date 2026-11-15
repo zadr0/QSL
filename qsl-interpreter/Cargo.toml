@@ -1,6 +1,6 @@
 [package]
 name = "qsl-interpreter"
-version = "0.3.0"
+version = "0.4.0"
 description = "Specialized Rust binary codec generation for QSL schemas and explicit data layouts."
 edition = "2021"
 rust-version = "1.98"
@@ -22,4 +22,8 @@ all-features = true
 default = []
 rust-macros = ["qsl-lexer/rust-macros"]
 [dependencies]
-qsl-lexer = { version = "=0.3.0", path = "../qsl-lexer" }
+qsl-lexer = { version = "=0.4.0", path = "../qsl-lexer" }
+
+qsl-core={version="=0.2.0",path="../qsl-core",default-features=false}
+syn={version="=2.0.119",default-features=false,features=["full","parsing","printing","visit"]}
+proc-macro2={version="=1.0.107",features=["span-locations"]}

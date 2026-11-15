@@ -11,6 +11,18 @@ fn cursor(s: &QslSchema, write: bool) -> QslResult<&'static str> {
             | QslType::RangedArray { element: e, .. } => field_bits(e, e.default_compact_bits()?)?,
             _ => 0,
         };
+        // Domain ranks are emitted as <=64-bit chunks; their cursor needs at most 71 bits.
+        let width = match data {
+            QslType::DomainInteger(_) | QslType::BitPadding(_) => width.min(64),
+            QslType::FixedString(_)
+            | QslType::FixedCompressedString(_)
+            | QslType::CompressedString { .. }
+            | QslType::InlineRawString { .. }
+            | QslType::Padding(_)
+            | QslType::None
+            | QslType::Custom { .. } => 0,
+            _ => width,
+        };
         Ok(width.max(child))
     }
     let max = s
@@ -275,7 +287,14 @@ pub(super) fn write(s: &QslSchema, out: &mut String) -> QslResult<()> {
     );
     emit_fast_header(s, out);
     for f in ordered_fields(s) {
-        let value = if f.optional {
+        let value = if f.optional
+            && matches!(
+                f.data,
+                QslType::BitPadding(_) | QslType::Padding(_) | QslType::None
+            ) {
+            ln(out, format!("if self.{}.is_some(){{", f.name));
+            "()".into()
+        } else if f.optional {
             ln(
                 out,
                 format!("if let Some(value)=self.{}.as_ref(){{", f.name),
@@ -363,6 +382,9 @@ pub(super) fn checked(s: &QslSchema, out: &mut String, capture: bool) -> QslResu
             },
         );
         return Ok(());
+    }
+    if grouped_codegen::applies(s) {
+        return grouped_codegen::read(s, out, capture);
     }
     if s.bitmap() {
         ln(out,format!("let mut bit_mask=bit_mask;while bit_mask!=0{{let index={}-bit_mask.trailing_zeros()as usize;bit_mask&=bit_mask-1;",s.bitmap_width()));

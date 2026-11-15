@@ -2,8 +2,10 @@
 //! Compressed output is bounded independently of the untrusted stored length.
 //! Heap restoration is fallible; trusted pointer APIs remain separate.
 use crate::{QslError, QslResult};
+#[cfg(feature = "alloc")]
+use alloc::{string::String, vec::Vec};
 
-pub use crate::config::DEFAULT_MAX_DATA_SIZE;
+pub const DEFAULT_MAX_DATA_SIZE: usize = 65535;
 
 pub fn check_size(size: usize, maximum: usize) -> QslResult<()> {
     if size > maximum || size > isize::MAX as usize {
@@ -12,12 +14,16 @@ pub fn check_size(size: usize, maximum: usize) -> QslResult<()> {
     Ok(())
 }
 
-/// Aggregate decoded value bytes, independent of compressed frame size.
+/// Aggregate decoded/native storage bytes, independent of compressed frame size.
+/// Fixed heap containers reserve their full object size, including spare capacity.
 /// This bounds data, not allocator metadata or the process working set.
 pub struct ValueBudget {
     remaining: usize,
 }
 impl ValueBudget {
+    pub fn remaining(&self) -> usize {
+        self.remaining
+    }
     pub fn new(maximum: usize) -> Self {
         Self { remaining: maximum }
     }
@@ -31,12 +37,15 @@ impl ValueBudget {
 }
 
 /// A fully checked run. Parsing never writes to output or allocates.
-enum CompressedRun<'a> {
+pub enum CompressedRun<'a> {
     Literal(&'a [u8]),
     Match { count: usize, distance: usize },
 }
 impl CompressedRun<'_> {
-    fn len(&self) -> usize {
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+    pub fn len(&self) -> usize {
         match self {
             Self::Literal(bytes) => bytes.len(),
             Self::Match { count, .. } => *count,
@@ -46,13 +55,16 @@ impl CompressedRun<'_> {
 
 /// The wire header bounds packed input only. Every run must independently fit
 /// the actual destination bound before any reserve, backreference or write.
-fn compressed_run<'a>(
+pub fn compressed_run<'a>(
     packed: &'a [u8],
     cursor: &mut usize,
     produced: usize,
     maximum: usize,
     width: usize,
 ) -> QslResult<Option<CompressedRun<'a>>> {
+    if width != 1 && width != 2 {
+        return Err(QslError::InvalidWidth);
+    }
     if *cursor == packed.len() {
         return Ok(None);
     }
@@ -97,6 +109,12 @@ pub struct ValidationCursor<'a> {
     budget: ValueBudget,
 }
 impl<'a> ValidationCursor<'a> {
+    pub fn input_bytes(&self) -> &'a [u8] {
+        self.input
+    }
+    pub fn remaining_budget(&self) -> usize {
+        self.budget.remaining
+    }
     pub fn new(input: &'a [u8]) -> Self {
         Self {
             input,
@@ -136,6 +154,14 @@ impl<'a> ValidationCursor<'a> {
         }
         Ok(())
     }
+    /// Bound native container storage/work without consuming or aligning wire bits.
+    pub fn check_native_allocation(&self, bytes: usize) -> QslResult<()> {
+        if bytes > self.budget.remaining {
+            Err(QslError::SizeLimitExceeded)
+        } else {
+            Ok(())
+        }
+    }
     pub fn check_allocation(&mut self, bytes: usize) -> QslResult<()> {
         self.align()?;
         if bytes > self.budget.remaining {
@@ -150,12 +176,33 @@ impl<'a> ValidationCursor<'a> {
         if n < min || n > max {
             return Err(QslError::InvalidValue);
         }
-        std::str::from_utf8(self.payload(n)?).map_err(|_| QslError::InvalidUtf8)
+        core::str::from_utf8(self.payload(n)?).map_err(|_| QslError::InvalidUtf8)
     }
 
     pub fn payload(&mut self, bytes: usize) -> QslResult<&'a [u8]> {
         self.charge(bytes)?;
         self.bytes(bytes)
+    }
+    /// Exact LSB-first wide rank; checked chunks never read outside the frame.
+    pub fn bits128(&mut self, width: usize) -> QslResult<u128> {
+        if width > 128 {
+            return Err(QslError::InvalidWidth);
+        }
+        let low = self.bits(width.min(64))? as u128;
+        if width > 64 {
+            Ok(low | ((self.bits(width - 64)? as u128) << 64))
+        } else {
+            Ok(low)
+        }
+    }
+    /// Read a native little-endian integer from an exact byte window.
+    pub fn uint128(&mut self, n: usize) -> QslResult<u128> {
+        if n > 16 {
+            return Err(QslError::InvalidWidth);
+        }
+        let mut bytes = [0u8; 16];
+        bytes[..n].copy_from_slice(self.bytes(n)?);
+        Ok(u128::from_le_bytes(bytes))
     }
     pub fn bits(&mut self, width: usize) -> QslResult<u64> {
         if width > 64 {
@@ -209,7 +256,7 @@ impl<'a> ValidationCursor<'a> {
         if n < min || n > max {
             return Err(QslError::InvalidValue);
         }
-        std::str::from_utf8(self.payload(n)?).map_err(|_| QslError::InvalidUtf8)?;
+        core::str::from_utf8(self.payload(n)?).map_err(|_| QslError::InvalidUtf8)?;
         Ok(())
     }
     pub fn finish(mut self) -> QslResult<()> {
@@ -219,19 +266,9 @@ impl<'a> ValidationCursor<'a> {
         }
         Ok(())
     }
-    /// Validate QSL-LZv1 / fixed UTF-8 v2 by safe token expansion into bounded
-    /// stack storage. No speculative pointer reads and no heap allocation.
-    pub fn compressed<const MAX: usize>(
-        &mut self,
-        min: usize,
-        raw_only: bool,
-        fixed: bool,
-    ) -> QslResult<()> {
-        self.decode_compressed::<MAX>(min, raw_only, fixed)
-            .map(|_| ())
-    }
-    /// Heap fallback for a string above STACK_LIMIT. Growth is fallible and
-    /// charged before every decoded run; the resulting Vec becomes String.
+    /// Restore an owned String using checked QSL-LZv1 / fixed UTF-8 v2 expansion.
+    /// Each run is validated and budgeted before reserving its output storage.
+    #[cfg(feature = "alloc")]
     pub fn decode_compressed_owned<const MAX: usize>(
         &mut self,
         min: usize,
@@ -242,7 +279,7 @@ impl<'a> ValidationCursor<'a> {
         let (stored, compressed, prefix) = if fixed {
             self.align()?;
             if MAX >= crate::STRING_COMPRESSION_MIN_BYTES
-                && self.input.get(self.position()) == Some(&255)
+                && self.input_bytes().get(self.position()) == Some(&255)
             {
                 self.bytes(1)?;
                 (self.uint(width)? as usize, true, 1 + width)
@@ -296,6 +333,102 @@ impl<'a> ValidationCursor<'a> {
         }
         String::from_utf8(output).map_err(|_| QslError::InvalidUtf8)
     }
+    /// Restore into heap InlineString without a MAX-byte stack temporary.
+    /// Each run is checked before writing; invalid UTF-8 is never published.
+    #[cfg(feature = "alloc")]
+    pub fn decode_compressed_boxed<const MAX: usize, L: crate::storage::LengthWord>(
+        &mut self,
+        min: usize,
+        raw_only: bool,
+        fixed: bool,
+    ) -> QslResult<alloc::boxed::Box<crate::InlineString<MAX, L>>> {
+        let width = if MAX <= 255 { 1 } else { 2 };
+        let (stored, compressed, prefix) = if fixed {
+            self.align()?;
+            if MAX >= crate::STRING_COMPRESSION_MIN_BYTES
+                && self.input.get(self.position()) == Some(&255)
+            {
+                self.bytes(1)?;
+                (self.uint(width)? as usize, true, 1 + width)
+            } else {
+                (MAX, false, 0)
+            }
+        } else {
+            let header = if MAX <= 127 {
+                1
+            } else if MAX <= 32767 {
+                2
+            } else {
+                4
+            };
+            let word = self.uint(header)? as u32;
+            let flag = 1u32 << (header * 8 - 1);
+            ((word & (flag - 1)) as usize, word & flag != 0, header)
+        };
+        // Reserve the entire fixed heap object once, before alloc. Every decoded
+        // prefix is bounded by MAX below, so it fits this already charged region.
+        self.charge(core::mem::size_of::<crate::InlineString<MAX, L>>())?;
+        if !compressed {
+            if stored < if fixed { MAX } else { min } || stored > MAX {
+                return Err(QslError::InvalidValue);
+            }
+            let text =
+                core::str::from_utf8(self.bytes(stored)?).map_err(|_| QslError::InvalidUtf8)?;
+            return crate::InlineString::try_boxed_from_str(text);
+        }
+        if raw_only || stored > MAX {
+            return Err(QslError::InvalidValue);
+        }
+        let packed = self.bytes(stored)?;
+        let mut cursor = 0;
+        // Reject an invalid first token before allocating the fixed-capacity box.
+        // Subsequent runs are still parsed exactly once, before each expansion.
+        let mut next_run = compressed_run(packed, &mut cursor, 0, MAX, width)?;
+        if next_run.is_none() {
+            return Err(QslError::InvalidValue);
+        }
+        let mut output = crate::InlineString::<MAX, L>::try_boxed_new()?;
+        let bytes = output.spare_bytes();
+        let mut length = 0;
+        while let Some(run) = next_run {
+            match run {
+                CompressedRun::Literal(data) => {
+                    for &b in data {
+                        bytes[length].write(b);
+                        length += 1;
+                    }
+                }
+                CompressedRun::Match { count, distance } => {
+                    for _ in 0..count {
+                        // compressed_run proves 0 < distance <= initialized prefix length.
+                        let b = unsafe { bytes[length - distance].assume_init() };
+                        bytes[length].write(b);
+                        length += 1;
+                    }
+                }
+            }
+            next_run = compressed_run(packed, &mut cursor, length, MAX, width)?;
+        }
+        if length < min || (fixed && length != MAX) || prefix + stored >= length {
+            return Err(QslError::InvalidValue);
+        }
+        let initialized = unsafe { core::slice::from_raw_parts(bytes.as_ptr().cast(), length) };
+        core::str::from_utf8(initialized).map_err(|_| QslError::InvalidUtf8)?;
+        unsafe {
+            output.publish_len(length);
+        }
+        Ok(output)
+    }
+    pub fn compressed<const MAX: usize>(
+        &mut self,
+        min: usize,
+        raw_only: bool,
+        fixed: bool,
+    ) -> QslResult<()> {
+        self.decode_compressed::<MAX>(min, raw_only, fixed)
+            .map(|_| ())
+    }
+
     /// Decode once into initialized-prefix storage, validating before exposing UTF-8.
     pub fn decode_compressed<const MAX: usize>(
         &mut self,
@@ -303,6 +436,15 @@ impl<'a> ValidationCursor<'a> {
         raw_only: bool,
         fixed: bool,
     ) -> QslResult<crate::InlineString<MAX>> {
+        self.decode_compressed_with::<MAX, u32>(min, raw_only, fixed)
+    }
+    /// Same checked codec with a build-time physical length word; wire stays identical.
+    pub fn decode_compressed_with<const MAX: usize, L: crate::storage::LengthWord>(
+        &mut self,
+        min: usize,
+        raw_only: bool,
+        fixed: bool,
+    ) -> QslResult<crate::InlineString<MAX, L>> {
         let width = if MAX <= 255 { 1 } else { 2 };
         let (stored, compressed, prefix) = if fixed {
             self.align()?;
@@ -357,7 +499,7 @@ impl<'a> ValidationCursor<'a> {
         if output.len() < min || (fixed && output.len() != MAX) || prefix + stored >= output.len() {
             return Err(QslError::InvalidValue);
         }
-        let text = std::str::from_utf8(&output).map_err(|_| QslError::InvalidUtf8)?;
+        let text = core::str::from_utf8(&output).map_err(|_| QslError::InvalidUtf8)?;
         Ok(unsafe { crate::InlineString::from_str_unchecked(text) })
     }
 }
@@ -365,6 +507,8 @@ impl<'a> ValidationCursor<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[allow(unused_imports)]
+    use std::{prelude::v1::*, vec};
     #[test]
     fn native_bit_windows_match_a_bit_oracle_at_every_offset_and_width() {
         let bytes = [0x37, 0xa5, 0xff, 0, 0x13, 0x80, 0xab, 0xcd, 0xf9];
@@ -439,11 +583,6 @@ mod tests {
                 inline.decode_compressed::<100>(0, false, false),
                 Err(QslError::SizeLimitExceeded)
             ));
-            let mut heap = ValidationCursor::with_budget(&frame, frame.len(), budget).unwrap();
-            assert!(matches!(
-                heap.decode_compressed_owned::<100>(0, false, false),
-                Err(QslError::SizeLimitExceeded)
-            ));
         }
         // Encoded metadata fits, but the last token would reconstruct 132 B.
         let forged = [0x84, 0, b'A', 0xFF, 1];
@@ -466,5 +605,98 @@ mod tests {
         assert!(ValidationCursor::new(&[0x84, 0, b'A', 0xdf, 1])
             .compressed::<100>(0, false, false)
             .is_ok());
+    }
+}
+
+#[cfg(all(test, feature = "alloc"))]
+mod owned_tests {
+    use super::*;
+    #[test]
+    fn owned_lz_budget_and_forged_length_are_checked_before_growth() {
+        let frame = [0x84, 0, b'A', 0xDF, 1];
+        let mut c = ValidationCursor::with_budget(&frame, frame.len(), 100).unwrap();
+        assert_eq!(
+            c.decode_compressed_owned::<100>(0, false, false).unwrap(),
+            "A".repeat(100)
+        );
+        c.finish().unwrap();
+        for budget in [0, 1, 4, 99] {
+            let mut c = ValidationCursor::with_budget(&frame, frame.len(), budget).unwrap();
+            assert_eq!(
+                c.decode_compressed_owned::<100>(0, false, false),
+                Err(QslError::SizeLimitExceeded)
+            );
+        }
+        let mut c = ValidationCursor::new(&[0x84, 0, b'A', 0xFF, 1]);
+        assert_eq!(
+            c.decode_compressed_owned::<100>(0, false, false),
+            Err(QslError::InvalidValue)
+        );
+    }
+    #[test]
+    fn heap_inline_capacity_is_checked_before_allocating_even_for_short_values() {
+        let input = [1, b'a'];
+        let capacity = core::mem::size_of::<crate::InlineString<100>>();
+        let mut cursor = ValidationCursor::with_budget(&input, 1024, capacity - 1).unwrap();
+        assert!(matches!(
+            cursor.decode_compressed_boxed::<100, u32>(0, false, false),
+            Err(QslError::SizeLimitExceeded)
+        ));
+        let mut cursor = ValidationCursor::with_budget(&input, 1024, capacity).unwrap();
+        assert_eq!(
+            cursor
+                .decode_compressed_boxed::<100, u32>(0, false, false)
+                .unwrap()
+                .as_str(),
+            "a"
+        );
+        let mut cursor = ValidationCursor::with_budget(&input, 1024, 1).unwrap();
+        assert_eq!(
+            cursor
+                .decode_compressed_owned::<100>(0, false, false)
+                .unwrap(),
+            "a"
+        );
+    }
+    #[test]
+    fn fixed_heap_budget_is_aggregate_and_reserved_once_for_raw_and_lz() {
+        let capacity = core::mem::size_of::<crate::InlineString<100>>();
+        let raw = [1, b'a', 1, b'b'];
+        let mut cursor = ValidationCursor::with_budget(&raw, 1024, 2 * capacity - 1).unwrap();
+        assert_eq!(
+            cursor
+                .decode_compressed_boxed::<100, u32>(0, false, false)
+                .unwrap()
+                .as_str(),
+            "a"
+        );
+        assert_eq!(cursor.remaining_budget(), capacity - 1);
+        assert!(matches!(
+            cursor.decode_compressed_boxed::<100, u32>(0, false, false),
+            Err(QslError::SizeLimitExceeded)
+        ));
+        let mut cursor = ValidationCursor::with_budget(&raw, 1024, 2 * capacity).unwrap();
+        for expected in ["a", "b"] {
+            assert_eq!(
+                cursor
+                    .decode_compressed_boxed::<100, u32>(0, false, false)
+                    .unwrap()
+                    .as_str(),
+                expected
+            );
+        }
+        assert_eq!(cursor.remaining_budget(), 0);
+        cursor.finish().unwrap();
+        let packed = [0x84, 0, b'A', 0xdf, 1];
+        let mut cursor = ValidationCursor::with_budget(&packed, 1024, capacity).unwrap();
+        assert_eq!(
+            cursor
+                .decode_compressed_boxed::<100, u32>(0, false, false)
+                .unwrap()
+                .len(),
+            100
+        );
+        assert_eq!(cursor.remaining_budget(), 0);
+        cursor.finish().unwrap();
     }
 }

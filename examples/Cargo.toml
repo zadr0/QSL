@@ -44,3 +44,11 @@ path = "06-macros/main.rs"
 [[example]]
 name = "safety"
 path = "07-safety/main.rs"
+
+[[example]]
+name = "builders"
+path = "08-builders/main.rs"
+
+[[example]]
+name = "bmi2"
+path = "09-bmi2/main.rs"

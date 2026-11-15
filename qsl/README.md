@@ -20,10 +20,10 @@ and build dependencies.
 
 ```toml
 [dependencies]
-qsl = "=0.3.0"
+qsl = "=0.4.0"
 
 [build-dependencies]
-qsl = "=0.3.0"
+qsl = "=0.4.0"
 ```
 
 ### 2. user.qsl
@@ -98,7 +98,7 @@ type and calls its checked encoder and decoder.
 | QSL_RT | Bounded static output slots for eligible schemas |
 
 Attributes are opt-in. MAX_DATA_SIZE defaults to 65535 useful bytes and also limits
-the input frame. STACK_LIMIT defaults to 256 data bytes per inline buffer.
+the input frame. STACK_LIMIT defaults to 256 native bytes per inline container, including length and alignment.
 Larger ordinary COPY strings and arrays use String/Vec. Fixed native Transmutate
 requires an explicitly sufficient limit.
 
@@ -126,7 +126,7 @@ During the pre-1.0 series, coordinate API and wire choices explicitly.
 
 ## Compiler crates in 0.3.0
 
-The compiler is separated into `qsl-lexer` (source collection and analysis) and `qsl-interpreter` (Rust generation). `qsl-core` owns shared schema/runtime contracts and I/O. `qsl` preserves application imports through re-exports. The facade and both compiler crates are version 0.3.0; qsl-core starts at 0.1.0. The unchanged procedural implementation crate remains at 0.1.0.
+The compiler is separated into `qsl-lexer` (source collection and analysis) and `qsl-interpreter` (Rust generation). `qsl-core` owns no_std runtime I/O and validation with optional alloc; owned schema contracts live in `qsl-lexer`. `qsl` preserves application imports through re-exports. The facade and both compiler crates are version 0.3.0; qsl-core starts at 0.1.0. The unchanged procedural implementation crate remains at 0.1.0.
 
 One `QslSchemaBuilder` owns the schemas and DEQ settings. Backends borrow this data through `SchemaBackend`; each backend owns its output and error types. Import the extension trait to choose Rust generation:
 
@@ -146,7 +146,7 @@ Existing `QslInterpreter::generate`, `generate_parsed`, `prepare_schemas`, `gene
 
 ## Platform-independent runtime in 0.2.0
 
-The Windows-specific native socket and IPC-region modules, the `native` Cargo feature and the `windows-sys` dependency have been removed. `Serializable::serialize` and `BorrowSerializable::serialize` consistently return `Vec<u8>`; `serialize_to` accepts a byte slice. `SerOut` remains a platform-independent aligned buffer, and native-layout COPY/LIFETIME generation remains available. This is an API change from the removed native feature; the former default Vec/slice API is preserved.
+The Windows-specific native socket and IPC-region modules, the `native` Cargo feature and the `windows-sys` dependency have been removed. The published legacy API used Vec output; current local generation selects StackOut or Vec through SerializeOutput. `serialize_to` accepts a byte slice. `SerOut` remains a platform-independent aligned buffer, and native-layout COPY/LIFETIME generation remains available. This is an API change from the removed native feature; caller-buffer serialization remains available.
 
 ## Optional dispatch and schema migration
 
@@ -170,8 +170,22 @@ The macro checks an integer tuple wrapper's representation and domain, retains Q
 
 ## 0.3.0: shared core and UTF-8 storage
 
-Shared schema types, errors, wire contracts, I/O, UTF-8 containers, validation and buffers now belong to qsl-core 0.1.0. Compatible module paths re-export those same definitions. Core has no lexer/interpreter dependency.
+`qsl-core` is always `#![no_std]`. Its default `alloc` feature provides `alloc::string::String`, `alloc::vec::Vec`, owned output and heap restoration; it never imports `std` or declares `#[global_allocator]`. The final application supplies the allocator. Disabling default features removes allocator-backed APIs. All runtime I/O, codec traits, validation and restoration remain in core. `qsl-rt` is also `no_std` and implements core storage contracts with static regions. `qsl-lexer` only collects/analyzes schemas; `qsl-interpreter` only emits Rust. The `qsl` facade reexports runtime APIs and makes compiler support optional.
 
 Variable UTF-8 fields use String, &str, `StackString<N>` or `InlineString<N>`. New/reuse are destination modes, not additional types. binary_opt=view generates &str and preserves owned String siblings; binary_opt=inline selects InlineString within STACK_LIMIT. Bounded aggressive storage uses StackString within that budget. STACK_LIMIT defaults to 256 B; larger ordinary inline strings fall back to String. Fixed native string fields retain [u8; N]. Guard containers and binary_opt=guard/true/bytes are rejected. Ordinary String and borrowed &str keep the same wire encoding; InlineString has its own schema-selected length header.
 
 Checked APIs retain UTF-8, length, value-domain, optional metadata, decompressed-size and aggregate-budget checks. Unchecked APIs remain explicit caller contracts. [0.3.0 migration](https://github.com/zadr0/QSL/blob/v0.3.0/docs/migration-0.3.0.en.md).
+
+## Unreleased development API
+
+The local source adds QslBuilder declarations on the existing QslSchemaBuilder, optional physical auto layout, private aggressive bitmap storage and dyn v1 codecs with explicit validation scratch. max_data_size and stack_limit remain separate budgets. binary_opt is retired in this development grammar. This source has not been published as a replacement for crates.io 0.3.0; use the release documentation when consuming that version.
+
+## Schema-selected serialize output
+
+Ordinary serialize()/serialize_checked() return Result with a concrete output type. A proven maximum frame size less than or equal to STACK_LIMIT selects StackOut; otherwise output is alloc::Vec<u8>. StackOut length/alignment metadata is excluded from this frame threshold. Unknown bounds also select Vec. This choice is fixed in generated Rust, with no runtime stack/heap branch.
+
+StackOut<N> holds uninitialized byte capacity and a u32 written length. It exposes as_slice(), AsRef<[u8]>, Deref, len(), is_empty() and capacity(); only the initialized prefix is readable. A 64-byte maximum selects StackOut<64>. At STACK_LIMIT=256 B, a frame of 256 bytes selects StackOut and a frame of 257 bytes selects Vec. Transmitted headers count toward frame size; buffer-object metadata does not. Two strings bounded by 4 KiB select Vec even for short actual values; only the current required capacity is reserved.
+
+Compression is not assumed to shrink the maximum: raw fallback and headers count. Small scalar QPS serialize() preserves a typed QuantizedLease backed by StackOut and its frame() decoder. Explicit QSL_RT retains its pool/lease contract. Caller-buffer serialization remains available. Trusted Serializable/BorrowSerializable::serialize returns SerializeOutput::Output; manually implemented records opt into SerializeOutput explicitly. Unchecked methods retain their separate contracts.
+
+Internal code uses qsl_lexer::layout and qsl_core directly. Files containing only forwarding exports were removed; public facade exports stay in lib.rs. Canonical implementation paths are qsl_core::storage, qsl_core::serialize, qsl_core::payload_quant, qsl_lexer::layout and qsl_lexer::payload_quant.

@@ -40,17 +40,10 @@ fn codegen_policies_and_initializers_do_not_change_hashes() {
         );
     }
     let base = hashes("&P{str(1..100) text;}");
-    for mode in ["false", "view"] {
-        assert_eq!(
-            base,
-            hashes(&format!("&P{{str(1..100) text|binary_opt={mode}|;}}")),
-            "{mode}"
-        );
-    }
     assert_eq!(base, hashes("&P[lifetime]{str(1..100) text;}"));
     assert_ne!(
         base.light,
-        hashes("&P{str(1..100) text|binary_opt=inline|;}").light
+        hashes("&P{str(1..100) text|decompress=true|;}").light
     );
 }
 #[test]
@@ -134,9 +127,11 @@ fn qps_aliases_are_canonical_and_quantums_are_distinct() {
 #[test]
 fn constants_are_hashed_after_evaluation_not_by_identifier() {
     let constants = qsl::parse_deq("!define MAX: usize = 10 * 10;").unwrap();
-    let schema =
-        qsl::parse_qsl_with_constants("&P{str(1..!MAX) text;}", &constants.integer_values())
-            .unwrap();
+    let schema = qsl::parse_qsl_with_constants(
+        "&P{str(1..!MAX) text;}",
+        &constants.integer_values().unwrap(),
+    )
+    .unwrap();
     assert_eq!(
         schema[0].hashes(Algorithm::default()).unwrap(),
         hashes("&P{str(1..100) text;}")

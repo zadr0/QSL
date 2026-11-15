@@ -146,11 +146,10 @@ fn prepared_word_write(s: &QslSchema, p: &PayloadQuantPlan, bytes: usize, out: &
 }
 fn prepared_word_read(s: &QslSchema, p: &PayloadQuantPlan, bytes: usize, out: &mut String) {
     let word = format!("u{}", bytes * 8);
-    let load =
-        crate::modernization::register_word(p.min_bytes).expect("packed register <= 16 bytes");
-    ln(out,format!("#[inline] unsafe fn __qsl_quant_read(bytes:*const u8,output:&mut std::mem::MaybeUninit<Self>){{let out=output.as_mut_ptr();let mut packed=::qsl::modernization::load_{load}::<{}>(bytes)as {word};let presence=(packed as u64)&{}u64;",p.min_bytes,mask(p.header_bytes*8)));
+    let load = qsl_lexer::layout::register_word(p.min_bytes).expect("packed register <= 16 bytes");
+    ln(out,format!("#[inline] unsafe fn __qsl_quant_read(bytes:*const u8,output:&mut std::mem::MaybeUninit<Self>){{let out=output.as_mut_ptr();let mut packed=::qsl::storage::load_{load}::<{}>(bytes)as {word};let presence=(packed as u64)&{}u64;",p.min_bytes,mask(p.header_bytes*8)));
     if p.max_bytes > p.min_bytes {
-        ln(out,format!("let length=(Self::__qsl_quant_offset_{}(presence)+7)>>3;let source=::qsl::payload_quant::selected_address(std::hint::select_unpredictable(length>{},bytes.add({}),::qsl::modernization::ZERO_WORD.as_ptr()));packed|=(source.read()as {word})<<{};",p.fields.len(),p.min_bytes,p.min_bytes,p.min_bytes*8));
+        ln(out,format!("let length=(Self::__qsl_quant_offset_{}(presence)+7)>>3;let source=::qsl::payload_quant::selected_address(std::hint::select_unpredictable(length>{},bytes.add({}),::qsl::storage::ZERO_WORD.as_ptr()));packed|=(source.read()as {word})<<{};",p.fields.len(),p.min_bytes,p.min_bytes,p.min_bytes*8));
     }
     let mut ordinal = 0;
     for f in &p.fields {
@@ -240,7 +239,7 @@ fn prepared_field_write(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) {
         for (start, width) in chunks(f) {
             // Absent fields select the native minimum, hence code==0. A full
             // Boolean mask is cheaper than u128 multiplication by 0/1 on x64.
-            ln(out,format!("let at=bit+{start}*p;let shift=at&7;let count=(shift+{width}*p+7)>>3;let address=to.add(at>>3);let old=::qsl::modernization::load_word(address,count) as {word};let active=(({} as {word})<<shift)&(0 as {word}).wrapping_sub(p as {word});let value=(((code>>{start})&{}u64) as {word})<<shift;::qsl::modernization::store_word(address,((old & !active)|value) as u128,count);",mask(width),mask(width)));
+            ln(out,format!("let at=bit+{start}*p;let shift=at&7;let count=(shift+{width}*p+7)>>3;let address=to.add(at>>3);let old=::qsl::storage::load_word(address,count) as {word};let active=(({} as {word})<<shift)&(0 as {word}).wrapping_sub(p as {word});let value=(((code>>{start})&{}u64) as {word})<<shift;::qsl::storage::store_word(address,((old & !active)|value) as u128,count);",mask(width),mask(width)));
         }
         ln(out, "}");
     }
@@ -273,12 +272,12 @@ fn prepared_field_read(s: &QslSchema, p: &PayloadQuantPlan, out: &mut String) {
             let minimum = (width + 7) >> 3;
             let maximum = (width + f.max_start + 7) >> 3;
             let load =
-                crate::modernization::register_word(minimum).expect("quantized chunk <= 16 bytes");
+                qsl_lexer::layout::register_word(minimum).expect("quantized chunk <= 16 bytes");
             let word =
-                crate::modernization::register_word(maximum).expect("quantized window <= 16 bytes");
-            ln(out,format!("let at=bit+{start}*p;let count=((at&7)+{width}*p+7)>>3;let source=::qsl::payload_quant::selected_address(std::hint::select_unpredictable(p!=0,bytes.add(at>>3),::qsl::modernization::ZERO_WORD.as_ptr()));let mut word=::qsl::modernization::load_{load}::<{minimum}>(source)as {word};"));
+                qsl_lexer::layout::register_word(maximum).expect("quantized window <= 16 bytes");
+            ln(out,format!("let at=bit+{start}*p;let count=((at&7)+{width}*p+7)>>3;let source=::qsl::payload_quant::selected_address(std::hint::select_unpredictable(p!=0,bytes.add(at>>3),::qsl::storage::ZERO_WORD.as_ptr()));let mut word=::qsl::storage::load_{load}::<{minimum}>(source)as {word};"));
             if maximum > minimum {
-                ln(out,format!("let extra=::qsl::payload_quant::selected_address(std::hint::select_unpredictable(count>{minimum},source.add({minimum}),::qsl::modernization::ZERO_WORD.as_ptr()));word|=(extra.read()as {word})<<{};",minimum*8));
+                ln(out,format!("let extra=::qsl::payload_quant::selected_address(std::hint::select_unpredictable(count>{minimum},source.add({minimum}),::qsl::storage::ZERO_WORD.as_ptr()));word|=(extra.read()as {word})<<{};",minimum*8));
             }
             ln(
                 out,

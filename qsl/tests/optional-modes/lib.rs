@@ -47,10 +47,8 @@ mod tests {
             assert_eq!((x.id, x.a(), x.b()), (42, a, b));
             assert_eq!(PairTag::SCHEMA_HASH_LIGHT, PairDefault::SCHEMA_HASH_LIGHT);
         }
-        // Required tag is not an optional ordinal. It has no callable table entry.
-        assert!(__QslFields_PairTag_OPT_TABLE[0].is_none());
-        assert!(__QslFields_PairTag_OPT_TABLE[1].is_some());
-        assert!(__QslFields_PairTag_OPT_TABLE[2].is_some());
+        // Required tags are invalid optional metadata. Test checked rejection
+        // rather than assuming an internal Option<fn> table representation.
         let mut invalid = PairTag::try_new(42, Some(1), None)
             .unwrap()
             .serialize_checked()
@@ -165,7 +163,7 @@ mod tests {
                 assert_eq!((x.data.as_ref(), x.flag()), (data.as_ref(), flag));
             }
         }
-        for text in [None, Some(b"".as_slice()), Some("Рад".as_bytes())] {
+        for text in [None, Some(""), Some("Рад")] {
             for flag in [None, Some(9)] {
                 let bytes = BorrowedTag::try_new(7, text, flag)
                     .unwrap()
@@ -173,7 +171,7 @@ mod tests {
                     .unwrap();
                 let x = BorrowedTag::deserialize_checked(&bytes).unwrap();
                 assert_eq!((x.text, x.flag()), (text, flag));
-                if text != Some(b"") {
+                if text != Some("") {
                     let bytes = BorrowedBoth::try_new(7, text, flag)
                         .unwrap()
                         .serialize_checked()

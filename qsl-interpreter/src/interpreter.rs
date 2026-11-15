@@ -1,20 +1,28 @@
-use crate::io::{QslError, QslResult, QslSizer};
 use crate::types::{QslField, QslSchema, QslType, FLAG_ALIGNMENT};
 use crate::QslIoPlan;
+use qsl_core::io::{QslError, QslResult, QslSizer};
 use std::fmt::Write as _;
 use std::fs;
 #[path = "codegen_checked.rs"]
 mod checked_codegen;
+#[path = "codegen_dynamic.rs"]
+mod dynamic_codegen;
+#[path = "codegen_grouped.rs"]
+mod grouped_codegen;
 #[path = "codegen_hybrid.rs"]
 mod hybrid_codegen;
 #[path = "codegen_length_graph.rs"]
 mod length_graph_codegen;
 #[path = "codegen_native.rs"]
 mod native_codegen;
+#[path = "codegen_numeric.rs"]
+mod numeric_codegen;
 #[path = "codegen_optional.rs"]
 mod optional_codegen;
 #[path = "codegen_payload_quant.rs"]
 mod payload_quant_codegen;
+#[path = "codegen_presence.rs"]
+mod presence_codegen;
 #[path = "codegen_qps.rs"]
 mod qps_codegen;
 #[path = "codegen_representation.rs"]
@@ -29,7 +37,47 @@ mod validation_codegen;
 /// Finite upper bound used by DEQ RT allocation and editor diagnostics.
 pub fn schema_maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {
     schema.validate()?;
+    if let Some(header) = schema.options.dynamic {
+        let mut plain = schema.clone();
+        plain.options.dynamic = None;
+        plain.flags &= !crate::FLAG_COMPACT;
+        return qps_codegen::maximum_size(&plain)?
+            .map(|n| {
+                n.checked_add(qsl_core::dynamic::DYN_HEADER_BYTES)
+                    .and_then(|n| {
+                        n.checked_add(schema.fields.len().checked_mul(
+                            if header.mode == qsl_core::dynamic::DynMode::Line {
+                                2 * header.width.bytes()
+                            } else {
+                                header.width.bytes()
+                            },
+                        )?)
+                    })
+                    .and_then(|n| {
+                        n.checked_add(if header.mode == qsl_core::dynamic::DynMode::Line {
+                            0
+                        } else {
+                            4
+                        })
+                    })
+                    .ok_or(QslError::LengthOverflow)
+            })
+            .transpose();
+    }
     qps_codegen::maximum_size(schema)
+}
+
+// Only QSL-LZ reports an upper bound rather than an exact encoded size.
+// Exact sizes must be rejected before reserving storage or touching caller memory.
+pub(crate) fn output_may_shrink(t: &QslType) -> bool {
+    match t {
+        QslType::CompressedString { max, .. } => *max >= crate::STRING_COMPRESSION_MIN_BYTES,
+        QslType::FixedCompressedString(n) => *n >= crate::STRING_COMPRESSION_MIN_BYTES,
+        QslType::Array(e, _)
+        | QslType::FixedArray(e, _)
+        | QslType::RangedArray { element: e, .. } => output_may_shrink(e),
+        _ => false,
+    }
 }
 
 fn ln(out: &mut String, source: impl AsRef<str>) {
@@ -64,6 +112,14 @@ fn indent_generated(source: &str) -> String {
                 "clippy::let_and_return",
                 "clippy::possible_missing_else",
                 "clippy::len_zero",
+                // Schema constants can intentionally produce zero-length loops,
+                // unit padding slots and parenthesized generated expressions.
+                "clippy::double_parens",
+                "clippy::unused_unit",
+                "clippy::let_unit_value",
+                "clippy::unit_arg",
+                "clippy::repeat_once",
+                "clippy::reversed_empty_ranges",
             ]
             .into_iter()
             .filter(|v| !prior_lints.contains(*v))
@@ -77,6 +133,14 @@ fn indent_generated(source: &str) -> String {
         }
 
         if code.is_empty() {
+            if result
+                .trim_end()
+                .lines()
+                .next_back()
+                .is_some_and(|line| line.trim_start().starts_with("#["))
+            {
+                continue;
+            }
             result.push('\n');
             continue;
         }
@@ -276,7 +340,7 @@ fn minimum_field(s: &mut QslSizer, ty: &QslType, compact: bool, width: usize) ->
             return minimum_field(s, &QslType::String(*min), compact, width)
         }
         QslType::InlineRawString { min, max } => s.bytes(
-            crate::wire::inline_string_header_bytes(0)
+            qsl_core::wire::inline_string_header_bytes(0)
                 + *min
                 + if *max > 32767 {
                     3
@@ -297,9 +361,11 @@ fn minimum_field(s: &mut QslSizer, ty: &QslType, compact: bool, width: usize) ->
         }
         QslType::None => {}
         QslType::Padding(n) => s.bytes(*n)?,
+        QslType::BitPadding(n) => s.bits(*n)?,
         QslType::Byte
         | QslType::Integer { .. }
         | QslType::RangedInteger { .. }
+        | QslType::DomainInteger(_)
         | QslType::Flags(_) => {
             if compact {
                 s.bits(width)?;
@@ -356,9 +422,9 @@ fn minimum_field(s: &mut QslSizer, ty: &QslType, compact: bool, width: usize) ->
             if is_bytes(elem) {
                 s.bytes(*min)?;
             } else {
-                for _ in 0..*min {
-                    minimum_field(s, elem, compact, elem.default_compact_bits()?)?;
-                }
+                s.repeat(*min, |s| {
+                    minimum_field(s, elem, compact, elem.default_compact_bits()?)
+                })?;
                 if compact {
                     s.align()?;
                 }
@@ -368,9 +434,9 @@ fn minimum_field(s: &mut QslSizer, ty: &QslType, compact: bool, width: usize) ->
             if is_bytes(elem) {
                 s.bytes(*n)?;
             } else {
-                for _ in 0..*n {
-                    minimum_field(s, elem, compact, elem.default_compact_bits()?)?;
-                }
+                s.repeat(*n, |s| {
+                    minimum_field(s, elem, compact, elem.default_compact_bits()?)
+                })?;
                 if compact {
                     s.align()?;
                 }
@@ -430,6 +496,17 @@ fn minimum_size(schema: &QslSchema) -> QslResult<usize> {
 /// Resolve the minimum encoded size without guessing a custom codec's width.
 /// Built-in field offsets are folded now; each custom size remains a Rust
 /// associated constant, which the downstream compiler can fold at monomorphization.
+fn emit_minimum_size_guard(schema: &QslSchema, out: &mut String) -> QslResult<()> {
+    let minimum = minimum_size_expr(schema)?;
+    if minimum != "0" {
+        ln(
+            out,
+            format!("if input.len()<{minimum}{{return Err(::qsl::QslError::UnexpectedEof)}}"),
+        );
+    }
+    Ok(())
+}
+
 fn minimum_size_expr(schema: &QslSchema) -> QslResult<String> {
     if schema.state_bits() || schema.predict_table() {
         let mut size = QslSizer::default();
@@ -477,9 +554,11 @@ fn constant_size(ty: &QslType, compact: bool, width: usize) -> Option<(bool, usi
     match ty {
         QslType::None => Some((compact, 0)),
         QslType::Padding(n) => Some((false, *n)),
+        QslType::BitPadding(n) => Some((true, *n)),
         QslType::Byte
         | QslType::Integer { .. }
         | QslType::RangedInteger { .. }
+        | QslType::DomainInteger(_)
         | QslType::Flags(_) => {
             if compact {
                 Some((true, width))
@@ -495,6 +574,79 @@ fn constant_size(ty: &QslType, compact: bool, width: usize) -> Option<(bool, usi
 
 /// Emits arithmetic only. Schema constraints are verified by the parser; the
 /// runtime sizing path has no Result, overflow checks or error branches.
+fn default_value(t: &QslType, native: bool) -> QslResult<String> {
+    Ok(match t {
+        QslType::DomainInteger(d) => format!("{}u128 as {}", d.minimum_bits(), d.primitive()),
+        QslType::RangedInteger { min, .. } => format!(
+            "({min}i128 as {})",
+            t.primitive()?.ok_or(QslError::InvalidSchema)?
+        ),
+        QslType::FixedArray(e, n) => {
+            let v = default_value(e, native)?;
+            if native {
+                format!("std::array::from_fn(|_|{v})")
+            } else {
+                format!("std::iter::repeat_with(||{v}).take({n}).collect::<Vec<_>>()")
+            }
+        }
+        QslType::Array(e, min)
+        | QslType::RangedArray {
+            element: e, min, ..
+        } => format!(
+            "std::iter::repeat_with(||{}).take({min}).collect::<Vec<_>>()",
+            default_value(e, false)?
+        ),
+        QslType::FixedString(n) | QslType::FixedCompressedString(n) => format!("[b' ';{n}]"),
+        QslType::String(min) | QslType::RangedString { min, .. } => format!("\" \".repeat({min})"),
+        QslType::BorrowedString { min, .. } => {
+            format!("unsafe{{std::str::from_utf8_unchecked(&[b' ';{min}])}}")
+        }
+        QslType::InlineRawString { min, max } | QslType::CompressedString { min, max } => {
+            format!("::qsl::InlineString::<{max}>::spaces::<{min}>()")
+        }
+        _ => "Default::default()".into(),
+    })
+}
+fn field_default(f: &QslField, borrowed: bool) -> QslResult<String> {
+    use qsl_lexer::layout::StorageKind;
+    if let Some((min, _, _, _)) = string_layout(&f.data) {
+        if f.storage == StorageKind::StrView
+            || borrowed && matches!(f.data, QslType::String(_) | QslType::RangedString { .. })
+        {
+            return Ok(format!(
+                "unsafe{{std::str::from_utf8_unchecked(&[b' ';{min}])}}"
+            ));
+        }
+        if let StorageKind::HeapInlineString(n) = f.storage {
+            return Ok(format!("::qsl::InlineString::<{n}>::try_boxed_spaces({min}).expect(\"QSL heap allocation\")"));
+        }
+        if f.storage == StorageKind::HeapString {
+            return Ok(format!("\" \".repeat({min})"));
+        }
+        if matches!(f.storage, StorageKind::StackString(_))
+            || matches!(
+                f.data,
+                QslType::InlineRawString { .. } | QslType::CompressedString { .. }
+            )
+        {
+            return Ok(format!(
+                "<{}>::spaces::<{min}>()",
+                qsl_lexer::layout::field_rust_type(f, false)?
+            ));
+        }
+    }
+    if let StorageKind::StackArray(n) = f.storage {
+        let (e, min) = match &f.data {
+            QslType::RangedArray { element, min, .. } | QslType::Array(element, min) => {
+                (element.as_ref(), *min)
+            }
+            _ => return Err(QslError::InvalidSchema),
+        };
+        return Ok(format!("::qsl::InlineArray::<{}, {n},_>::try_from_iter(std::iter::repeat_with(||{}).take({min})).expect(\"schema default capacity\")",e.rust_type(false)?,default_value(e,false)?));
+    }
+    default_value(&f.data, matches!(f.storage, StorageKind::FixedArray(_)))
+}
+
 fn emit_size_field(
     ty: &QslType,
     out: &mut String,
@@ -502,6 +654,9 @@ fn emit_size_field(
     width: usize,
     compact: bool,
 ) -> QslResult<()> {
+    if !compact && matches!(ty, QslType::BitPadding(_)) {
+        return Err(QslError::InvalidSchema);
+    }
     match ty {
         QslType::BorrowedString { min, .. } => {
             return emit_size_field(&QslType::String(*min), out, value, width, compact)
@@ -512,9 +667,11 @@ fn emit_size_field(
         QslType::FixedCompressedString(n) => add_size_bytes(out, &n.to_string()),
         QslType::None => {}
         QslType::Padding(n) => add_size_bytes(out, &n.to_string()),
+        QslType::BitPadding(n) => ln(out, format!("__qsl_bits+={n};")),
         QslType::Byte
         | QslType::Integer { .. }
         | QslType::RangedInteger { .. }
+        | QslType::DomainInteger(_)
         | QslType::Flags(_) => {
             if compact {
                 ln(out, format!("__qsl_bits += {width};"));
@@ -704,7 +861,7 @@ fn fast_stored_write(
     width: usize,
     compact: bool,
 ) -> QslResult<()> {
-    use crate::modernization::StorageKind;
+    use qsl_lexer::layout::StorageKind;
     if f.storage == StorageKind::HeapString
         || (f.storage == StorageKind::StrView && matches!(f.data, QslType::InlineRawString { .. }))
     {
@@ -740,7 +897,9 @@ fn emit_planned_stored_write(
     }
     if matches!(
         f.storage,
-        crate::modernization::StorageKind::HeapString | crate::modernization::StorageKind::StrView
+        qsl_lexer::layout::StorageKind::HeapString
+            | qsl_lexer::layout::StorageKind::HeapInlineString(_)
+            | qsl_lexer::layout::StorageKind::StrView
     ) {
         fast_stored_write(f, out, expr, width, compact)
     } else {
@@ -756,7 +915,7 @@ fn emit_size_stored(
 ) -> QslResult<()> {
     if matches!(
         f.storage,
-        crate::modernization::StorageKind::HeapString | crate::modernization::StorageKind::StrView
+        qsl_lexer::layout::StorageKind::HeapString | qsl_lexer::layout::StorageKind::StrView
     ) && matches!(
         f.data,
         QslType::CompressedString { .. } | QslType::InlineRawString { .. }
@@ -775,7 +934,15 @@ fn fast_type_write(
     width: usize,
     compact: bool,
 ) -> QslResult<()> {
+    if !compact && matches!(ty, QslType::BitPadding(_)) {
+        return Err(QslError::InvalidSchema);
+    }
     match ty {
+        QslType::DomainInteger(d)=>{
+            if compact{if width!=0{let rank=numeric_codegen::encode(d,&numeric_codegen::copied(expr));if width<=64{ln(out,format!("writer.write_bits_unchecked(({rank})as u64,{width});"));}else{ln(out,format!("writer.write_bits128_unchecked({rank},{width});"));}}}
+            else{ln(out,format!("writer.write_bytes_unchecked(&({}).to_le_bytes());",numeric_codegen::copied(expr)));}
+        }
+
         QslType::BorrowedString { .. }
          => {
             ln(out, format!("let __qsl_bytes: &[u8] = ({expr}).as_ref(); let __qsl_len = __qsl_bytes.len();"));
@@ -789,6 +956,8 @@ fn fast_type_write(
         QslType::FixedCompressedString(n) => ln(out, format!("writer.flush_unchecked(); let __qsl_used = ::qsl::encode_fixed_utf8::<{n}>(({expr}).as_ptr(), writer.as_mut_ptr()); writer.claim_bytes(__qsl_used);")),
         QslType::None => {}
         QslType::Padding(n) => ln(out, format!("writer.write_zeros_unchecked({n});")),
+        QslType::BitPadding(n)=>{if *n>=64{ln(out,format!("for _ in 0..{}{{writer.write_bits_unchecked(0,64);}}",n/64));}
+if !n.is_multiple_of(64){ln(out,format!("writer.write_bits_unchecked(0,{});",n%64));}},
         QslType::Byte
         | QslType::Integer { .. }
         | QslType::RangedInteger { .. }
@@ -1176,8 +1345,8 @@ fn emit_register_group(
     let total = numeric + metadata;
     for (word, offset) in (0..total).step_by(16).enumerate() {
         let n = (total - offset).min(16);
-        let ty = crate::modernization::register_word(n)?;
-        ln(out,format!("let __qsl_register_{start}_{word}:{ty}=unsafe{{::qsl::modernization::load_{ty}::<{n}>(({pointer}).add({offset}))}};"));
+        let ty = qsl_lexer::layout::register_word(n)?;
+        ln(out,format!("let __qsl_register_{start}_{word}:{ty}=unsafe{{::qsl::storage::load_{ty}::<{n}>(({pointer}).add({offset}))}};"));
     }
     let mut offset = 0;
     for (j, f) in schema.fields[start..start + count].iter().enumerate() {
@@ -1188,7 +1357,7 @@ fn emit_register_group(
             // Merge in the field's unsigned type. The next window may be
             // narrower than the preceding u128; never shift a narrow tail
             // before widening it to the field's actual result width.
-            let merge = crate::modernization::register_word(n)?;
+            let merge = qsl_lexer::layout::register_word(n)?;
             format!(
                 "((__qsl_register_{start}_{word}>>{shift})as {merge})|((__qsl_register_{start}_{} as {merge})<<{})",
                 word + 1,
@@ -1368,9 +1537,11 @@ fn unchecked_read_supported(schema: &QslSchema) -> bool {
     schema.fields.iter().all(|field| match &field.data {
         QslType::None
         | QslType::Padding(_)
+        | QslType::BitPadding(_)
         | QslType::Byte
         | QslType::Integer { .. }
         | QslType::RangedInteger { .. }
+        | QslType::DomainInteger(_)
         | QslType::Flags(_)
         | QslType::BorrowedString { .. }
         | QslType::InlineRawString { .. }
@@ -1382,12 +1553,41 @@ fn unchecked_read_supported(schema: &QslSchema) -> bool {
         QslType::Array(elem, _)
         | QslType::FixedArray(elem, _)
         | QslType::RangedArray { element: elem, .. } => {
-            elem.fixed_wire_size().ok().flatten().is_some()
+            (!schema.borrow_strings() || elem.fixed_wire_size().ok().flatten().is_some())
+                && custom_codec_leaves(elem)
+                    .iter()
+                    .all(|t| t.fixed_wire_size().ok().flatten().is_some())
         }
         QslType::Custom { .. } => true,
     })
 }
 
+fn emit_native_array_value(
+    t: &QslType,
+    out: &mut String,
+    name: &str,
+    compact: bool,
+) -> QslResult<()> {
+    if let QslType::FixedArray(e, n) = t {
+        let ty = qsl_lexer::layout::native_array_rust_type(e)?;
+        let child = format!("{name}_item");
+        if compact && is_bytes(e) {
+            ln(out, "reader.align();");
+        }
+        ln(
+            out,
+            format!("let {name}:[{ty};{n}]=std::array::from_fn(|_|{{"),
+        );
+        emit_native_array_value(e, out, &child, compact)?;
+        ln(out, format!("{child}}});"));
+        if compact {
+            ln(out, "reader.align();");
+        }
+        Ok(())
+    } else {
+        emit_unchecked_value(t, out, name, t.default_compact_bits()?, compact, false)
+    }
+}
 fn emit_stored_value(
     f: &QslField,
     out: &mut String,
@@ -1396,7 +1596,7 @@ fn emit_stored_value(
     compact: bool,
     borrowed: bool,
 ) -> QslResult<()> {
-    use crate::modernization::StorageKind;
+    use qsl_lexer::layout::StorageKind;
     if f.storage == StorageKind::NativeView {
         let QslType::Custom {
             rust_type,
@@ -1413,8 +1613,30 @@ fn emit_stored_value(
         return Ok(());
     }
 
+    if f.shifted_length {
+        if let QslType::InlineRawString { max, .. } | QslType::CompressedString { max, .. } = f.data
+        {
+            let ty = qsl_lexer::layout::field_rust_type(f, false)?;
+            let method = if matches!(f.data, QslType::InlineRawString { .. }) {
+                "decode_raw_from_with"
+            } else {
+                "decode_from_with"
+            };
+            ln(out,format!("reader.align();let ({name},used)=<{ty}>::{method}::<{}>(reader.as_ptr());reader.read_exact(used);",string_header_word(max)));
+            return Ok(());
+        }
+    }
     if f.storage == StorageKind::Default {
         return emit_unchecked_value(&f.data, out, name, width, compact, borrowed);
+    }
+    if let StorageKind::HeapInlineString(max) = f.storage {
+        let method = if matches!(f.data, QslType::InlineRawString { .. }) {
+            "decode_raw_boxed_from_with"
+        } else {
+            "decode_boxed_from_with"
+        };
+        ln(out,format!("reader.align();let ({name},used)=::qsl::InlineString::<{max}>::{method}::<{}>(reader.as_ptr()).expect(\"QSL heap allocation\");reader.read_exact(used);",string_header_word(max)));
+        return Ok(());
     }
     if f.storage == StorageKind::HeapString {
         match f.data{
@@ -1447,15 +1669,17 @@ fn emit_stored_value(
         }
     }
     match f.storage{
-  StorageKind::StackString(n)=>ln(out,format!("let __qsl_ptr=reader.read_exact(__qsl_len);let {name}=::qsl::StackString::<{n}>::try_from_str(std::str::from_utf8_unchecked(std::slice::from_raw_parts(__qsl_ptr,__qsl_len))).unwrap_unchecked();")),
+  StorageKind::StackString(n)=>ln(out,format!("let __qsl_ptr=reader.read_exact(__qsl_len);let {name}=::qsl::StackString::<{n},_>::try_from_str(std::str::from_utf8_unchecked(std::slice::from_raw_parts(__qsl_ptr,__qsl_len))).unwrap_unchecked();")),
   StorageKind::StrView=>ln(out,format!("let __qsl_ptr=reader.read_exact(__qsl_len);let {name}=std::str::from_utf8_unchecked(std::slice::from_raw_parts(__qsl_ptr,__qsl_len));")),
   StorageKind::StackArray(n)|StorageKind::FixedArray(n)=>{
    let e=match &f.data{QslType::FixedArray(e,_)|QslType::Array(e,_)|QslType::RangedArray{element:e,..}=>e.as_ref(),_=>return Err(QslError::InvalidSchema)};
-   let ty=e.rust_type(false)?;
-   if matches!(f.storage,StorageKind::FixedArray(_)){ln(out,format!("let {name}:[{ty};{n}]=std::array::from_fn(|_|{{"));emit_unchecked_value(e,out,"item",e.default_compact_bits()?,compact,false)?;ln(out,"item});");}
-   else{ln(out,format!("let mut {name}=::qsl::InlineArray::<{ty},{n}>::new();for _ in 0..__qsl_len{{"));emit_unchecked_value(e,out,"item",e.default_compact_bits()?,compact,false)?;ln(out,format!("{name}.push(item).unwrap_unchecked();}}"));}
+   let ty=qsl_lexer::layout::native_array_rust_type(e)?;
+   if compact && is_bytes(e){ln(out,"reader.align();");}
+   if matches!(f.storage,StorageKind::FixedArray(_)){ln(out,format!("let {name}:[{ty};{n}]=std::array::from_fn(|_|{{"));emit_native_array_value(e,out,"item",compact)?;ln(out,"item});");}
+   else{ln(out,format!("let mut {name}=::qsl::InlineArray::<{ty},{n},_>::new();for _ in 0..__qsl_len{{"));emit_unchecked_value(e,out,"item",e.default_compact_bits()?,compact,false)?;ln(out,format!("{name}.push(item).unwrap_unchecked();}}"));}
+   if compact{ln(out,"reader.align();");}
   }
-  StorageKind::HeapString|StorageKind::Default|StorageKind::NativeView=>unreachable!(),
+  StorageKind::HeapString|StorageKind::HeapInlineString(_)|StorageKind::Default|StorageKind::NativeView=>unreachable!(),
  }
     Ok(())
 }
@@ -1472,7 +1696,7 @@ fn emit_planned_stored(
     {
         return emit_stored_value(f, out, name, width, compact, borrowed);
     }
-    if f.storage == crate::modernization::StorageKind::Default {
+    if f.storage == qsl_lexer::layout::StorageKind::Default && !f.shifted_length {
         emit_planned_value(&f.data, out, name, width, compact, borrowed, aligned)
     } else {
         emit_stored_value(f, out, name, width, compact, borrowed)
@@ -1531,16 +1755,17 @@ fn emit_known_string(
     ln(out,format!("let length={length};let bytes=std::slice::from_raw_parts(reader.read_exact(length),length);"));
     let text = "std::str::from_utf8_unchecked(bytes)";
     let value = match f.storage {
-        crate::modernization::StorageKind::HeapString => {
+        qsl_lexer::layout::StorageKind::HeapString => {
             "String::from_utf8_unchecked(bytes.to_vec())".into()
         }
-        crate::modernization::StorageKind::StackString(n) => {
-            format!("::qsl::StackString::<{n}>::try_from_str({text}).unwrap_unchecked()")
+        qsl_lexer::layout::StorageKind::HeapInlineString(max)=>format!("::qsl::InlineString::<{max}>::try_boxed_from_str({text}).expect(\"QSL heap allocation\")"),
+        qsl_lexer::layout::StorageKind::StackString(n) => {
+            format!("::qsl::StackString::<{n},_>::try_from_str({text}).unwrap_unchecked()")
         }
-        crate::modernization::StorageKind::StrView => text.into(),
+        qsl_lexer::layout::StorageKind::StrView => text.into(),
         _ => match f.data {
             QslType::InlineRawString { max, .. } => {
-                format!("::qsl::InlineString::<{max}>::from_str_unchecked({text})")
+                format!("::qsl::InlineString::<{max},_>::from_str_unchecked({text})")
             }
             _ => {
                 if borrowed {
@@ -1562,7 +1787,28 @@ fn emit_unchecked_value(
     compact: bool,
     borrowed: bool,
 ) -> QslResult<()> {
+    if !compact && matches!(ty, QslType::BitPadding(_)) {
+        return Err(QslError::InvalidSchema);
+    }
     match ty {
+        QslType::DomainInteger(d) => {
+            if compact {
+                let rank = if width == 0 {
+                    "0u128".into()
+                } else if width <= 64 {
+                    format!("reader.read_bits({width})as u128")
+                } else {
+                    format!("reader.read_bits128({width})")
+                };
+                ln(
+                    out,
+                    format!("let {name}={};", numeric_codegen::decode(d, &rank)),
+                );
+            } else {
+                ln(out,format!("let {name}=<{}>::from_le(std::ptr::read_unaligned(reader.read_exact({}).cast::<{}>()));",d.primitive(),d.physical_bits()/8,d.primitive()));
+            }
+        }
+
         QslType::BorrowedString { min, .. } => {
             if compact {
                 ln(
@@ -1593,6 +1839,18 @@ fn emit_unchecked_value(
             ln(out, format!("reader.align(); let __qsl_used = ::qsl::decode_fixed_utf8::<{n}>(reader.as_ptr(), __qsl_array.as_mut_ptr().cast()); reader.read_exact(__qsl_used); let {name} = __qsl_array.assume_init();"));
         }
         QslType::None => ln(out, format!("let {name} = ();")),
+        QslType::BitPadding(n) => {
+            if *n >= 64 {
+                ln(
+                    out,
+                    format!("for _ in 0..{}{{reader.read_bits(64);}}", n / 64),
+                );
+            }
+            if !n.is_multiple_of(64) {
+                ln(out, format!("reader.read_bits({});", n % 64));
+            }
+            ln(out, format!("let {name}=();"));
+        }
         QslType::Padding(size) => {
             ln(out, format!("let _ = reader.read_exact({size});"));
             ln(out, format!("let {name} = ();"));
@@ -1653,16 +1911,20 @@ fn emit_unchecked_value(
                 ln(out,format!("let {name}=std::slice::from_raw_parts(reader.read_exact(__qsl_len),__qsl_len);"));
             } else {
                 let rust = element.rust_type(false)?;
+                let item = format!("{name}_item");
+                if compact && is_bytes(element) {
+                    ln(out, "reader.align();");
+                }
                 ln(out,format!("let mut {name}=Vec::<{rust}>::with_capacity(__qsl_len);for _ in 0..__qsl_len{{"));
                 emit_unchecked_value(
                     element,
                     out,
-                    "item",
+                    &item,
                     element.default_compact_bits()?,
                     compact,
                     false,
                 )?;
-                ln(out, format!("{name}.push(item);}}"));
+                ln(out, format!("{name}.push({item});}}"));
                 if compact {
                     ln(out, "reader.align();");
                 }
@@ -1673,16 +1935,20 @@ fn emit_unchecked_value(
                 ln(out,format!("let {name}=std::slice::from_raw_parts(reader.read_exact({exact}),{exact});"));
             } else {
                 let rust = element.rust_type(false)?;
+                let item = format!("{name}_item");
+                if compact && is_bytes(element) {
+                    ln(out, "reader.align();");
+                }
                 ln(out,format!("let mut {name}=Vec::<{rust}>::with_capacity({exact});for _ in 0..{exact}{{"));
                 emit_unchecked_value(
                     element,
                     out,
-                    "item",
+                    &item,
                     element.default_compact_bits()?,
                     compact,
                     false,
                 )?;
-                ln(out, format!("{name}.push(item);}}"));
+                ln(out, format!("{name}.push({item});}}"));
                 if compact {
                     ln(out, "reader.align();");
                 }
@@ -2170,12 +2436,32 @@ fn emit_fast_read(schema: &QslSchema, out: &mut String, plan: &QslIoPlan) -> Qsl
     if schema.sequential() {
         return emit_sequential_read(schema, out);
     }
+    // Keep the scalar reader: the generated PDEP candidate regressed in both
+    // Criterion orders. A faster writer does not authorize a symmetric reader.
     ln(out, "#[inline(always)]");
     ln(
         out,
         "unsafe fn __qsl_read_unchecked(bytes: *const u8) -> Self {",
     );
-    if fixed_flat_layout(schema) {
+    if let Some(p) = &plan.pointing {
+        ln(
+            out,
+            "#[cfg(all(target_pointer_width=\"64\",target_endian=\"little\"))] {",
+        );
+        native_codegen::pointing_read(out);
+        ln(out, "}");
+        ln(
+            out,
+            "#[cfg(not(all(target_pointer_width=\"64\",target_endian=\"little\")))] {",
+        );
+        if fixed_flat_layout(schema) {
+            emit_flat_read(schema, out)?;
+        } else {
+            emit_unchecked_dynamic_read(schema, out, plan)?;
+        }
+        ln(out, "}");
+        let _ = p;
+    } else if fixed_flat_layout(schema) {
         emit_flat_read(schema, out)?;
     } else if compact_flat_layout(schema) {
         emit_compact_flat_read(schema, out)?;
@@ -2188,7 +2474,7 @@ fn emit_fast_read(schema: &QslSchema, out: &mut String, plan: &QslIoPlan) -> Qsl
 
 fn emit_fast_header(schema: &QslSchema, out: &mut String) {
     if schema.bitmap() {
-        let p = crate::bitmap::BitmapPlan::new(schema.optional_count()).unwrap();
+        let p = qsl_core::bitmap::BitmapPlan::new(schema.optional_count()).unwrap();
         if p.width != 0 {
             let ty = p.rust_type();
             let mut expr = format!("0{ty}");
@@ -2248,6 +2534,9 @@ fn emit_fast_header(schema: &QslSchema, out: &mut String) {
 }
 
 fn emit_fast_write(schema: &QslSchema, out: &mut String, plan: &QslIoPlan) -> QslResult<()> {
+    if plan.fixed_bmi2_write {
+        ln(out, "#[allow(unreachable_code)]");
+    }
     ln(out, "#[inline(always)]");
     ln(
         out,
@@ -2257,7 +2546,54 @@ fn emit_fast_write(schema: &QslSchema, out: &mut String, plan: &QslIoPlan) -> Qs
             "unsafe fn __qsl_write_unchecked(&self,to:*mut u8) {"
         },
     );
-    if optional_codegen::applies(schema) {
+    if plan.fixed_bmi2_write {
+        ln(out,"#[cfg(all(target_arch=\"x86_64\",target_endian=\"little\",target_feature=\"bmi2\"))] {");
+        let values = schema
+            .fields
+            .iter()
+            .map(|f| format!("self.{}", f.name))
+            .collect::<Vec<_>>()
+            .join(",");
+        ln(out,format!("let values=[{values}];let packed=::qsl::optimizer::kernels::x86::pack4_bmi2::<12,12,12,12>(&values)as u64;std::ptr::write_unaligned(to.cast::<u32>(),packed as u32);std::ptr::write_unaligned(to.add(4).cast::<u16>(),(packed>>32)as u16);return;}}"));
+    }
+    if let Some(p) = &plan.pointing {
+        ln(
+            out,
+            "#[cfg(all(target_pointer_width=\"64\",target_endian=\"little\"))] {",
+        );
+        native_codegen::pointing_write(p, out);
+        if needs_written_length(schema) {
+            ln(out, format!("{}usize", p.wire_bytes));
+        }
+        ln(out, "}");
+        ln(
+            out,
+            "#[cfg(not(all(target_pointer_width=\"64\",target_endian=\"little\")))] {",
+        );
+        if fixed_flat_layout(schema) {
+            emit_flat_write(schema, out)?;
+        } else {
+            let mut scalar = schema.clone();
+            scalar.options.aggressive_pointing = false;
+            let fallback = QslIoPlan::analyze(&scalar)?;
+            ln(out, "let mut writer=::qsl::QslByteWriter::from_raw(to);");
+            for (i, f) in scalar.fields.iter().enumerate() {
+                emit_planned_stored_write(
+                    f,
+                    out,
+                    &format!("&self.{}", f.name),
+                    f.bits,
+                    false,
+                    fallback.aligned_ranks[i],
+                )?;
+            }
+            ln(out, "writer.flush_unchecked();");
+            if needs_written_length(schema) {
+                ln(out, format!("{}usize", p.wire_bytes));
+            }
+        }
+        ln(out, "}");
+    } else if optional_codegen::applies(schema) {
         optional_codegen::write(schema, out)?;
     } else if schema.state_bits() || schema.predict_table() {
         qps_codegen::write(schema, out)?;
@@ -2373,17 +2709,18 @@ fn direct_read_layout(schema: &QslSchema) -> bool {
     schema.fields.iter().all(|f| {
         !matches!(
             f.storage,
-            crate::modernization::StorageKind::HeapString
-                | crate::modernization::StorageKind::StrView
+            qsl_lexer::layout::StorageKind::HeapString
+                | qsl_lexer::layout::StorageKind::HeapInlineString(_)
+                | qsl_lexer::layout::StorageKind::StrView
         )
     }) && !schema.compact()
         && schema.optional_count() == 0
         && schema.fields.iter().any(|f| {
             matches!(
                 f.storage,
-                crate::modernization::StorageKind::StackString(_)
-                    | crate::modernization::StorageKind::StackArray(_)
-                    | crate::modernization::StorageKind::FixedArray(_)
+                qsl_lexer::layout::StorageKind::StackString(_)
+                    | qsl_lexer::layout::StorageKind::StackArray(_)
+                    | qsl_lexer::layout::StorageKind::FixedArray(_)
             ) || matches!(
                 f.data,
                 QslType::CompressedString { .. }
@@ -2407,21 +2744,37 @@ fn emit_direct_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     }
     for (i, f) in schema.fields.iter().enumerate() {
         let dest = format!("std::ptr::addr_of_mut!((*out).{})", f.name);
-        if let crate::modernization::StorageKind::StackString(n) = f.storage {
-            ln(out,format!("let length=reader.read_u32()as usize;::qsl::StackString::<{n}>::copy_into(reader.read_exact(length),length,{dest});"));
+        if let qsl_lexer::layout::StorageKind::StackString(n) = f.storage {
+            ln(out,format!("let length=reader.read_u32()as usize;::qsl::StackString::<{n},_>::copy_into(reader.read_exact(length),length,{dest});"));
             continue;
         }
-        if let crate::modernization::StorageKind::StackArray(n) = f.storage {
+        if let qsl_lexer::layout::StorageKind::StackArray(n) = f.storage {
             let element = match &f.data {
                 QslType::Array(e, _) | QslType::RangedArray { element: e, .. } => e,
                 _ => return Err(QslError::InvalidSchema),
             };
             let bytes = bytes_of(element)?;
             let ty = element.rust_type(false)?;
-            ln(out,format!("#[cfg(target_endian=\"little\")]{{let length=reader.read_u32()as usize;::qsl::InlineArray::<{ty},{n}>::copy_native_into(reader.read_exact(length*{bytes}),length,{dest});}}"));
+            ln(out,format!("#[cfg(target_endian=\"little\")]{{let length=reader.read_u32()as usize;::qsl::InlineArray::<{ty},{n},_>::copy_native_into(reader.read_exact(length*{bytes}),length,{dest});}}"));
             ln(out, "#[cfg(target_endian=\"big\")] {");
             emit_stored_value(f, out, &format!("field_{i}"), f.bits, false, false)?;
             ln(out, format!("{dest}.write(field_{i});}}"));
+            continue;
+        }
+        if f.shifted_length
+            && matches!(
+                f.data,
+                QslType::InlineRawString { .. } | QslType::CompressedString { .. }
+            )
+        {
+            let ty = qsl_lexer::layout::field_rust_type(f, false)?;
+            let max = qsl_lexer::layout::string_capacity(f).ok_or(QslError::InvalidSchema)?;
+            let method = if matches!(f.data, QslType::InlineRawString { .. }) {
+                "decode_raw_into_with"
+            } else {
+                "decode_into_with"
+            };
+            ln(out,format!("reader.align();let used=<{ty}>::{method}::<{}>(reader.as_ptr(),{dest});reader.read_exact(used);",string_header_word(max)));
             continue;
         }
         match f.data {
@@ -2456,23 +2809,9 @@ fn emit_direct_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
 }
 
 fn prepared_read_layout(schema: &QslSchema) -> bool {
-    schema
-        .fields
-        .iter()
-        .all(|f| f.storage == crate::modernization::StorageKind::Default)
-        && !schema.lifetime()
-        && schema.optional_count() == 0
-        && schema.fields.iter().any(|f| {
-            matches!(
-                f.data,
-                QslType::String(_)
-                    | QslType::RangedString { .. }
-                    | QslType::InlineRawString { .. }
-                    | QslType::CompressedString { .. }
-                    | QslType::FixedString(_)
-                    | QslType::FixedCompressedString(_)
-            )
-        })
+    !schema.lifetime()&&schema.optional_count()==0&&schema.options.dynamic.is_none()&&!schema.qps()
+    &&schema.fields.iter().any(|f|matches!(f.data,QslType::String(_)|QslType::RangedString{..}|QslType::InlineRawString{..}|QslType::CompressedString{..}|QslType::FixedString(_)|QslType::FixedCompressedString(_))
+        ||matches!(&f.data,QslType::Array(e,_)|QslType::RangedArray{element:e,..}|QslType::FixedArray(e,_) if e.primitive().ok().flatten().is_some()))
 }
 fn emit_prepared_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     let plan = QslIoPlan::analyze(schema)?;
@@ -2507,7 +2846,14 @@ fn emit_prepared_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
             );
             block_index = block;
         }
-        if matches!(
+        if let qsl_lexer::layout::StorageKind::HeapInlineString(max) = field.storage {
+            let decoder = if matches!(field.data, QslType::InlineRawString { .. }) {
+                "decode_raw_into_with"
+            } else {
+                "decode_into_with"
+            };
+            ln(out,format!("reader.align();let used=::qsl::InlineString::<{max}>::{decoder}::<{}>(reader.as_ptr(),output.{}.as_mut());reader.read_exact(used);",string_header_word(max),field.name));
+        } else if matches!(
             field.data,
             QslType::String(_) | QslType::RangedString { .. }
         ) {
@@ -2527,16 +2873,83 @@ fn emit_prepared_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
                 ln(out, "let __qsl_len=reader.read_u32() as usize;");
             }
             {
-                ln(out,format!("let target=output.{}.as_mut_vec(); debug_assert!(__qsl_len<=target.capacity()); std::ptr::copy_nonoverlapping(reader.read_exact(__qsl_len),target.as_mut_ptr(),__qsl_len); target.set_len(__qsl_len);",field.name));
+                if let qsl_lexer::layout::StorageKind::StackString(capacity) = field.storage {
+                    ln(out,format!("::qsl::StackString::<{capacity},_>::copy_into(reader.read_exact(__qsl_len),__qsl_len,std::ptr::addr_of_mut!(output.{}));",field.name));
+                } else {
+                    ln(out,format!("let target=output.{}.as_mut_vec(); debug_assert!(__qsl_len<=target.capacity()); std::ptr::copy_nonoverlapping(reader.read_exact(__qsl_len),target.as_mut_ptr(),__qsl_len); target.set_len(__qsl_len);",field.name));
+                }
             }
         } else if let QslType::InlineRawString { max, .. } = field.data {
-            ln(out,format!("reader.read_raw_inline_string_into_with::<{max},{}>(std::ptr::addr_of_mut!(output.{}));",string_header_word(max),field.name));
+            ln(out,format!("reader.align();let used=::qsl::InlineString::<{max},_>::decode_raw_into_with::<{}>(reader.as_ptr(),std::ptr::addr_of_mut!(output.{}));reader.read_exact(used);",string_header_word(max),field.name));
         } else if let QslType::CompressedString { max, .. } = field.data {
-            ln(out,format!("reader.read_inline_string_into_with::<{max},{}>(std::ptr::addr_of_mut!(output.{}));",string_header_word(max),field.name));
+            ln(out,format!("reader.align();let used=::qsl::InlineString::<{max},_>::decode_into_with::<{}>(reader.as_ptr(),std::ptr::addr_of_mut!(output.{}));reader.read_exact(used);",string_header_word(max),field.name));
         } else if let QslType::FixedString(n) = field.data {
-            ln(out,format!("std::ptr::copy_nonoverlapping(reader.read_exact({n}),std::ptr::addr_of_mut!(output.{}).cast::<u8>(),{n});",field.name));
+            if field.storage == qsl_lexer::layout::StorageKind::HeapString {
+                ln(out,format!("let target=output.{}.as_mut_vec();debug_assert!(target.capacity()>={n});std::ptr::copy_nonoverlapping(reader.read_exact({n}),target.as_mut_ptr(),{n});target.set_len({n});",field.name));
+            } else {
+                ln(out,format!("std::ptr::copy_nonoverlapping(reader.read_exact({n}),std::ptr::addr_of_mut!(output.{}).cast::<u8>(),{n});",field.name));
+            }
         } else if let QslType::FixedCompressedString(n) = field.data {
-            ln(out,format!("reader.align(); let used=::qsl::decode_fixed_utf8::<{n}>(reader.as_ptr(),std::ptr::addr_of_mut!(output.{}).cast::<u8>()); reader.read_exact(used);",field.name));
+            if field.storage == qsl_lexer::layout::StorageKind::HeapString {
+                ln(out,format!("reader.align();let target=output.{}.as_mut_vec();debug_assert!(target.capacity()>={n});let used=::qsl::decode_fixed_utf8::<{n}>(reader.as_ptr(),target.as_mut_ptr());reader.read_exact(used);target.set_len({n});",field.name));
+            } else {
+                ln(out,format!("reader.align(); let used=::qsl::decode_fixed_utf8::<{n}>(reader.as_ptr(),std::ptr::addr_of_mut!(output.{}).cast::<u8>()); reader.read_exact(used);",field.name));
+            }
+        } else if matches!(
+            field.storage,
+            qsl_lexer::layout::StorageKind::Default | qsl_lexer::layout::StorageKind::StackArray(_)
+        ) && matches!(&field.data,QslType::Array(e,_)|QslType::FixedArray(e,_)|QslType::RangedArray{element:e,..} if e.primitive()?.is_some())
+        {
+            let e = match &field.data {
+                QslType::Array(e, _)
+                | QslType::FixedArray(e, _)
+                | QslType::RangedArray { element: e, .. } => e.as_ref(),
+                _ => unreachable!(),
+            };
+            if let QslType::FixedArray(_, n) = field.data {
+                ln(out, format!("let __qsl_len={n}usize;"));
+            } else if schema.compact() {
+                let width = field.data.rank_width(field.bits)?;
+                let base = field.data.rank_base();
+                ln(
+                    out,
+                    format!("let __qsl_len=reader.read_bits({width})as usize+{base};"),
+                );
+            } else {
+                ln(out, "let __qsl_len=reader.read_u32()as usize;");
+            }
+            if schema.compact() && is_bytes(e) {
+                ln(out, "reader.align();");
+            }
+            let inline = matches!(field.storage, qsl_lexer::layout::StorageKind::StackArray(_));
+            ln(out,format!("let target=&mut output.{};debug_assert!(__qsl_len<=target.capacity());target.clear();",field.name));
+            if !inline && is_bytes(e) {
+                ln(out,"std::ptr::copy_nonoverlapping(reader.read_exact(__qsl_len),target.as_mut_ptr(),__qsl_len);target.set_len(__qsl_len);");
+            } else {
+                ln(out, "for __qsl_index in 0..__qsl_len{");
+                emit_unchecked_value(
+                    e,
+                    out,
+                    "__qsl_item",
+                    e.default_compact_bits()?,
+                    schema.compact(),
+                    false,
+                )?;
+                ln(
+                    out,
+                    if inline {
+                        "target.push(__qsl_item).unwrap_unchecked();}"
+                    } else {
+                        "target.as_mut_ptr().add(__qsl_index).write(__qsl_item);}"
+                    },
+                );
+                if !inline {
+                    ln(out, "target.set_len(__qsl_len);");
+                }
+            }
+            if schema.compact() {
+                ln(out, "reader.align();");
+            }
         } else {
             emit_planned_stored(
                 field,
@@ -2557,7 +2970,7 @@ fn emit_prepared_read(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     Ok(())
 }
 
-fn emit_trait(schema: &QslSchema, out: &mut String) -> QslResult<()> {
+fn emit_trait(schema: &QslSchema, out: &mut String, plan: &QslIoPlan) -> QslResult<()> {
     let borrowing = schema.lifetime();
     let size = minimum_size_expr(schema)?;
     let trait_name = if borrowing {
@@ -2619,7 +3032,9 @@ fn emit_trait(schema: &QslSchema, out: &mut String) -> QslResult<()> {
     if needs_written_length(schema) {
         ln(out,"#[inline(always)] unsafe fn serialize_into_unsafe(&self,to:*mut u8)->usize {self.__qsl_write_unchecked(to)}");
     }
-    if direct_read_layout(schema) {
+    if plan.pointing.is_some() {
+        ln(out,"unsafe fn deserialize_into(bytes:*const u8,_len:usize,out:*mut Self){Self::__qsl_pointing_read_into(bytes,out);}");
+    } else if direct_read_layout(schema) {
         let method = if borrowing {
             "deserialize_borrowed_into"
         } else {
@@ -2705,6 +3120,7 @@ impl QslInterpreter {
 
     /// Lower a shared analyzed module for Rust, leaving the input unchanged.
     pub fn generate_analyzed(&mut self, module: &crate::AnalyzedModule) -> QslResult<()> {
+        module.validate_declarations()?;
         let prepared =
             crate::frontend::prepare_expanded(module.schemas().to_vec(), module.config())?;
         self.generate_prepared(&prepared)
@@ -2720,14 +3136,27 @@ impl QslInterpreter {
             let generated_start = src.len();
             let schema = prepared.schema();
             let overlay = prepared.native_overlay();
-            if representation_codegen::applies(schema) {
+            if schema.options.dynamic.is_some() {
+                dynamic_codegen::generate(self, schema, &mut src)?;
+                let selected = crate::runtime_source::select_output(
+                    &src[generated_start..],
+                    schema,
+                    self.config,
+                )?;
+                let rewritten = apply_inline_policy(schema, &selected);
+                src.truncate(generated_start);
+                src.push_str(&rewritten);
+                continue;
+            }
+
+            if schema.options.aggressive_bitmap && schema.optional_count() != 0 {
+                presence_codegen::generate(self, schema, &mut src)?;
+            } else if representation_codegen::applies(schema) {
                 representation_codegen::generate(self, schema, &mut src)?;
             } else if let Some(plan) = crate::hybrid::HybridPlan::analyze(schema)? {
                 hybrid_codegen::generate(self, schema, &plan, &mut src)?;
-            } else if schema.lifetime() {
-                self.generate_lifetime_to(schema, &mut src)?;
             } else {
-                self.generate_default_to(schema, &mut src)?;
+                self.generate_impl_with_plan(schema, &mut src, &prepared.plan().io)?;
             }
             emit_qps_bytes(schema, &mut src)?;
             if overlay {
@@ -2745,11 +3174,13 @@ impl QslInterpreter {
             }
             emit_memory_contract(schema, overlay, &mut src)?;
             native_codegen::extra(schema, &mut src)?;
-            let rewritten = apply_inline_policy(schema, &src[generated_start..]);
+            let selected =
+                crate::runtime_source::select_output(&src[generated_start..], schema, self.config)?;
+            let rewritten = apply_inline_policy(schema, &selected);
             src.truncate(generated_start);
             src.push_str(&rewritten);
         }
-        self.output = indent_generated(&src).into_bytes();
+        self.output = indent_generated(&crate::runtime_source::lower(&src)?).into_bytes();
         Ok(())
     }
 
@@ -2781,15 +3212,17 @@ impl QslInterpreter {
         }
         let suffix = if schema.lifetime() { "<'a>" } else { "" };
         if schema.options.generated_region {
-            ln(out, "#[::qsl::schem_macro] #[derive(Clone,Copy)]");
+            ln(out, "#[derive(Clone,Copy)]");
         }
         ln(
             out,
             "#[repr(C)] #[allow(non_camel_case_types,non_snake_case)]",
         );
         ln(out, format!("pub struct {}{} {{", schema.name, suffix));
-        for f in &schema.fields {
-            let ty = crate::modernization::field_rust_type(f, schema.borrow_strings())?;
+        let physical = crate::optimizer::PhysicalPlan::analyze(schema)?;
+        for &index in &physical.order {
+            let f = &schema.fields[index];
+            let ty = qsl_lexer::layout::field_rust_type(f, schema.borrow_strings())?;
             if f.optional {
                 ln(out, format!("pub {}: Option<{ty}>,", f.name));
             } else {
@@ -2797,6 +3230,25 @@ impl QslInterpreter {
             }
         }
         ln(out, "}");
+        if let Some(bytes) = physical.bytes {
+            let object = if schema.lifetime() {
+                format!("{}<'static>", schema.name)
+            } else {
+                schema.name.clone()
+            };
+            ln(out,format!("const _:()={{assert!(cfg!(target_pointer_width=\"64\"),\"auto layout currently targets x86-64\");assert!(std::mem::size_of::<{object}>()=={bytes});"));
+            for (index, offset) in physical.offsets.iter().enumerate() {
+                ln(
+                    out,
+                    format!(
+                        "assert!(std::mem::offset_of!({object},{})=={offset});",
+                        schema.fields[index].name
+                    ),
+                );
+            }
+            ln(out, "};");
+            ln(out,format!("impl{suffix} {}{suffix}{{pub const PHYSICAL_FIELD_ORDER:&'static[usize]=&{:?};pub const PHYSICAL_BYTES:usize={bytes};}}",schema.name,physical.order));
+        }
         Ok(())
     }
 
@@ -2833,35 +3285,7 @@ impl QslInterpreter {
             } else if field.optional {
                 "None".into()
             } else {
-                match &field.data {
-                    QslType::RangedInteger { min, .. } => {
-                        let rust_ty = field.data.primitive()?.ok_or(QslError::InvalidSchema)?;
-                        format!("({min}i128 as {rust_ty})")
-                    }
-                    QslType::String(min) if schema.borrow_strings() && *min != 0 => {
-                        return Err(QslError::InvalidSchema)
-                    }
-                    QslType::String(min) => {
-                        format!("\" \".repeat({min})")
-                    }
-                    QslType::RangedString { min, .. } if schema.borrow_strings() && *min != 0 => {
-                        return Err(QslError::InvalidSchema)
-                    }
-                    QslType::RangedString { min, .. } => format!("\" \".repeat({min})"),
-                    QslType::FixedString(n) | QslType::FixedCompressedString(n) => {
-                        format!("[b' '; {n}]")
-                    }
-
-                    QslType::BorrowedString { min, .. } => {
-                        format!("\"{}\"", " ".repeat(*min))
-                    }
-
-                    QslType::InlineRawString { min, max }
-                    | QslType::CompressedString { min, max } => {
-                        format!("::qsl::InlineString::<{max}>::spaces::<{min}>()")
-                    }
-                    _ => "Default::default()".into(),
-                }
+                field_default(field, schema.borrow_strings())?
             };
             ln(out, format!("{}: {expr},", field.name));
         }
@@ -2871,6 +3295,15 @@ impl QslInterpreter {
     }
 
     fn generate_impl(&self, schema: &QslSchema, out: &mut String) -> QslResult<()> {
+        let plan = QslIoPlan::analyze(schema)?;
+        self.generate_impl_with_plan(schema, out, &plan)
+    }
+    fn generate_impl_with_plan(
+        &self,
+        schema: &QslSchema,
+        out: &mut String,
+        plan: &QslIoPlan,
+    ) -> QslResult<()> {
         self.emit_schema_hashes(schema, out)?;
         let generated_start = out.len();
         let quant = crate::payload_quant::PayloadQuantPlan::analyze(schema)?;
@@ -2892,7 +3325,7 @@ impl QslInterpreter {
             out.push_str(&generated);
             return Ok(());
         }
-        let plan = QslIoPlan::analyze(schema)?;
+
         let mut constant_names = std::collections::HashSet::new();
         for f in &schema.fields {
             if string_layout(&f.data).is_some()
@@ -3084,13 +3517,16 @@ impl QslInterpreter {
             let p = crate::static_index::PredictPlan::analyze(schema)?;
             ln(out,format!("pub const D_WORD_BYTES:usize=4;pub const D_USED_BITS:u32={};pub const Q_TABLE:usize={};",p.used_bits,p.quantum));
         }
-        validation_codegen::methods(schema, out)?;
+        if let Some(p) = &plan.pointing {
+            native_codegen::pointing_methods(schema, p, out)?;
+        }
+        validation_codegen::methods(schema, out, plan)?;
         if self.config.qsl_rt {
             qps_codegen::region_method(schema, out, self.config.qsl_rt_default)?;
         }
-        emit_fast_write(schema, out, &plan)?;
-        emit_fast_read(schema, out, &plan)?;
-        if direct_read_layout(schema) {
+        emit_fast_write(schema, out, plan)?;
+        emit_fast_read(schema, out, plan)?;
+        if direct_read_layout(schema) && plan.pointing.is_none() {
             emit_direct_read(schema, out)?;
         }
         if schema.compact() {
@@ -3099,15 +3535,8 @@ impl QslInterpreter {
             } else {
                 ln(out, "pub fn comp_size(&self) -> usize { <Self as ::qsl::Serializable>::serialized_size(self) }");
             }
-            ln(out, "pub fn comp_write(&self)->Vec<u8> {");
-            ln(out, "let mut out=Vec::with_capacity(self.comp_size());");
-            let trait_name = if schema.lifetime() {
-                "::qsl::BorrowSerializable<'a>"
-            } else {
-                "::qsl::Serializable"
-            };
-            ln(out,format!("let used=unsafe {{<Self as {trait_name}>::serialize_into_unsafe(self,out.as_mut_ptr())}};"));
-            ln(out, "unsafe {out.set_len(used);} out }");
+            ln(out, "/// Encode through checked validation. Panics on invalid values or an output error; use serialize_checked for a fallible API.");
+            ln(out, "pub fn comp_write(&self)->Vec<u8>{self.serialize_checked().expect(\"QSL compact encoding failed\")}");
             ln(out, "/// # Safety\n/// Input must be a complete valid record for this schema, with valid UTF-8 and ranges.");
             if schema.lifetime() {
                 ln(out, "pub unsafe fn comp_read(input: &'a [u8]) -> Self {");
@@ -3122,7 +3551,7 @@ impl QslInterpreter {
             ln(out, "}");
         }
         ln(out, "}");
-        emit_trait(schema, out)?;
+        emit_trait(schema, out, plan)?;
         let hint = if schema.flags & crate::FLAG_INLINE_ALWAYS != 0 {
             "#[inline(always)]"
         } else if schema.flags & crate::FLAG_INLINE_NEVER != 0 {
@@ -3174,13 +3603,6 @@ impl QslInterpreter {
         Ok(())
     }
 
-    fn generate_default_to(&self, schema: &QslSchema, out: &mut String) -> QslResult<()> {
-        self.generate_impl(schema, out)
-    }
-    fn generate_lifetime_to(&self, schema: &QslSchema, out: &mut String) -> QslResult<()> {
-        // BorrowSerializable<'a> preserves the backing input memory's lifetime.
-        self.generate_impl(schema, out)
-    }
     pub fn generate_default(&mut self, schema: &QslSchema) -> QslResult<()> {
         let mut generator = Self::new();
         generator.config = self.config;
@@ -3328,11 +3750,9 @@ fn emit_memory_contract(s: &QslSchema, overlay: bool, out: &mut String) -> QslRe
     ln(out,format!("impl{lt} {name}{lt}{{pub const NATIVE_BYTES:usize=std::mem::size_of::<Self>();pub const NATIVE_ALIGNMENT:usize=std::mem::align_of::<Self>();pub const WIRE_MAX_BYTES:Option<usize>={maximum};"));
     if s.options.loyal_cache || s.options.cache_limit.is_some() {
         let bound = max.ok_or(QslError::InvalidSchema)?;
-        let cache = s.options.cache_limit.unwrap_or(bound);
-        if cache < bound {
-            return Err(QslError::InvalidSchema);
-        }
-        ln(out,format!("pub const CACHE_BYTES:usize={cache};pub fn serialize_cached<'out,const N:usize>(&self,out:&'out mut ::qsl::modernization::CachedFrame<N>)->::qsl::QslResult<&'out[u8]>{{const{{assert!(N>={bound},\"cache capacity is smaller than the proven schema bound\");}}self.validate_values()?;let len=unsafe{{<Self as {}>::serialize_into_unsafe(self,out.as_mut_ptr())}};if {bound}usize>Self::MAX_DATA_SIZE{{::qsl::validation::check_size(len,Self::MAX_DATA_SIZE)?;}}unsafe{{out.set_len(len);}}Ok(out.as_slice())}}",if s.lifetime(){"::qsl::BorrowSerializable<'a>"}else{"::qsl::Serializable"}));
+        // cache_limit bounds native inline storage; the frame has its own proven bound.
+        let cache = bound;
+        ln(out,format!("pub const CACHE_BYTES:usize={cache};pub fn serialize_cached<'out,const N:usize>(&self,out:&'out mut ::qsl::storage::CachedFrame<N>)->::qsl::QslResult<&'out[u8]>{{const{{assert!(N>={bound},\"cache capacity is smaller than the proven schema bound\");}}self.validate_values()?;let len=unsafe{{<Self as {}>::serialize_into_unsafe(self,out.as_mut_ptr())}};if {bound}usize>Self::MAX_DATA_SIZE{{::qsl::validation::check_size(len,Self::MAX_DATA_SIZE)?;}}unsafe{{out.set_len(len);}}Ok(out.as_slice())}}",if s.lifetime(){"::qsl::BorrowSerializable<'a>"}else{"::qsl::Serializable"}));
     }
     for (region_index, region) in s.options.regions.iter().enumerate() {
         let fields = s
@@ -3360,11 +3780,11 @@ fn emit_memory_contract(s: &QslSchema, overlay: bool, out: &mut String) -> QslRe
         for f in fields {
             let n = f.data.fixed_wire_size()?.ok_or(QslError::InvalidSchema)?;
             if !matches!(f.data, QslType::Padding(_) | QslType::None) {
-                let ty = crate::modernization::field_rust_type(f, s.borrow_strings())?;
+                let ty = qsl_lexer::layout::field_rust_type(f, s.borrow_strings())?;
                 let layout = if let QslType::FixedString(n) = f.data {
-                    format!("::qsl::modernization::NativeLayout::leaf({n},200,{n})")
+                    format!("::qsl::storage::NativeLayout::leaf({n},200,{n})")
                 } else {
-                    format!("<{ty} as ::qsl::modernization::NativeField>::NATIVE_LAYOUT")
+                    format!("<{ty} as ::qsl::storage::NativeField>::NATIVE_LAYOUT")
                 };
                 layouts.push(format!(
                     "(std::mem::offset_of!(Self,{})-std::mem::offset_of!(Self,{first}),{layout})",
@@ -3375,15 +3795,14 @@ fn emit_memory_contract(s: &QslSchema, overlay: bool, out: &mut String) -> QslRe
             wire_bytes += n;
         }
         let expected = format!(
-            "::qsl::modernization::NativeLayout::fields(&[{}])",
+            "::qsl::storage::NativeLayout::fields(&[{}])",
             layouts.join(",")
         );
         let expected_wire = format!(
-            "::qsl::modernization::NativeLayout::fields(&[{}])",
+            "::qsl::storage::NativeLayout::fields(&[{}])",
             wire_layouts.join(",")
         );
-        let native_layout =
-            format!("<{native} as ::qsl::modernization::NativeField>::NATIVE_LAYOUT");
+        let native_layout = format!("<{native} as ::qsl::storage::NativeField>::NATIVE_LAYOUT");
         // A native target's trailing padding must not cover a neighboring field,
         // especially one with interior mutability outside this region.
         let region_boundary = s.fields[region.end..]
@@ -3402,20 +3821,20 @@ fn emit_memory_contract(s: &QslSchema, overlay: bool, out: &mut String) -> QslRe
         ln(out,format!("/// # Safety\n/// REGION_{region_index}_VIEW_COMPATIBLE must be true. The source must be aligned for {native}, its leaves must form a valid {native}, and storage must remain immutable for the borrow. No validation is performed.\npub unsafe fn region_{region_index}_view_unchecked(&self)->&{native}{{&*std::ptr::addr_of!(self.{first}).cast::<{native}>()}}"));
         ln(out,format!("/// # Safety\n/// REGION_{region_index}_WIRE_COPY_COMPATIBLE must be true. Input must contain the complete {wire_bytes}-byte region in wire layout, with valid schema and {native} values. Pass region bytes, not the parent frame. No validation is performed.\npub unsafe fn deserialize_region_{region_index}_copy_unchecked(input:&[u8])->{native}{{let source_layout={expected_wire};let target_layout={native_layout};let mut out=std::mem::MaybeUninit::<{native}>::uninit();for i in 0..source_layout.count{{let a=source_layout.fields.get_unchecked(i);let b=target_layout.fields.get_unchecked(i);std::ptr::copy_nonoverlapping(input.as_ptr().add(a.offset),out.as_mut_ptr().cast::<u8>().add(b.offset),a.bytes);}}out.assume_init()}}"));
         ln(out,format!("/// # Safety\n/// REGION_{region_index}_WIRE_VIEW_COMPATIBLE must be true. Input must contain the complete {wire_bytes}-byte region, be aligned for {native}, and hold valid schema and {native} values. Storage must remain immutable for the borrow. No validation is performed.\npub unsafe fn deserialize_region_{region_index}_view_unchecked(input:&[u8])->&{native}{{&*input.as_ptr().cast::<{native}>()}}"));
-        let check=format!("if !{expected}.compatible(&{native_layout}){{return Err(::qsl::QslError::InvalidSchema)}}let start=std::mem::offset_of!(Self,{first});if start.checked_add(std::mem::size_of::<{native}>()).is_none_or(|n|n>std::mem::size_of::<Self>()||n>{region_boundary}){{return Err(::qsl::QslError::BufferTooSmall)}}let source=std::ptr::addr_of!(self.{first}).cast::<u8>();unsafe{{<{native} as ::qsl::modernization::NativeField>::validate_native_fields(source)?;}}");
-        ln(out,format!("pub fn region_{region_index}_copy(&self)->::qsl::QslResult<{native}>{{let source_layout={expected};let target_layout={native_layout};if !source_layout.same_fields(&target_layout){{return Err(::qsl::QslError::InvalidSchema)}}let mut out=std::mem::MaybeUninit::<{native}>::uninit();let source=std::ptr::addr_of!(self.{first}).cast::<u8>();unsafe{{for i in 0..source_layout.count{{let a=source_layout.fields[i];let b=target_layout.fields[i];std::ptr::copy_nonoverlapping(source.add(a.offset),out.as_mut_ptr().cast::<u8>().add(b.offset),a.bytes);}}<{native} as ::qsl::modernization::NativeField>::validate_native_fields(out.as_ptr().cast())?;Ok(out.assume_init())}}}}"));
+        let check=format!("if !{expected}.compatible(&{native_layout}){{return Err(::qsl::QslError::InvalidSchema)}}let start=std::mem::offset_of!(Self,{first});if start.checked_add(std::mem::size_of::<{native}>()).is_none_or(|n|n>std::mem::size_of::<Self>()||n>{region_boundary}){{return Err(::qsl::QslError::BufferTooSmall)}}let source=std::ptr::addr_of!(self.{first}).cast::<u8>();unsafe{{<{native} as ::qsl::storage::NativeField>::validate_native_fields(source)?;}}");
+        ln(out,format!("pub fn region_{region_index}_copy(&self)->::qsl::QslResult<{native}>{{let source_layout={expected};let target_layout={native_layout};if !source_layout.same_fields(&target_layout){{return Err(::qsl::QslError::InvalidSchema)}}let mut out=std::mem::MaybeUninit::<{native}>::uninit();let source=std::ptr::addr_of!(self.{first}).cast::<u8>();unsafe{{for i in 0..source_layout.count{{let a=source_layout.fields[i];let b=target_layout.fields[i];std::ptr::copy_nonoverlapping(source.add(a.offset),out.as_mut_ptr().cast::<u8>().add(b.offset),a.bytes);}}<{native} as ::qsl::storage::NativeField>::validate_native_fields(out.as_ptr().cast())?;Ok(out.assume_init())}}}}"));
         ln(out,format!("pub fn region_{region_index}_view(&self)->::qsl::QslResult<&{native}>{{{check}if source.align_offset(std::mem::align_of::<{native}>())!=0{{return Err(::qsl::QslError::InvalidValue)}}Ok(unsafe{{&*source.cast::<{native}>()}})}}"));
         if s.flags & crate::FLAG_SAFETY != 0 {
             ln(out,format!("pub fn deserialize_region_{region_index}_copy(input:&[u8])->::qsl::QslResult<{native}>{{if !cfg!(target_endian=\"little\"){{return Err(::qsl::QslError::InvalidSchema)}}if input.len()!={wire_bytes}{{return Err(::qsl::QslError::InvalidValue)}}let source_layout={expected_wire};let target_layout={native_layout};if !source_layout.same_fields(&target_layout){{return Err(::qsl::QslError::InvalidSchema)}}let mut out=std::mem::MaybeUninit::<{native}>::uninit();let mut c=::qsl::validation::ValidationCursor::with_limit(input,Self::MAX_DATA_SIZE)?;"));
             for f in fields {
                 validation_codegen::field(&f.data, out, f.bits, false)?;
             }
-            ln(out,format!("c.finish()?;unsafe{{for i in 0..source_layout.count{{let a=source_layout.fields[i];let b=target_layout.fields[i];std::ptr::copy_nonoverlapping(input.as_ptr().add(a.offset),out.as_mut_ptr().cast::<u8>().add(b.offset),a.bytes);}}<{native} as ::qsl::modernization::NativeField>::validate_native_fields(out.as_ptr().cast())?;Ok(out.assume_init())}}}}"));
+            ln(out,format!("c.finish()?;unsafe{{for i in 0..source_layout.count{{let a=source_layout.fields[i];let b=target_layout.fields[i];std::ptr::copy_nonoverlapping(input.as_ptr().add(a.offset),out.as_mut_ptr().cast::<u8>().add(b.offset),a.bytes);}}<{native} as ::qsl::storage::NativeField>::validate_native_fields(out.as_ptr().cast())?;Ok(out.assume_init())}}}}"));
             ln(out,format!("pub fn deserialize_region_{region_index}_view(input:&[u8])->::qsl::QslResult<&{native}>{{if !cfg!(target_endian=\"little\"){{return Err(::qsl::QslError::InvalidSchema)}}if input.len()!={wire_bytes}||input.len()!=std::mem::size_of::<{native}>(){{return Err(::qsl::QslError::InvalidValue)}}if !{expected_wire}.compatible(&{native_layout}){{return Err(::qsl::QslError::InvalidSchema)}}if input.as_ptr().align_offset(std::mem::align_of::<{native}>())!=0{{return Err(::qsl::QslError::InvalidValue)}}let mut c=::qsl::validation::ValidationCursor::with_limit(input,Self::MAX_DATA_SIZE)?;"));
             for f in fields {
                 validation_codegen::field(&f.data, out, f.bits, false)?;
             }
-            ln(out,format!("c.finish()?;<{native} as ::qsl::modernization::NativeField>::validate_native(input)?;Ok(unsafe{{&*input.as_ptr().cast::<{native}>()}})}}"));
+            ln(out,format!("c.finish()?;<{native} as ::qsl::storage::NativeField>::validate_native(input)?;Ok(unsafe{{&*input.as_ptr().cast::<{native}>()}})}}"));
         }
     }
     if s.options.transmutate {
@@ -3474,15 +3893,6 @@ fn emit_qps_bytes(s: &QslSchema, out: &mut String) -> QslResult<()> {
     if s.flags & crate::FLAG_SAFETY == 0 {
         return Ok(());
     }
-    if s.fields.iter().any(|f| {
-        string_layout(&f.data).is_some()
-            || matches!(
-                f.data,
-                QslType::Array(..) | QslType::RangedArray { .. } | QslType::FixedArray(..)
-            )
-    }) {
-        return Ok(());
-    }
     let name = &s.name;
     if s.lifetime() {
         ln(out,format!("unsafe impl<'a> ::qsl::qps_bytes::CheckedBorrowedRecord<'a> for {name}<'a> {{const MAX_DATA_SIZE:usize=Self::MAX_DATA_SIZE;fn qps_validate_values(&self)->::qsl::QslResult<()>{{self.validate_values()}}fn qps_validate_wire(input:&[u8])->::qsl::QslResult<()>{{Self::validate(input)}}}}"));
@@ -3527,6 +3937,7 @@ mod tests {
 
     fn field(name: &str, optional: bool, tag: usize, bits: usize, data: QslType) -> QslField {
         QslField {
+            shifted_length: false,
             storage: Default::default(),
             name: name.to_owned(),
             optional,
@@ -3571,7 +3982,7 @@ mod tests {
                 .unwrap()
                 .remove(0);
             let mut generator = QslInterpreter::new();
-            generator.config.stack_limit = 32768;
+            generator.config.stack_limit = 32772; // Payload plus the physical u32 length word.
             generator.generate(&[schema]).unwrap();
             let src = String::from_utf8(generator.output).unwrap();
             assert!(src.contains(&format!("write_inline_string_with::<{max},{word}>")));
@@ -3617,7 +4028,7 @@ mod tests {
         assert!(src.contains("pub name: Option<&'a str>"));
         assert!(src.contains("BorrowSerializable<'a>"));
         assert!(src.contains(
-            "std::str::from_utf8_unchecked(std::slice::from_raw_parts(__qsl_ptr, __qsl_len))"
+            "core::str::from_utf8_unchecked(core::slice::from_raw_parts(__qsl_ptr, __qsl_len))"
         ));
         assert!(!src.contains("String::from_utf8"));
     }
@@ -3741,6 +4152,7 @@ mod tests {
             name: "OptDefault".into(),
             max_tag: 1,
             fields: vec![QslField {
+                shifted_length: false,
                 storage: Default::default(),
                 name: "x".into(),
                 optional: true,

@@ -1,8 +1,8 @@
 //! Exact payload operands and typed padded regions. Q_value and Q_table are
 //! independent: quotient and remainder are both retained, never rounded away.
-pub use crate::schema_payload_quant::{PayloadQuantPlan, QuantField};
-use crate::{QslError, QslResult, SerOut, Serializable};
-use std::marker::PhantomData;
+
+/// Scalar wire revision, independent of the byte-envelope revision.
+pub const QPS_CODEC_REVISION: u32 = 2;
 
 /// An optimizer boundary, not a CPU fence. Keep the selected scalar address
 /// opaque so LLVM cannot turn a safe load selection back into conditional I/O.
@@ -12,11 +12,11 @@ use std::marker::PhantomData;
 pub fn selected_address<T>(mut value: *const T) -> *const T {
     #[cfg(target_arch = "x86_64")]
     unsafe {
-        std::arch::asm!("/* {0} */",inout(reg) value,options(nomem,nostack,preserves_flags));
+        core::arch::asm!("/* {0} */",inout(reg) value,options(nomem,nostack,preserves_flags));
     }
     #[cfg(not(target_arch = "x86_64"))]
     {
-        value = std::hint::black_box(value);
+        value = core::hint::black_box(value);
     }
     value
 }
@@ -27,14 +27,21 @@ pub fn selected_address<T>(mut value: *const T) -> *const T {
 pub fn scalar_operand(mut value: u64) -> u64 {
     #[cfg(target_arch = "x86_64")]
     unsafe {
-        std::arch::asm!("/* {0} */",inout(reg) value,options(nomem,nostack,preserves_flags));
+        core::arch::asm!("/* {0} */",inout(reg) value,options(nomem,nostack,preserves_flags));
     }
     #[cfg(not(target_arch = "x86_64"))]
     {
-        value = std::hint::black_box(value);
+        value = core::hint::black_box(value);
     }
     value
 }
+
+#[cfg(feature = "alloc")]
+use crate::SerOut;
+use crate::{FrameStorage, QslError, QslResult, Serializable};
+#[cfg(feature = "alloc")]
+use alloc::boxed::Box;
+use core::marker::PhantomData;
 
 /// # Safety
 /// The implementation writes only initialized scalar fields, inverts its exact
@@ -91,12 +98,13 @@ impl<T: QuantizedRecord> QuantizedFrame<'_, T> {
     pub fn as_slice(&self) -> &[u8] {
         &self.storage[..self.len]
     }
-    pub fn decode_into<'out>(&self, out: &'out mut std::mem::MaybeUninit<T>) -> &'out mut T {
+    pub fn decode_into<'out>(&self, out: &'out mut core::mem::MaybeUninit<T>) -> &'out mut T {
         unsafe {
             T::quant_read_padded(self.storage.as_ptr(), self.len, out.as_mut_ptr());
             out.assume_init_mut()
         }
     }
+    #[cfg(feature = "alloc")]
     pub fn decode_boxed(&self) -> Box<T> {
         let mut out = Box::<T>::new_uninit();
         unsafe {
@@ -106,82 +114,87 @@ impl<T: QuantizedRecord> QuantizedFrame<'_, T> {
     }
 }
 
-pub struct QuantizedOut<T: QuantizedRecord> {
-    storage: SerOut,
-    len: usize,
-    marker: PhantomData<fn() -> T>,
-}
-impl<T: QuantizedRecord> QuantizedOut<T> {
-    pub fn encode(value: &T) -> QslResult<Self> {
-        value.quant_validate_values()?;
-        let expected = value.serialized_size();
-        crate::validation::check_size(expected, T::MAX_DATA_SIZE)?;
-        let cap = expected
-            .checked_add(T::PADDING_BYTES)
-            .ok_or(QslError::LengthOverflow)?;
-        let mut storage = SerOut::new(cap);
-        let len = unsafe { value.quant_write_prepared(storage.as_mut_ptr()) };
-        debug_assert_eq!(len, expected);
-        Ok(Self {
-            storage,
-            len,
-            marker: PhantomData,
-        })
+#[cfg(feature = "alloc")]
+mod owned {
+    use super::*;
+    pub struct QuantizedOut<T: QuantizedRecord> {
+        storage: SerOut,
+        len: usize,
+        marker: PhantomData<fn() -> T>,
     }
-    pub fn as_slice(&self) -> &[u8] {
-        &self.storage[..self.len]
+    impl<T: QuantizedRecord> QuantizedOut<T> {
+        pub fn encode(value: &T) -> QslResult<Self> {
+            value.quant_validate_values()?;
+            let expected = value.serialized_size();
+            crate::validation::check_size(expected, T::MAX_DATA_SIZE)?;
+            let cap = expected
+                .checked_add(T::PADDING_BYTES)
+                .ok_or(QslError::LengthOverflow)?;
+            let mut storage = SerOut::new(cap);
+            let len = unsafe { value.quant_write_prepared(storage.as_mut_ptr()) };
+            debug_assert_eq!(len, expected);
+            Ok(Self {
+                storage,
+                len,
+                marker: PhantomData,
+            })
+        }
+        pub fn as_slice(&self) -> &[u8] {
+            &self.storage[..self.len]
+        }
+        pub fn frame(&self) -> QuantizedFrame<'_, T> {
+            QuantizedFrame {
+                storage: &self.storage[..self.len + T::PADDING_BYTES],
+                len: self.len,
+                marker: PhantomData,
+            }
+        }
     }
-    pub fn frame(&self) -> QuantizedFrame<'_, T> {
-        QuantizedFrame {
-            storage: &self.storage[..self.len + T::PADDING_BYTES],
-            len: self.len,
-            marker: PhantomData,
+    impl<T: QuantizedRecord> core::ops::Deref for QuantizedOut<T> {
+        type Target = [u8];
+        fn deref(&self) -> &[u8] {
+            self.as_slice()
+        }
+    }
+    impl<T: QuantizedRecord> AsRef<[u8]> for QuantizedOut<T> {
+        fn as_ref(&self) -> &[u8] {
+            self.as_slice()
         }
     }
 }
-impl<T: QuantizedRecord> std::ops::Deref for QuantizedOut<T> {
-    type Target = [u8];
-    fn deref(&self) -> &[u8] {
-        self.as_slice()
-    }
-}
-impl<T: QuantizedRecord> AsRef<[u8]> for QuantizedOut<T> {
-    fn as_ref(&self) -> &[u8] {
-        self.as_slice()
-    }
-}
+#[cfg(feature = "alloc")]
+pub use owned::QuantizedOut;
 
-pub struct QuantizedRegions<T: QuantizedRecord, const CAP: usize, const N: usize> {
-    pool: crate::rt::StaticRegions<CAP, N>,
+pub struct QuantizedRegions<T: QuantizedRecord, P: crate::buffer::PreparedFramePool> {
+    pool: P,
     marker: PhantomData<fn() -> T>,
 }
-impl<T: QuantizedRecord, const CAP: usize, const N: usize> Default for QuantizedRegions<T, CAP, N> {
+impl<T: QuantizedRecord, P: crate::buffer::PreparedFramePool> Default for QuantizedRegions<T, P> {
     fn default() -> Self {
         Self::new()
     }
 }
-impl<T: QuantizedRecord, const CAP: usize, const N: usize> QuantizedRegions<T, CAP, N> {
+impl<T: QuantizedRecord, P: crate::buffer::PreparedFramePool> QuantizedRegions<T, P> {
     pub const fn new() -> Self {
         Self {
-            pool: crate::rt::StaticRegions::new_zeroed(),
+            pool: P::ZEROED,
             marker: PhantomData,
         }
     }
-    pub fn encode(&'static self, value: &T) -> QslResult<QuantizedLease<T, CAP, N>> {
+    pub fn encode<'a>(&'a self, value: &T) -> QslResult<QuantizedLease<T, P::Lease<'a>>> {
         value.quant_validate_values()?;
-        crate::validation::check_size(value.serialized_size(), T::MAX_DATA_SIZE)?;
-        if value
-            .serialized_size()
+        let expected = value.serialized_size();
+        crate::validation::check_size(expected, T::MAX_DATA_SIZE)?;
+        let end = expected
             .checked_add(T::PADDING_BYTES)
-            .is_none_or(|n| n > CAP)
-        {
+            .ok_or(QslError::LengthOverflow)?;
+        let mut storage = self.pool.try_acquire()?;
+        if end > storage.capacity() {
             return Err(QslError::BufferTooSmall);
         }
-        let mut storage = self.pool.acquire();
-        let len = unsafe { value.quant_write_prepared(storage.as_mut_ptr()) };
-        unsafe {
-            storage.set_len(len + T::PADDING_BYTES);
-        }
+        let len = unsafe { value.quant_write_prepared(storage.writable_ptr()) };
+        debug_assert_eq!(len, expected);
+        unsafe { storage.set_initialized_len(len + T::PADDING_BYTES) };
         Ok(QuantizedLease {
             storage,
             len,
@@ -189,39 +202,58 @@ impl<T: QuantizedRecord, const CAP: usize, const N: usize> QuantizedRegions<T, C
         })
     }
 }
-pub struct QuantizedLease<T: QuantizedRecord, const CAP: usize, const N: usize> {
-    storage: crate::rt::RegionLease<CAP, N>,
+pub struct QuantizedLease<T: QuantizedRecord, B: FrameStorage> {
+    storage: B,
     len: usize,
     marker: PhantomData<fn() -> T>,
 }
-impl<T: QuantizedRecord, const CAP: usize, const N: usize> QuantizedLease<T, CAP, N> {
+impl<T: QuantizedRecord, B: FrameStorage> QuantizedLease<T, B> {
     pub fn as_slice(&self) -> &[u8] {
-        &self.storage[..self.len]
+        &self.storage.as_bytes()[..self.len]
     }
     pub fn frame(&self) -> QuantizedFrame<'_, T> {
         QuantizedFrame {
-            storage: &self.storage,
+            storage: self.storage.as_bytes(),
             len: self.len,
             marker: PhantomData,
         }
     }
 }
-impl<T: QuantizedRecord, const CAP: usize, const N: usize> std::ops::Deref
-    for QuantizedLease<T, CAP, N>
-{
+impl<T: QuantizedRecord, B: FrameStorage> core::ops::Deref for QuantizedLease<T, B> {
     type Target = [u8];
     fn deref(&self) -> &[u8] {
         self.as_slice()
     }
 }
-impl<T: QuantizedRecord, const CAP: usize, const N: usize> AsRef<[u8]>
-    for QuantizedLease<T, CAP, N>
-{
+impl<T: QuantizedRecord, B: FrameStorage> AsRef<[u8]> for QuantizedLease<T, B> {
     fn as_ref(&self) -> &[u8] {
         self.as_slice()
     }
 }
 
+impl<T: QuantizedRecord, B: crate::OutputBuffer> QuantizedLease<T, B> {
+    pub fn encode_owned(value: &T) -> QslResult<Self> {
+        value.quant_validate_values()?;
+        let len = value.serialized_size();
+        crate::validation::check_size(len, T::MAX_DATA_SIZE)?;
+        let capacity = len
+            .checked_add(T::PADDING_BYTES)
+            .ok_or(QslError::LengthOverflow)?;
+        let mut storage = B::try_with_capacity(capacity)?;
+        unsafe {
+            let pointer = storage.writable_ptr();
+            pointer.write_bytes(0, capacity);
+            let written = value.quant_write_prepared(pointer);
+            debug_assert_eq!(written, len);
+            storage.set_initialized_len(len + T::PADDING_BYTES);
+        }
+        Ok(Self {
+            storage,
+            len,
+            marker: PhantomData,
+        })
+    }
+}
 pub trait QuantizedDestination<T: QuantizedRecord> {
     /// # Safety
     /// Input has len+T::PADDING_BYTES readable, initialized bytes. Raw destinations

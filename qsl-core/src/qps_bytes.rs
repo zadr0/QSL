@@ -2,7 +2,23 @@
 //! Q selects 2/4/8/16 byte lanes. Each block is one radix-2^B operand;
 //! the shared minimum and all exact ranks are retained. Length is never quantized.
 use crate::{BorrowSerializable, QslError, QslResult, Serializable};
-use std::mem::MaybeUninit;
+use core::mem::MaybeUninit;
+#[cfg(target_arch = "x86_64")]
+fn has_bmi2() -> bool {
+    use core::sync::atomic::{AtomicU8, Ordering};
+    static DETECTED: AtomicU8 = AtomicU8::new(0);
+    let cached = DETECTED.load(Ordering::Relaxed);
+    if cached != 0 {
+        return cached == 2;
+    }
+    // CPUID is available on x86-64; check the maximum basic leaf first.
+    let supported = {
+        core::arch::x86_64::__cpuid(0).eax >= 7
+            && (core::arch::x86_64::__cpuid_count(7, 0).ebx & (1 << 8)) != 0
+    };
+    DETECTED.store(if supported { 2 } else { 1 }, Ordering::Relaxed);
+    supported
+}
 
 pub const BYTE_FRAME_HEADER: usize = 16;
 pub const BYTE_QPS_CODEC_REVISION: u32 = 3;
@@ -157,10 +173,10 @@ unsafe fn unpack_portable<const Q: usize, const B: usize>(
 #[target_feature(enable = "bmi2")]
 unsafe fn pack_bmi2<const Q: usize, const B: usize>(r: u128, out: *mut u8) {
     let mask = lanes::<Q>() * ((1u128 << B) - 1);
-    let mut w = std::arch::x86_64::_pext_u64(r as u64, mask as u64) as u128;
+    let mut w = core::arch::x86_64::_pext_u64(r as u64, mask as u64) as u128;
     if Q == 16 {
-        w |=
-            (std::arch::x86_64::_pext_u64((r >> 64) as u64, (mask >> 64) as u64) as u128) << (8 * B)
+        w |= (core::arch::x86_64::_pext_u64((r >> 64) as u64, (mask >> 64) as u64) as u128)
+            << (8 * B)
     }
     unsafe { write_packed::<Q, B>(w, out) }
 }
@@ -173,16 +189,16 @@ unsafe fn unpack_bmi2<const Q: usize, const B: usize>(
 ) -> u8 {
     let w = unsafe { read_packed::<Q, B>(input) };
     let mask = lanes::<Q>() * ((1u128 << B) - 1);
-    let mut r = std::arch::x86_64::_pdep_u64(w as u64, mask as u64) as u128;
+    let mut r = core::arch::x86_64::_pdep_u64(w as u64, mask as u64) as u128;
     if Q == 16 {
-        r |= (std::arch::x86_64::_pdep_u64((w >> (8 * B)) as u64, (mask >> 64) as u64) as u128)
+        r |= (core::arch::x86_64::_pdep_u64((w >> (8 * B)) as u64, (mask >> 64) as u64) as u128)
             << 64;
     }
     unsafe { restore_lanes::<Q, B>(r, w, base, out) }
 }
 fn packers<const Q: usize>() -> [Pack; 9] {
     #[cfg(target_arch = "x86_64")]
-    if std::is_x86_feature_detected!("bmi2") {
+    if has_bmi2() {
         return [
             pack_bmi2::<Q, 0>,
             pack_bmi2::<Q, 1>,
@@ -209,7 +225,7 @@ fn packers<const Q: usize>() -> [Pack; 9] {
 }
 fn unpackers<const Q: usize>() -> [Unpack; 9] {
     #[cfg(target_arch = "x86_64")]
-    if std::is_x86_feature_detected!("bmi2") {
+    if has_bmi2() {
         return [
             unpack_bmi2::<Q, 0>,
             unpack_bmi2::<Q, 1>,
@@ -521,6 +537,7 @@ impl<const Q: usize> ByteQps<Q> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::{prelude::v1::*, vec};
     fn roundtrip<const Q: usize>(value: &[u8]) {
         let mut encoded = vec![0; value.len() + BYTE_FRAME_HEADER];
         let frame = ByteQps::<Q>::encode_to(value, &mut encoded).unwrap();

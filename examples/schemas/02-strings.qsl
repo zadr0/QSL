@@ -1,6 +1,8 @@
 &OwnedText[safety] { str(1..4096) text; }
 &BorrowedText[lifetime,safety] { str(1..4096) text; }
 &OwnedReuseText[safety] { str(1..4096) text; }
-&InlineText[safety] { str(1..4096) text|binary_opt=inline|; }
+&InlineText[aggressive,safety] { str(1..55) text|decompress=true|; }
 &CompressedText[safety] { str(1..4096) text|decompress=true|; }
 &FixedText[safety] { str(4) text; }
+
+&AggressiveText[aggressive,alignment,safety] { str(1..55) text; }

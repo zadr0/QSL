@@ -19,6 +19,7 @@ dependencies = [
  "qsl-interpreter",
  "qsl-lexer",
  "qsl-macros-impl",
+ "qsl-rt",
 ]
 
 [[package]]
@@ -32,7 +33,10 @@ dependencies = [
 name = "qsl-interpreter"
 version = "0.3.0"
 dependencies = [
+ "proc-macro2",
+ "qsl-core",
  "qsl-lexer",
+ "syn",
 ]
 
 [[package]]
@@ -55,6 +59,13 @@ name = "qsl-quickstart"
 version = "0.1.0"
 dependencies = [
  "qsl",
+]
+
+[[package]]
+name = "qsl-rt"
+version = "0.1.0"
+dependencies = [
+ "qsl-core",
 ]
 
 [[package]]

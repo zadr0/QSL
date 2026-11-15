@@ -3,12 +3,25 @@ use crate::{GenerationConfig, QslResult, QslSchema};
 
 #[derive(Clone, Debug)]
 pub struct PreparedSchema {
-    schema: QslSchema,
+    plan: crate::analysis::CompilationPlan,
     overlay: bool,
 }
 impl PreparedSchema {
     pub fn schema(&self) -> &QslSchema {
-        &self.schema
+        &self.plan.schema
+    }
+    /// The immutable logical declaration before explicit wire canonicalization.
+    pub fn logical_schema(&self) -> &QslSchema {
+        &self.plan.logical
+    }
+    pub fn wire_plan(&self) -> &crate::analysis::WirePlan {
+        &self.plan.wire
+    }
+    pub fn memory_plan(&self) -> &crate::optimizer::MemoryPlan {
+        &self.plan.memory
+    }
+    pub fn plan(&self) -> &crate::analysis::CompilationPlan {
+        &self.plan
     }
     pub fn native_overlay(&self) -> bool {
         self.overlay
@@ -52,9 +65,11 @@ pub fn prepare_expanded(
             schema.options = schema.options.with_native_overlay();
             schema.flags &= !(crate::FLAG_LIFETIME | crate::FLAG_FIELD_BORROW);
         }
-        let schema = crate::modernization::lower_storage(&schema, config.stack_limit)?;
+        let schema = qsl_lexer::layout::lower_storage(&schema, config.stack_limit)?;
         schema.validate()?;
-        schemas.push(PreparedSchema { schema, overlay });
+        let plan =
+            crate::analysis::CompilationPlan::analyze_with_profile(&schema, config.cpu_profile)?;
+        schemas.push(PreparedSchema { plan, overlay });
     }
     Ok(PreparedModule { schemas, config })
 }

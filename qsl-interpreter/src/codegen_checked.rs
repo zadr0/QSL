@@ -1,6 +1,6 @@
 //! Single-pass checked materialization. A failed cursor never publishes Self.
 use super::*;
-use crate::modernization::StorageKind;
+use qsl_lexer::layout::StorageKind;
 pub(super) fn field(
     f: &QslField,
     out: &mut String,
@@ -10,17 +10,29 @@ pub(super) fn field(
     capture: bool,
     length: Option<&str>,
 ) -> QslResult<()> {
-    if !capture && f.storage == StorageKind::HeapString {
+    if !capture
+        && matches!(
+            f.storage,
+            StorageKind::HeapString | StorageKind::HeapInlineString(_)
+        )
+    {
         match f.data {
             QslType::CompressedString { min, max } | QslType::InlineRawString { min, max }
                 if length.is_none() =>
             {
                 ln(
                     out,
-                    format!(
-                        "c.decode_compressed_owned::<{max}>({min},{},false)?;",
-                        matches!(f.data, QslType::InlineRawString { .. })
-                    ),
+                    if matches!(f.storage, StorageKind::HeapInlineString(_)) {
+                        format!(
+                            "c.decode_compressed_boxed::<{max},u32>({min},{},false)?;",
+                            matches!(f.data, QslType::InlineRawString { .. })
+                        )
+                    } else {
+                        format!(
+                            "c.decode_compressed_owned::<{max}>({min},{},false)?;",
+                            matches!(f.data, QslType::InlineRawString { .. })
+                        )
+                    },
                 );
                 return Ok(());
             }
@@ -46,7 +58,7 @@ pub(super) fn field(
             );
             return Ok(());
         }
-        return validation_codegen::field(&f.data, out, width, compact);
+        return validation_codegen::field_stored(f, out, width, compact);
     }
     ln(
         out,
@@ -56,10 +68,20 @@ pub(super) fn field(
             format!("let field_{}={{", f.tag)
         },
     );
-    value(&f.data, out, width, compact, borrowed, f.storage, length)?;
+    value(
+        &f.data,
+        out,
+        width,
+        compact,
+        borrowed,
+        f.storage,
+        length,
+        f.shifted_length,
+    )?;
     ln(out, if f.optional { "});" } else { "};" });
     Ok(())
 }
+#[allow(clippy::too_many_arguments)]
 fn value(
     ty: &QslType,
     out: &mut String,
@@ -68,6 +90,7 @@ fn value(
     borrowed: bool,
     storage: StorageKind,
     length: Option<&str>,
+    shifted: bool,
 ) -> QslResult<()> {
     if storage == StorageKind::NativeView {
         let QslType::Custom {
@@ -106,6 +129,22 @@ fn value(
             return Ok(());
         }
     }
+    if let StorageKind::HeapInlineString(max) = storage {
+        let (min, raw) = match ty {
+            QslType::CompressedString { min, .. } => (*min, false),
+            QslType::InlineRawString { min, .. } => (*min, true),
+            _ => return Err(QslError::InvalidSchema),
+        };
+        if let Some(length) = length {
+            ln(out,format!("let text=c.text({length},{min},{max})?;::qsl::InlineString::<{max}>::try_boxed_from_str(text)?"));
+        } else {
+            ln(
+                out,
+                format!("c.decode_compressed_boxed::<{max},u32>({min},{raw},false)?"),
+            );
+        }
+        return Ok(());
+    }
     if storage == StorageKind::HeapString {
         match ty {
             QslType::CompressedString { min, max } | QslType::InlineRawString { min, max }
@@ -132,27 +171,31 @@ fn value(
     }
     match ty{
  QslType::None=>ln(out,"()"),
- QslType::Padding(_)=>{validation_codegen::field(ty,out,width,compact)?;ln(out,"()");},
- QslType::Byte|QslType::Integer{..}|QslType::RangedInteger{..}|QslType::Flags(_)=>{validation_codegen::field(ty,out,width,compact)?;ln(out,format!("value as {}",ty.primitive()?.ok_or(QslError::InvalidSchema)?));},
- QslType::InlineRawString{min,max} if length.is_some()=>{ln(out,format!("let text=c.text({},{min},{max})?;",length.unwrap()));if storage==StorageKind::HeapString{ln(out,"{let mut owned=String::new();owned.try_reserve_exact(text.len()).map_err(|_|::qsl::QslError::AllocationFailed)?;owned.push_str(text);owned}");}else{ln(out,format!("unsafe{{::qsl::InlineString::<{max}>::from_str_unchecked(text)}}"));}},
- QslType::CompressedString{min,max}|QslType::InlineRawString{min,max}=>ln(out,format!("c.decode_compressed::<{max}>({min},{},false)?",matches!(ty,QslType::InlineRawString{..}))),
+ QslType::Padding(_)|QslType::BitPadding(_)=>{validation_codegen::field(ty,out,width,compact)?;ln(out,"()");},
+ QslType::Byte|QslType::Integer{..}|QslType::RangedInteger{..}|QslType::DomainInteger(_)|QslType::Flags(_)=>{validation_codegen::field(ty,out,width,compact)?;ln(out,format!("value as {}",ty.primitive()?.ok_or(QslError::InvalidSchema)?));},
+ QslType::InlineRawString{min,max} if length.is_some()=>{ln(out,format!("let text=c.text({},{min},{max})?;",length.unwrap()));if storage==StorageKind::HeapString{ln(out,"{let mut owned=String::new();owned.try_reserve_exact(text.len()).map_err(|_|::qsl::QslError::AllocationFailed)?;owned.push_str(text);owned}");}else{ln(out,format!("unsafe{{::qsl::InlineString::<{max},_>::from_str_unchecked(text)}}"));}},
+ QslType::CompressedString{min,max}|QslType::InlineRawString{min,max}=>{let method=if shifted{format!("decode_compressed_with::<{max},_>")}else{format!("decode_compressed::<{max}>")};ln(out,format!("c.{method}({min},{},false)?",matches!(ty,QslType::InlineRawString{..})));},
  QslType::FixedCompressedString(n)=>ln(out,format!("{{let text=c.decode_compressed::<{n}>({n},false,true)?;let mut bytes=[0u8;{n}];bytes.copy_from_slice(text.as_bytes());bytes}}")),
  QslType::FixedString(n)=>{ln(out,format!("let text=c.text({n},{n},{n})?;"));if storage==StorageKind::StrView{ln(out,"text");}else if storage==StorageKind::HeapString{ln(out,"{let mut owned=String::new();owned.try_reserve_exact(text.len()).map_err(|_|::qsl::QslError::AllocationFailed)?;owned.push_str(text);owned}");}else{ln(out,format!("{{let mut bytes=std::mem::MaybeUninit::<[u8;{n}]>::uninit();unsafe{{std::ptr::copy_nonoverlapping(text.as_bytes().as_ptr(),bytes.as_mut_ptr().cast(),{n});bytes.assume_init()}}}}"));}},
  QslType::String(_)|QslType::RangedString{..}|QslType::BorrowedString{..}=>{
   let(min,max,_,_)=string_layout(ty).ok_or(QslError::InvalidSchema)?;
   if let Some(length)=length{ln(out,format!("let length={length};"));}else if compact{ln(out,format!("let length=(c.bits({width})? as usize).checked_add({min}).ok_or(::qsl::QslError::LengthOverflow)?;"));}else{ln(out,"let length=c.uint(4)? as usize;");}
   ln(out,format!("let text=c.text(length,{min},{})?;",max.unwrap_or(u32::MAX as usize)));
-  match storage{StorageKind::StackString(n)=>ln(out,format!("::qsl::StackString::<{n}>::try_from_str(text)?")),StorageKind::StrView=>ln(out,"text"),StorageKind::HeapString=>ln(out,"{let mut owned=String::new();owned.try_reserve_exact(text.len()).map_err(|_|::qsl::QslError::AllocationFailed)?;owned.push_str(text);owned}"),_=>if borrowed{ln(out,"text")}else{ln(out,"{let mut owned=String::new();owned.try_reserve_exact(text.len()).map_err(|_|::qsl::QslError::AllocationFailed)?;owned.push_str(text);owned}")}}
+  match storage{StorageKind::StackString(n)=>ln(out,format!("::qsl::StackString::<{n},_>::try_from_str(text)?")),StorageKind::StrView=>ln(out,"text"),StorageKind::HeapString=>ln(out,"{let mut owned=String::new();owned.try_reserve_exact(text.len()).map_err(|_|::qsl::QslError::AllocationFailed)?;owned.push_str(text);owned}"),_=>if borrowed{ln(out,"text")}else{ln(out,"{let mut owned=String::new();owned.try_reserve_exact(text.len()).map_err(|_|::qsl::QslError::AllocationFailed)?;owned.push_str(text);owned}")}}
  },
  QslType::FixedArray(e,n)|QslType::Array(e,n)|QslType::RangedArray{element:e,min:n,..}=>{
   let fixed=matches!(ty,QslType::FixedArray(..));let max=if let QslType::RangedArray{max,..}=ty{*max}else{u32::MAX as usize};
   if fixed{ln(out,format!("let length={n}usize;"));}else if compact{ln(out,format!("let length=(c.bits({width})? as usize).checked_add({n}).ok_or(::qsl::QslError::LengthOverflow)?;"));}else{ln(out,"let length=c.uint(4)? as usize;");}
   if !fixed{ln(out,format!("if !({n}..={max}).contains(&length){{return Err(::qsl::QslError::InvalidValue)}}"));}
-  let size=e.fixed_wire_size()?.ok_or(QslError::InvalidSchema)?;ln(out,format!("let bytes=length.checked_mul({size}usize).ok_or(::qsl::QslError::LengthOverflow)?;"));
-  if compact&&!is_bytes(e){let bits=validation_codegen::compact_element_bits(e)?;ln(out,format!("c.check_values(bytes,length.checked_mul({bits}).ok_or(::qsl::QslError::LengthOverflow)?)?;"));}else{ln(out,"c.check_allocation(bytes)?;");}
+  let allocation_type=if matches!(storage,StorageKind::FixedArray(_)){qsl_lexer::layout::native_array_rust_type(e)?}else{e.rust_type(false)?};
+  // Native descriptors can be wider than wire elements. ZSTs still consume work units.
+  ln(out,format!("c.check_native_allocation(length.checked_mul(std::mem::size_of::<{allocation_type}>().max(1)).ok_or(::qsl::QslError::LengthOverflow)?)?;"));
+  if let Some(size)=e.fixed_wire_size()?{ln(out,format!("let bytes=length.checked_mul({size}usize).ok_or(::qsl::QslError::LengthOverflow)?;"));if compact&&!is_bytes(e){let bits=validation_codegen::compact_element_bits(e)?;ln(out,format!("c.check_values(bytes,length.checked_mul({bits}).ok_or(::qsl::QslError::LengthOverflow)?)?;"));}else{ln(out,"c.check_allocation(bytes)?;");}}
+  else{if borrowed{return Err(QslError::InvalidSchema);}let et=e.rust_type(false)?;ln(out,format!("c.charge(length.checked_mul(std::mem::size_of::<{et}>()).ok_or(::qsl::QslError::LengthOverflow)?)?;"));}
   if borrowed&&!matches!(storage,StorageKind::FixedArray(_)){ln(out,"c.payload(bytes)?");}else{
-   let et=e.rust_type(false)?;match storage{StorageKind::FixedArray(n)|StorageKind::StackArray(n)=>ln(out,format!("let mut values=::qsl::InlineArray::<{et},{n}>::new();")),_=>ln(out,format!("let mut values=Vec::<{et}>::new();values.try_reserve_exact(length).map_err(|_|::qsl::QslError::AllocationFailed)?;"))}
-   ln(out,"for _ in 0..length{let item={");value(e,out,e.default_compact_bits()?,compact,false,StorageKind::Default,None)?;ln(out,"};");if matches!(storage,StorageKind::FixedArray(_)|StorageKind::StackArray(_)){ln(out,"values.push(item)?;");}else{ln(out,"values.push(item);");}ln(out,"}");if compact&&!is_bytes(e){ln(out,"c.align()?;");}ln(out,if matches!(storage,StorageKind::FixedArray(_)){"values.into_array()?"}else{"values"});
+   let et=if matches!(storage,StorageKind::FixedArray(_)){qsl_lexer::layout::native_array_rust_type(e)?}else{e.rust_type(false)?};match storage{StorageKind::FixedArray(n)|StorageKind::StackArray(n)=>{let length_word=if shifted&&matches!(storage,StorageKind::StackArray(_)){qsl_lexer::layout::shifted_length_word(n).ok_or(QslError::InvalidSchema)?}else{"u32"};ln(out,format!("let mut values=::qsl::InlineArray::<{et},{n},{length_word}>::new();"))},_=>ln(out,format!("let mut values=Vec::<{et}>::new();values.try_reserve_exact(length).map_err(|_|::qsl::QslError::AllocationFailed)?;"))}
+   if compact&&is_bytes(e){ln(out,"c.align()?;");}
+   ln(out,"for _ in 0..length{let item={");value(e,out,e.default_compact_bits()?,compact,false,if matches!(storage,StorageKind::FixedArray(_)){if let QslType::FixedArray(_,n)=e.as_ref(){StorageKind::FixedArray(*n)}else{StorageKind::Default}}else{StorageKind::Default},None,false)?;ln(out,"};");if matches!(storage,StorageKind::FixedArray(_)|StorageKind::StackArray(_)){ln(out,"values.push(item)?;");}else{ln(out,"values.push(item);");}ln(out,"}");if compact&&!is_bytes(e){ln(out,"c.align()?;");}ln(out,if matches!(storage,StorageKind::FixedArray(_)){"values.into_array()?"}else{"values"});
   }
  },
  QslType::Custom{rust_type,..}=>{let size=if compact{"COMP_SIZE"}else{"SIZE"};let method=if compact{"qsl_comp_read_unchecked"}else{"qsl_read_unchecked"};ln(out,format!("c.charge(<{rust_type} as ::qsl::QslCustom>::SIZE)?;let bytes=c.bytes(<{rust_type} as ::qsl::QslCustom>::{size})?;<{rust_type} as ::qsl::QslCustom>::qsl_validate(bytes,{compact})?;unsafe{{<{rust_type} as ::qsl::QslCustom>::{method}(bytes.as_ptr())}}"));}
@@ -201,7 +244,7 @@ pub(super) fn required_run(
     for (i, f) in s.fields[start..start + count].iter().enumerate() {
         let mut tmp = f.clone();
         tmp.optional = true;
-        let r = crate::modernization::optional_representation(&tmp, false)
+        let r = qsl_lexer::layout::optional_representation(&tmp, false)
             .ok_or(QslError::InvalidSchema)?;
         ln(out,format!("if !({}i128..={}i128).contains(&(__qsl_scalar_{} as i128)){{return Err(::qsl::QslError::InvalidValue)}}",r.minimum,r.maximum,start+i));
         if capture {
@@ -326,4 +369,51 @@ pub(super) fn callbacks(s: &QslSchema, out: &mut String) -> QslResult<()> {
 }
 pub(super) fn dispatch(out: &mut String, tag: &str, length: &str) {
     ln(out,format!("// Index is proven optional by the checked header or generated fixed tag.\nlet callback_length={length};(unsafe{{Self::__QSL_CHECKED_OPT_TABLE.get_unchecked({tag}).unwrap_unchecked()}})(&mut c,&mut result,callback_length)?;"));
+}
+
+/// Single-pass materialization is limited to statically proven no-Drop Self types.
+/// A failed cursor can leave an initialized prefix in MaybeUninit; it never publishes Self.
+pub(super) fn native_into(s: &QslSchema, out: &mut String) -> QslResult<()> {
+    let lt = if s.lifetime() { "'a " } else { "" };
+    ln(out,format!("/// On error, output may contain an initialized prefix; no Self is published.
+fn __qsl_read_checked_native_into<'out>(input:&{lt}[u8],output:&'out mut std::mem::MaybeUninit<Self>)->::qsl::QslResult<&'out mut Self>{{const{{assert!(!std::mem::needs_drop::<Self>());}}let mut c=::qsl::validation::ValidationCursor::with_limit(input,Self::MAX_DATA_SIZE)?;let raw=output.as_mut_ptr();"));
+    emit_minimum_size_guard(s, out)?;
+    for f in &s.fields {
+        let dest = format!("std::ptr::addr_of_mut!((*raw).{})", f.name);
+        if let StorageKind::StackString(_) = f.storage {
+            let ty = qsl_lexer::layout::field_rust_type(f, false)?;
+            let (min, max, _, _) = string_layout(&f.data).ok_or(QslError::InvalidSchema)?;
+            let max = max.ok_or(QslError::InvalidSchema)?;
+            if s.compact() {
+                let width = f.data.rank_width(f.bits)?;
+                ln(out,format!("let length=(c.bits({width})?as usize).checked_add({min}).ok_or(::qsl::QslError::LengthOverflow)?;"));
+            } else {
+                ln(out, "let length=c.uint(4)?as usize;");
+            }
+            ln(out,format!("let text=c.text(length,{min},{max})?;unsafe{{<{ty}>::copy_into(text.as_ptr(),text.len(),{dest});}}"));
+        } else if let QslType::FixedString(n) = f.data {
+            ln(out, format!("let text=c.text({n},{n},{n})?;"));
+            if f.storage == StorageKind::StrView {
+                ln(out, format!("unsafe{{{dest}.write(text);}}"));
+            } else {
+                ln(out,format!("unsafe{{std::ptr::copy_nonoverlapping(text.as_ptr(),{dest}.cast::<u8>(),{n});}}"));
+            }
+        } else {
+            field(
+                f,
+                out,
+                f.data.rank_width(f.bits)?,
+                s.compact(),
+                s.borrow_strings(),
+                true,
+                None,
+            )?;
+            ln(out, format!("unsafe{{{dest}.write(field_{});}}", f.tag));
+        }
+        if s.compact() && s.flags & FLAG_ALIGNMENT != 0 {
+            ln(out, "c.align()?;");
+        }
+    }
+    ln(out, "c.finish()?;Ok(unsafe{&mut*raw})}");
+    Ok(())
 }

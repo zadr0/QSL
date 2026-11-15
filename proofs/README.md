@@ -23,3 +23,13 @@ Modernization.lean adds exact read-window bounds, 16-byte splitting, initialized
 Модели проверяются Lean 4.35 без Mathlib и допущенных доказательств. Они не доказывают корректность Rust pointers/provenance, атомарной модели памяти, LLVM или WaitOnAddress/futex. Эти части проверяются контрактами API и исполняемыми тестами, включая защищённую страницу на Windows и конкурентные lease.
 
 Run from the repository root: lake -d proofs build.
+
+## Модели обзорного документа
+
+`lake -d proofs build` включает также `UnifiedOptimizer.lean` и `Overview.lean`.
+`Overview.lean` связывает объяснения в [QSL-overview.md](../docs/QSL-overview.md)
+с восемью проверяемыми леммами: инъективность при наличии левого обратного,
+границы чтения, ограничение LZ-токена, история перекрывающейся ссылки,
+вычитание общей базы двух байтовых разрядов и три свойства присутствия
+двух однобайтовых полей. Это модели с указанными предусловиями, а не
+формальная верификация Rust или доказательство отсутствия UB.

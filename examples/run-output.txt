@@ -1,23 +1,37 @@
 8 ranged u64 values: raw=64 B, compact=4 B, QPS=4 B; restored f0=3, f7=10
-1024 UTF-8 characters = 1683 bytes; String/borrow/guard frame=1687 B; inline=1685 B; LZ=1685 B
-The phrase selected LZ raw fallback: the 2-byte difference is a length header, not compression.
-Uniform UTF-8 control: 2048 useful B -> 55 LZ wire B
-borrowed=1024 chars, copied guard=1683 bytes; fixed string Rust type: [u8; 4]
+1024 UTF-8 characters = 1683 bytes; raw frame=1687 B; QSL-LZ frame=1685 B
+Small string: InlineString<55> on stack, QSL-LZ frame=23 B; StackString<55> raw frame=26 B
+Large string: heap storage and Vec output; borrowed read and String reuse verified
+Uniform UTF-8 control: 2048 useful B -> 55 QSL-LZ wire B
 mask=000: default=5 B, opt_table=5 B; bytes=[00, 2a, 00, 00, 00]
-mask=001: default=6 B, opt_table=6 B; bytes=[01, 2a, 00, 00, 00, 0b]
-mask=010: default=6 B, opt_table=6 B; bytes=[02, 2a, 00, 00, 00, 16]
-mask=011: default=7 B, opt_table=7 B; bytes=[03, 2a, 00, 00, 00, 0b, 16]
-mask=100: default=6 B, opt_table=6 B; bytes=[04, 2a, 00, 00, 00, 21]
-mask=101: default=7 B, opt_table=7 B; bytes=[05, 2a, 00, 00, 00, 0b, 21]
-mask=110: default=7 B, opt_table=7 B; bytes=[06, 2a, 00, 00, 00, 16, 21]
-mask=111: default=8 B, opt_table=8 B; bytes=[07, 2a, 00, 00, 00, 0b, 16, 21]
-scalar QPS: 64 useful B -> 4 wire B
-whole payload: 1028 inner B -> 981 QPB3 B (Packed)
-16 live RT leases, 64 B each; the 17th returns PoolExhausted
-after release: slot reused, 64 B
+mask=001: default=6 B, opt_table=6 B; bytes=[05, 2a, 00, 00, 00, 0b]
+mask=010: default=6 B, opt_table=6 B; bytes=[09, 2a, 00, 00, 00, 16]
+mask=011: default=7 B, opt_table=7 B; bytes=[26, 2a, 00, 00, 00, 0b, 16]
+mask=100: default=6 B, opt_table=6 B; bytes=[0d, 2a, 00, 00, 00, 21]
+mask=101: default=7 B, opt_table=7 B; bytes=[36, 2a, 00, 00, 00, 0b, 21]
+mask=110: default=7 B, opt_table=7 B; bytes=[3a, 2a, 00, 00, 00, 16, 21]
+mask=111: default=8 B, opt_table=8 B; bytes=[e7, 2a, 00, 00, 00, 0b, 16, 21]
+Scalar Q16: 64 useful B -> 4 wire B
+Mixed Q16: 16 scalar B -> 1 B; string length stays 4 B, string stays 1024 B; frame=1029 B
+16 live RT leases; the 17th returns PoolExhausted without waiting
+Dropping a lease makes its region immediately available again
 Rust Trace stays nested; generated fields: trace_header_id, trace_kind, status
 7 B; xxHash strict=bf995918935836d1, light=dc0cb40655d973ce; computed during analysis
 MAX_DATA_SIZE=65535 B
 invalid numeric domain: QSL error: InvalidValue
-forged u32::MAX string length: QSL error: InvalidValue
+forged u32::MAX string length: QSL error: UnexpectedEof
 invalid UTF-8: QSL error: InvalidUtf8
+Builder / QSL text: status=None, 12 identical wire B
+Builder / QSL text: status=Some(7), 13 identical wire B
+STACK_LIMIT=64: StackString<32>, stack output; required fields precede optional status
+4 x 12 bits: 16 native B -> 6 wire B; bytes=[00, 10, 00, ff, f7, ff]
+Generated writer: scalar fallback (BMI2 target not enabled); generated reader: scalar
+CPU supports BMI2: PEXT/PDEP kernels executed; scalar/BMI2 bytes and values match
+Checked writer rejects 4096: it does not fit the declared 12-bit domain
+42: Ada (15 bytes)
+Separate compiler crates: 17 wire bytes, checked round-trip passed
+BMI2 release, target-feature=+bmi2:
+4 x 12 bits: 16 native B -> 6 wire B; bytes=[00, 10, 00, ff, f7, ff]
+Generated writer: PEXT (BMI2 target enabled); generated reader: scalar
+CPU supports BMI2: PEXT/PDEP kernels executed; scalar/BMI2 bytes and values match
+Checked writer rejects 4096: it does not fit the declared 12-bit domain

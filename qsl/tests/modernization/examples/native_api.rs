@@ -1,5 +1,5 @@
 //! Run from dev-qsl:
-//! cargo run --manifest-path qsl/tests/modernization/Cargo.toml --example native_api --locked
+//! cargo run --manifest-path proofs/qsl/tests/modernization/Cargo.toml --example native_api --locked
 //! Schemas: ../schemas.qsl. Rust native template: ../models.rs.
 use qsl::Serializable;
 use qsl_modernization_contracts::{CopyNative, Meta, Overlay, Region};
@@ -8,10 +8,8 @@ use std::mem::MaybeUninit;
 // The example's native layouts are established at compile time.
 const _: () = {
     assert!(Overlay::NATIVE_ALIGNMENT <= 8);
-    assert!(Region::REGION_0_COPY_COMPATIBLE);
-    assert!(Region::REGION_0_VIEW_COMPATIBLE);
-    assert!(Region::REGION_0_WIRE_COPY_COMPATIBLE);
-    assert!(Region::REGION_0_WIRE_VIEW_COMPATIBLE);
+    assert!(Meta::NATIVE_WIRE_COMPATIBLE);
+    assert!(Meta::NATIVE_BYTES == 16);
 };
 
 #[repr(align(8))]
@@ -59,25 +57,25 @@ fn main() -> qsl::QslResult<()> {
         checked_view.id, direct_view.id
     );
 
-    // 3. REGIONS: native leaves can be copied or viewed independently of the tail.
+    // 3. REGIONS: a native child is a real nested Rust value.
     let record = Region {
-        id: 42,
-        value: 11,
-        tag: *b"utf8",
+        Meta: Meta {
+            id: 42,
+            value: 11,
+            tag: *b"utf8",
+        },
         name: "tail".into(),
     };
-    // SAFETY: compile-time layout assertions above; fields are valid and the
-    // record stays immutably borrowed. Only initialized leaves are copied.
-    let copied: Meta = unsafe { record.region_0_copy_unchecked() };
-    let viewed: &Meta = unsafe { record.region_0_view_unchecked() };
-    // SAFETY: wire contains exactly the compatible 16-byte region, not the
-    // surrounding Region frame. The input is aligned and remains alive.
-    let wire_copy: Meta = unsafe { Region::deserialize_region_0_copy_unchecked(wire) };
-    let wire_view: &Meta = unsafe { Region::deserialize_region_0_view_unchecked(wire) };
+    let copied: Meta = record.Meta;
+    let viewed: &Meta = &record.Meta;
+    // SAFETY: wire is the complete, valid Meta region with a compatible layout.
+    let wire_copy = unsafe { Meta::deserialize_transmutate_copy_unchecked(wire) };
+    let wire_view = Meta::__qsl_region_view(wire)?;
     assert_eq!(
         (copied.id, viewed.id, wire_copy.id, wire_view.id),
         (42, 42, 42, 42)
     );
+    assert_eq!(wire_view as *const Meta as *const u8, wire.as_ptr());
     println!(
         "REGION: self_copy={}, self_view={}, wire_copy={}, wire_view={}",
         copied.id, viewed.id, wire_copy.id, wire_view.id

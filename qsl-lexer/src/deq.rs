@@ -9,7 +9,7 @@ use crate::parser::{Cursor, ParseError};
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DeqConstant {
     pub type_name: String,
-    pub value: i128,
+    pub value: crate::WideNumber,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -24,7 +24,10 @@ pub use crate::config::GenerationConfig;
 impl DeqConfig {
     /// QSL currently interprets numeric constant values at build time, while
     /// the DEQ AST retains the source type for validation and diagnostics.
-    pub fn integer_values(&self) -> HashMap<String, i128> {
+    pub fn integer_values(&self) -> Result<HashMap<String, i128>, ParseError> {
+        self.constants.iter().map(|(k,v)|v.value.signed().map(|n|(k.clone(),n)).ok_or_else(||ParseError{offset:0,message:format!("constant `{k}` does not fit i128; use wide_values and parse_qsl_with_wide_constants")})).collect()
+    }
+    pub fn wide_values(&self) -> HashMap<String, crate::WideNumber> {
         self.constants
             .iter()
             .map(|(k, v)| (k.clone(), v.value))
@@ -47,6 +50,13 @@ pub fn parse_deq(source: &str) -> Result<DeqConfig, ParseError> {
                 return Err(parser.error("duplicate generation config"));
             }
             match name.as_str() {
+                "CPU_PROFILE" => {
+                    result.generation.cpu_profile = match parser.ident()? {
+                        "portable" => crate::optimizer::registers::CpuProfile::Portable,
+                        "kaby_lake" => crate::optimizer::registers::CpuProfile::KabyLake,
+                        _ => return Err(parser.error("CPU_PROFILE expects portable or kaby_lake")),
+                    };
+                }
                 "USE_HASH" => {
                     result.generation.use_hash = parser
                         .ident()?
@@ -93,7 +103,7 @@ pub fn parse_deq(source: &str) -> Result<DeqConfig, ParseError> {
         parser.expect(":")?;
         let type_name = parser.ident()?.to_owned();
         parser.expect("=")?;
-        let value = parser.expr(&values)?;
+        let value = parser.wide_expr(&values)?;
         parser.expect(";")?;
 
         validate_constant(&type_name, value, &parser)?;
@@ -104,26 +114,37 @@ pub fn parse_deq(source: &str) -> Result<DeqConfig, ParseError> {
         {
             return Err(parser.error(format!("duplicate DEQ constant `{name}`")));
         }
-        values.insert(name, value);
+        parser.wide_constants.insert(name.clone(), value);
+        if let Some(n) = value.signed() {
+            values.insert(name, n);
+        }
     }
     Ok(result)
 }
 
-fn validate_constant(ty: &str, value: i128, parser: &Cursor<'_>) -> Result<(), ParseError> {
-    let fits = match ty {
-        "usize" => usize::try_from(value).is_ok(),
-        "isize" => isize::try_from(value).is_ok(),
-        "u8" => u8::try_from(value).is_ok(),
-        "u16" => u16::try_from(value).is_ok(),
-        "u32" => u32::try_from(value).is_ok(),
-        "u64" => u64::try_from(value).is_ok(),
-        "i8" => i8::try_from(value).is_ok(),
-        "i16" => i16::try_from(value).is_ok(),
-        "i32" => i32::try_from(value).is_ok(),
-        "i64" => i64::try_from(value).is_ok(),
-        _ => return Err(parser.error(format!("unsupported DEQ constant type `{ty}`"))),
+fn validate_constant(
+    ty: &str,
+    value: crate::WideNumber,
+    parser: &Cursor<'_>,
+) -> Result<(), ParseError> {
+    let (bits, signed) = match ty {
+        "usize" => (usize::BITS as u16, false),
+        "isize" => (isize::BITS as u16, true),
+        _ => {
+            let bytes = ty.as_bytes();
+            if bytes.len() < 2 || !matches!(bytes[0], b'u' | b'i') {
+                return Err(parser.error(format!("unsupported DEQ constant type `{ty}`")));
+            }
+            let bits = ty[1..]
+                .parse::<u16>()
+                .map_err(|_| parser.error("unsupported DEQ constant type"))?;
+            if !matches!(bits, 8 | 16 | 32 | 64 | 128) {
+                return Err(parser.error("unsupported DEQ constant type"));
+            }
+            (bits, bytes[0] == b'i')
+        }
     };
-    if fits {
+    if value.native(bits, signed).is_some() {
         Ok(())
     } else {
         Err(parser.error(format!("DEQ constant does not fit `{ty}`")))
@@ -205,5 +226,54 @@ mod tests {
         assert!(parse_deq("!define X: usize = -1;").is_err());
         assert!(parse_deq("!define X: usize = 1; !define X: usize = 2;").is_err());
         assert!(parse_deq("!define X: usize = !NOPE;").is_err());
+    }
+}
+
+#[cfg(test)]
+mod wide_tests {
+    use super::*;
+    #[test]
+    fn full_deq_range_is_exact_and_narrow_projection_is_fallible() {
+        let d=parse_deq("!define TOP:u128=340282366920938463463374607431768211455;!define LOW:i128=-170141183460469231731687303715884105728;!define LAST:u128=!TOP-1;!define SMALL:u8=!TOP-!LAST;").unwrap();
+        assert_eq!(d.constants["TOP"].value.unsigned(), Some(u128::MAX));
+        assert_eq!(d.constants["LOW"].value.signed(), Some(i128::MIN));
+        assert_eq!(d.constants["SMALL"].value, 1);
+        assert!(d.integer_values().is_err());
+        let s = crate::parse_qsl_with_wide_constants(
+            "&P[compact,safety]{u128(0..!TOP) x|default=!LAST|;i128(!LOW..0) y;u8(0..!SMALL) z;}",
+            &d.wide_values(),
+        )
+        .unwrap();
+        assert_eq!(s[0].fields[0].default, Some(-2));
+        for src in [
+            "!define X:u128=340282366920938463463374607431768211455+1;",
+            "!define X:i128=170141183460469231731687303715884105728;",
+            "!define X:u128=-1;",
+        ] {
+            assert!(parse_deq(src).is_err(), "{src}");
+        }
+    }
+}
+
+#[cfg(test)]
+mod cpu_profile_tests {
+    use super::*;
+    #[test]
+    fn explicit_cpu_profiles_do_not_depend_on_the_analysis_host() {
+        assert_eq!(
+            parse_deq("!config CPU_PROFILE=kaby_lake;")
+                .unwrap()
+                .generation
+                .cpu_profile,
+            crate::optimizer::registers::CpuProfile::KabyLake
+        );
+        assert_eq!(
+            parse_deq("!config CPU_PROFILE=portable;")
+                .unwrap()
+                .generation
+                .cpu_profile,
+            crate::optimizer::registers::CpuProfile::Portable
+        );
+        assert!(parse_deq("!config CPU_PROFILE=host;").is_err());
     }
 }

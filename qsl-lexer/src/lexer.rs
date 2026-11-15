@@ -25,11 +25,16 @@ impl ParseError {
 pub struct Lexer<'a> {
     pub(crate) source: &'a str,
     pub(crate) pos: usize,
+    pub(crate) wide_constants: std::collections::HashMap<String, crate::WideNumber>,
 }
 
 impl<'a> Lexer<'a> {
     pub fn new(source: &'a str) -> Self {
-        Self { source, pos: 0 }
+        Self {
+            source,
+            pos: 0,
+            wide_constants: Default::default(),
+        }
     }
     pub(crate) fn bytes(&self) -> &[u8] {
         self.source.as_bytes()
@@ -93,7 +98,7 @@ impl<'a> Lexer<'a> {
         self.skip_trivia()?;
         Ok(self.pos == self.bytes().len())
     }
-    pub(crate) fn number(&mut self) -> Result<i128, ParseError> {
+    pub(crate) fn number_u128(&mut self) -> Result<u128, ParseError> {
         self.skip_trivia()?;
         let b = self.source.as_bytes();
         let start = self.pos;
@@ -111,7 +116,7 @@ impl<'a> Lexer<'a> {
             10
         };
         let digit_start = self.pos;
-        let mut result = 0i128;
+        let mut result = 0u128;
         while let Some(&ch) = b.get(self.pos) {
             if ch == b'_' {
                 self.pos += 1;
@@ -127,8 +132,8 @@ impl<'a> Lexer<'a> {
                 break;
             }
             result = result
-                .checked_mul(radix as i128)
-                .and_then(|v| v.checked_add(digit as i128))
+                .checked_mul(radix as u128)
+                .and_then(|v| v.checked_add(digit as u128))
                 .ok_or_else(|| self.error("integer overflow"))?;
             self.pos += 1;
         }
@@ -154,6 +159,8 @@ pub struct Token<'a> {
 pub enum TokenKind {
     Identifier,
     Integer(i128),
+    /// A positive magnitude above i128::MAX; text/spans remain borrowed.
+    WideInteger(u128),
     Symbol,
 }
 impl<'a> Lexer<'a> {
@@ -171,7 +178,11 @@ impl<'a> Lexer<'a> {
             self.ident()?;
             TokenKind::Identifier
         } else if first.is_ascii_digit() {
-            TokenKind::Integer(self.number()?)
+            let n = self.number_u128()?;
+            match i128::try_from(n) {
+                Ok(n) => TokenKind::Integer(n),
+                Err(_) => TokenKind::WideInteger(n),
+            }
         } else if self.source[start..].starts_with("..") {
             self.pos += 2;
             TokenKind::Symbol
@@ -247,7 +258,7 @@ mod tests {
             "/* unclosed",
             "0x_",
             "@",
-            "170141183460469231731687303715884105728",
+            "340282366920938463463374607431768211456",
         ] {
             let mut lexer = Lexer::new(source);
             let error = lexer.next().unwrap().unwrap_err();

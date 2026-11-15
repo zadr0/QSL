@@ -58,6 +58,9 @@ pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError
                 None
             };
             if let Some(target) = target {
+                if schema.options.dynamic.is_some() {
+                    return Err(MacroError("dyn macro references need an explicit stable tag for each expanded field; expand through QslSchemaBuilder first".into()));
+                }
                 if f.optional || f.default.is_some() {
                     return Err(MacroError(format!("{}::{}: optional/default on a macro reference is ambiguous; declare optionality/defaults on its fields",schema.name,f.name)));
                 }
@@ -75,7 +78,7 @@ pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError
                         )
                     })
                 {
-                    return Err(MacroError(format!("{}::{}: macro-level lifetime differs; use matching lifetime flags or explicit per-field binary_opt",schema.name,f.name)));
+                    return Err(MacroError(format!("{}::{}: macro-level lifetime differs; use matching lifetime flags or explicit borrowed Rust field metadata",schema.name,f.name)));
                 }
                 height = height.max(depth + 1);
                 if height > 64 {
@@ -89,7 +92,13 @@ pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError
             } else {
                 result.push(f.clone());
             }
-            if result.len() > if schema.bitmap() { 65535 } else { 64 } {
+            if result.len()
+                > if schema.bitmap() || schema.options.dynamic.is_some() {
+                    65535
+                } else {
+                    64
+                }
+            {
                 return Err(MacroError(format!(
                     "{}: expanded schema exceeds the codec field capacity",
                     schema.name
@@ -105,8 +114,8 @@ pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError
         schemas: &[QslSchema],
         names: &HashMap<&str, usize>,
         cache: &HashMap<usize, (Vec<QslField>, bool, usize)>,
-        memo: &mut HashMap<usize, Vec<crate::modernization::NativeRegion>>,
-    ) -> Result<Vec<crate::modernization::NativeRegion>, MacroError> {
+        memo: &mut HashMap<usize, Vec<crate::layout::NativeRegion>>,
+    ) -> Result<Vec<crate::layout::NativeRegion>, MacroError> {
         if let Some(r) = memo.get(&index) {
             return Ok(r.clone());
         }
@@ -134,7 +143,7 @@ pub fn expand_macros(schemas: &[QslSchema]) -> Result<Vec<QslSchema>, MacroError
             let end = *positions
                 .get(r.end)
                 .ok_or_else(|| MacroError("native region end outside schema".into()))?;
-            out.push(crate::modernization::NativeRegion {
+            out.push(crate::layout::NativeRegion {
                 alignment: r.alignment,
                 external: r.external,
                 field_prefix: r.field_prefix.clone(),
@@ -246,14 +255,11 @@ mod tests {
         let s = internal_macro_ast(&format!("{defs}&P[lifetime]{{Meta meta;}}")).unwrap();
         assert_eq!(s[2].fields[0].data.rust_type(true).unwrap(), "&'a str");
         let s = internal_macro_ast(
-            "&Base[macro]{str value|binary_opt=view|;}&Meta[macro]{Base base;}&P{Meta meta;}",
+            "&Base[macro,lifetime]{str value;}&Meta[macro,lifetime]{Base base;}&P[lifetime]{Meta meta;}",
         )
         .unwrap();
         assert!(s[2].lifetime());
-        assert!(matches!(
-            s[2].fields[0].data,
-            QslType::BorrowedString { .. }
-        ));
+        assert!(matches!(s[2].fields[0].data, QslType::String(_)));
     }
     #[test]
     fn shared_empty_macro_dag_is_expanded_once_per_definition() {

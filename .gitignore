@@ -20,3 +20,10 @@
 
 /qsl-core/target/
 /qsl-bench/strings/target/
+
+**/target/
+/docs-site/node_modules/
+/docs-site/.astro/
+/docs-site/dist/
+/docs-site/.vercel/
+/proofs/.lake/

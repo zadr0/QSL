@@ -3,6 +3,82 @@ use crate::static_index::PredictPlan;
 
 /// Finite wire upper bound. An unbounded string/array or unknown custom size
 /// cannot receive static RT storage. This is a build-time calculation only.
+fn array_maximum(t: &QslType, compact: bool, depth: usize) -> QslResult<Option<usize>> {
+    if depth > 32 {
+        return Err(QslError::InvalidSchema);
+    }
+    let mut s = QslSizer::default();
+    match t {
+        QslType::Array(..) | QslType::String(_) | QslType::BorrowedString { max: None, .. } => {
+            return Ok(None)
+        }
+        QslType::RangedArray {
+            element: e, max, ..
+        }
+        | QslType::FixedArray(e, max) => {
+            if !matches!(t, QslType::FixedArray(..)) {
+                if compact {
+                    s.bits(t.default_compact_bits()?)?;
+                } else {
+                    s.bytes(4)?;
+                }
+            }
+            if compact
+                && matches!(
+                    e.as_ref(),
+                    QslType::Byte
+                        | QslType::Integer { .. }
+                        | QslType::RangedInteger { .. }
+                        | QslType::DomainInteger(_)
+                        | QslType::Flags(_)
+                )
+            {
+                if is_bytes(e) {
+                    s.bytes(*max)?;
+                } else {
+                    s.bits(
+                        max.checked_mul(e.default_compact_bits()?)
+                            .ok_or(QslError::LengthOverflow)?,
+                    )?;
+                    s.align()?;
+                }
+            } else {
+                let Some(size) = array_maximum(e, compact, depth + 1)? else {
+                    return Ok(None);
+                };
+                s.bytes(max.checked_mul(size).ok_or(QslError::LengthOverflow)?)?;
+            }
+        }
+        QslType::RangedString { max, .. } | QslType::BorrowedString { max: Some(max), .. } => {
+            if compact {
+                s.bits(t.default_compact_bits()?)?;
+            } else {
+                s.bytes(4)?;
+            }
+            s.bytes(*max)?;
+        }
+        _ => {
+            if compact
+                && matches!(
+                    t,
+                    QslType::Byte
+                        | QslType::Integer { .. }
+                        | QslType::RangedInteger { .. }
+                        | QslType::DomainInteger(_)
+                        | QslType::Flags(_)
+                )
+            {
+                s.bits(t.default_compact_bits()?)?;
+            } else {
+                let Some(n) = t.fixed_wire_size()? else {
+                    return Ok(None);
+                };
+                s.bytes(n)?;
+            }
+        }
+    }
+    Ok(Some(s.finish()?))
+}
 pub(crate) fn maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {
     if let Some(p) = crate::hybrid::HybridPlan::analyze(schema)? {
         return maximum_size(&p.tail)?
@@ -63,21 +139,17 @@ pub(crate) fn maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {
         } else {
             match &f.data {
                 QslType::Array(_, _) => return Ok(None),
-                QslType::RangedArray { element, max, .. } => {
-                    if schema.compact() {
-                        s.bits(f.data.rank_width(f.bits)?)?;
-                    } else {
-                        s.bytes(4)?;
-                    }
-                    s.bytes(
-                        max.checked_mul(element.fixed_wire_size()?.ok_or(QslError::InvalidSchema)?)
-                            .ok_or(QslError::LengthOverflow)?,
-                    )?;
+                QslType::RangedArray { .. } | QslType::FixedArray(..) => {
+                    let Some(n) = array_maximum(&f.data, schema.compact(), 0)? else {
+                        return Ok(None);
+                    };
+                    s.bytes(n)?;
                 }
                 QslType::Custom {
                     fixed_wire_size: None,
                     ..
                 } => return Ok(None),
+                QslType::BitPadding(n) => s.bits(*n)?,
                 _ => {
                     if schema.compact()
                         && matches!(
@@ -85,6 +157,7 @@ pub(crate) fn maximum_size(schema: &QslSchema) -> QslResult<Option<usize>> {
                             QslType::Byte
                                 | QslType::Integer { .. }
                                 | QslType::RangedInteger { .. }
+                                | QslType::DomainInteger(_)
                                 | QslType::Flags(_)
                         )
                     {
@@ -119,7 +192,7 @@ pub(super) fn region_method(schema: &QslSchema, out: &mut String, slots: usize) 
         } else {
             "::qsl::Serializable"
         };
-        ln(out,format!("/// Encode into an exclusive static region; no heap allocation.\n/// A live lease keeps the bytes stable. Waits for a free slot.\npub fn serialize(&self)->::qsl::QslResult<::qsl::rt::RegionLease<{cap},{slots}>>{{self.validate_values()?;let mut lease={}_RT_REGIONS.acquire();unsafe{{let n=<Self as {target}>::serialize_into_unsafe(self,lease.as_mut_ptr());::qsl::validation::check_size(n,Self::MAX_DATA_SIZE)?;lease.set_len(n);}}Ok(lease)}}",schema.name));
+        ln(out,format!("/// Encode into an exclusive static region; no heap allocation.\n/// A live lease keeps the bytes stable. Returns PoolExhausted if all slots are live.\npub fn serialize(&self)->::qsl::QslResult<::qsl::rt::RegionLease<'static,{cap},{slots}>>{{self.validate_values()?;let mut lease={}_RT_REGIONS.try_acquire()?;unsafe{{let n=<Self as {target}>::serialize_into_unsafe(self,lease.as_mut_ptr());::qsl::validation::check_size(n,Self::MAX_DATA_SIZE)?;lease.set_len(n);}}Ok(lease)}}",schema.name));
     }
     Ok(())
 }
@@ -242,14 +315,18 @@ pub(super) fn raw_read_stored(
     len: &str,
     borrowed: bool,
 ) -> QslResult<()> {
-    use crate::modernization::StorageKind;
+    use qsl_lexer::layout::StorageKind;
     match f.storage {
+        StorageKind::HeapInlineString(max) => {
+            ln(out,format!("let text=std::str::from_utf8_unchecked(std::slice::from_raw_parts(reader.read_exact({len}),{len}));let {name}=::qsl::InlineString::<{max}>::try_boxed_from_str(text).expect(\"QSL heap allocation\");"));
+            Ok(())
+        }
         StorageKind::HeapString => {
             ln(out,format!("let bytes=std::slice::from_raw_parts(reader.read_exact({len}),{len});let {name}=String::from_utf8_unchecked(bytes.to_vec());"));
             Ok(())
         }
         StorageKind::StackString(n) => {
-            ln(out,format!("let text=std::str::from_utf8_unchecked(std::slice::from_raw_parts(reader.read_exact({len}),{len}));let {name}=::qsl::StackString::<{n}>::try_from_str(text).unwrap_unchecked();"));
+            ln(out,format!("let text=std::str::from_utf8_unchecked(std::slice::from_raw_parts(reader.read_exact({len}),{len}));let {name}=::qsl::StackString::<{n},_>::try_from_str(text).unwrap_unchecked();"));
             Ok(())
         }
         StorageKind::StrView => {
@@ -274,7 +351,7 @@ pub(super) fn raw_read(
 
         QslType::BorrowedString{..}=>"std::str::from_utf8_unchecked(__bytes)".into(),
 
-        QslType::InlineRawString{max,..}=>format!("::qsl::InlineString::<{max}>::from_str_unchecked(std::str::from_utf8_unchecked(__bytes))"),
+        QslType::InlineRawString{max,..}=>format!("::qsl::InlineString::<{max},_>::from_str_unchecked(std::str::from_utf8_unchecked(__bytes))"),
         _ if borrowed=>"std::str::from_utf8_unchecked(__bytes)".into(),
         _=>"String::from_utf8_unchecked(__bytes.to_vec())".into()
     };

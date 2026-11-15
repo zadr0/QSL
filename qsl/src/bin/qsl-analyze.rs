@@ -26,7 +26,7 @@ fn json(s: &str) -> String {
 fn main() {
     if std::env::args().any(|a| a == "--capabilities") {
         println!(
-            "{{\"editorBundle\":1,\"bitmapRevision\":2,\"bitmapMaxOptionals\":128,\"wireLayout\":1,\"schemaHashVersion\":1,\"checkedSchemas\":1,\"optionalModes\":2,\"generatedRust\":1,\"memoryLayout\":1,\"safetyOptIn\":1,\"qpsCodecRevision\":2,\"qpsByteCodecRevision\":3,\"rustMacros\":{}}}",
+            "{{\"editorBundle\":1,\"numericDomains\":1,\"wideDeq\":1,\"nestedArrays\":1,\"shiftedLength\":1,\"autoWire\":1,\"arrayWindows\":1,\"registerPlans\":2,\"bitmapRevision\":2,\"bitmapMaxOptionals\":128,\"wireLayout\":1,\"schemaHashVersion\":1,\"checkedSchemas\":1,\"optionalModes\":2,\"generatedRust\":1,\"memoryLayout\":1,\"safetyOptIn\":1,\"qpsCodecRevision\":2,\"qpsByteCodecRevision\":3,\"rustMacros\":{}}}",
             cfg!(feature = "rust-macros")
         );
         return;
@@ -60,6 +60,7 @@ fn main() {
     let mut rt = false;
     let mut slots = 16;
     let mut stack_limit = 256;
+    let mut cpu_profile = qsl::optimizer::registers::CpuProfile::Portable;
     let mut args = std::env::args().skip(1);
     while let Some(path) = args.next() {
         if path == "--editor-bundle" || path == "--generate" {
@@ -96,7 +97,10 @@ fn main() {
                     return;
                 }
             }
-            constants.extend(d.integer_values());
+            constants.extend(d.wide_values());
+            if d.configured.contains("CPU_PROFILE") {
+                cpu_profile = d.generation.cpu_profile;
+            }
             if d.configured.contains("STACK_LIMIT") {
                 stack_limit = d.generation.stack_limit;
             }
@@ -116,9 +120,9 @@ fn main() {
     }
     #[cfg(feature = "rust-macros")]
     let parsed = if rust_sources.is_empty() {
-        qsl::parse_qsl_with_constants(&source, &constants)
+        qsl::parse_qsl_with_wide_constants(&source, &constants)
     } else {
-        qsl::rust_macro::parse_qsl_with_rust(
+        qsl::rust_macro::parse_qsl_with_rust_wide(
             &source,
             &constants,
             &rust_sources.iter().map(String::as_str).collect::<Vec<_>>(),
@@ -130,7 +134,7 @@ fn main() {
     };
     #[cfg(not(feature = "rust-macros"))]
     let parsed = if rust_sources.is_empty() {
-        qsl::parse_qsl_with_constants(&source, &constants)
+        qsl::parse_qsl_with_wide_constants(&source, &constants)
     } else {
         Err(qsl::ParseError {
             offset: 0,
@@ -148,9 +152,9 @@ fn main() {
                 for (start, end) in editor_spans(&source) {
                     #[cfg(feature = "rust-macros")]
                     let result = if rust_sources.is_empty() {
-                        qsl::parse_qsl_with_constants(&source[start..end], &constants)
+                        qsl::parse_qsl_with_wide_constants(&source[start..end], &constants)
                     } else {
-                        qsl::rust_macro::parse_qsl_with_rust(
+                        qsl::rust_macro::parse_qsl_with_rust_wide(
                             &source[start..end],
                             &constants,
                             &rust_sources.iter().map(String::as_str).collect::<Vec<_>>(),
@@ -161,7 +165,8 @@ fn main() {
                         })
                     };
                     #[cfg(not(feature = "rust-macros"))]
-                    let result = qsl::parse_qsl_with_constants(&source[start..end], &constants);
+                    let result =
+                        qsl::parse_qsl_with_wide_constants(&source[start..end], &constants);
                     match result {
                         Ok(schemas) => {
                             for s in schemas {
@@ -202,6 +207,7 @@ fn main() {
         g.config.qsl_rt = rt;
         g.config.qsl_rt_default = slots;
         g.config.stack_limit = stack_limit;
+        g.config.cpu_profile = cpu_profile;
         g.generate(&schemas)
             .ok()
             .and_then(|_| String::from_utf8(g.output).ok())
@@ -221,7 +227,7 @@ fn main() {
     let rust_names = Vec::<String>::new();
     for s in schemas {
         let mut s = s;
-        if let Err(message) = qsl::modernization::check_storage_limit(&s, stack_limit) {
+        if let Err(message) = qsl::layout::check_storage_limit(&s, stack_limit) {
             diagnostics.push(qsl::ParseError {
                 offset: 0,
                 message: format!("{}: {message}", s.name),
@@ -231,7 +237,7 @@ fn main() {
         if s.options.transmutate && s.borrow_strings() {
             s.flags &= !(qsl::FLAG_LIFETIME | qsl::FLAG_FIELD_BORROW);
         }
-        let s = match qsl::modernization::lower_storage(&s, stack_limit) {
+        let s = match qsl::layout::lower_storage(&s, stack_limit) {
             Ok(s) => s,
             Err(e) => {
                 diagnostics.push(qsl::ParseError {
@@ -241,6 +247,18 @@ fn main() {
                 continue;
             }
         };
+        let compilation =
+            match qsl::analysis::CompilationPlan::analyze_with_profile(&s, cpu_profile) {
+                Ok(p) => p,
+                Err(e) => {
+                    diagnostics.push(qsl::ParseError {
+                        offset: 0,
+                        message: format!("{}: {e}", s.name),
+                    });
+                    continue;
+                }
+            };
+        let s = &compilation.schema;
         let slots = s.options.slots.unwrap_or(slots);
         let hashes = match s.hashes(use_hash) {
             Ok(hashes) => hashes,
@@ -253,18 +271,17 @@ fn main() {
             }
         };
         let hash_json = format!("\"hashes\":{{\"version\":{},\"algorithm\":{},\"bits\":{},\"strict\":{},\"light\":{},\"complete\":{}}}", hashes.version, json(hashes.algorithm.name()), hashes.algorithm.bits(), json(&hashes.strict_hex()), json(&hashes.light_hex()), hashes.complete);
-        let quant =
-            qsl::payload_quant::PayloadQuantPlan::analyze(&s).expect("validated payload plan");
-        let hybrid = qsl::hybrid::HybridPlan::analyze(&s).expect("validated scalar prefix");
+        let quant = qsl::PayloadQuantPlan::analyze(s).expect("validated payload plan");
+        let hybrid = qsl::hybrid::HybridPlan::analyze(s).expect("validated scalar prefix");
         let padding = if quant.active { quant.padding_bytes } else { 0 };
-        let maximum = qsl::interpreter::schema_maximum_size(&s).ok().flatten();
+        let maximum = qsl::interpreter::schema_maximum_size(s).ok().flatten();
         let eligible = maximum.is_some_and(|n| {
             n.checked_add(padding)
                 .and_then(|n| n.checked_mul(slots))
                 .is_some_and(|x| x <= 64 * 1024 * 1024)
         });
         let (bits, index, plain, reason) = if s.state_bits() || s.predict_table() {
-            match qsl::static_index::PredictPlan::analyze(&s) {
+            match qsl::static_index::PredictPlan::analyze(s) {
                 Ok(p) => (
                     p.used_bits,
                     p.packed_index().map_or(0, |t| t.len() * 4),
@@ -343,7 +360,7 @@ fn main() {
         } else if s.state_bits() && s.opt_table() {
             "descriptor presence with tag-indexed reader dispatch"
         } else if s.predicted_opt_table() {
-            match qsl::static_optional::StaticOptionalPlan::analyze(&s)
+            match qsl::static_optional::StaticOptionalPlan::analyze(s)
                 .expect("validated optional plan")
                 .presence
             {
@@ -366,27 +383,49 @@ fn main() {
             "disabled"
         };
         let length_events = if s.predicted_opt_table() && !quant.active {
-            match qsl::static_optional::StaticOptionalPlan::analyze(&s).expect("validated length plan").presence{
+            match qsl::static_optional::StaticOptionalPlan::analyze(s).expect("validated length plan").presence{
             qsl::static_optional::StaticPresence::Graph(g)=>format!("{{\"metadataBytes\":{},\"tagBytes\":{},\"maxPayload\":{},\"events\":[{}]}}",g.metadata_bytes,g.tag_bytes,g.max_payload,g.nodes.iter().map(|n|format!("{{\"start\":{},\"end\":{},\"forced\":{},\"possible\":{},\"valid\":{}}}",n.start,n.end,mask_json(n.forced),mask_json(n.possible),n.valid)).collect::<Vec<_>>().join(",")),
             _=>"null".into()
         }
         } else {
             "null".into()
         };
-        let wire_layout = editor_layout::describe(&s);
+        let wire_layout = editor_layout::describe(s);
+        let mapping=compilation.fields.iter().map(|f|format!("{{\"name\":{},\"logical\":{},\"wire\":{},\"nativeOffset\":{},\"directCopy\":{}}}",json(&f.name),f.logical,f.wire,f.physical_offset.map_or("null".into(),|v|v.to_string()),f.direct_copy)).collect::<Vec<_>>().join(",");
+        let segments = compilation
+            .io
+            .pointing
+            .as_ref()
+            .map(|p| {
+                p.segments
+                    .iter()
+                    .map(|c| {
+                        format!(
+                            "{{\"nativeOffset\":{},\"wireOffset\":{},\"bytes\":{}}}",
+                            c.native_offset, c.wire_offset, c.bytes
+                        )
+                    })
+                    .collect::<Vec<_>>()
+                    .join(",")
+            })
+            .unwrap_or_default();
+        let register_candidates=compilation.registers.groups.iter().map(|g|{
+            let candidates=g.candidates.iter().map(|c|format!("{{\"strategy\":{},\"feature\":{},\"feasible\":{},\"reason\":{},\"measured\":{},\"estimate\":{},\"uops\":{},\"depth\":{},\"gpr\":{},\"vector\":{},\"transfers\":{},\"codeBytes\":{}}}",json(&format!("{:?}",c.strategy)),c.feature.map_or("null".into(),json),c.feasible,json(c.reason),c.measured,c.cost.score(cpu_profile),c.cost.uops,c.cost.dependency_depth,c.cost.gpr,c.cost.vector,c.cost.transfers,c.cost.code_bytes)).collect::<Vec<_>>().join(",");
+            format!("{{\"fields\":[{}],\"physicalBits\":{},\"usefulBits\":{},\"selectedWrite\":{},\"selectedRead\":{},\"selectionReason\":{},\"candidates\":[{candidates}]}}",g.fields.iter().map(|n|n.to_string()).collect::<Vec<_>>().join(","),g.physical_bits,g.useful_bits,json(&format!("{:?}",g.selected_write)),json(&format!("{:?}",g.selected_read)),json(g.selection_reason))
+        }).collect::<Vec<_>>().join(",");
+        let compilation_json=format!("\"compilation\":{{\"registerCandidates\":[{register_candidates}],\"cpuProfile\":{},\"wireVersion\":{},\"fields\":[{mapping}],\"copySegments\":[{segments}],\"operations\":{}}}",json(&format!("{cpu_profile:?}")),compilation.wire.version.map_or("null".into(),|n|n.to_string()),compilation.operations.len());
         let hybrid_json=hybrid.as_ref().map_or("null".into(),|p|format!("{{\"minimumBytes\":{},\"maximumBytes\":{},\"lengthHeaderBytes\":{},\"fieldCount\":{}}}",p.prefix_minimum,p.prefix_bytes,p.length_header,p.prefix.fields.len()));
-        let byte_api = safety
-            && s.fields.iter().all(|f| {
-                matches!(
-                    f.data,
-                    qsl::QslType::Byte
-                        | qsl::QslType::Integer { .. }
-                        | qsl::QslType::RangedInteger { .. }
-                        | qsl::QslType::Flags(_)
-                )
-            });
-        let memory = editor_memory::describe(&s);
-        let groups=qsl::modernization::register_groups(&s).unwrap_or_default().iter().map(|g|format!("{{\"firstField\":{},\"fieldCount\":{},\"wireOffset\":{},\"readBytes\":{},\"registerBits\":{},\"metadataBytes\":{}}}",g.first,g.fields,g.offset.map_or("null".into(),|n|n.to_string()),g.bytes,g.register_bits,g.metadata_bytes)).collect::<Vec<_>>().join(",");
+        let byte_api = safety && s.options.dynamic.is_none();
+        let memory = editor_memory::describe(s);
+        let array_windows = if s.compact() && !s.qps() && s.options.dynamic.is_none() {
+            Ok::<_,qsl::QslError>(&compilation.io).map(|plan| plan.array_windows.iter().map(|w| {
+                let offsets=(0..8).filter(|n|w.entry_offsets&(1<<n)!=0).map(|n|n.to_string()).collect::<Vec<_>>().join(",");
+                format!("{{\"field\":{},\"name\":{},\"entryOffsets\":[{offsets}],\"readerBits\":{},\"writerBits\":{}}}",w.field,json(&s.fields[w.field].name),w.reader.bits(),w.writer.bits())
+            }).collect::<Vec<_>>().join(",")).unwrap_or_default()
+        } else {
+            String::new()
+        };
+        let groups=qsl::layout::register_groups(s).unwrap_or_default().iter().map(|g|format!("{{\"firstField\":{},\"fieldCount\":{},\"wireOffset\":{},\"readBytes\":{},\"registerBits\":{},\"metadataBytes\":{}}}",g.first,g.fields,g.offset.map_or("null".into(),|n|n.to_string()),g.bytes,g.register_bits,g.metadata_bytes)).collect::<Vec<_>>().join(",");
         let regions = s
             .options
             .regions
@@ -408,7 +447,7 @@ fn main() {
             .and_then(|n| n.checked_add(qsl::qps_bytes::BYTE_FRAME_HEADER))
             .map_or("null".to_string(), |n| n.to_string());
         let payload=format!("\"qpsByteCodecRevision\":3,\"qpsByteHeader\":16,\"qpsByteMaximum\":{byte_maximum},\"qpsByteAPI\":{byte_api},\"scalarPrefix\":{hybrid_json},\"stateBits\":{},\"stateBitsQuantum\":{},\"qpsCodecRevision\":2,\"payloadQuantRequested\":{},\"payloadQuantActive\":{},\"payloadQuantum\":{},\"payloadPadding\":{padding},\"payloadMaximum\":{},\"rawMaximum\":{},\"payloadReason\":{},\"staticOptional\":{},\"lengthGraph\":{length_events},\"predictSequenceHint\":{hint},\"predictSequence\":{prediction},\"tagDispatch\":{dispatch}",s.state_bits(),s.state_bits_quantum(),s.quant_requested(),quant.active,quant.quantum,quant.max_bytes,quant.raw_max_bytes.map_or("null".into(),|x|x.to_string()),json(quant.reason.unwrap_or("exact quotient and remainder; separate native restoration")),json(static_mode));
-        rows.push(format!("{{\"maxDataSize\":{maximum_data},{hash_json},\"wireLayout\":{wire_layout},\"memory\":{memory},\"registerGroups\":[{groups}],\"nativeRegions\":[{regions}],\"stackLimit\":{stack_limit},\"name\":{},\"maximum\":{},\"rtEligible\":{eligible},\"rtReason\":{},\"strings\":[{strings}],\"rtEnabled\":{},\"slots\":{slots},\"qps\":{},\"quantum\":{},\"dBits\":{bits},\"indexBytes\":{index},\"plainIndexBytes\":{plain},\"reason\":{},\"inline\":{},\"optionalCount\":{},\"fieldCount\":{},\"structureMacro\":{structure_macro},\"safety\":{safety},\"optionalTailRequired\":{optional_tail},\"suggestFixedPrefix\":{suggest},{payload}}}",json(&s.name),maximum.map_or("null".into(),|x|x.to_string()),json(rt_reason),rt&&eligible,s.qps(),if s.qps(){s.quantum()}else{s.state_bits_quantum()},json(reason),json(inline),s.optional_count(),s.fields.len()));
+        rows.push(format!("{{{compilation_json},\"maxDataSize\":{maximum_data},{hash_json},\"wireLayout\":{wire_layout},\"memory\":{memory},\"arrayWindows\":[{array_windows}],\"registerGroups\":[{groups}],\"nativeRegions\":[{regions}],\"stackLimit\":{stack_limit},\"name\":{},\"maximum\":{},\"rtEligible\":{eligible},\"rtReason\":{},\"strings\":[{strings}],\"rtEnabled\":{},\"slots\":{slots},\"qps\":{},\"quantum\":{},\"dBits\":{bits},\"indexBytes\":{index},\"plainIndexBytes\":{plain},\"reason\":{},\"inline\":{},\"optionalCount\":{},\"fieldCount\":{},\"structureMacro\":{structure_macro},\"safety\":{safety},\"optionalTailRequired\":{optional_tail},\"suggestFixedPrefix\":{suggest},{payload}}}",json(&s.name),maximum.map_or("null".into(),|x|x.to_string()),json(rt_reason),rt&&eligible,s.qps(),if s.qps(){s.quantum()}else{s.state_bits_quantum()},json(reason),json(inline),s.optional_count(),s.fields.len()));
     }
     let diagnostic_json = diagnostics
         .iter()

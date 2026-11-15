@@ -47,6 +47,51 @@ fn integer(expr: &syn::Expr) -> Result<usize, MacroError> {
         "Rust macro arrays/inline strings require a literal capacity".into(),
     ))
 }
+/// Source imports can evaluate literal capacities and sealed built-in length
+/// words. Generic aliases require typed Builder reflection instead of guessing.
+fn bounded_capacity(
+    capacity: &GenericArgument,
+    length: Option<&GenericArgument>,
+) -> Result<usize, MacroError> {
+    let GenericArgument::Const(expr) = capacity else {
+        return Err(MacroError(
+            "bounded capacity must be an integer literal; use typed Builder for generic constants"
+                .into(),
+        ));
+    };
+    let n = integer(expr)?;
+    let maximum = match length {
+        None => u32::MAX as usize,
+        Some(GenericArgument::Type(Type::Path(p))) => match p
+            .path
+            .segments
+            .last()
+            .map(|s| s.ident.to_string())
+            .as_deref()
+        {
+            Some("u32") => u32::MAX as usize,
+            Some("NonZeroU8") => u8::MAX as usize - 1,
+            Some("NonZeroU16") => u16::MAX as usize - 1,
+            Some("NonZeroU32") => u32::MAX as usize - 1,
+            _ => {
+                return Err(MacroError(
+                    "unknown bounded length word; use typed Builder for type aliases".into(),
+                ))
+            }
+        },
+        _ => {
+            return Err(MacroError(
+                "bounded length word must be u32 or NonZeroU8/U16/U32".into(),
+            ))
+        }
+    };
+    if n > maximum {
+        return Err(MacroError(format!(
+            "capacity {n} exceeds the selected length word's maximum {maximum}"
+        )));
+    }
+    Ok(n)
+}
 fn field_type(
     ty: &Type,
     names: &HashSet<String>,
@@ -94,21 +139,113 @@ fn field_type(
                         .into(),
                 ));
             }
+            if name == "StackString" {
+                let PathArguments::AngleBracketed(args) = &leaf.arguments else {
+                    return Err(MacroError("StackString requires a literal capacity".into()));
+                };
+                if args.args.is_empty() || args.args.len() > 2 {
+                    return Err(MacroError(
+                        "StackString expects capacity and an optional length word".into(),
+                    ));
+                }
+                let max = bounded_capacity(&args.args[0], args.args.get(1))?;
+                return Ok(QslType::RangedString { min: 0, max });
+            }
+            if name == "InlineArray" {
+                let PathArguments::AngleBracketed(args) = &leaf.arguments else {
+                    return Err(MacroError(
+                        "InlineArray requires element and literal capacity".into(),
+                    ));
+                };
+                if !(2..=3).contains(&args.args.len()) {
+                    return Err(MacroError(
+                        "InlineArray expects element, capacity and an optional length word".into(),
+                    ));
+                }
+                let GenericArgument::Type(element) = &args.args[0] else {
+                    return Err(MacroError("InlineArray requires an element type".into()));
+                };
+                let max = bounded_capacity(&args.args[1], args.args.get(2))?;
+                let (mut element_optional, mut element_borrow, mut element_str, mut element_owned) =
+                    (false, false, false, false);
+                let element = field_type(
+                    element,
+                    names,
+                    &mut element_optional,
+                    &mut element_borrow,
+                    &mut element_str,
+                    &mut element_owned,
+                )?;
+                if element_optional
+                    || element_borrow
+                    || element.primitive().ok().flatten().is_none()
+                {
+                    return Err(MacroError("source InlineArray imports require numeric elements; use typed Builder for other supported element types".into()));
+                }
+                // This newly supported container uses the typed Builder's byte
+                // codec. Do not rewrite legacy source [u8;N] array semantics.
+                let element = if matches!(
+                    element,
+                    QslType::Integer {
+                        bits: 8,
+                        signed: false,
+                        min: 0
+                    }
+                ) {
+                    QslType::Byte
+                } else {
+                    element
+                };
+                return Ok(QslType::RangedArray {
+                    element: Box::new(element),
+                    min: 0,
+                    max,
+                });
+            }
+            if name == "Box" {
+                let PathArguments::AngleBracketed(args) = &leaf.arguments else {
+                    return Err(MacroError("Box requires one type".into()));
+                };
+                if args.args.len() != 1 {
+                    return Err(MacroError("Box requires one type".into()));
+                }
+                let GenericArgument::Type(inner) = &args.args[0] else {
+                    return Err(MacroError("Box requires one type".into()));
+                };
+                let mut nested_optional = false;
+                let data = field_type(
+                    inner,
+                    names,
+                    &mut nested_optional,
+                    borrow,
+                    borrow_str,
+                    owned_str,
+                )?;
+                if nested_optional || matches!(data, QslType::Custom { .. }) {
+                    return Err(MacroError(
+                        "source Box imports require a supported non-optional field type".into(),
+                    ));
+                }
+                return Ok(data);
+            }
             if name == "InlineString" {
                 let PathArguments::AngleBracketed(args) = &leaf.arguments else {
                     return Err(MacroError(
                         "InlineString requires a literal capacity".into(),
                     ));
                 };
-                let Some(GenericArgument::Const(expr)) = args.args.first() else {
+                if args.args.is_empty() || args.args.len() > 2 {
                     return Err(MacroError(
-                        "InlineString requires a literal capacity".into(),
+                        "InlineString expects capacity and an optional length word".into(),
                     ));
-                };
-                return Ok(QslType::InlineRawString {
-                    min: 0,
-                    max: integer(expr)?,
-                });
+                }
+                let max = bounded_capacity(&args.args[0], args.args.get(1))?;
+                if max > u16::MAX as usize {
+                    return Err(MacroError(
+                        "InlineString capacity exceeds the QSL-LZ limit".into(),
+                    ));
+                }
+                return Ok(QslType::CompressedString { min: 0, max });
             }
             if names.contains(&name) {
                 let lifetimes_only = match &leaf.arguments {
@@ -137,6 +274,20 @@ fn field_type(
             if name == "String" {
                 *owned_str = true;
                 return Ok(QslType::String(0));
+            }
+            if name == "u128" {
+                return Ok(QslType::DomainInteger(
+                    crate::domain::IntegerDomain::unsigned(128, 0, u128::MAX)
+                        .expect("full unsigned domain")
+                        .into(),
+                ));
+            }
+            if name == "i128" {
+                return Ok(QslType::DomainInteger(
+                    crate::domain::IntegerDomain::signed(128, i128::MIN, i128::MAX)
+                        .expect("full signed domain")
+                        .into(),
+                ));
             }
             if let Some(bits) = name
                 .get(1..)
@@ -298,6 +449,13 @@ pub fn parse_rust_macros(sources: &[&str]) -> Result<Vec<QslSchema>, MacroError>
                     schema.name
                 )));
             }
+            if native
+                && matches!(&f.ty,Type::Path(p) if p.path.segments.last().is_some_and(|s|s.ident=="Box"))
+            {
+                return Err(MacroError(
+                    "native regions cannot contain Box ownership descriptors".into(),
+                ));
+            }
             let name = f.ident.expect("named field").to_string();
             let mut optional = false;
             let mut data = field_type(
@@ -310,12 +468,15 @@ pub fn parse_rust_macros(sources: &[&str]) -> Result<Vec<QslSchema>, MacroError>
             )
             .map_err(|e| MacroError(format!("{}::{name}: {e}", schema.name)))?;
             if native {
-                if let QslType::InlineRawString { max, .. } = data {
+                if let QslType::InlineRawString { max, .. }
+                | QslType::CompressedString { max, .. } = data
+                {
                     data = QslType::FixedString(max);
                 }
             }
             let bits = data.default_compact_bits()?;
             schema.fields.push(QslField {
+                shifted_length: false,
                 storage: Default::default(),
                 name,
                 optional,
@@ -329,17 +490,14 @@ pub fn parse_rust_macros(sources: &[&str]) -> Result<Vec<QslSchema>, MacroError>
             schema.flags |= FLAG_FIELD_BORROW;
         }
         if native {
-            schema
-                .options
-                .regions
-                .push(crate::modernization::NativeRegion {
-                    alignment: native_alignment,
-                    external: true,
-                    field_prefix: String::new(),
-                    rust_type: schema.name.clone(),
-                    start: 0,
-                    end: schema.fields.len(),
-                });
+            schema.options.regions.push(crate::layout::NativeRegion {
+                alignment: native_alignment,
+                external: true,
+                field_prefix: String::new(),
+                rust_type: schema.name.clone(),
+                start: 0,
+                end: schema.fields.len(),
+            });
         }
         schema.max_tag = schema.fields.len();
         result.push(schema);
@@ -359,9 +517,29 @@ pub fn expand_with_rust(
     sources: &[&str],
 ) -> Result<Vec<QslSchema>, MacroError> {
     let mut all = schemas.to_vec();
-    all.extend(parse_rust_macros(sources)?);
+    let imported = parse_rust_macros(sources)?;
+    let external_names = imported
+        .iter()
+        .map(|s| s.name.clone())
+        .collect::<std::collections::BTreeSet<_>>();
+    // Already lowered native schemas keep the explicit QSL field contract.
+    // The imported Rust name supplies the definition, not a second schema.
+    all.extend(imported.into_iter().filter(|m| {
+        !schemas
+            .iter()
+            .any(|s| s.options.generated_region && s.name == m.name)
+    }));
     let mut expanded = crate::schema_macro::expand_macros(&all)?;
     expanded.truncate(schemas.len());
+    for schema in &mut expanded {
+        schema
+            .options
+            .externally_defined_types
+            .extend(external_names.iter().cloned());
+        if schema.options.generated_region && external_names.contains(&schema.name) {
+            schema.options.external_definition = true;
+        }
+    }
     Ok(expanded)
 }
 pub fn parse_qsl_with_rust(
@@ -371,6 +549,17 @@ pub fn parse_qsl_with_rust(
 ) -> Result<Vec<QslSchema>, MacroError> {
     let schemas = crate::parser::parse_qsl_raw_with_constants(source, constants)
         .map_err(|e| MacroError(e.to_string()))?;
+    expand_with_rust(&schemas, rust_sources)
+}
+
+pub fn parse_qsl_with_rust_wide(
+    source: &str,
+    constants: &HashMap<String, crate::WideNumber>,
+    rust_sources: &[&str],
+) -> Result<Vec<QslSchema>, MacroError> {
+    let schemas =
+        crate::parser::parse_qsl_raw_with_wide_primitives(source, constants, &Default::default())
+            .map_err(|e| MacroError(e.to_string()))?;
     expand_with_rust(&schemas, rust_sources)
 }
 
@@ -448,6 +637,13 @@ mod tests {
         }
     }
     #[test]
+    fn source_macro_import_preserves_full_width_integer_metadata() {
+        let s = parse("&P{M m;}", "#[qsl_macro]struct M{a:u128,b:i128}").unwrap();
+        assert_eq!(s[0].fields[0].data.primitive().unwrap(), Some("u128"));
+        assert_eq!(s[0].fields[1].data.primitive().unwrap(), Some("i128"));
+        assert_eq!(s[0].fields[0].data.fixed_wire_size().unwrap(), Some(16));
+    }
+    #[test]
     fn source_constraints_are_explicit() {
         for r in [
             "#[qsl_macro]enum M{A}",
@@ -458,6 +654,94 @@ mod tests {
             "#[qsl_macro]struct M{bytes:[u8;SIZE]}",
         ] {
             assert!(parse("&P{M m;}", r).is_err(), "{r}");
+        }
+    }
+    #[test]
+    fn source_bounded_containers_preserve_numeric_domains_and_reject_invalid_length_words() {
+        let s=parse("&P[safety,aggressive[shift=true]]{M m;}","#[qsl_macro]struct M{name:qsl::StackString<32,core::num::NonZeroU8>,values:qsl::InlineArray<u16,8,core::num::NonZeroU8>,extra:Option<qsl::InlineArray<u8,4>>}").unwrap();
+        assert!(matches!(
+            s[0].fields[0].data,
+            QslType::RangedString { min: 0, max: 32 }
+        ));
+        assert!(matches!(
+            s[0].fields[1].data,
+            QslType::RangedArray { min: 0, max: 8, .. }
+        ));
+        assert!(s[0].fields[2].optional);
+        for ty in [
+            "StackString<255,NonZeroU8>",
+            "StackString<8,u8>",
+            "InlineArray<u16,255,NonZeroU8>",
+            "InlineArray<Option<u8>,8>",
+            "InlineArray<u8,8,UnknownLength>",
+            "InlineArray<u8,8,u32,u32>",
+        ] {
+            let rust = format!("#[qsl_macro]struct M{{value:{ty}}}");
+            assert!(parse("&P{M m;}", &rust).is_err(), "{ty}");
+        }
+    }
+    #[test]
+    fn inline_string_is_lz_while_explicit_native_rewrite_remains_fixed_utf8() {
+        let normal = parse("&P{M meta;}", "#[qsl_macro]struct M{text:InlineString<64>}").unwrap();
+        let expected = crate::parse_qsl("&P{str(0..64) meta_text|decompress=true|;}").unwrap();
+        assert!(matches!(
+            normal[0].fields[0].data,
+            QslType::CompressedString { min: 0, max: 64 }
+        ));
+        for algorithm in [
+            crate::SchemaHashAlgorithm::Xxh3_64,
+            crate::SchemaHashAlgorithm::Xxh3_128,
+        ] {
+            assert_eq!(
+                normal[0].hashes(algorithm).unwrap(),
+                expected[0].hashes(algorithm).unwrap()
+            );
+            let mut old = normal[0].clone();
+            old.fields[0].data = QslType::InlineRawString { min: 0, max: 64 };
+            assert_ne!(
+                normal[0].hashes(algorithm).unwrap(),
+                old.hashes(algorithm).unwrap()
+            );
+        }
+        let native = parse(
+            "&P[safety]{M meta;}",
+            "#[qsl_macro(aggressive_transmutate)]struct M{text:InlineString<4>}",
+        )
+        .unwrap();
+        assert!(native.iter().any(|s| s
+            .fields
+            .iter()
+            .any(|f| matches!(f.data, QslType::FixedString(4)))));
+        assert!(parse(
+            "&P[safety]{M meta;}",
+            "#[qsl_macro(aggressive_transmutate)]struct M{text:Box<InlineString<4>>}"
+        )
+        .is_err());
+    }
+    #[test]
+    fn explicit_native_region_reuses_a_supplied_rust_declaration_in_either_preparation_order() {
+        let qsl="&P[safety]{#region(aggressive_transmutate=\"ArrayMeta\");array<u16>(3) values;#end_region;u8 tail;}";
+        let rust = "#[schem_macro(aggressive_transmutate)]struct ArrayMeta{values:[u16;3]}";
+        let raw = crate::parser::parse_qsl_raw_with_constants(qsl, &Default::default()).unwrap();
+        let parsed = crate::parse_qsl(qsl).unwrap();
+        for schemas in [raw, parsed] {
+            let imported = expand_with_rust(&schemas, &[rust]).unwrap();
+            let lowered = crate::frontend::expand_schemas(&imported).unwrap();
+            let definitions = lowered
+                .iter()
+                .filter(|s| s.name == "ArrayMeta")
+                .collect::<Vec<_>>();
+            assert_eq!(definitions.len(), 1);
+            assert!(definitions[0].options.external_definition);
+            let repeated = crate::frontend::expand_schemas(&lowered).unwrap();
+            assert!(
+                repeated
+                    .iter()
+                    .find(|s| s.name == "ArrayMeta")
+                    .unwrap()
+                    .options
+                    .external_definition
+            );
         }
     }
 }

@@ -1,11 +1,12 @@
 //! Shared schema analysis before target-specific lowering.
 use crate::{GenerationConfig, QslError, QslResult, QslSchema};
 
-/// Immutable expanded schemas and configuration, without Rust storage lowering.
+/// Shared schema collection, with optional programmatic declaration methods.
 /// Backends may borrow this model and derive their own target-specific plans.
 #[derive(Clone, Debug)]
 pub struct QslSchemaBuilder {
     pub(crate) schemas: Vec<QslSchema>,
+    pub(crate) declaration: crate::builder::DeclarationState,
     pub(crate) config: GenerationConfig,
     pub(crate) primitives: std::collections::BTreeMap<String, crate::PrimitiveRepr>,
 }
@@ -35,6 +36,7 @@ pub fn analyze_schemas(
     }
     Ok(QslSchemaBuilder {
         schemas,
+        declaration: Default::default(),
         config,
         primitives: Default::default(),
     })
@@ -50,7 +52,7 @@ pub fn expand_schemas(schemas: &[QslSchema]) -> QslResult<Vec<QslSchema>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{modernization::StorageKind, parse_qsl};
+    use crate::{layout::StorageKind, parse_qsl};
     #[test]
     fn analysis_keeps_storage_unselected_and_input_owned() {
         let module = {

@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.4.0 — 2026-11-15
+
+- Generate code against qsl-core 0.2.0 and qsl-rt 0.1.0 contracts.
+- Select concrete output storage by the inclusive STACK_LIMIT bound.
+- Preserve checked input validation, separate unsafe paths, prepared container reuse and supported BMI2 writes.
+
+### Development notes — 2026-11-14
+
+- Keep runtime I/O, codec/primitive contracts, validation and owned containers in always-no_std qsl-core; make alloc explicit and compiler support optional in the facade.
+- Add no_std qsl-rt storage providers, core buffer contracts, direct heap InlineString restoration and optional NonZero InlineArray lengths.
+- Verify actual generated code in separate no_std allocation-free and alloc fixtures.
+
+
+### Development notes — 2026-11-13
+
+- Honor byte barriers in native fixed/inline array decoding, including optional branches; retain wire/hash parity for the frozen array fixture.
+
+- Lower exact numeric domains into raw/COMPACT and supported optional/dyn modes with separate checked and unchecked APIs.
+- Select <=64-bit reads during generation; retain narrow-codec performance within overlapping confidence intervals in the focused benchmark.
+
+
+
 ## 0.3.0 — 2026-11-08
 
 - Extract shared schema/runtime contracts into qsl-core 0.1.0; retain compatible re-exports and one error/type identity.

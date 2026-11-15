@@ -13,26 +13,38 @@ dependencies = [
 
 [[package]]
 name = "qsl"
-version = "0.1.2"
+version = "0.3.0"
 dependencies = [
+ "qsl-core",
  "qsl-interpreter",
  "qsl-lexer",
  "qsl-macros-impl",
+ "qsl-rt",
+]
+
+[[package]]
+name = "qsl-core"
+version = "0.1.0"
+dependencies = [
+ "xxhash-rust",
 ]
 
 [[package]]
 name = "qsl-interpreter"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
+ "proc-macro2",
+ "qsl-core",
  "qsl-lexer",
+ "syn",
 ]
 
 [[package]]
 name = "qsl-lexer"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
+ "qsl-core",
  "syn",
- "xxhash-rust",
 ]
 
 [[package]]
@@ -48,6 +60,13 @@ name = "qsl-modernization-contracts"
 version = "0.0.0"
 dependencies = [
  "qsl",
+]
+
+[[package]]
+name = "qsl-rt"
+version = "0.1.0"
+dependencies = [
+ "qsl-core",
 ]
 
 [[package]]
