@@ -1,0 +1,114 @@
+---
+title: Schnellstart
+description: Lege ein Rust-Projekt an, füge ein Schema hinzu, generiere Code in build.rs und kodiere einen Wert hin und zurück.
+qslResources: [{"label": "Beispiele im Repository", "url": "https://github.com/zadr0/QSL/tree/main/examples"}]
+---
+
+import { Steps, FileTree } from '@astrojs/starlight/components';
+
+Du brauchst Rust 1.98 oder neuer. Am Ende steht ein Programm, das einen `User`-Wert in Bytes kodiert und wieder dekodiert.
+
+<FileTree>
+- qsl-demo/
+  - Cargo.toml
+  - build.rs
+  - user.qsl
+  - src/
+    - main.rs
+</FileTree>
+
+<Steps>
+
+1. Lege das Projekt an:
+
+   ```sh
+   cargo new qsl-demo
+   cd qsl-demo
+   ```
+
+2. Trage `qsl` zweimal in `Cargo.toml` ein: unter `[dependencies]` für das Programm und unter `[build-dependencies]` für `build.rs`. Den Abschnitt `[package]`, den Cargo angelegt hat, lässt du stehen. Verwende an beiden Stellen dieselbe Version.
+
+   ```toml title="Cargo.toml" ins={7,9-10}
+   [package]
+   name = "qsl-demo"
+   version = "0.1.0"
+   edition = "2024"
+
+   [dependencies]
+   qsl = "=0.4.0"
+
+   [build-dependencies]
+   qsl = "=0.4.0"
+   ```
+
+3. Beschreibe die Nachricht in `user.qsl` neben `Cargo.toml`:
+
+   ```qsl title="user.qsl"
+   &User[safety] {
+       u64 id;
+       str(1..100) name;
+   }
+   ```
+
+   `&User` deklariert einen Typ. `u64 id` ist ein Feld vom Typ `u64` mit dem Namen `id`. `str(1..100)` ist ein String aus 1 bis 100 Bytes UTF-8. `[safety]` ergänzt die geprüften Decode-Methoden, die weiter unten verwendet werden.
+
+4. Generiere den Rust-Code zur Build-Zeit. Lege dazu `build.rs` im Projektverzeichnis an:
+
+   ```rust title="build.rs"
+   fn main() -> Result<(), Box<dyn std::error::Error>> {
+       let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+       qsl::build_qsl_files(&["user.qsl"], &[], out)?;
+       Ok(())
+   }
+   ```
+
+   `build_qsl_files` schreibt `qsl_gen.rs` nach `OUT_DIR` und weist Cargo an, `build.rs` erneut auszuführen, sobald sich `user.qsl` ändert. Das zweite Argument listet `.deq`-Konfigurationsdateien. Noch gibt es keine.
+
+5. Binde die generierte Datei in `src/main.rs` ein. Sie definiert `User` und seine Methoden, eine `use`-Zeile brauchst du also nicht:
+
+   ```rust title="src/main.rs"
+   include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
+
+   fn main() -> qsl::QslResult<()> {
+       let user = User {
+           id: 42,
+           name: "Ada".into(),
+       };
+       let bytes = user.serialize_checked()?;
+       let restored = User::deserialize_checked(&bytes)?;
+       assert_eq!((restored.id, restored.name.as_str()), (42, "Ada"));
+       println!("{}: {} ({} bytes)", restored.id, restored.name, bytes.len());
+       Ok(())
+   }
+   ```
+
+6. Starte das Programm:
+
+   ```sh
+   cargo run
+   ```
+
+   ```text
+   42: Ada (15 bytes)
+   ```
+
+</Steps>
+
+## Was passiert ist
+
+Der Frame ist 15 Bytes lang: 8 für `id`, ein 4 Byte langes Längenpräfix für `name` und 3 Bytes UTF-8. Das Schema erlaubt für `name` 1 bis 100 Bytes. Liegt das Längenpräfix außerhalb dieses Bereichs, lehnt `deserialize_checked` den Frame ab, bevor es den String allokiert.
+
+`serialize_checked` prüft den Wert gegen das Schema, bevor es schreibt. Beide Methoden geben `qsl::QslResult` zurück. Der Fehlertyp ist [`QslError`](/reference/errors/).
+
+## Regeln, die du früh kennen solltest
+
+- Pflichtfelder kommen zuerst. Ein Pflichtfeld nach einem optionalen Feld ist ein Build-Fehler.
+- Grenzen von Strings und Arrays sind inklusiv. Strings werden in UTF-8-Bytes gemessen, Arrays in Elementen.
+- `deserialize_checked` und `deserialize_checked_into` gibt es nur für Typen mit `[safety]`. Die ungeprüften Decoder werden immer generiert und setzen einen gültigen Frame voraus.
+- `MAX_DATA_SIZE` begrenzt einen Frame und die dekodierten Daten. Der Standardwert ist 65535 Bytes. Ändern kannst du ihn in einer [DEQ-Datei](/language/deq/).
+
+## Weiter
+
+- [So funktioniert QSL](/start/how-it-works/): was zur Build-Zeit läuft und was in deinem Programm.
+- [Deklarationen](/language/declarations/): die vollständige Schemasyntax.
+- Beispiele im Repository: sieben Programme zu Integern, Strings, optionalen Feldern, QPS, dem RT-Pool, Rust-Templates und Validierung.

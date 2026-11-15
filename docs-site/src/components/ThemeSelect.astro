@@ -1,0 +1,179 @@
+---
+/**
+ * Override of Starlight's `ThemeSelect`.
+ *
+ * One button switches between the dark and the light theme. Until the reader
+ * clicks it, the site follows the system setting (Starlight's "auto"). The
+ * choice is stored under Starlight's own `localStorage` key with Starlight's
+ * values, so Starlight's inline script still applies it before first paint.
+ *
+ * Where the browser supports view transitions, the new theme spreads from the
+ * button as a circle. With reduced motion it switches at once.
+ */
+import { uniqueId } from '../lib/ids';
+
+const { t } = Astro.locals;
+const maskId = uniqueId('qsl-theme-mask');
+---
+
+<qsl-theme-toggle data-label-to-light={t('qsl.theme.toLight')} data-label-to-dark={t('qsl.theme.toDark')}>
+	<button type="button" class="qsl-theme" aria-label={t('themeSelect.accessibleLabel')}>
+		<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+			<mask id={maskId}>
+				<rect width="24" height="24" fill="#fff"></rect>
+				<circle class="bite" cx="18" cy="6" r="6.5" fill="#000"></circle>
+			</mask>
+			<circle class="core" cx="12" cy="12" r="5.25" fill="currentColor" mask={`url(#${maskId})`}></circle>
+			<g class="rays" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+				<path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"></path>
+			</g>
+		</svg>
+	</button>
+</qsl-theme-toggle>
+
+<script>
+	type Theme = 'dark' | 'light';
+
+	/** Starlight's storage key; an empty value means "follow the system". */
+	const STORAGE_KEY = 'starlight-theme';
+	const root = document.documentElement;
+	const systemLight = matchMedia('(prefers-color-scheme: light)');
+	const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+	function storedTheme(): Theme | null {
+		try {
+			const value = localStorage.getItem(STORAGE_KEY);
+			return value === 'dark' || value === 'light' ? value : null;
+		} catch {
+			return null;
+		}
+	}
+
+	const currentTheme = (): Theme => (root.dataset.theme === 'light' ? 'light' : 'dark');
+
+	function applyTheme(theme: Theme, store: boolean): void {
+		root.dataset.theme = theme;
+		if (store) {
+			try {
+				localStorage.setItem(STORAGE_KEY, theme);
+			} catch {
+				// Storage can be unavailable (private mode); the theme still applies to this page.
+			}
+		}
+		for (const toggle of document.querySelectorAll<QslThemeToggle>('qsl-theme-toggle')) toggle.sync();
+	}
+
+	/** Reveal the new theme as a circle growing from the clicked button. */
+	function switchWithReveal(theme: Theme, origin: DOMRect): void {
+		if (!document.startViewTransition || reducedMotion.matches) {
+			applyTheme(theme, true);
+			return;
+		}
+		const x = origin.left + origin.width / 2;
+		const y = origin.top + origin.height / 2;
+		const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+		root.toggleAttribute('data-qsl-theme-switch', true);
+		const transition = document.startViewTransition(() => applyTheme(theme, true));
+		transition.ready
+			.then(() =>
+				root.animate(
+					{ clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+					{
+						duration: 560,
+						easing: 'cubic-bezier(0.65, 0, 0.35, 1)',
+						pseudoElement: '::view-transition-new(root)',
+					},
+				),
+			)
+			.catch(() => undefined);
+		transition.finished.finally(() => root.removeAttribute('data-qsl-theme-switch'));
+	}
+
+	class QslThemeToggle extends HTMLElement {
+		#button: HTMLButtonElement | null = null;
+
+		connectedCallback(): void {
+			this.#button = this.querySelector('button');
+			this.#button?.addEventListener('click', () => {
+				if (!this.#button) return;
+				switchWithReveal(currentTheme() === 'dark' ? 'light' : 'dark', this.#button.getBoundingClientRect());
+			});
+			this.sync();
+		}
+
+		/** Update the label to describe what the next click does. */
+		sync(): void {
+			const label = currentTheme() === 'dark' ? this.dataset.labelToLight : this.dataset.labelToDark;
+			if (label) this.#button?.setAttribute('aria-label', label);
+		}
+	}
+
+	customElements.define('qsl-theme-toggle', QslThemeToggle);
+
+	systemLight.addEventListener('change', () => {
+		if (storedTheme() === null) applyTheme(systemLight.matches ? 'light' : 'dark', false);
+	});
+</script>
+
+<style>
+	.qsl-theme {
+		display: grid;
+		place-items: center;
+		width: var(--qsl-control-inline, 2.25rem);
+		height: var(--qsl-control-block, 2.25rem);
+		padding: 0;
+		border: 0;
+		border-radius: var(--qsl-control-radius, 9px);
+		background: transparent;
+		color: var(--sl-color-gray-2);
+		cursor: pointer;
+		transition:
+			color 160ms ease,
+			background-color 160ms ease;
+	}
+
+	.qsl-theme:hover {
+		color: var(--sl-color-white);
+		background: var(--sl-color-gray-6);
+	}
+
+	.qsl-theme svg {
+		overflow: visible;
+	}
+
+	/* Light theme shows the sun; dark theme the moon. */
+	.core,
+	.rays,
+	.bite {
+		transform-box: view-box;
+		transform-origin: 12px 12px;
+		transition:
+			transform 520ms var(--qsl-ease-spring),
+			opacity 300ms ease;
+	}
+
+	.bite {
+		transform: translate(4px, -4px);
+	}
+
+	:global([data-theme='dark']) .core {
+		transform: scale(1.35);
+	}
+
+	:global([data-theme='dark']) .bite {
+		transform: translate(-1.5px, 1.5px);
+	}
+
+	:global([data-theme='dark']) .rays {
+		transform: rotate(-60deg) scale(0.4);
+		opacity: 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.core,
+		.rays,
+		.bite {
+			transition: none;
+		}
+	}
+</style>

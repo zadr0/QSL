@@ -1,0 +1,66 @@
+---
+title: Réduire la taille des trames
+description: "Utiliser compact, alignment et qps pour réduire les trames quand les plages de valeurs sont connues."
+---
+
+
+Par défaut, un entier occupe toute sa largeur native dans la trame. Si le schéma fournit une plage, QSL peut stocker moins de bits. Il existe deux mécanismes : `compact` empaquette les champs bit à bit, et `qps` découpe chaque nombre borné selon un quantum fixe, puis empaquette les morceaux.
+
+## compact
+
+`compact` stocke chaque valeur bornée sous la forme `x - min` sur `bit_length(max - min)` bits. Les champs sont empaquetés les uns à la suite des autres, à partir du bit de poids faible, et peuvent chevaucher les limites d’octets.
+
+```qsl
+&Sample[safety,compact] {
+    u8(0..7)     kind;      // 3 bits
+    u8(0..31)    channel;   // 5 bits
+    u16(0..1023) value;     // 10 bits
+}
+```
+
+Cela fait 18 bits, soit 3 octets au lieu de 4. Pour `kind = 5`, `channel = 17` et `value = 513`, la trame est `8d 01 02`. Sans `compact`, elle vaut `05 11 01 02`. Modifiez les valeurs et l’encodage ci-dessous :
+
+
+Un champ qui n’a qu’une seule valeur autorisée (`u8(5..5)`) occupe 0 bit. Les types Rust ne changent pas : `value` reste un `u16` en mémoire.
+
+`compact` ne peut pas être combiné avec `predict_seq`. Avec `[safety]`, le décodeur vérifie que chaque valeur dépaquetée est dans sa plage et que les bits inutilisés sont à zéro.
+
+## alignment
+
+Avec `compact`, `alignment` fait commencer chaque champ sur une limite d’octet. La lecture devient plus simple, au prix d’une trame plus grande. Dans l’exemple ci-dessus, la trame redevient `05 11 01 02` : 4 octets. Sans `compact`, `alignment` n’a aucun effet sur le format.
+
+Il s’agit de l’alignement des champs dans la trame, pas de l’alignement en mémoire des tampons.
+
+## qps
+
+`qps` (alias `quant`) est un empaquetage réversible des champs numériques à bornes statiques. Chaque valeur est stockée sous la forme de son rang `r = x - min`, découpé en deux parties par le quantum `Q`, puis recombiné par des décalages et des masques statiques. Aucune information n’est perdue. Le quantum fait partie du format.
+
+```qsl
+&Packed[qps,safety] {
+    u64(0..15) f0;
+    u64(0..15) f1;
+    // ... idem pour f2 à f7
+}
+```
+Attribut | Signification
+---|---
+`qps` | Équivaut à `qps=Q16`.
+`qps=Q2`, `Q4`, `Q8`, `Q16` | Le quantum. Il peut changer les octets, pas la longueur de la trame.
+`quant=Qn` | Équivaut à `qps=Qn`. `quant` seul, sans valeur, est une erreur, tout comme l’emploi des deux noms.
+`qps` n’empaquette que les nombres. Les chaînes, les tableaux et leurs longueurs gardent leurs propres codecs, et les champs numériques doivent les précéder. Il ne prédit pas quels champs optionnels sont présents. Quand l’empaquetage n’apporterait rien, le type utilise l’encodage ordinaire.
+
+Un type avec `qps` ne peut pas avoir en plus `compact`, `alignment`, `optionals=bitmap` ou `opt_table=legacy`. La compilation échoue.
+
+## Résultats des exemples
+
+```text
+8 ranged u64 values: raw=64 B, compact=4 B, QPS=4 B; restored f0=3, f7=10
+Scalar Q16: 64 useful B -> 4 wire B
+Mixed Q16: 16 scalar B -> 1 B; string length stays 4 B, string stays 1024 B; frame=1029 B
+```
+
+Huit valeurs dans `0..15` nécessitent 4 bits chacune : 32 bits au total. Dans le message mixte, deux nombres tiennent dans 1 octet, tandis que la chaîne de 1024 octets garde sa longueur sur 4 octets.
+
+:::note[ByteQps est une API distincte]
+`qsl::qps::ByteQps<Q>` compresse des octets arbitraires derrière un en-tête `QPB3` de 16 octets. C’est une API du runtime, pas l’attribut de schéma `qps`, et les deux formats ne sont pas interchangeables. Elle n’aide pas pour les petites trames : l’en-tête seul coûte 16 octets.
+:::

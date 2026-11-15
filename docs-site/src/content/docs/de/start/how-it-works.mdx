@@ -1,0 +1,58 @@
+---
+title: So funktioniert QSL
+description: Was QSL während cargo build tut, wie der generierte Code in dein Crate kommt und was zur Laufzeit läuft.
+---
+
+
+Alles, was vom Schema abhängt, passiert beim Bauen deines Crates. Zur Laufzeit läuft nur generierter Code.
+
+## Build-Zeit
+
+`build.rs` ruft `qsl::build_qsl_files` mit deinen `.qsl`-Schemas und `.deq`-Konfigurationsdateien auf. Dieser Aufruf führt die ersten fünf Schritte aus; der sechste folgt, wenn Cargo dein Crate kompiliert:
+
+1. **Parsen.** Lexer und Parser lesen Schemas und DEQ-Dateien, werten konstante Ausdrücke wie `MAX_LEN * 2` aus und vergeben jedem Feld ein Tag in Deklarationsreihenfolge.
+2. **Expandieren und prüfen.** QSL expandiert Rust-Templates und native Regionen und prüft Namen, Feldreihenfolge und Attributkombinationen.
+3. **Analysieren.** Code in `qsl-core` berechnet Bitbreiten, Längengrenzen, das Layout der optionalen Felder und die Schema-Hashes.
+4. **Speicherform wählen.** Der Rust-Typ jedes String- und Array-Felds wird anhand der Attribute und von `STACK_LIMIT` festgelegt.
+5. **Generieren.** Der Interpreter schreibt Structs, Methoden und statische Tabellen in `qsl_gen.rs` in `OUT_DIR`.
+6. **Kompilieren.** `rustc` kompiliert die generierte Datei zusammen mit deinem Code.
+
+Bei einem Fehler im Schema, etwa einem umgekehrten Wertebereich oder einem doppelten Feld, gibt `build.rs` einen Fehler zurück, und der Build bricht mit dieser Meldung ab.
+
+## Den generierten Code verwenden
+
+`qsl_gen.rs` enthält Items: Structs, `impl`-Blöcke und Statics. Binde die Datei auf Modulebene ein, entweder im Crate-Root wie im [Schnellstart](/start/quickstart/) oder in einem eigenen Modul:
+
+```rust title="src/main.rs"
+mod wire {
+    include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
+}
+
+use wire::Packet;
+
+fn roundtrip(packet: &Packet) -> qsl::QslResult<Packet> {
+    let bytes = packet.serialize_checked()?;  // Wert prüfen, dann schreiben
+    Packet::deserialize_checked(&bytes)       // beim Lesen prüfen
+}
+```
+
+Der generierte Code spricht die Runtime als `::qsl::...` an. Dein Crate muss `qsl` deshalb sowohl unter `[dependencies]` als auch unter `[build-dependencies]` eintragen.
+
+## Laufzeit
+
+Die generierten Methoden enthalten Typ und Breite jedes Felds als Konstanten. Der Frame trägt keinen Typdeskriptor, und zur Laufzeit schlägt niemand im Schema nach.
+
+Der geprüfte Decoder liest und validiert mit einem einzigen Cursor. Einen separaten Validierungsdurchlauf vorab gibt es nicht.
+
+## Zwei Größen, die nicht gleich sind
+
+Die **Frame-Größe** ist die Länge des kodierten Frames. Die **Objektgröße** ist `size_of::<T>()` des generierten Structs. Generierte Structs sind `#[repr(C)]`: Die Felder bleiben in Deklarationsreihenfolge, und Rust fügt Padding für die Ausrichtung ein. Ein Feld `u16(0..1023)` belegt mit `compact` 10 Bits im Frame und bleibt im Speicher ein 2 Byte großer `u16`. Jeder Typ hat die Konstanten `NATIVE_BYTES` und `NATIVE_ALIGNMENT` für Größe und Ausrichtung im Speicher.
+
+## Wo der Code liegt
+Phase | Crate | Wichtigste Dateien
+---|---|---
+Parsen, expandieren | `qsl-lexer` | `lexer.rs`, `parser.rs`, `deq.rs`, `builder.rs`
+Analysieren | `qsl-core` | `analysis.rs`, `schema_hash.rs`, `types.rs`
+Generieren | `qsl-interpreter` | `frontend.rs`, `interpreter.rs`, `codegen_*.rs`
+Laufzeit | `qsl-core`, re-exportiert von `qsl` | `io.rs`, `bit_io.rs`, `validation.rs`, `strings.rs`
+Mehr Details unter [Architektur](/internals/architecture/) und [Wire-Format](/internals/wire-format/).

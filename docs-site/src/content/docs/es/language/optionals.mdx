@@ -1,0 +1,77 @@
+---
+title: Campos opcionales
+description: Cómo indica una trama QSL qué campos opcionales están presentes (etiquetas por defecto, mapa de bits, predict_seq) y cómo elige opt_table el lector.
+---
+
+
+Un campo escrito como `T?` es opcional. La trama tiene que indicar qué campos opcionales están presentes. QSL tiene tres formas de hacerlo, además de `opt_table`, que solo cambia cómo despacha el lector generado.
+Modo | Atributo | La presencia se guarda como | Mismos bytes que por defecto
+---|---|---|---
+Por defecto | ninguno | Número de campos presentes y sus etiquetas | Sí
+Mapa de bits | `optionals=bitmap` | Una máscara con un bit por campo opcional | No
+Índice por longitud | `predict_seq` | Se deduce de la longitud de la carga útil | No
+Tabla de lectores | `opt_table` | Igual que el modo con el que se combina | Sí
+## Por defecto: número y etiquetas
+
+Sin atributos, la trama empieza con una cabecera: el número de campos opcionales presentes y, a continuación, un código de etiqueta por cada campo presente. Después vienen los valores obligatorios y luego los valores opcionales presentes, en orden de declaración. Un tipo con un solo campo opcional usa un único bit de presencia. El lector generado despacha con un `match` sobre la etiqueta.
+
+La cabecera se empaqueta desde el bit menos significativo. El número ocupa `bit_length(optional_count)` bits. Cada código de etiqueta es la etiqueta del campo menos 1 y ocupa `bit_length(max_tag - 1)` bits. Sin `compact`, la cabecera se rellena hasta completar un byte.
+
+El ejemplo optionals del repositorio codifica `id = 42` y un subconjunto de `f0 = 11`, `f1 = 22`, `f2 = 33`:
+
+```qsl
+&Optional3Table[opt_table,safety] {
+    u32 id;
+    u8? f0;
+    u8? f1;
+    u8? f2;
+}
+```
+Presentes | Trama
+---|---
+ninguno | `00 2a 00 00 00`
+`f0`, `f2` | `36 2a 00 00 00 0b 21`
+`f0`, `f1`, `f2` | `e7 2a 00 00 00 0b 16 21`
+Las etiquetas son 1 para `id` y de 2 a 4 para `f0` a `f2`, así que cada código de etiqueta ocupa 2 bits, igual que el número. Para `f0` y `f2`, la cabecera contiene el número 2 (`10`) y después los códigos 1 (`01`) y 3 (`11`): `0b110110` = `36`. Sin `opt_table`, las tramas son las mismas.
+
+## Mapa de bits {#bitmap}
+
+`optionals=bitmap` escribe una máscara little-endian que cubre solo los campos opcionales. Su ancho depende de cuántos campos opcionales tenga el tipo:
+Campos opcionales | 0 | 1–8 | 9–16 | 17–32 | 33–64 | 65–128
+---|---|---|---|---|---|---
+Bytes de la máscara | 0 | 1 | 2 | 4 | 8 | 16
+El primer campo opcional recibe el marcador 1, que se guarda en el bit más significativo. El lector encuentra los bits activos con `trailing_zeros`, así que los valores presentes se escriben y se leen en orden descendente de marcador. Los valores obligatorios conservan el orden de declaración.
+
+
+Activa y desactiva los campos para ver cómo cambia la trama. Para `&P[safety,optionals=bitmap,opt_table]{u8 id;u16? a;u8? b;}` con `id = 9`, `a = 0x1234` y `b = 7`, la trama es `c0 09 07 34 12`: la máscara, `id`, después `b` y después `a` en little-endian.
+
+Con `[safety]`, antes de recorrer la máscara, el decodificador comprueba una sola vez que no haya ningún bit activo para un marcador que el tipo no tiene.
+
+:::caution[Cambio de formato]
+El mapa de bits v2 (0.2.0 y posteriores) no es compatible con la máscara anterior, que cubría todos los campos. Actualiza los dos extremos a la vez.
+:::
+
+## Índice por longitud: predict_seq {#length-index-predict_seq}
+
+Con `predict_seq`, el decodificador deduce qué campos opcionales están presentes a partir de la longitud de la carga útil. Esto solo funciona si cada combinación de campos presentes da una longitud distinta:
+
+- un solo campo opcional se detecta por el final de la entrada;
+- varios campos necesitan tamaños fijos cuyas sumas por subconjuntos sean todas distintas.
+
+Las combinaciones ambiguas y los campos opcionales que se codifican en cero bytes se rechazan en tiempo de compilación. Como la presencia se deduce de la longitud, el decodificador para entrada de confianza necesita la longitud de la entrada, no solo un puntero.
+
+`predict_seq` se ignora si está activo `optionals=bitmap`. Combinado con `compact`, es un error de compilación.
+
+### predict_seq con opt_table
+
+`[predict_seq,opt_table]` conserva el formato que producía `[opt_table]` a secas antes de 0.2.0. El grafo de longitudes admite hasta 12 campos y 65535 bytes de carga útil. Por encima de 12 campos, todos deben tener el mismo ancho fijo, y el límite es de 64 campos. Si tienes tramas escritas con `[opt_table]` antes de 0.2.0, cambia los dos lados a `[predict_seq,opt_table]`.
+
+## Tabla de lectores: opt_table
+
+`opt_table` sustituye el `match` por una tabla estática de funciones lectoras, una por campo opcional, indexada por marcador. No cambia los bytes ni el hash del esquema. Funciona con el formato por defecto, con `compact` y con el mapa de bits.
+
+Una llamada indirecta a través de la tabla no es automáticamente más rápida que un `match`. Mide con tus datos antes de quedarte con ella.
+
+## Valores iniciales
+
+`|default=N|` en un campo numérico genera `impl Default` para el tipo, con ese campo a `N`. En un campo opcional, el valor por defecto es `Some(N)`. No cambia el formato binario ni el hash del esquema. Consulta [`default=N`](/reference/attributes/#defaultn).

@@ -1,0 +1,68 @@
+---
+title: "Builder and DEQ"
+description: "QSL documentation: Builder and DEQ."
+---
+
+import BuilderReference from '../../../../components/BuilderReference.astro';
+
+The Builder describes schemas in Rust. DEQ stores constants and shared settings. Both use the same analysis and format rules; matching inputs must produce the same result.
+
+## How a schema is built
+
+QslBuilder holds settings and schemas. A schem callback calls name, field and type methods; build validates the declarations. use_interpreter selects Rust generation. [Complete build.rs](/start/quickstart/).
+
+## Methods and arguments
+
+<BuilderReference />
+
+## DEQ settings
+
+### MAX_DATA_SIZE {#max_data_size}
+
+Default: **65535 B**. `max_data_size(bytes: u32)`.
+
+Bounds input frames, restoration and aggregate data before allocation. Not an RSS limit.
+
+### STACK_LIMIT {#stack_limit}
+
+Default: **256 B**. `stack_limit(bytes: u32)`.
+
+Separate strict limit for inline strings/arrays. A larger max_data_size does not increase it.
+
+### QSL_RT {#qsl_rt}
+
+Default: **false**. `with_rt()`.
+
+Enables static slots only for eligible bounded schemas.
+
+### QSL_RT_DEFAULT {#qsl_rt_default}
+
+Default: **16**. `default_rt_slots(slots: u32)`.
+
+Concurrent slots per eligible schema: 1–64. Exhaustion returns an error.
+
+### USE_HASH {#use_hash}
+
+Default: **xxHash**. `use_xxhash128()`.
+
+xxHash selects XXH3-64; xxHash128 selects XXH3-128. [Hashes](/guides/schema-identity/) do not provide authentication.
+
+### CPU_PROFILE {#cpu_profile}
+
+Default: **portable**. `cpu_profile(CpuProfile)`.
+
+portable or kaby_lake. Changes eligible instruction choices, not wire identity.
+
+## Constants
+
+Typed integer constants are evaluated during the build, including exact u128/i128 values. Duplicate names, overflow and invalid values produce diagnostics.
+
+```qsl
+!define NAME_MAX: usize = 100;
+!config MAX_DATA_SIZE = 65535;
+!config STACK_LIMIT = 256;
+!config QSL_RT = false;
+!config QSL_RT_DEFAULT = 16;
+!config CPU_PROFILE = portable;
+!config USE_HASH = xxHash;
+```

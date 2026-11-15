@@ -1,0 +1,302 @@
+<!DOCTYPE html><html lang="pt-BR" dir="ltr" data-theme="dark" data-has-toc data-has-sidebar class="astro-g5ptsecz"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Métodos gerados | QSL</title><link rel="canonical" href="https://zadr0.github.io/QSL/pt-br/reference/methods/"/><link rel="alternate" hreflang="en" href="https://zadr0.github.io/QSL/en/reference/methods/"/><link rel="alternate" hreflang="ru" href="https://zadr0.github.io/QSL/ru/reference/methods/"/><link rel="alternate" hreflang="zh-CN" href="https://zadr0.github.io/QSL/zh-cn/reference/methods/"/><link rel="alternate" hreflang="ja" href="https://zadr0.github.io/QSL/ja/reference/methods/"/><link rel="alternate" hreflang="ko" href="https://zadr0.github.io/QSL/ko/reference/methods/"/><link rel="alternate" hreflang="es" href="https://zadr0.github.io/QSL/es/reference/methods/"/><link rel="alternate" hreflang="pt-BR" href="https://zadr0.github.io/QSL/pt-br/reference/methods/"/><link rel="alternate" hreflang="de" href="https://zadr0.github.io/QSL/de/reference/methods/"/><link rel="alternate" hreflang="fr" href="https://zadr0.github.io/QSL/fr/reference/methods/"/><link rel="alternate" hreflang="x-default" href="https://zadr0.github.io/QSL/en/reference/methods/"/><link rel="sitemap" href="/QSL/sitemap-index.xml"/><link rel="shortcut icon" href="/QSL/favicon.svg" type="image/svg+xml"/><meta name="generator" content="Astro v7.4.7"/><meta name="generator" content="Starlight v0.42.10"/><meta property="og:title" content="Métodos gerados"/><meta property="og:type" content="article"/><meta property="og:url" content="https://zadr0.github.io/QSL/pt-br/reference/methods/"/><meta property="og:locale" content="pt-BR"/><meta property="og:description" content="Métodos e constantes que o QSL gera em cada tipo do esquema, agrupados pelo que exigem de quem chama."/><meta property="og:site_name" content="QSL"/><meta name="twitter:card" content="summary_large_image"/><meta name="description" content="Métodos e constantes que o QSL gera em cada tipo do esquema, agrupados pelo que exigem de quem chama."/><link rel="preload" href="/QSL/_astro/geologica-latin-shrp-normal.OfWH8DQM.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/QSL/_astro/jetbrains-mono-latin-wght-normal.B9CIFXIH.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/QSL/_astro/literata-latin-opsz-normal.BHZsWIlc.woff2" as="font" type="font/woff2" crossorigin><script>
+	window.StarlightThemeProvider = (() => {
+		const storedTheme =
+			typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
+		const theme =
+			storedTheme ||
+			(window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+		document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+		return {
+			updatePickers(theme = storedTheme || 'auto') {
+				document.querySelectorAll('starlight-theme-select').forEach((picker) => {
+					const select = picker.querySelector('select');
+					if (select) select.value = theme;
+					/** @type {HTMLTemplateElement | null} */
+					const tmpl = document.querySelector(`#theme-icons`);
+					const newIcon = tmpl && tmpl.content.querySelector('.' + theme);
+					if (newIcon) {
+						const oldIcon = picker.querySelector('svg.label-icon');
+						if (oldIcon) {
+							oldIcon.replaceChildren(...newIcon.cloneNode(true).childNodes);
+						}
+					}
+				});
+			},
+		};
+	})();
+</script><template id="theme-icons"><svg aria-hidden="true" class="light astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M5 12a1 1 0 0 0-1-1H3a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1Zm.64 5-.71.71a1 1 0 0 0 0 1.41 1 1 0 0 0 1.41 0l.71-.71A1 1 0 0 0 5.64 17ZM12 5a1 1 0 0 0 1-1V3a1 1 0 0 0-2 0v1a1 1 0 0 0 1 1Zm5.66 2.34a1 1 0 0 0 .7-.29l.71-.71a1 1 0 1 0-1.41-1.41l-.66.71a1 1 0 0 0 0 1.41 1 1 0 0 0 .66.29Zm-12-.29a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.71-.71a1.004 1.004 0 1 0-1.43 1.41l.73.71ZM21 11h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2Zm-2.64 6A1 1 0 0 0 17 18.36l.71.71a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.76-.66ZM12 6.5a5.5 5.5 0 1 0 5.5 5.5A5.51 5.51 0 0 0 12 6.5Zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0 3.5a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1Z"/></svg><svg aria-hidden="true" class="dark astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.64 13a1 1 0 0 0-1.05-.14 8.049 8.049 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05Zm-9.5 6.69A8.14 8.14 0 0 1 7.08 5.22v.27a10.15 10.15 0 0 0 10.14 10.14 9.784 9.784 0 0 0 2.1-.22 8.11 8.11 0 0 1-7.18 4.32v-.04Z"/></svg><svg aria-hidden="true" class="auto astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg></template><link rel="stylesheet" href="/QSL/_astro/print.C9eyqPGL.css" media="print"><link rel="stylesheet" href="/QSL/_astro/common.BOL9aNXm.css"><script type="module" src="/QSL/_astro/page.cNngjUgL.js"></script></head><body class="astro-g5ptsecz"><a class="sl-skip-link astro-qb7clj6f" href="#_top">Pular para o conteúdo</a><div class="page sl-flex astro-yntsjkba"><header class="header astro-yntsjkba"><div class="qsl-header astro-nen7h5rs"><div class="qsl-header__brand astro-nen7h5rs"><a href="/QSL/pt-br/" class="qsl-title astro-hen6hmfb"><svg class="qsl-logo astro-hen6hmfb" viewBox="0 0 38 18" width="34" height="16" aria-hidden="true"><rect class="on astro-hen6hmfb" x="0" y="0" width="8" height="8" rx="1.6" style="--i: 0"></rect><rect class="off astro-hen6hmfb" x="10.75" y="0.75" width="6.5" height="6.5" rx="1.2" style="--i: 1"></rect><rect class="on astro-hen6hmfb" x="20" y="0" width="8" height="8" rx="1.6" style="--i: 2"></rect><rect class="on astro-hen6hmfb" x="30" y="0" width="8" height="8" rx="1.6" style="--i: 3"></rect><rect class="off astro-hen6hmfb" x="0.75" y="10.75" width="6.5" height="6.5" rx="1.2" style="--i: 4"></rect><rect class="off astro-hen6hmfb" x="10.75" y="10.75" width="6.5" height="6.5" rx="1.2" style="--i: 5"></rect><rect class="off astro-hen6hmfb" x="20.75" y="10.75" width="6.5" height="6.5" rx="1.2" style="--i: 6"></rect><rect class="on astro-hen6hmfb" x="30" y="10" width="8" height="8" rx="1.6" style="--i: 7"></rect></svg><span class="qsl-title__name astro-hen6hmfb" translate="no">QSL</span></a><span class="qsl-header__version astro-nen7h5rs" translate="no">0.4.0</span></div><div class="qsl-path astro-nen7h5rs" aria-hidden="true"><div class="qsl-path__line astro-nen7h5rs"><span class="qsl-path__group astro-nen7h5rs">Referência</span><span class="qsl-path__page astro-nen7h5rs">Métodos gerados</span></div></div><div class="qsl-header__tools print:hidden astro-nen7h5rs"><div class="qsl-header__search astro-nen7h5rs"><site-search class="astro-nen7h5rs astro-b5kgnn7o" data-translations="{&quot;placeholder&quot;:&quot;Pesquisar&quot;}"><button data-open-modal disabled aria-label="Pesquisar" aria-keyshortcuts="Control+K" class="astro-b5kgnn7o"><svg aria-hidden="true" class="astro-b5kgnn7o astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></svg><span class="sl-hidden md:sl-block astro-b5kgnn7o" aria-hidden="true">Pesquisar</span><kbd class="sl-hidden md:sl-flex astro-b5kgnn7o" style="display: none"><kbd class="astro-b5kgnn7o">Ctrl</kbd><kbd class="astro-b5kgnn7o">K</kbd></kbd></button><dialog style="padding: 0" aria-label="Pesquisar" class="astro-b5kgnn7o"><div class="dialog-frame sl-flex astro-b5kgnn7o"><button data-close-modal class="sl-flex md:sl-hidden astro-b5kgnn7o">Cancelar</button><div class="search-container astro-b5kgnn7o"><div id="starlight__search" class="astro-b5kgnn7o"></div></div></div></dialog></site-search><script>
+	(() => {
+		const openBtn = document.querySelector('button[data-open-modal]');
+		const shortcut = openBtn?.querySelector('kbd');
+		if (!openBtn || !(shortcut instanceof HTMLElement)) return;
+		const platformKey = shortcut.querySelector('kbd');
+		if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+			platformKey.textContent = '⌘';
+			openBtn.setAttribute('aria-keyshortcuts', 'Meta+K');
+		}
+		shortcut.style.display = '';
+	})();
+</script><script type="module" src="/QSL/_astro/Search.astro_astro_type_script_index_0_lang.D2qphmlj.js"></script></div><div class="qsl-header__cell qsl-header__preference astro-nen7h5rs"><qsl-language-select class="astro-lsc3ieks"><details class="qsl-lang astro-lsc3ieks"><summary aria-label="Selecionar língua: Português (Brasil)" class="astro-lsc3ieks"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" class="astro-lsc3ieks"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.3" class="astro-lsc3ieks"></circle><path d="M1.75 8h12.5M8 1.75c1.9 1.7 2.8 3.8 2.8 6.25S9.9 12.55 8 14.25M8 1.75C6.1 3.45 5.2 5.55 5.2 8s.9 4.55 2.8 6.25" fill="none" stroke="currentColor" stroke-width="1.3" class="astro-lsc3ieks"></path></svg><span class="qsl-lang__code astro-lsc3ieks" aria-hidden="true">PT</span></summary><ul class="qsl-lang__list astro-lsc3ieks"><li class="astro-lsc3ieks"><a href="/QSL/en/reference/methods/" hreflang="en" lang="en" data-locale="en" class="astro-lsc3ieks">English</a></li><li class="astro-lsc3ieks"><a href="/QSL/ru/reference/methods/" hreflang="ru" lang="ru" data-locale="ru" class="astro-lsc3ieks">Русский</a></li><li class="astro-lsc3ieks"><a href="/QSL/zh-cn/reference/methods/" hreflang="zh-CN" lang="zh-CN" data-locale="zh-cn" class="astro-lsc3ieks">简体中文</a></li><li class="astro-lsc3ieks"><a href="/QSL/ja/reference/methods/" hreflang="ja" lang="ja" data-locale="ja" class="astro-lsc3ieks">日本語</a></li><li class="astro-lsc3ieks"><a href="/QSL/ko/reference/methods/" hreflang="ko" lang="ko" data-locale="ko" class="astro-lsc3ieks">한국어</a></li><li class="astro-lsc3ieks"><a href="/QSL/es/reference/methods/" hreflang="es" lang="es" data-locale="es" class="astro-lsc3ieks">Español</a></li><li class="astro-lsc3ieks"><a href="/QSL/pt-br/reference/methods/" hreflang="pt-BR" lang="pt-BR" data-locale="pt-br" aria-current="true" class="astro-lsc3ieks">Português (Brasil)</a></li><li class="astro-lsc3ieks"><a href="/QSL/de/reference/methods/" hreflang="de" lang="de" data-locale="de" class="astro-lsc3ieks">Deutsch</a></li><li class="astro-lsc3ieks"><a href="/QSL/fr/reference/methods/" hreflang="fr" lang="fr" data-locale="fr" class="astro-lsc3ieks">Français</a></li></ul></details></qsl-language-select><script type="module" src="/QSL/_astro/LanguageSelect.astro_astro_type_script_index_0_lang.DAA13VIM.js"></script></div><div class="qsl-header__cell qsl-header__preference astro-nen7h5rs"><qsl-theme-toggle data-label-to-light="Mudar para o tema claro" data-label-to-dark="Mudar para o tema escuro" class="astro-phv4pw7f"><button type="button" class="qsl-theme astro-phv4pw7f" aria-label="Selecionar tema"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" class="astro-phv4pw7f"><mask id="qsl-theme-mask-380" class="astro-phv4pw7f"><rect width="24" height="24" fill="#fff" class="astro-phv4pw7f"></rect><circle class="bite astro-phv4pw7f" cx="18" cy="6" r="6.5" fill="#000"></circle></mask><circle class="core astro-phv4pw7f" cx="12" cy="12" r="5.25" fill="currentColor" mask="url(#qsl-theme-mask-380)"></circle><g class="rays astro-phv4pw7f" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4" class="astro-phv4pw7f"></path></g></svg></button></qsl-theme-toggle><script type="module">var e=`starlight-theme`,t=document.documentElement,n=matchMedia(`(prefers-color-scheme: light)`),r=matchMedia(`(prefers-reduced-motion: reduce)`);function i(){try{let t=localStorage.getItem(e);return t===`dark`||t===`light`?t:null}catch{return null}}var a=()=>t.dataset.theme===`light`?`light`:`dark`;function o(n,r){if(t.dataset.theme=n,r)try{localStorage.setItem(e,n)}catch{}for(let e of document.querySelectorAll(`qsl-theme-toggle`))e.sync()}function s(e,n){if(!document.startViewTransition||r.matches){o(e,!0);return}let i=n.left+n.width/2,a=n.top+n.height/2,s=Math.hypot(Math.max(i,innerWidth-i),Math.max(a,innerHeight-a));t.toggleAttribute(`data-qsl-theme-switch`,!0);let c=document.startViewTransition(()=>o(e,!0));c.ready.then(()=>t.animate({clipPath:[`circle(0px at ${i}px ${a}px)`,`circle(${s}px at ${i}px ${a}px)`]},{duration:560,easing:`cubic-bezier(0.65, 0, 0.35, 1)`,pseudoElement:`::view-transition-new(root)`})).catch(()=>void 0),c.finished.finally(()=>t.removeAttribute(`data-qsl-theme-switch`))}var c=class extends HTMLElement{#e=null;connectedCallback(){this.#e=this.querySelector(`button`),this.#e?.addEventListener(`click`,()=>{this.#e&&s(a()===`dark`?`light`:`dark`,this.#e.getBoundingClientRect())}),this.sync()}sync(){let e=a()===`dark`?this.dataset.labelToLight:this.dataset.labelToDark;e&&this.#e?.setAttribute(`aria-label`,e)}};customElements.define(`qsl-theme-toggle`,c),n.addEventListener(`change`,()=>{i()===null&&o(n.matches?`light`:`dark`,!1)});</script></div></div></div></header><nav class="sidebar print:hidden astro-yntsjkba" aria-label="Principal"><button popovertarget="starlight__sidebar" class="sl-menu-button sl-flex md:sl-hidden print:hidden astro-r2osgdlg"><svg aria-hidden="true" class="open-menu astro-r2osgdlg astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M3 8h18a1 1 0 1 0 0-2H3a1 1 0 0 0 0 2Zm18 8H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Zm0-5H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Z"/></svg><svg aria-hidden="true" class="close-menu astro-r2osgdlg astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="m13.41 12 6.3-6.29a1.004 1.004 0 1 0-1.42-1.42L12 10.59l-6.29-6.3a1.004 1.004 0 0 0-1.42 1.42l6.3 6.29-6.3 6.29a1 1 0 0 0 0 1.42.998.998 0 0 0 1.42 0l6.29-6.3 6.29 6.3a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.42L13.41 12Z"/></svg><span class="sr-only astro-r2osgdlg">Menu</span></button><script type="module">var e=class extends HTMLElement{constructor(){super();let e=matchMedia(`(min-width: 50em)`),t=()=>{this.popover=e.matches?null:`auto`};t(),e.addEventListener(`change`,()=>t()),this.addEventListener(`toggle`,({newState:e})=>this.trapFocus(e===`open`))}trapFocus(e){document.querySelectorAll(`.main-frame, .sl-skip-link`).forEach(t=>{t.toggleAttribute(`inert`,e)})}};customElements.define(`sl-sidebar-pane`,e);</script><sl-sidebar-pane popover id="starlight__sidebar" class="sidebar-pane astro-yntsjkba"><div class="sidebar-content sl-flex astro-yntsjkba"><sl-sidebar-state-persist data-hash="1czxf4c" class="astro-ipdry5cl"><script aria-hidden="true">
+		(() => {
+			try {
+				if (!matchMedia('(min-width: 50em)').matches) return;
+				/** @type {HTMLElement | null} */
+				const target = document.querySelector('sl-sidebar-state-persist');
+				const state = JSON.parse(sessionStorage.getItem('sl-sidebar-state') || '0');
+				if (!target || !state || target.dataset.hash !== state.hash) return;
+				window._starlightScrollRestore = state.scroll;
+				customElements.define(
+					'sl-sidebar-restore',
+					class SidebarRestore extends HTMLElement {
+						connectedCallback() {
+							try {
+								const idx = parseInt(this.dataset.index || '');
+								const details = this.closest('details');
+								if (details && typeof state.open[idx] === 'boolean') details.open = state.open[idx];
+							} catch {}
+						}
+					}
+				);
+			} catch {}
+		})();
+	</script><ul class="top-level astro-rmhv4bp6"><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Primeiros passos</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="0"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/start/introduction/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">O que é o Quick Schema Language (QSL)</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/start/quickstart/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Início rápido</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/start/how-it-works/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Como funciona</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Linguagem de esquemas</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="1"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/language/declarations/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Declarações</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/language/types/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Tipos</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/language/numbers/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Domínios numéricos</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/language/strings/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Strings e ownership</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/language/arrays/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Arrays e janelas de bits</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/language/optionals/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Campos opcionais</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/language/deq/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Configuração DEQ</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Guias</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="2"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/guides/safety/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Validação de entrada</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/guides/smaller-frames/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Frames menores</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/guides/memory/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Buffers e reutilização</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/guides/manual-layout/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Layout manual: quadro e memória</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/guides/custom-types/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Templates Rust e tipos personalizados</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/guides/schema-identity/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Identidade do esquema</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Exemplos</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="3"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/examples/builders/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Construtores</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/examples/bmi2/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Empacotamento BMI2</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Funcionamento</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="4"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/internals/architecture/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Arquitetura</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/internals/optimizer/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Otimizador e layout</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/internals/wire-format/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Formato binário</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/internals/runtime/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Runtime e buffers</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Referência</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="5"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/reference/attributes/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Atributos</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/reference/methods/" aria-current="page" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Métodos gerados</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/reference/errors/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Erros</span></a></li><li class="astro-rmhv4bp6"><a href="/QSL/pt-br/reference/limits/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Limites e fontes</span></a></li></ul></details></li></ul><script aria-hidden="true">
+		(() => {
+			const scroller = document.getElementById('starlight__sidebar');
+			if (!window._starlightScrollRestore || !scroller) return;
+			scroller.scrollTop = window._starlightScrollRestore;
+			delete window._starlightScrollRestore;
+		})();
+	</script></sl-sidebar-state-persist><div class="md:sl-hidden"><div class="mobile-preferences sl-flex astro-p4azlveh"><div class="social-icons astro-p4azlveh"></div><qsl-theme-toggle data-label-to-light="Mudar para o tema claro" data-label-to-dark="Mudar para o tema escuro" class="astro-phv4pw7f"><button type="button" class="qsl-theme astro-phv4pw7f" aria-label="Selecionar tema"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" class="astro-phv4pw7f"><mask id="qsl-theme-mask-379" class="astro-phv4pw7f"><rect width="24" height="24" fill="#fff" class="astro-phv4pw7f"></rect><circle class="bite astro-phv4pw7f" cx="18" cy="6" r="6.5" fill="#000"></circle></mask><circle class="core astro-phv4pw7f" cx="12" cy="12" r="5.25" fill="currentColor" mask="url(#qsl-theme-mask-379)"></circle><g class="rays astro-phv4pw7f" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4" class="astro-phv4pw7f"></path></g></svg></button></qsl-theme-toggle><qsl-language-select class="astro-lsc3ieks"><details class="qsl-lang astro-lsc3ieks"><summary aria-label="Selecionar língua: Português (Brasil)" class="astro-lsc3ieks"><svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" class="astro-lsc3ieks"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.3" class="astro-lsc3ieks"></circle><path d="M1.75 8h12.5M8 1.75c1.9 1.7 2.8 3.8 2.8 6.25S9.9 12.55 8 14.25M8 1.75C6.1 3.45 5.2 5.55 5.2 8s.9 4.55 2.8 6.25" fill="none" stroke="currentColor" stroke-width="1.3" class="astro-lsc3ieks"></path></svg><span class="qsl-lang__code astro-lsc3ieks" aria-hidden="true">PT</span></summary><ul class="qsl-lang__list astro-lsc3ieks"><li class="astro-lsc3ieks"><a href="/QSL/en/reference/methods/" hreflang="en" lang="en" data-locale="en" class="astro-lsc3ieks">English</a></li><li class="astro-lsc3ieks"><a href="/QSL/ru/reference/methods/" hreflang="ru" lang="ru" data-locale="ru" class="astro-lsc3ieks">Русский</a></li><li class="astro-lsc3ieks"><a href="/QSL/zh-cn/reference/methods/" hreflang="zh-CN" lang="zh-CN" data-locale="zh-cn" class="astro-lsc3ieks">简体中文</a></li><li class="astro-lsc3ieks"><a href="/QSL/ja/reference/methods/" hreflang="ja" lang="ja" data-locale="ja" class="astro-lsc3ieks">日本語</a></li><li class="astro-lsc3ieks"><a href="/QSL/ko/reference/methods/" hreflang="ko" lang="ko" data-locale="ko" class="astro-lsc3ieks">한국어</a></li><li class="astro-lsc3ieks"><a href="/QSL/es/reference/methods/" hreflang="es" lang="es" data-locale="es" class="astro-lsc3ieks">Español</a></li><li class="astro-lsc3ieks"><a href="/QSL/pt-br/reference/methods/" hreflang="pt-BR" lang="pt-BR" data-locale="pt-br" aria-current="true" class="astro-lsc3ieks">Português (Brasil)</a></li><li class="astro-lsc3ieks"><a href="/QSL/de/reference/methods/" hreflang="de" lang="de" data-locale="de" class="astro-lsc3ieks">Deutsch</a></li><li class="astro-lsc3ieks"><a href="/QSL/fr/reference/methods/" hreflang="fr" lang="fr" data-locale="fr" class="astro-lsc3ieks">Français</a></li></ul></details></qsl-language-select></div></div></div></sl-sidebar-pane></nav><div class="main-frame astro-yntsjkba"><script type="module">var e=document.getElementById(`starlight__sidebar`),t=e?.querySelector(`sl-sidebar-state-persist`),n=`sl-sidebar-state`,r=()=>{let r=[],i=t?.dataset.hash||``;try{let e=sessionStorage.getItem(n),t=JSON.parse(e||`{}`);Array.isArray(t.open)&&t.hash===i&&(r=t.open)}catch{}return{hash:i,open:r,scroll:e?.scrollTop||0}},i=e=>{try{sessionStorage.setItem(n,JSON.stringify(e))}catch{}},a=()=>i(r()),o=(e,t)=>{let n=r();n.open[t]=e,i(n)};t?.addEventListener(`click`,e=>{if(!(e.target instanceof Element))return;let t=e.target.closest(`summary`)?.closest(`details`);if(!t)return;let n=t.querySelector(`sl-sidebar-restore`),r=parseInt(n?.dataset.index||``);isNaN(r)||o(!t.open,r)}),addEventListener(`visibilitychange`,()=>{document.visibilityState===`hidden`&&a()});</script><div class="lg:sl-flex astro-lrzkfocr"><aside class="right-sidebar-container print:hidden astro-lrzkfocr"><div class="right-sidebar astro-lrzkfocr"><div class="lg:sl-hidden astro-qok35upx"><mobile-starlight-toc data-min-h="2" data-max-h="3" class="astro-66cqc7ze"><nav aria-labelledby="starlight__on-this-page--mobile" class="astro-66cqc7ze"><details id="starlight__mobile-toc" class="astro-66cqc7ze"><summary id="starlight__on-this-page--mobile" class="sl-flex astro-66cqc7ze"><span class="toggle sl-flex astro-66cqc7ze">Nesta página<svg aria-hidden="true" class="caret astro-66cqc7ze astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></span><span class="display-current astro-66cqc7ze"></span></summary><div class="dropdown astro-66cqc7ze"><ul class="isMobile astro-jugkfwgx" style="--depth: 0;"><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#_top" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Visão geral</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#verificados-seguros-com-dados-não-confiáveis" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Verificados: seguros com dados não confiáveis</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#confiáveis-quem-chama-garante-a-validade" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Confiáveis: quem chama garante a validade</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#especializados" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Especializados</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#constantes" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Constantes</span></a></li></ul></div></details></nav></mobile-starlight-toc><script type="module" src="/QSL/_astro/MobileTableOfContents.astro_astro_type_script_index_0_lang.C3fM4Kra.js"></script></div><div class="right-sidebar-panel sl-hidden lg:sl-block astro-qok35upx"><div class="sl-container astro-qok35upx"><starlight-toc data-min-h="2" data-max-h="3"><nav aria-labelledby="starlight__on-this-page"><h2 id="starlight__on-this-page">Nesta página</h2><ul class="astro-jugkfwgx" style="--depth: 0;"><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#_top" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Visão geral</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#verificados-seguros-com-dados-não-confiáveis" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Verificados: seguros com dados não confiáveis</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#confiáveis-quem-chama-garante-a-validade" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Confiáveis: quem chama garante a validade</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#especializados" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Especializados</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#constantes" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Constantes</span></a></li></ul></nav></starlight-toc><script type="module" src="/QSL/_astro/TableOfContents.astro_astro_type_script_index_0_lang.BpJaGz7G.js"></script></div></div></div></aside><div class="main-pane astro-lrzkfocr"><main data-pagefind-body class="astro-g5ptsecz" lang="pt-BR" dir="ltr"><div class="content-panel astro-a7po4psb"><div class="sl-container astro-a7po4psb"><h1 id="_top" class="astro-bebwqqxs">Métodos gerados</h1></div></div><div class="content-panel astro-a7po4psb"><div class="sl-container astro-a7po4psb"><div class="sl-markdown-content"><p>Cada declaração produz um tipo Rust com os métodos abaixo. Quais deles existem depende dos atributos do esquema. A lista completa de itens públicos dos crates de runtime está no docs.rs.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="verificados-seguros-com-dados-não-confiáveis">Verificados: seguros com dados não confiáveis</h2><a class="sl-anchor-link" href="#verificados-seguros-com-dados-não-confiáveis"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Seção intitulada “Verificados: seguros com dados não confiáveis”</span></a></div>
+<p>Gerados só quando o tipo tem <code dir="auto">[safety]</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Assinatura (simplificada)</th>
+<th>Observações</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">deserialize_checked</code></td>
+<td><code dir="auto">fn(&amp;[u8]) -&gt; QslResult&lt;Self&gt;</code></td>
+<td>Valida enquanto decodifica. Com <code dir="auto">lifetime</code>, a entrada é <code dir="auto">&amp;'a [u8]</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">deserialize_checked_into</code></td>
+<td><code dir="auto">fn(&amp;[u8], &amp;mut MaybeUninit&lt;Self&gt;) -&gt; QslResult&lt;&amp;mut Self&gt;</code></td>
+<td>Decodifica na sua memória. Em caso de erro, o destino continua não inicializado.</td>
+</tr>
+<tr>
+<td>Gerados para todo tipo:</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Método</td>
+<td>Assinatura (simplificada)</td>
+<td>Observações</td>
+</tr>
+<tr>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code dir="auto">validate</code></td>
+<td><code dir="auto">fn(&amp;[u8]) -&gt; QslResult&lt;()&gt;</code></td>
+<td>Verifica um frame inteiro sem montar um valor. Não é necessário antes de <code dir="auto">deserialize_checked</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">validate_values</code></td>
+<td><code dir="auto">fn(&amp;self) -&gt; QslResult&lt;()&gt;</code></td>
+<td>Verifica intervalos, comprimentos, UTF-8 das strings fixas e o teto <code dir="auto">MAX_DATA_SIZE</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">serialize_checked</code></td>
+<td><code dir="auto">fn(&amp;self) -&gt; QslResult&lt;</code>Vec<u8><code dir="auto">&gt;</code></td>
+<td>Verifica o valor e depois codifica.</td>
+</tr>
+<tr>
+<td><code dir="auto">serialize_checked_to</code></td>
+<td><code dir="auto">fn(&amp;self, &amp;mut [u8]) -&gt; QslResult&lt;usize&gt;</code></td>
+<td>Codifica em uma slice de pelo menos <code dir="auto">serialized_size()</code> bytes e retorna os bytes escritos.</td>
+</tr>
+<tr>
+<td>Tipos com um campo opcional numérico também ganham:</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Método</td>
+<td>Assinatura (simplificada)</td>
+<td>Observações</td>
+</tr>
+<tr>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code dir="auto">try_new</code></td>
+<td><code dir="auto">fn(field, ...) -&gt; QslResult&lt;Self&gt;</code></td>
+<td>Recebe todos os campos na ordem de declaração, os opcionais como <code dir="auto">Option&lt;T&gt;</code>, e verifica os valores.</td>
+</tr>
+<tr>
+<td><code dir="auto">name</code></td>
+<td><code dir="auto">fn(&amp;self) -&gt; Option&lt;T&gt;</code></td>
+<td>Lê o campo opcional <code dir="auto">name</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">set_name</code></td>
+<td><code dir="auto">fn(&amp;mut self, Option&lt;T&gt;) -&gt; QslResult&lt;()&gt;</code></td>
+<td>Altera o campo. <code dir="auto">InvalidValue</code> se o valor estiver fora do intervalo.</td>
+</tr>
+<tr>
+<td>Veja <a href="/QSL/pt-br/language/declarations/#optional-fields-in-rust">campos opcionais em Rust</a>.</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="confiáveis-quem-chama-garante-a-validade">Confiáveis: quem chama garante a validade</h2><a class="sl-anchor-link" href="#confiáveis-quem-chama-garante-a-validade"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Seção intitulada “Confiáveis: quem chama garante a validade”</span></a></div>
+<p>São métodos do trait <code dir="auto">qsl::Serializable</code>. Tipos com <code dir="auto">lifetime</code> implementam <code dir="auto">qsl::BorrowSerializable&lt;'a&gt;</code> no lugar dele, e nesse trait os decodificadores se chamam <code dir="auto">deserialize_borrowed</code>, <code dir="auto">deserialize_borrowed_into</code> e <code dir="auto">deserialize_borrowed_unsafe</code>. Nos dois traits, todos os métodos, exceto <code dir="auto">serialized_size</code> e <code dir="auto">get_size</code>, são <code dir="auto">unsafe</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>O que quem chama garante</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">serialize</code>, <code dir="auto">serialize_to</code>, <code dir="auto">serialize_into_unsafe</code>, <code dir="auto">serialize_unsafe</code></td>
+<td>O valor é válido para o esquema; o destino tem <code dir="auto">serialized_size()</code> bytes graváveis.</td>
+</tr>
+<tr>
+<td><code dir="auto">deserialize</code>, <code dir="auto">deserialize_unsafe</code></td>
+<td>A entrada é um único frame completo e válido.</td>
+</tr>
+<tr>
+<td><code dir="auto">deserialize_into(ptr, len, out)</code></td>
+<td>Frame válido; <code dir="auto">out</code> é gravável, alinhado e não se sobrepõe à entrada. O valor antigo em <code dir="auto">out</code> não é descartado.</td>
+</tr>
+<tr>
+<td><code dir="auto">deserialize_reuse(input, &amp;mut value)</code></td>
+<td>Frame válido; todo buffer de string reutilizado tem capacidade suficiente. Mantém os buffers quando o layout permite.</td>
+</tr>
+<tr>
+<td><code dir="auto">deserialize_prepared_into(ptr, len, &amp;mut value)</code></td>
+<td>O mesmo, com ponteiro bruto e comprimento.</td>
+</tr>
+<tr>
+<td>Métodos seguros do trait:</td>
+<td></td>
+</tr>
+<tr>
+<td>Método</td>
+<td>Retorna</td>
+</tr>
+<tr>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code dir="auto">serialized_size(&amp;self)</code></td>
+<td>O espaço a fornecer para este valor: o comprimento exato do frame, ou um limite superior para valores com strings comprimidas.</td>
+</tr>
+<tr>
+<td><code dir="auto">get_size()</code></td>
+<td>O menor comprimento de frame possível.</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="especializados">Especializados</h2><a class="sl-anchor-link" href="#especializados"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Seção intitulada “Especializados”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Quando</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">serialize()</code></td>
+<td>Com pool RT: seguro, verifica o valor, espera um slot livre e retorna um lease. Em um tipo com empacotamento <code dir="auto">qps</code> ativo e sem pool RT: seguro, retorna <code dir="auto">QuantizedOut</code>. Veja <a href="/QSL/pt-br/guides/memory/#rt-slot-pool">pool de slots RT</a>.</td>
+</tr>
+<tr>
+<td><code dir="auto">serialize_quantized_to</code></td>
+<td><code dir="auto">qps</code> ativo. Verifica os valores e a capacidade e depois roda o kernel de empacotamento.</td>
+</tr>
+<tr>
+<td><code dir="auto">quant_write_prepared</code>, <code dir="auto">quant_read_padded</code></td>
+<td><code dir="auto">qps</code> ativo. Métodos de <code dir="auto">qsl::payload_quant::QuantizedRecord</code>. <code dir="auto">unsafe</code>: quem chama garante intervalos, padding e memória alinhada e sem sobreposição.</td>
+</tr>
+<tr>
+<td><code dir="auto">serialize_qps_to</code>, <code dir="auto">deserialize_qps_into</code>, <code dir="auto">deserialize_qps</code></td>
+<td>Adaptadores de <code dir="auto">ByteQps</code>. Só para tipos com <code dir="auto">[safety]</code> e <code dir="auto">qps</code> e sem strings nem arrays.</td>
+</tr>
+<tr>
+<td><code dir="auto">serialize_cached</code></td>
+<td><code dir="auto">cache=N</code> ou <code dir="auto">loyal_cache</code>. Escreve em um <code dir="auto">CachedFrame</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">deserialize_transmutate_copy</code>, <code dir="auto">deserialize_overlay</code></td>
+<td><a href="/QSL/pt-br/reference/attributes/#transmutate"><code dir="auto">transmutate</code></a>. Cada um tem uma variante <code dir="auto">_unchecked</code> que pula as verificações.</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="constantes">Constantes</h2><a class="sl-anchor-link" href="#constantes"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Seção intitulada “Constantes”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Constante</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">SCHEMA_HASH_STRICT: u128</code></td>
+<td>Hash que inclui os nomes. Veja <a href="/QSL/pt-br/guides/schema-identity/">identidade do esquema</a>.</td>
+</tr>
+<tr>
+<td><code dir="auto">SCHEMA_HASH_LIGHT: u128</code></td>
+<td>Hash sem os nomes.</td>
+</tr>
+<tr>
+<td><code dir="auto">SCHEMA_HASHES</code></td>
+<td>Os dois, com algoritmo, versão e completude. Também <code dir="auto">&lt;T as qsl::SchemaIdentity&gt;::SCHEMA_HASHES</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">MAX_DATA_SIZE</code></td>
+<td>O teto usado pelos métodos verificados.</td>
+</tr>
+<tr>
+<td><code dir="auto">NATIVE_BYTES</code>, <code dir="auto">NATIVE_ALIGNMENT</code></td>
+<td><code dir="auto">size_of</code> e <code dir="auto">align_of</code> da struct gerada.</td>
+</tr>
+<tr>
+<td><code dir="auto">WIRE_MAX_BYTES: Option&lt;usize&gt;</code></td>
+<td>O tamanho máximo do frame, ou <code dir="auto">None</code> se não houver limite.</td>
+</tr>
+<tr>
+<td><code dir="auto">CACHE_BYTES</code></td>
+<td>Capacidade para <code dir="auto">serialize_cached</code>. Só com <code dir="auto">cache=N</code> ou <code dir="auto">loyal_cache</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">NATIVE_WIRE_COMPATIBLE</code></td>
+<td>Se o layout nativo é igual ao layout serializado. Só com <code dir="auto">transmutate</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">QUANT_PADDING_BYTES</code></td>
+<td>Bytes extras legíveis exigidos pelas leituras preparadas de <code dir="auto">qps</code>. Atualmente <code dir="auto">0</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">REUSES_STORAGE</code> é uma constante do trait <code dir="auto">Serializable</code>: <code dir="auto">&lt;T as qsl::Serializable&gt;::REUSES_STORAGE</code> é <code dir="auto">true</code> quando <code dir="auto">deserialize_reuse</code> atualiza os buffers no lugar.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>O gerador escolhe a saída pelo tamanho máximo comprovado do quadro. Até STACK_LIMIT inclusive usa <code dir="auto">StackOut&lt;N&gt;</code>; um limite maior ou desconhecido seleciona alloc::<code dir="auto">Vec&lt;u8&gt;</code>. Cabeçalhos transmitidos contam; metadados do objeto de saída não.</p>
+</div><footer class="sl-flex astro-ddtxxk7k"><div class="meta sl-flex astro-ddtxxk7k"></div><div class="pagination-links print:hidden astro-b5raizh3" dir="ltr"><a href="/QSL/pt-br/reference/attributes/" rel="prev" class="astro-b5raizh3"><svg aria-hidden="true" class="astro-b5raizh3 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"/></svg><span class="astro-b5raizh3">Anterior<br class="astro-b5raizh3"><span class="link-title astro-b5raizh3">Atributos</span></span></a><a href="/QSL/pt-br/reference/errors/" rel="next" class="astro-b5raizh3"><svg aria-hidden="true" class="astro-b5raizh3 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"/></svg><span class="astro-b5raizh3">Próximo<br class="astro-b5raizh3"><span class="link-title astro-b5raizh3">Erros</span></span></a></div></footer><footer class="qsl-project-footer not-content astro-jo6i4kqk" data-project-footer><p class="astro-jo6i4kqk">QSL 0.4.0 · livre e de código aberto, sob a licença MIT</p><nav aria-label="Project resources" class="astro-jo6i4kqk"><ul class="astro-jo6i4kqk"><li class="astro-jo6i4kqk"><a href="https://github.com/zadr0/QSL" rel="external" class="astro-jo6i4kqk">QSL / GitHub</a></li><li class="astro-jo6i4kqk"><a href="https://crates.io/crates/qsl" rel="external" class="astro-jo6i4kqk">crates.io</a></li><li class="astro-jo6i4kqk"><a href="https://docs.rs/qsl/0.4.0/qsl/" rel="external" class="astro-jo6i4kqk">Rust API</a></li><li class="astro-jo6i4kqk"><a href="https://docs.rs/qsl/0.3.0/qsl/" rel="external" class="astro-jo6i4kqk">docs.rs</a></li></ul></nav></footer></div></div></main></div></div></div></div></body></html>

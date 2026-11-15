@@ -1,0 +1,170 @@
+---
+/**
+ * A section of the home page: a heading in the display face, then Markdown.
+ *
+ * The first paragraph is the section's lead, a step brighter than the rest. With
+ * `split`, the `aside` slot (code, a picture) stands beside the text on wide
+ * screens and below it on narrower ones, where the text column alone would
+ * be too narrow to read and the code too narrow to fit. Content fades in as
+ * it scrolls into view (`.qsl-reveal` in theme.css).
+ *
+ * <LandingSection title="You write the schema, QSL writes the code" id="usage" split>
+ *   ...Markdown...
+ *   <div slot="aside">...code blocks...</div>
+ * </LandingSection>
+ */
+interface Props {
+	/** Section heading, rendered as `<h2>`. */
+	title: string;
+	/** Anchor for links to the section. Keep it the same in every language. */
+	id?: string;
+	/** Put the `aside` slot beside the text on wide screens. */
+	split?: boolean;
+}
+
+const { title, id, split = false } = Astro.props;
+---
+
+<section class:list={['landing-section', { 'landing-section--split': split }]}>
+	<div class="landing-section__main">
+		<h2 class="not-content" id={id}>
+			{title}
+		</h2>
+		<div class="landing-section__body qsl-reveal">
+			<slot />
+		</div>
+	</div>
+	{split && (
+		<div class="landing-section__aside qsl-reveal">
+			<slot name="aside" />
+		</div>
+	)}
+</section>
+
+<style>
+	.landing-section {
+		display: grid;
+		/* minmax(0, …): a long code line scrolls inside its block instead of widening the page. */
+		grid-template-columns: minmax(0, 1fr);
+		gap: 3rem;
+		padding-block: clamp(2rem, 5vw, 3.5rem);
+	}
+
+	/* Starlight spaces Markdown siblings with margin-top; the grid gap does it here. */
+	.landing-section > :global(*),
+	.landing-section__main > :global(*),
+	.landing-section__body > :global(:first-child),
+	.landing-section__aside > :global(:first-child) {
+		margin-top: 0;
+	}
+
+	h2 {
+		max-width: 18em;
+		margin: 0 0 1.5rem;
+		color: var(--sl-color-white);
+		font-family: var(--qsl-font-display);
+		font-size: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+		font-weight: 500;
+		font-optical-sizing: auto;
+		line-height: 1.1;
+		letter-spacing: -0.015em;
+		text-wrap: balance;
+	}
+
+	:root:is(:lang(zh-CN), :lang(ja), :lang(ko)) h2 {
+		font-weight: 600;
+		line-height: 1.3;
+		letter-spacing: 0;
+	}
+
+	/* Prose is set for reading, in the book face, a size up from the docs and in a short measure. */
+	.landing-section__body > :global(p) {
+		max-width: 36rem;
+		color: var(--sl-color-gray-2);
+		font-family: var(--qsl-font-display);
+		font-size: 1rem;
+        font-weight: 400;
+		font-optical-sizing: auto;
+		line-height: 1.65;
+	}
+
+	.landing-section__body > :global(p:first-child) {
+		color: var(--sl-color-gray-1);
+	}
+
+	/* Code inside the book face keeps the size of the text around it. */
+	.landing-section__body > :global(p code) {
+		font-size: 0.8em;
+	}
+
+	.landing-section__body > :global(* + *) {
+		margin-top: 1.125rem;
+	}
+
+	/* Demos get more room than paragraphs. */
+	.landing-section__body > :global(:not(p) + *),
+	.landing-section__body > :global(* + :not(p)) {
+		margin-top: 3rem;
+	}
+
+	/* ---------- Centered sections ---------- */
+
+	/* A section without an aside is one idea: a centered heading, a line or two, and a picture or demo. */
+	.landing-section:not(.landing-section--split) {
+		text-align: center;
+	}
+
+	.landing-section:not(.landing-section--split) h2,
+	.landing-section:not(.landing-section--split) .landing-section__body > :global(p) {
+		margin-inline: auto;
+	}
+
+	.landing-section:not(.landing-section--split) .landing-section__body > :global(:not(p)) {
+		text-align: start;
+	}
+
+	/* A chart of a few rows reads best about as wide as the text above it. */
+	.landing-section:not(.landing-section--split) .landing-section__body > :global(.byte-bars) {
+		max-width: 44rem;
+		margin-inline: auto;
+	}
+
+	/* ---------- Split sections ---------- */
+
+	/*
+	 * The aside holds code as a small stack of cards, like screenshots laid on
+	 * a desk: the second overlaps the first's bottom padding, shifted along.
+	 */
+	.landing-section__aside :global(.expressive-code) {
+		margin: 0;
+	}
+
+	.landing-section__aside :global(.expressive-code:first-child) {
+		width: min(100%, 24rem);
+	}
+
+	.landing-section__aside :global(.expressive-code + .expressive-code) {
+		position: relative;
+		margin-top: -0.75rem;
+		margin-inline-start: clamp(0rem, 5%, 2rem);
+		border-radius: 12px;
+		box-shadow:
+			0 1px 2px rgb(0 0 0 / 0.2),
+			0 24px 48px -24px rgb(0 0 0 / 0.6);
+	}
+
+	:root[data-theme='light'] .landing-section__aside :global(.expressive-code + .expressive-code) {
+		box-shadow:
+			0 1px 2px rgb(27 35 64 / 0.06),
+			0 24px 48px -24px rgb(27 35 64 / 0.22);
+	}
+
+	@media (min-width: 72rem) {
+		/* The code gets the wider column: its longest line should fit without scrolling. */
+		.landing-section--split {
+			grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+			gap: 4rem;
+			align-items: center;
+		}
+	}
+</style>

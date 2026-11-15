@@ -1,0 +1,41 @@
+---
+title: "Layout manual: quadro e memória"
+description: "Layout manual: quadro e memória — QSL"
+---
+
+## Formato e ordem
+
+Defina tipos, intervalos inteiros, limites UTF-8 em bytes e quantidades de elementos. Todos os opcionais vêm após os obrigatórios, inclusive depois de expandir modelos. Os atributos são opcionais; a ordem é obrigatória. As duas pontas precisam acordar o formato.
+
+## Quadro e memória
+
+raw usa a largura declarada em little-endian; compact guarda posições exatas no domínio. Constantes exigem zero bits. compact comum é LSB-first; dyn index é MSB-first. alignment adiciona fronteiras de byte após os campos, não alinha o endereço do objeto. Campos de 3 e 10 bits ocupam 2 bytes juntos ou 3 alinhados individualmente.
+
+Em x86-64, u8/u64/u16 ocupa 24 bytes de Self e u64/u16/u8 ocupa 16; ambos têm 11 bytes raw úteis. Alterar declarações altera wire. auto muda só o layout físico; auto[wire=1] ou .auto_wire(1) também autoriza canonicalização wire. As verificações de tamanho e offset validam a plataforma. Comece pela ordem decrescente de alinhamento, mantendo os opcionais no fim.
+
+$$
+w=\lceil\log_2(b-a+1)\rceil.
+$$
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i).
+$$
+
+$$
+\operatorname{align}(x,a)=a\lceil x/a\rceil.
+$$
+
+$$
+S=\operatorname{align}(o_n+s_n,A).
+$$
+
+## Preenchimento e limites
+
+padding(N) do esquema conta bytes; padding_bits(N), bits. Builder.padding(N) sempre conta bits. checked rejeita preenchimento não zero. Preenchimento não múltiplo de byte exige compact sem dyn/QPS/predict_seq/state_bits. STACK_LIMIT é 256 B para todas as strings e arrays. stack_limit(bytes) e max_data_size(bytes), padrão 65535, têm funções distintas.
+
+## Representação nativa e revisão
+
+Uma região nativa cria um tipo Rust fixo aninhado. copy exige campos válidos inicializados, representação compatível e destino alinhado. overlay também exige origem alinhada, imutável e com vida suficiente. repr(C) sozinho não prova compatibilidade wire. Comece por checked e constantes de compatibilidade. Não transmita padding não inicializado ou ponteiros String/Vec.
+
+Revise separadamente ordem, tamanho wire, bits, Self, offsets, alinhamento e memória externa. Teste comprimentos corrompidos, posições inválidas e padding não zero. Self não é toda a pilha nem RAM do processo. Desconhecido não é zero. Meça apenas leitura/escrita afetada com buffers aquecidos.
+· [Builder / DEQ](/language/deq/) · [Macros](/guides/custom-types/)

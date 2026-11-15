@@ -1,0 +1,68 @@
+---
+title: "Builder и DEQ"
+description: "Документация QSL: Builder и DEQ."
+---
+
+import BuilderReference from '../../../../components/BuilderReference.astro';
+
+Builder — способ описать схему средствами Rust. DEQ — файл констант и общих настроек. Оба пути приходят к одному анализу и формату; при одинаковых входных условиях результат должен быть одинаковым.
+
+## Как собирается схема
+
+QslBuilder хранит настройки и набор схем. В schem вызываются name, field и методы типов; build проверяет все объявления. use_interpreter выбирает генерацию Rust. [Полный build.rs](/start/quickstart/).
+
+## Методы и аргументы
+
+<BuilderReference />
+
+## Настройки DEQ
+
+### MAX_DATA_SIZE {#max_data_size}
+
+По умолчанию: **65535 B**. `max_data_size(bytes: u32)`.
+
+Ограничивает входной кадр, восстановление и суммарные данные до выделения памяти. Не является лимитом RSS.
+
+### STACK_LIMIT {#stack_limit}
+
+По умолчанию: **256 B**. `stack_limit(bytes: u32)`.
+
+Отдельный строгий предел встроенного хранения строк и массивов. Большой max_data_size не увеличивает его.
+
+### QSL_RT {#qsl_rt}
+
+По умолчанию: **false**. `with_rt()`.
+
+Включает статические слоты только для подходящих ограниченных схем.
+
+### QSL_RT_DEFAULT {#qsl_rt_default}
+
+По умолчанию: **16**. `default_rt_slots(slots: u32)`.
+
+Число одновременно занятых слотов на схему: от 1 до 64. При исчерпании — ошибка.
+
+### USE_HASH {#use_hash}
+
+По умолчанию: **xxHash**. `use_xxhash128()`.
+
+xxHash выбирает XXH3-64, xxHash128 — XXH3-128. [Хэш](/guides/schema-identity/) не заменяет аутентификацию.
+
+### CPU_PROFILE {#cpu_profile}
+
+По умолчанию: **portable**. `cpu_profile(CpuProfile)`.
+
+portable либо kaby_lake. Меняет выбор допустимых инструкций, а не wire-формат.
+
+## Константы
+
+Типизированные целочисленные константы вычисляются при сборке; поддержаны точные u128/i128. Дубликаты, переполнения и неверные значения вызывают диагностику.
+
+```qsl
+!define NAME_MAX: usize = 100;
+!config MAX_DATA_SIZE = 65535;
+!config STACK_LIMIT = 256;
+!config QSL_RT = false;
+!config QSL_RT_DEFAULT = 16;
+!config CPU_PROFILE = portable;
+!config USE_HASH = xxHash;
+```

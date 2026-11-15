@@ -1,0 +1,55 @@
+---
+title: Format de trame
+description: "Comment QSL dispose les entiers, les chaînes, les tableaux et les métadonnées des champs optionnels dans une trame."
+---
+
+
+Une trame QSL ne contient que des valeurs et les métadonnées exigées par le schéma. Elle ne contient ni information de type, ni noms de champs, ni hash de schéma.
+
+## Structure d’une trame
+
+```text
+[optional-field metadata] [required values in declaration order] [present optional values]
+```
+
+`opt_table=legacy` est la seule exception à cet ordre : sa table d’offsets vient après les valeurs obligatoires. La partie métadonnées est vide quand un type n’a pas de champ optionnel.
+
+## Valeurs
+Valeur | Encodage par défaut | Avec `compact`
+---|---|---
+Entier | Little-endian, largeur native | `x - min` sur `bit_length(max - min)` bits
+`str`, `str(A..B)` | Longueur en octets de type `u32`, puis UTF-8 | Longueur sous forme de rang, sur le plus petit nombre de bits permis par la plage, puis UTF-8 à partir de la limite d’octet suivante
+`str(A..B)` avec `decompress=true` ou `decompress=true` | En-tête de 1, 2 ou 4 octets pour une borne supérieure jusqu’à 127, jusqu’à 32767, ou au-delà ; son bit de poids fort signale la compression | Identique
+`str(N)` | `N` octets, sans longueur | Identique
+`array<T>`, `array<T>(A..B)` | Nombre d’éléments de type `u32`, puis les éléments | Nombre d’éléments sous forme de rang, puis les éléments
+`array<T>(N)` | `N` éléments, sans compteur | Identique
+`padding(N)` | `N` octets nuls | Identique
+Avec `compact`, les champs sont empaquetés bit à bit, bit de poids faible en premier, et peuvent s’étendre sur plusieurs octets et mots machine. Le générateur choisit la largeur des registres et émet, pour chaque champ, des séquences fixes de décalages et de masques.
+
+
+Les octets ci-dessus sont calculés dans le navigateur avec les mêmes règles que le générateur Rust. Pour `kind = 5`, `channel = 17`, `value = 513` :
+Encodage | Octets
+---|---
+Par défaut | `05 11 01 02`
+`compact` | `8d 01 02`
+`compact` + `alignment` | `05 11 01 02`
+## Métadonnées des champs optionnels
+
+**Par défaut.** Un seul champ optionnel : un bit de présence. Plusieurs : le nombre de champs présents sur `bit_length(optional_count)` bits, puis, pour chaque champ présent, son tag moins 1 sur `bit_length(max_tag - 1)` bits. L’en-tête est empaqueté à partir du bit de poids faible et complété jusqu’à un octet entier, sauf avec `compact`. Sa longueur dépend du nombre de champs présents. Voir l’[exemple détaillé](/language/optionals/).
+
+**Bitmap.** Un masque little-endian sur les seuls champs optionnels : 0, 1, 2, 4, 8 ou 16 octets. Le marqueur 1 correspond au bit de poids fort. Les valeurs suivent par ordre décroissant de marqueur.
+
+
+**predict_seq.** La présence se déduit de la longueur de la charge utile : il n’y a donc pas de métadonnées. Avec `predict_seq,opt_table`, la trame commence par un en-tête fixe : un bit de présence par champ optionnel quand les longueurs seules sont ambiguës, et une longueur sur 1, 2 ou 4 octets pour chaque champ optionnel de taille variable, sauf le dernier.
+
+**opt_table=legacy.** Après les valeurs obligatoires : un octet de comptage, puis un `u32` little-endian par champ optionnel, `0` pour un champ absent, sinon l’offset de la valeur dans la charge utile optionnelle, plus 1.
+
+## Chaînes avec decompress=true
+
+Une chaîne compressée à plage utilise l’en-tête de longueur décrit plus haut, avec le bit de poids fort à 1 quand la charge utile est compressée. QSL ne tente la compression que pour les chaînes de 32 octets ou plus, et écrit les octets bruts quand la compression ne réduit pas la taille.
+
+Une chaîne fixe `str(N)` avec `decompress=true` et un `N` supérieur ou égal à 32 est soit `N` octets bruts, soit un octet marqueur `ff`, suivi d’une longueur sur 1 ou 2 octets et de la charge utile compressée. De l’UTF-8 valide ne commence jamais par `ff` : les deux cas ne peuvent donc pas être confondus.
+
+## Compatibilité
+
+Modifier l’un des éléments suivants change le format : l’ordre des champs, les types, les plages, le caractère optionnel des champs, `compact`, `alignment` avec `compact`, le mode des champs optionnels, `qps` et son quantum, `decompress`, `decompress=true`. La trame ne contient aucune version. Les [hashes de schéma](/guides/schema-identity/) changent avec le format et peuvent être échangés hors bande.

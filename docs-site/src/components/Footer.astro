@@ -1,0 +1,23 @@
+---
+import Default from '@astrojs/starlight/components/Footer.astro';
+import { CRATES_URL, DOCS_RS_URL, REPO_URL, QSL_VERSION } from '../../config/site.mjs';
+const { starlightRoute, t } = Astro.locals;
+const isSplash = Boolean(starlightRoute.entry.data.hero);
+const resources = starlightRoute.entry.data.qslResources ?? [];
+const links = [
+  { label: 'QSL / GitHub', url: REPO_URL },
+  { label: 'crates.io', url: CRATES_URL },
+  { label: 'Rust API', url: DOCS_RS_URL },
+  ...resources,
+];
+const unique = links.filter((link, index) => links.findIndex(other => other.url === link.url) === index);
+---
+{!isSplash && <Default />}
+<footer class="qsl-project-footer not-content" data-project-footer>
+  <p>QSL {QSL_VERSION} · {t('qsl.footer.license')}</p>
+  <nav aria-label="Project resources"><ul>{unique.map(link => <li><a href={link.url} rel="external">{link.label}</a></li>)}</ul></nav>
+</footer>
+<style>
+.qsl-project-footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--sl-color-hairline);color:var(--sl-color-gray-3);font-size:.8125rem;display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem 2rem}
+p{margin:0}ul{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;padding:0;margin:0;list-style:none}a{color:var(--sl-color-gray-2);text-decoration:underline;text-underline-offset:.2em}a:hover{color:var(--sl-color-accent-high)}
+</style>

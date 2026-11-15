@@ -1,0 +1,55 @@
+---
+title: Wire-Format
+description: Wie QSL Integer, Strings, Arrays und die Metadaten optionaler Felder im Frame anordnet.
+---
+
+
+Ein QSL-Frame enthält nur Werte und die Metadaten, die das Schema verlangt. Typinformationen, Feldnamen oder ein Schema-Hash stehen nicht im Frame.
+
+## Aufbau eines Frames
+
+```text
+[optional-field metadata] [required values in declaration order] [present optional values]
+```
+
+`opt_table=legacy` ist die einzige Ausnahme von dieser Reihenfolge: Seine Offset-Tabelle steht hinter den Pflichtwerten. Der Metadatenteil ist leer, wenn ein Typ keine optionalen Felder hat.
+
+## Werte
+Wert | Standardkodierung | Mit `compact`
+---|---|---
+Integer | Little-Endian, native Breite | `x - min` in `bit_length(max - min)` Bits
+`str`, `str(A..B)` | Bytelänge als `u32`, dann UTF-8 | Länge als Rang in so wenigen Bits, wie der Bereich erlaubt, dann UTF-8 ab der nächsten Bytegrenze
+`str(A..B)` mit `decompress=true` oder `decompress=true` | Header mit 1, 2 oder 4 Bytes für eine Obergrenze bis 127, bis 32767 oder darüber; sein oberstes Bit markiert Kompression | Gleich
+`str(N)` | `N` Bytes, keine Länge | Gleich
+`array<T>`, `array<T>(A..B)` | Elementanzahl als `u32`, dann die Elemente | Anzahl als Rang, dann die Elemente
+`array<T>(N)` | `N` Elemente, keine Anzahl | Gleich
+`padding(N)` | `N` Null-Bytes | Gleich
+Mit `compact` werden Felder Bit für Bit gepackt, niedrigstwertiges Bit zuerst, und dürfen sich über Bytes und Maschinenwörter erstrecken. Der Generator wählt Registerbreiten und erzeugt für jedes Feld feste Folgen von Shifts und Masken.
+
+
+Die Bytes oben berechnet der Browser nach denselben Regeln wie der Rust-Generator. Für `kind = 5`, `channel = 17`, `value = 513`:
+Kodierung | Bytes
+---|---
+Standard | `05 11 01 02`
+`compact` | `8d 01 02`
+`compact` + `alignment` | `05 11 01 02`
+## Metadaten optionaler Felder
+
+**Standard.** Ein optionales Feld: ein Präsenzbit. Mehrere: die Anzahl der vorhandenen Felder in `bit_length(optional_count)` Bits, dann für jedes vorhandene Feld sein Tag minus 1 in `bit_length(max_tag - 1)` Bits. Der Header wird ab dem niedrigstwertigen Bit gepackt und auf ein ganzes Byte aufgefüllt, außer mit `compact`. Seine Länge hängt davon ab, wie viele Felder vorhanden sind. Siehe das [durchgerechnete Beispiel](/language/optionals/).
+
+**Bitmap.** Eine Little-Endian-Maske nur über die optionalen Felder: 0, 1, 2, 4, 8 oder 16 Bytes. Marker 1 ist das höchstwertige Bit. Die Werte folgen in absteigender Marker-Reihenfolge.
+
+
+**predict_seq.** Das Vorhandensein ergibt sich aus der Länge der Nutzdaten, Metadaten gibt es also keine. Mit `predict_seq,opt_table` beginnt der Frame mit einem festen Header: ein Präsenzbit pro optionalem Feld, wenn die Längen allein mehrdeutig sind, und eine Länge mit 1, 2 oder 4 Bytes für jedes optionale Feld variabler Größe außer dem letzten.
+
+**opt_table=legacy.** Nach den Pflichtwerten: ein Byte mit der Anzahl, dann ein Little-Endian-`u32` pro optionalem Feld, `0` für ein fehlendes Feld, sonst der Offset des Werts in den optionalen Nutzdaten plus 1.
+
+## Strings mit decompress=true
+
+Ein komprimierter String mit Bereich verwendet den Inline-Header von oben; das oberste Bit ist gesetzt, wenn die Nutzdaten komprimiert sind. QSL versucht Kompression nur bei Strings ab 32 Bytes und schreibt Rohbytes, wenn das Ergebnis durch Kompression nicht kleiner wird.
+
+Ein festes `str(N)` mit `decompress=true` und `N` ab 32 besteht entweder aus `N` Rohbytes oder aus einem Markerbyte `ff`, einer Länge mit 1 oder 2 Bytes und den komprimierten Nutzdaten. Gültiges UTF-8 beginnt nie mit `ff`, die beiden Fälle lassen sich also nicht verwechseln.
+
+## Kompatibilität
+
+Jede Änderung an einem dieser Punkte ändert das Format: Feldreihenfolge, Typen, Wertebereiche, welche Felder optional sind, `compact`, `alignment` mit `compact`, der Modus für optionale Felder, `qps` und sein Quantum, `decompress`, `decompress=true`. Eine Version im Frame gibt es nicht. Die [Schema-Hashes](/guides/schema-identity/) ändern sich mit dem Format und lassen sich über einen separaten Kanal austauschen.

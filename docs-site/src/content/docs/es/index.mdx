@@ -1,0 +1,35 @@
+---
+title: Quick Schema Language — serialización binaria para Rust
+description: Quick Schema Language (QSL) compila esquemas de datos en structs de Rust y códecs binarios en tiempo de compilación.
+template: splash
+hero:
+  title: "Serialización binaria para Rust"
+  actions:
+    - text: Empezar
+      link: /start/quickstart/
+      variant: primary
+    - text: Cómo funciona
+      link: /start/how-it-works/
+      variant: secondary
+---
+
+import LandingSection from '../../../components/LandingSection.astro';
+
+<LandingSection title="Tú escribes el esquema, QSL escribe el código" id="usage" split>
+
+Quick Schema Language (QSL) es un lenguaje de esquemas para Rust. Describes un mensaje una sola vez: sus campos, el rango de cada número, lo larga que puede ser una cadena. Durante `cargo build`, QSL convierte esa descripción en un struct y en el código que lo escribe en bytes y lo vuelve a leer.
+
+No hay ningún códec que escribir a mano, y el esquema no se analiza en tiempo de ejecución. Con `[safety]`, como aquí, los bytes que no encajan con el esquema te llegan como un error, no como un `User`. Los otros dos archivos del programa están en el [inicio rápido](/start/quickstart/).
+
+<div slot="aside">
+
+```qsl title="user.qsl"
+&User[safety] {
+    u64 id;
+    str(1..100) name;
+}
+```
+
+</div>
+
+</LandingSection>

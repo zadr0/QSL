@@ -1,0 +1,23 @@
+---
+title: "优化器与内存布局"
+description: "物理 auto 可以重新排列生成结构体的字段以减少填充，但不会自动改变 wire 顺序。只有显式 auto[wire=1] 才启用版本化的 wire 规范化。直接复制仅适用于已初始化且表示相同的连续区域。Kaby Lake 的 4×12 位方案采用 PEXT 写入；PDEP 读取在测试中变慢，因此仍使用标量读取。"
+qslResources: [{"label": "详细参考与源码", "url": "https://github.com/zadr0/QSL"}]
+---
+
+
+本地开发版本 · 2026-11-14.
+
+物理 auto 可以重新排列生成结构体的字段以减少填充，但不会自动改变 wire 顺序。只有显式 auto[wire=1] 才启用版本化的 wire 规范化。直接复制仅适用于已初始化且表示相同的连续区域。Kaby Lake 的 4×12 位方案采用 PEXT 写入；PDEP 读取在测试中变慢，因此仍使用标量读取。
+
+详细参考与源码 · [English](/en/internals/optimizer/)
+
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i),\qquad \operatorname{align}(x,a)=a\left\lceil\frac{x}{a}\right\rceil.
+$$
+
+$$
+S_{\mathrm{Self}}=\operatorname{align}(o_n+s_n,A).
+$$
+
+o: offset · s: size · a: field alignment · A: Self alignment.

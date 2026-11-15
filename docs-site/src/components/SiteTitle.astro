@@ -1,0 +1,117 @@
+---
+/**
+ * Override of Starlight's `SiteTitle`.
+ *
+ * The logo is drawn inline instead of loaded as an image so its cells can
+ * animate on hover. It shows the bits of 0x8d, least significant first, in a
+ * 4 × 2 grid: 0x8d is the first byte of the compact frame used as the running
+ * example in the docs.
+ */
+const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute;
+
+const LOGO_BYTE = 0x8d;
+const cells = Array.from({ length: 8 }, (_, index) => ({
+	on: ((LOGO_BYTE >> index) & 1) === 1,
+	x: (index % 4) * 10,
+	y: Math.floor(index / 4) * 10,
+	index,
+}));
+---
+
+<a href={siteTitleHref} class="qsl-title">
+	<svg class="qsl-logo" viewBox="0 0 38 18" width="34" height="16" aria-hidden="true">
+		{cells.map(({ on, x, y, index }) =>
+			on ? (
+				<rect class="on" x={x} y={y} width="8" height="8" rx="1.6" style={`--i: ${index}`} />
+			) : (
+				<rect
+					class="off"
+					x={x + 0.75}
+					y={y + 0.75}
+					width="6.5"
+					height="6.5"
+					rx="1.2"
+					style={`--i: ${index}`}
+				/>
+			),
+		)}
+	</svg>
+	<span class="qsl-title__name" translate="no">
+		{siteTitle}
+	</span>
+</a>
+
+<style>
+	.qsl-title {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.625rem;
+		padding: 0.25rem;
+		margin: -0.25rem;
+		border-radius: 8px;
+		color: var(--sl-color-white);
+		text-decoration: none;
+	}
+
+	.qsl-logo {
+		overflow: visible;
+		flex: none;
+	}
+
+	.qsl-logo rect {
+		transform-box: fill-box;
+		transform-origin: center;
+		transition:
+			transform 420ms var(--qsl-ease-spring),
+			fill 300ms ease,
+			stroke 300ms ease;
+		transition-delay: calc(var(--i) * 28ms);
+	}
+
+	.on {
+		fill: var(--sl-color-accent);
+	}
+
+	.off {
+		fill: none;
+		stroke: var(--sl-color-gray-4);
+		stroke-width: 1.5;
+	}
+
+	.qsl-title:hover .qsl-logo rect {
+		transform: translateY(-2px);
+	}
+
+	.qsl-title:hover .on:nth-of-type(3n + 1) {
+		fill: var(--qsl-f1);
+	}
+
+	.qsl-title:hover .on:nth-of-type(3n + 2) {
+		fill: var(--qsl-f2);
+	}
+
+	.qsl-title:hover .on:nth-of-type(3n) {
+		fill: var(--qsl-f3);
+	}
+
+	.qsl-title:hover .off {
+		stroke: var(--sl-color-gray-3);
+	}
+
+	.qsl-title__name {
+		font-family: var(--__sl-font-mono);
+		font-size: 1rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.qsl-logo rect {
+			transition: fill 300ms ease;
+		}
+
+		.qsl-title:hover .qsl-logo rect {
+			transform: none;
+		}
+	}
+</style>

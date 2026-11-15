@@ -1,0 +1,22 @@
+---
+import DraftContentNotice from '@astrojs/starlight/components/DraftContentNotice.astro';
+import { localizeHref } from '../lib/links.mjs';
+const { starlightRoute } = Astro.locals;
+const { data } = starlightRoute.entry;
+const { hero } = data;
+const actions = (hero?.actions ?? []).map(action => ({...action, href: localizeHref(action.link, {base: import.meta.env.BASE_URL, locale: starlightRoute.locale})}));
+---
+{hero && <section class="qsl-hero not-content">
+  <p class="qsl-hero__label">Quick Schema Language</p>
+  <h1 id="_top" data-page-title set:html={hero.title ?? data.title} />
+  {data.draft && <DraftContentNotice />}
+  {hero.tagline && <p class="qsl-hero__tagline" set:html={hero.tagline} />}
+  <nav class="qsl-hero__actions">{actions.map(action => <a href={action.href}>{action.text}<span aria-hidden="true"> →</span></a>)}</nav>
+</section>}
+<style>
+.qsl-hero{padding:clamp(2.5rem,6vw,5rem) 0 2.5rem;border-bottom:1px solid var(--sl-color-hairline);max-width:var(--qsl-splash-width);margin-inline:auto}
+.qsl-hero__label{font-family:var(--sl-font-mono);font-size:.75rem;letter-spacing:.08em;color:var(--sl-color-gray-3);margin:0 0 1.25rem;text-transform:uppercase}
+h1{font-family:var(--sl-font);font-weight:650;letter-spacing:-.035em;line-height:1.15;max-width:20ch;font-size:clamp(2.25rem,5vw,3rem);margin:0}
+.qsl-hero__tagline{max-width:65ch;color:var(--sl-color-gray-2);font-size:1.125rem;line-height:1.65;margin-top:1.5rem}
+.qsl-hero__actions{display:flex;flex-wrap:wrap;gap:1rem 2rem;margin-top:2rem;font-size:.9375rem}a{color:var(--sl-color-accent-high);text-decoration:none}a:hover{text-decoration:underline;text-underline-offset:.2em}
+</style>

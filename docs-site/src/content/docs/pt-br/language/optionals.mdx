@@ -1,0 +1,77 @@
+---
+title: Campos opcionais
+description: Como um frame QSL indica quais campos opcionais estão presentes - tags no modo padrão, bitmap, predict_seq - e como o opt_table escolhe o leitor.
+---
+
+
+Um campo escrito como `T?` é opcional. O frame precisa dizer quais campos opcionais estão presentes. O QSL tem três formas de fazer isso, além do `opt_table`, que só muda como o leitor gerado faz o dispatch.
+Modo | Atributo | Presença armazenada como | Mesmos bytes do padrão
+---|---|---|---
+Padrão | nenhum | Quantidade de campos presentes e suas tags | Sim
+Bitmap | `optionals=bitmap` | Uma máscara com um bit por campo opcional | Não
+Índice por comprimento | `predict_seq` | Deduzida do comprimento do payload | Não
+Tabela de leitores | `opt_table` | Igual ao modo com que é combinado | Sim
+## Padrão: quantidade e tags
+
+Sem atributos, o frame começa com um cabeçalho: o número de campos opcionais presentes e, em seguida, um código de tag para cada campo presente. Depois vêm os valores obrigatórios e então os valores opcionais presentes, na ordem de declaração. Um tipo com um único campo opcional usa só um bit de presença. O leitor gerado faz o dispatch com um `match` na tag.
+
+O cabeçalho é empacotado a partir do bit menos significativo. A contagem ocupa `bit_length(optional_count)` bits. Cada código de tag é a tag do campo menos 1 e ocupa `bit_length(max_tag - 1)` bits. Sem `compact`, o cabeçalho é completado com padding até um byte inteiro.
+
+O exemplo optionals do repositório codifica `id = 42` e um subconjunto de `f0 = 11`, `f1 = 22`, `f2 = 33`:
+
+```qsl
+&Optional3Table[opt_table,safety] {
+    u32 id;
+    u8? f0;
+    u8? f1;
+    u8? f2;
+}
+```
+Presentes | Frame
+---|---
+nenhum | `00 2a 00 00 00`
+`f0`, `f2` | `36 2a 00 00 00 0b 21`
+`f0`, `f1`, `f2` | `e7 2a 00 00 00 0b 16 21`
+As tags são 1 para `id` e de 2 a 4 para `f0` a `f2`, então cada código de tag ocupa 2 bits, assim como a contagem. Para `f0` e `f2`, o cabeçalho guarda a contagem 2 (`10`) e depois os códigos 1 (`01`) e 3 (`11`): `0b110110` = `36`. Sem `opt_table`, os frames são os mesmos.
+
+## Bitmap {#bitmap}
+
+`optionals=bitmap` escreve uma máscara little-endian que cobre só os campos opcionais. A largura da máscara depende de quantos campos opcionais o tipo tem:
+Campos opcionais | 0 | 1–8 | 9–16 | 17–32 | 33–64 | 65–128
+---|---|---|---|---|---|---
+Bytes da máscara | 0 | 1 | 2 | 4 | 8 | 16
+O primeiro campo opcional recebe o marcador 1, guardado no bit mais significativo. O leitor encontra os bits ligados com `trailing_zeros`, por isso os valores presentes são escritos e lidos em ordem decrescente de marcador. Os valores obrigatórios mantêm a ordem de declaração.
+
+
+Ligue e desligue os campos para ver o frame mudar. Para `&P[safety,optionals=bitmap,opt_table]{u8 id;u16? a;u8? b;}` com `id = 9`, `a = 0x1234` e `b = 7`, o frame é `c0 09 07 34 12`: a máscara, `id`, depois `b` e depois `a` em little-endian.
+
+Com `[safety]`, antes de percorrer a máscara, o decodificador verifica uma única vez que nenhum bit está ligado para um marcador que o tipo não tem.
+
+:::caution[Mudança de formato]
+O bitmap v2 (0.2.0 em diante) não é compatível com a máscara anterior, que cobria todos os campos. Atualize as duas pontas juntas.
+:::
+
+## Índice por comprimento: predict_seq {#length-index-predict_seq}
+
+Com `predict_seq`, o decodificador descobre quais campos opcionais estão presentes pelo comprimento do payload. Isso só funciona quando cada combinação de campos presentes resulta em um comprimento diferente:
+
+- um único campo opcional pode ser detectado pelo fim da entrada;
+- vários campos precisam de tamanhos fixos cujas somas de subconjuntos sejam todas distintas.
+
+Combinações ambíguas e campos opcionais que codificam para zero bytes são rejeitados em tempo de build. Como a presença vem do comprimento, o decodificador para entrada confiável precisa do comprimento da entrada, não só de um ponteiro.
+
+`predict_seq` é ignorado quando `optionals=bitmap` está definido. Combinado com `compact`, é erro de build.
+
+### predict_seq com opt_table
+
+`[predict_seq,opt_table]` mantém o formato que um `[opt_table]` sozinho produzia antes da 0.2.0. O grafo de comprimentos suporta até 12 campos e 65535 bytes de payload. Acima de 12 campos, todos precisam ter a mesma largura fixa, e o limite é de 64 campos. Se você tem frames escritos com `[opt_table]` antes da 0.2.0, mude os dois lados para `[predict_seq,opt_table]`.
+
+## Tabela de leitores: opt_table
+
+`opt_table` troca o `match` por uma tabela estática de funções de leitura, uma por campo opcional, indexada pelo marcador. Ele não muda os bytes nem o hash do esquema. Funciona com o formato padrão, com `compact` e com o bitmap.
+
+Uma chamada indireta pela tabela não é automaticamente mais rápida que um `match`. Meça com os seus dados antes de manter o `opt_table`.
+
+## Valores iniciais
+
+`|default=N|` em um campo numérico gera `impl Default` para o tipo, com esse campo valendo `N`. Para um campo opcional, o valor padrão é `Some(N)`. Isso não muda o formato binário nem o hash do esquema. Veja [`default=N`](/reference/attributes/#defaultn).

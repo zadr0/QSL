@@ -1,0 +1,66 @@
+---
+title: Kleinere Frames
+description: Mit compact, alignment und qps Frames verkleinern, wenn die Wertebereiche bekannt sind.
+---
+
+
+Standardmäßig belegt ein Integer im Frame seine volle native Breite. Gibt das Schema einen Wertebereich an, kann QSL weniger Bits speichern. Dafür gibt es zwei Mechanismen: `compact` packt Felder Bit für Bit, `qps` zerlegt jede Zahl mit Wertebereich anhand eines festen Quantums und packt die Teile.
+
+## compact
+
+`compact` speichert jeden Wert mit Wertebereich als `x - min` in `bit_length(max - min)` Bits. Die Felder werden direkt hintereinander gepackt, beginnend beim niedrigstwertigen Bit, und dürfen Bytegrenzen überschreiten.
+
+```qsl
+&Sample[safety,compact] {
+    u8(0..7)     kind;      // 3 Bits
+    u8(0..31)    channel;   // 5 Bits
+    u16(0..1023) value;     // 10 Bits
+}
+```
+
+Das sind 18 Bits, also 3 statt 4 Bytes. Für `kind = 5`, `channel = 17` und `value = 513` lautet der Frame `8d 01 02`. Ohne `compact` ist er `05 11 01 02`. Ändere unten die Werte und die Kodierung:
+
+
+Ein Feld mit nur einem erlaubten Wert (`u8(5..5)`) belegt 0 Bits. Die Rust-Typen ändern sich nicht: `value` ist im Speicher weiterhin ein `u16`.
+
+`compact` lässt sich nicht mit `predict_seq` kombinieren. Mit `[safety]` prüft der Decoder, dass jeder entpackte Wert im Bereich liegt und unbenutzte Bits null sind.
+
+## alignment
+
+Mit `compact` lässt `alignment` jedes Feld an einer Bytegrenze beginnen. Das Lesen wird einfacher, dafür wird der Frame größer. Im Beispiel oben ist der Frame wieder `05 11 01 02`: 4 Bytes. Ohne `compact` wirkt sich `alignment` nicht auf das Format aus.
+
+Gemeint ist die Ausrichtung von Feldern im Frame, nicht die Speicherausrichtung von Puffern.
+
+## qps
+
+`qps` (Alias `quant`) ist eine umkehrbare Packung numerischer Felder mit statischen Grenzen. Jeder Wert wird als sein Rang `r = x - min` gespeichert, anhand des Quantums `Q` in zwei Teile zerlegt und mit statischen Shifts und Masken wieder zusammengesetzt. Dabei geht keine Information verloren. Das Quantum ist Teil des Formats.
+
+```qsl
+&Packed[qps,safety] {
+    u64(0..15) f0;
+    u64(0..15) f1;
+    // ... bis f7
+}
+```
+Attribut | Bedeutung
+---|---
+`qps` | Wie `qps=Q16`.
+`qps=Q2`, `Q4`, `Q8`, `Q16` | Das Quantum. Es kann die Bytes ändern, nicht die Frame-Länge.
+`quant=Qn` | Wie `qps=Qn`. Ein bloßes `quant` ohne Wert ist ein Fehler, ebenso die Verwendung beider Namen.
+`qps` packt nur Zahlen. Strings, Arrays und ihre Längen behalten ihre eigenen Codecs, und numerische Felder müssen vor ihnen stehen. Welche optionalen Felder vorhanden sind, sagt `qps` nicht voraus. Bringt das Packen nichts, verwendet der Typ die gewöhnliche Kodierung.
+
+Ein Typ mit `qps` kann nicht zusätzlich `compact`, `alignment`, `optionals=bitmap` oder `opt_table=legacy` haben. Der Build schlägt dann fehl.
+
+## Ergebnisse der Beispiele
+
+```text
+8 ranged u64 values: raw=64 B, compact=4 B, QPS=4 B; restored f0=3, f7=10
+Scalar Q16: 64 useful B -> 4 wire B
+Mixed Q16: 16 scalar B -> 1 B; string length stays 4 B, string stays 1024 B; frame=1029 B
+```
+
+Acht Werte in `0..15` brauchen je 4 Bits, zusammen 32 Bits. In der gemischten Nachricht passen zwei Zahlen in 1 Byte, während der String mit 1024 Bytes seine 4 Bytes lange Längenangabe behält.
+
+:::note[ByteQps ist eine eigene API]
+`qsl::qps::ByteQps<Q>` komprimiert beliebige Bytes hinter einem 16 Byte großen `QPB3`-Header. Das ist eine Laufzeit-API, nicht das Schema-Attribut `qps`, und die beiden Formate sind nicht austauschbar. Kleinen Frames hilft sie nicht: Allein der Header kostet 16 Bytes.
+:::

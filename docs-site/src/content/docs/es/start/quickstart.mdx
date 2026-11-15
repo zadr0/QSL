@@ -1,0 +1,114 @@
+---
+title: Inicio rápido
+description: Crea un proyecto de Rust, añade un esquema, genera el código en build.rs y convierte un valor a bytes y de vuelta.
+qslResources: [{"label": "Ejemplos en el repositorio", "url": "https://github.com/zadr0/QSL/tree/main/examples"}]
+---
+
+import { Steps, FileTree } from '@astrojs/starlight/components';
+
+Necesitas Rust 1.98 o posterior. El resultado es un programa que codifica un valor `User` en bytes y lo vuelve a decodificar.
+
+<FileTree>
+- qsl-demo/
+  - Cargo.toml
+  - build.rs
+  - user.qsl
+  - src/
+    - main.rs
+</FileTree>
+
+<Steps>
+
+1. Crea el proyecto:
+
+   ```sh
+   cargo new qsl-demo
+   cd qsl-demo
+   ```
+
+2. Añade `qsl` a `Cargo.toml` dos veces: en `[dependencies]` para el programa y en `[build-dependencies]` para `build.rs`. Conserva la sección `[package]` que creó Cargo. Usa la misma versión en ambos sitios.
+
+   ```toml title="Cargo.toml" ins={7,9-10}
+   [package]
+   name = "qsl-demo"
+   version = "0.1.0"
+   edition = "2024"
+
+   [dependencies]
+   qsl = "=0.4.0"
+
+   [build-dependencies]
+   qsl = "=0.4.0"
+   ```
+
+3. Describe el mensaje en `user.qsl`, junto a `Cargo.toml`:
+
+   ```qsl title="user.qsl"
+   &User[safety] {
+       u64 id;
+       str(1..100) name;
+   }
+   ```
+
+   `&User` declara un tipo. `u64 id` es un campo de tipo `u64` llamado `id`. `str(1..100)` es una cadena de 1 a 100 bytes de UTF-8. `[safety]` añade los métodos de decodificación con comprobación que se usan más abajo.
+
+4. Genera el código Rust en tiempo de compilación. Crea `build.rs` en la raíz del proyecto:
+
+   ```rust title="build.rs"
+   fn main() -> Result<(), Box<dyn std::error::Error>> {
+       let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+       qsl::build_qsl_files(&["user.qsl"], &[], out)?;
+       Ok(())
+   }
+   ```
+
+   `build_qsl_files` escribe `qsl_gen.rs` en `OUT_DIR` y le indica a Cargo que vuelva a ejecutar `build.rs` cuando cambie `user.qsl`. El segundo argumento enumera los archivos de configuración `.deq`. Por ahora no hay ninguno.
+
+5. Incluye el archivo generado en `src/main.rs`. Define `User` y sus métodos, así que no hace falta ninguna línea `use`:
+
+   ```rust title="src/main.rs"
+   include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
+
+   fn main() -> qsl::QslResult<()> {
+       let user = User {
+           id: 42,
+           name: "Ada".into(),
+       };
+       let bytes = user.serialize_checked()?;
+       let restored = User::deserialize_checked(&bytes)?;
+       assert_eq!((restored.id, restored.name.as_str()), (42, "Ada"));
+       println!("{}: {} ({} bytes)", restored.id, restored.name, bytes.len());
+       Ok(())
+   }
+   ```
+
+6. Ejecútalo:
+
+   ```sh
+   cargo run
+   ```
+
+   ```text
+   42: Ada (15 bytes)
+   ```
+
+</Steps>
+
+## Qué ocurrió
+
+La trama tiene 15 bytes: 8 para `id`, un prefijo de longitud de 4 bytes para `name` y 3 bytes de UTF-8. El esquema permite de 1 a 100 bytes para `name`, así que `deserialize_checked` rechaza una trama cuyo prefijo de longitud quede fuera de ese rango antes de reservar memoria para la cadena.
+
+`serialize_checked` comprueba el valor contra el esquema antes de escribir. Ambos métodos devuelven `qsl::QslResult`. El tipo de error es [`QslError`](/reference/errors/).
+
+## Reglas que conviene conocer pronto
+
+- Los campos obligatorios van primero. Un campo obligatorio después de uno opcional es un error de compilación.
+- Los límites de cadenas y arrays son inclusivos. Las cadenas se miden en bytes de UTF-8; los arrays, en elementos.
+- `deserialize_checked` y `deserialize_checked_into` solo existen en los tipos con `[safety]`. Los decodificadores sin comprobación se generan siempre y requieren una trama válida.
+- `MAX_DATA_SIZE` limita la trama y los datos decodificados. El valor por defecto es 65535 bytes. Cámbialo en un [archivo DEQ](/language/deq/).
+
+## Siguientes pasos
+
+- [Cómo funciona](/start/how-it-works/): qué se ejecuta en tiempo de compilación y qué se ejecuta en tu programa.
+- [Declaraciones](/language/declarations/): la sintaxis completa de los esquemas.
+- Ejemplos en el repositorio: siete programas sobre enteros, cadenas, campos opcionales, QPS, el pool RT, plantillas de Rust y validación.

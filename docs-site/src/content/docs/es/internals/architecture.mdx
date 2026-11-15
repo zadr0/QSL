@@ -1,0 +1,18 @@
+---
+title: Arquitectura
+description: Los crates de QSL, de qué se encarga cada uno y el camino desde el texto del esquema hasta el Rust generado.
+---
+
+## Límites del runtime
+
+no_std excluye std, no alloc. qsl-core siempre usa #![no_std]; la función alloc, activa por defecto, ofrece alloc String/Vec, SerOut y restauración en heap. La aplicación aporta el asignador; QSL no declara uno global. Desactiva las funciones predeterminadas para usar solo buffers del llamador.
+Crate           | Scope
+--------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+qsl-core        | Todo el I/O de runtime, contratos y macros de serialización y primitivas, contenedores, validación, QPS y framing independiente del transporte; alloc opcional.
+qsl-rt          | Regiones estáticas no_std que implementan FramePool/FrameStorage. Un pool lleno devuelve PoolExhausted inmediatamente.
+qsl-lexer       | Lectura de fuentes y DEQ, esquemas, análisis y planes de optimización.
+qsl-interpreter | Generación de Rust especializado en el equipo de compilación.
+qsl-macros-impl | Rust attribute expansion
+qsl             | Reexportación del runtime y compilador opcional. El modo solo runtime no necesita std.
+Los scripts de compilación y las pruebas pueden usar std sin incluirlo en el runtime de destino. Esquemas reales generados se ejecutan sin asignador; otra biblioteca no_std comprueba contenedores alloc. Ambos perfiles del núcleo y qsl-rt también compilan para wasm32-wasip2.
+[Memory](/guides/manual-layout/) · [Runtime](/internals/runtime/)

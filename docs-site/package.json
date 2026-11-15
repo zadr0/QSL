@@ -1,0 +1,55 @@
+{
+  "name": "qsl-docs",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Website and documentation for QSL, a schema compiler for Rust binary codecs",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zadr0/QSL.git"
+  },
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1 --port 4322",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check --minimumFailingSeverity warning",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:links": "node scripts/check-links.mjs",
+    "test:i18n": "node scripts/check-locales.mjs",
+    "verify": "npm run check && npm run test:i18n && npm run build && npm run test:links && npm run test:reference",
+    "native:build": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-native.ps1",
+    "start": "node scripts/serve.mjs",
+    "test:i18n:structure": "node scripts/check-translations.mjs",
+    "test:reference": "node scripts/check-reference.mjs"
+  },
+  "dependencies": {
+    "@astrojs/markdown-satteri": "^0.4.7",
+    "@astrojs/starlight": "^0.42.10",
+    "@fontsource-variable/geologica": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/literata": "^5.3.0",
+    "astro": "^7.4.7",
+    "katex": "0.19.1",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
+    "eslint-plugin-astro": "^3.2.1",
+    "eslint-plugin-jsx-a11y-x": "^0.2.0",
+    "globals": "^17.14.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.2",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.1",
+    "vitest": "^5.1.0"
+  }
+}

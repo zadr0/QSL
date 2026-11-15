@@ -1,0 +1,47 @@
+{
+  "en": [
+    "Frame size",
+    "Memory layout",
+    "Measurements"
+  ],
+  "ru": [
+    "Размер кадра",
+    "Раскладка памяти",
+    "Замеры"
+  ],
+  "zh-cn": [
+    "帧大小",
+    "内存布局",
+    "性能测量"
+  ],
+  "ja": [
+    "フレームサイズ",
+    "メモリ配置",
+    "性能測定"
+  ],
+  "ko": [
+    "프레임 크기",
+    "메모리 배치",
+    "성능 측정"
+  ],
+  "es": [
+    "Tamaño de trama",
+    "Diseño de memoria",
+    "Mediciones"
+  ],
+  "pt-br": [
+    "Tamanho do quadro",
+    "Layout de memória",
+    "Medições"
+  ],
+  "de": [
+    "Rahmengröße",
+    "Speicherlayout",
+    "Messungen"
+  ],
+  "fr": [
+    "Taille de trame",
+    "Disposition mémoire",
+    "Mesures"
+  ]
+}

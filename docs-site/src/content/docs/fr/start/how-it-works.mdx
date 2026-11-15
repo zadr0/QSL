@@ -1,0 +1,58 @@
+---
+title: Fonctionnement
+description: "Ce que fait QSL pendant cargo build, comment le code généré rejoint votre crate et ce qui s’exécute ensuite dans votre programme."
+---
+
+
+Tout ce qui dépend du schéma se passe pendant la compilation de votre crate. À l’exécution, seul le code généré tourne.
+
+## À la compilation
+
+`build.rs` appelle `qsl::build_qsl_files` avec vos schémas `.qsl` et vos fichiers de configuration `.deq`. Cet appel exécute les cinq premières étapes ; la sixième a lieu quand Cargo compile votre crate :
+
+1. **Analyse syntaxique.** Le lexer et le parseur lisent les schémas et les fichiers DEQ, évaluent les expressions constantes comme `MAX_LEN * 2` et attribuent à chaque champ un tag dans l’ordre de déclaration.
+2. **Expansion et vérification.** Les modèles Rust et les régions natives sont développés. Les noms, l’ordre des champs et les combinaisons d’attributs sont vérifiés.
+3. **Analyse.** Le code de `qsl-core` calcule les largeurs en bits, les bornes de longueur, la disposition des champs optionnels et les hashes du schéma.
+4. **Choix du stockage.** Le type Rust de chaque champ chaîne ou tableau est fixé, en fonction des attributs et de `STACK_LIMIT`.
+5. **Génération.** L’interpréteur écrit les structures, les méthodes et les tables statiques dans `qsl_gen.rs`, dans `OUT_DIR`.
+6. **Compilation.** `rustc` compile le fichier généré avec votre code.
+
+Une erreur dans un schéma, comme une plage inversée ou un champ en double, fait renvoyer une erreur à `build.rs`, et la compilation échoue avec ce message.
+
+## Utiliser le code généré
+
+`qsl_gen.rs` contient des items : structures, blocs `impl` et statiques. Incluez-le au niveau d’un module, soit à la racine de la crate comme dans le [démarrage rapide](/start/quickstart/), soit dans un module dédié :
+
+```rust title="src/main.rs"
+mod wire {
+    include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
+}
+
+use wire::Packet;
+
+fn roundtrip(packet: &Packet) -> qsl::QslResult<Packet> {
+    let bytes = packet.serialize_checked()?;  // vérifie la valeur, puis écrit
+    Packet::deserialize_checked(&bytes)       // vérifie pendant la lecture
+}
+```
+
+Le code généré fait référence au runtime sous la forme `::qsl::...` : la crate doit donc dépendre de `qsl` dans `[dependencies]` en plus de `[build-dependencies]`.
+
+## À l’exécution
+
+Les méthodes générées contiennent le type et la largeur de chaque champ sous forme de constantes. La trame ne transporte aucun descripteur de type, et rien ne consulte le schéma à l’exécution.
+
+Le décodeur vérifié lit et valide avec un seul curseur. Il n’effectue pas de passe de validation séparée au préalable.
+
+## Deux tailles à ne pas confondre
+
+La **taille de trame** est la longueur de la trame encodée. La **taille de l’objet** est le `size_of::<T>()` de la structure générée. Les structures générées sont `#[repr(C)]` : les champs restent dans l’ordre de déclaration, et Rust ajoute du remplissage pour l’alignement. Un champ `u16(0..1023)` occupe 10 bits dans la trame avec `compact`, mais reste un `u16` de 2 octets en mémoire. Chaque type possède les constantes `NATIVE_BYTES` et `NATIVE_ALIGNMENT`, qui donnent sa taille et son alignement en mémoire.
+
+## Où se trouve le code
+Phase | Crate | Fichiers principaux
+---|---|---
+Analyse syntaxique, expansion | `qsl-lexer` | `lexer.rs`, `parser.rs`, `deq.rs`, `builder.rs`
+Analyse | `qsl-core` | `analysis.rs`, `schema_hash.rs`, `types.rs`
+Génération | `qsl-interpreter` | `frontend.rs`, `interpreter.rs`, `codegen_*.rs`
+Exécution | `qsl-core`, réexporté par `qsl` | `io.rs`, `bit_io.rs`, `validation.rs`, `strings.rs`
+Plus de détails dans [architecture](/internals/architecture/) et [format de trame](/internals/wire-format/).

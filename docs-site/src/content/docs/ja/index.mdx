@@ -1,0 +1,35 @@
+---
+title: Quick Schema Language — Rust のバイナリシリアライズ
+description: Quick Schema Language (QSL) はデータスキーマを、ビルド時に Rust の構造体とバイナリコーデックへコンパイルします。
+template: splash
+hero:
+  title: "Rust のバイナリシリアライズ"
+  actions:
+    - text: はじめる
+      link: /start/quickstart/
+      variant: primary
+    - text: 仕組み
+      link: /start/how-it-works/
+      variant: secondary
+---
+
+import LandingSection from '../../../components/LandingSection.astro';
+
+<LandingSection title="スキーマを書けば、コードは QSL が書く" id="usage" split>
+
+Quick Schema Language (QSL) は Rust 向けのスキーマ言語です。メッセージのフィールド、各数値の範囲、文字列の長さの上限を一度書いておくと、`cargo build` の間に QSL がそれを構造体に変え、バイト列への書き出しと読み戻しを行うコードも生成します。
+
+コーデックを手書きする必要はなく、実行時にスキーマを解析することもありません。この例のように `[safety]` を付けると、スキーマに合わないバイト列は `User` ではなくエラーとして返ってきます。プログラムの残りの 2 つのファイルは[クイックスタート](/start/quickstart/)にあります。
+
+<div slot="aside">
+
+```qsl title="user.qsl"
+&User[safety] {
+    u64 id;
+    str(1..100) name;
+}
+```
+
+</div>
+
+</LandingSection>

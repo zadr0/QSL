@@ -1,0 +1,41 @@
+---
+title: "Manuelles Layout: Drahtformat und Objektspeicher"
+description: "Manuelles Layout: Drahtformat und Objektspeicher — QSL"
+---
+
+## Format und Reihenfolge
+
+Legen Sie Typen, Integerbereiche, UTF-8-Bytegrenzen und Elementzahlen fest. Optionale Felder folgen allen Pflichtfeldern, auch nach Vorlagenexpansion. Attribute sind optional, diese Reihenfolge ist verbindlich. Beide Gegenstellen vereinbaren dasselbe Format.
+
+## Drahtformat und Speicher
+
+Raw verwendet die deklarierte Little-Endian-Breite, compact exakte Ränge. Konstanten brauchen null Bit. Normales compact ist LSB-first, dyn index MSB-first. alignment setzt Bytegrenzen nach Feldern und richtet keine Objektadresse aus. 3 und 10 Bit belegen dicht 2 Byte, einzeln ausgerichtet 3 Byte.
+
+Auf x86-64 braucht u8/u64/u16 als Self 24 Byte, u64/u16/u8 dagegen 16; beide enthalten 11 Raw-Nutzbyte. Änderungen der Deklaration ändern auch wire. auto ändert nur das physische Layout; auto[wire=1] oder .auto_wire(1) erlaubt auch Wire-Kanonisierung. Größen- und Offsetprüfungen bestätigen das Ziellayout. Absteigende Ausrichtung ist ein Ausgangspunkt, optionale Felder bleiben zuletzt.
+
+$$
+w=\lceil\log_2(b-a+1)\rceil.
+$$
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i).
+$$
+
+$$
+\operatorname{align}(x,a)=a\lceil x/a\rceil.
+$$
+
+$$
+S=\operatorname{align}(o_n+s_n,A).
+$$
+
+## Padding und Grenzen
+
+Schema-padding(N) zählt Byte, padding_bits(N) Bit. Builder.padding(N) zählt immer Bit. Checked verwirft Padding ungleich null. Nicht byteweises Padding benötigt compact ohne dyn/QPS/predict_seq/state_bits. STACK_LIMIT ist standardmäßig 256 B für alle Strings und Arrays. stack_limit(bytes) und max_data_size(bytes), Standard 65535, sind getrennte Einstellungen.
+
+## Native Darstellung und Prüfung
+
+Eine native Region erzeugt einen geschachtelten festen Rust-Typ. copy benötigt gültige initialisierte Felder, kompatible Darstellung und ausgerichtetes Ziel. overlay zusätzlich eine ausgerichtete unveränderliche Quelle mit ausreichender Lebensdauer. repr(C) allein beweist keine Wire-Kompatibilität. Beginnen Sie mit Checked-Methoden und Kompatibilitätskonstanten. Übertragen Sie kein uninitialisiertes Padding und keine String/Vec-Zeiger.
+
+Prüfen Sie Reihenfolge, Wire-Länge, Bitfolge, Self, Offsets, Ausrichtung und externen Speicher getrennt. Testen Sie beschädigte Längen, ungültige Ränge und Padding. Self ist nicht der ganze Stackframe oder Prozess-RAM. Unbekannt ist nicht null. Messen Sie nur betroffene Lese-/Schreibpfade mit vorbereiteten Puffern.
+· [Builder / DEQ](/language/deq/) · [Macros](/guides/custom-types/)

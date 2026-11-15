@@ -1,0 +1,661 @@
+---
+/**
+ * One `Sample` frame drawn bit by bit, moving between encodings:
+ *
+ * ```qsl
+ * &Sample[safety] { u8(0..7) kind; u8(0..31) channel; u16(0..1023) value; }
+ * ```
+ *
+ * Every bit is rendered once, on the server, as a slot of `src/lib/packing.ts`.
+ * Switching the encoding only changes each slot's role and position, and CSS
+ * moves the bits: in `compact` the unused high bits collapse and the rest
+ * slide together, so 4 bytes become 3.
+ *
+ * Props:
+ * - `mode`: the encoding shown first.
+ * - `autoplay`: step through the encodings while the strip is on screen,
+ *   until the reader touches a control. Off with reduced motion.
+ * - `controls`: add sliders for the three field values and the bit order note.
+ *
+ * The drawing is decorative (`aria-hidden`). The schema line and the readout
+ * carry the same information as text, and a polite live region announces the
+ * new frame after the reader changes something.
+ */
+import { hexByte } from '../lib/hex';
+import { uniqueId } from '../lib/ids';
+import { frameView, SLOTS } from '../lib/packing';
+import { MODE_ATTRIBUTES, SAMPLE_FIELDS, type WireMode } from '../lib/wire';
+
+interface Props {
+	mode?: WireMode;
+	autoplay?: boolean;
+	controls?: boolean;
+}
+
+const { mode = 'compact', autoplay = false, controls = false } = Astro.props;
+const { t } = Astro.locals;
+const id = uniqueId('qsl-pack');
+
+const MODES: readonly WireMode[] = ['default', 'compact', 'aligned'];
+const values = SAMPLE_FIELDS.map((field) => field.initial);
+/** Bytes in the widest encoding; the byte ruler keeps one cell per byte. */
+const MAX_BYTES = Math.max(...MODES.map((each) => frameView(values, each).bytes.length));
+const view = frameView(values, mode);
+const modeLabels: Record<WireMode, string> = {
+	default: t('qsl.wire.mode.default'),
+	compact: t('qsl.wire.mode.compact'),
+	aligned: t('qsl.wire.mode.aligned'),
+};
+const labels = JSON.stringify({ modes: modeLabels, bytes: t('qsl.wire.bytes') });
+---
+
+<qsl-packing-strip data-autoplay={autoplay ? '' : undefined} data-labels={labels}>
+	<figure class="pack qsl-panel not-content">
+		<code class="qsl-schema pack__schema">
+			&amp;Sample[
+			<span class="qsl-schema__attrs" data-attributes>
+				{MODE_ATTRIBUTES[mode]}
+			</span>
+			] {'{'}
+			{SAMPLE_FIELDS.map((field) => (
+				<span class="qsl-schema__decl">
+					{field.type}({field.min}..{field.max}){' '}
+					<span class={`qsl-schema__field qsl-c-${field.color}`}>{field.name}</span>;
+				</span>
+			))}
+			{' }'}
+		</code>
+
+		<div class="pack__stage" aria-hidden="true" style={`--bits: ${view.bitCount}`}>
+			<div class="pack__row pack__row--fields">
+				{SAMPLE_FIELDS.map((field, index) => (
+					<span
+						class={`pack__field qsl-c-${field.color}`}
+						data-span={index}
+						style={`--from: ${view.fields[index].from}; --span: ${view.fields[index].span}`}
+					>
+						<span class="pack__field-label">
+							{field.name} <b data-field-value={index}>{values[index]}</b>
+						</span>
+					</span>
+				))}
+			</div>
+			<div class="pack__row pack__row--bits">
+				{SLOTS.map((slot, index) => {
+					const state = view.slots[index];
+					const color = slot.field === null ? 'meta' : SAMPLE_FIELDS[slot.field].color;
+					return (
+						<span
+							class={`pack__bit qsl-c-${color}`}
+							data-slot={index}
+							data-role={state.role}
+							data-value={state.value}
+							style={`--slot: ${index}; --pos: ${state.position}`}
+						/>
+					);
+				})}
+			</div>
+			<div class="pack__row pack__row--bytes">
+				{Array.from({ length: MAX_BYTES }, (_, index) => (
+					<span
+						class="pack__byte"
+						data-byte={index}
+						data-hidden={index >= view.bytes.length ? '' : undefined}
+						style={`--byte: ${index}`}
+					>
+						{index < view.bytes.length ? hexByte(view.bytes[index]) : ''}
+					</span>
+				))}
+			</div>
+		</div>
+
+		<figcaption class="pack__caption">
+			<fieldset class="qsl-segmented">
+				<legend class="sr-only">{t('qsl.wire.encoding')}</legend>
+				<span class="qsl-segmented__thumb" aria-hidden="true"></span>
+				{MODES.map((value) => (
+					<>
+						<input
+							type="radio"
+							name={`${id}-mode`}
+							id={`${id}-${value}`}
+							value={value}
+							checked={value === mode}
+						/>
+						<label for={`${id}-${value}`}>{modeLabels[value]}</label>
+					</>
+				))}
+			</fieldset>
+			<p class="pack__readout">
+				<span class="pack__size">
+					<b data-size>{view.bytes.length}</b> {t('qsl.wire.bytes')}
+				</span>
+				<code class="pack__hex" data-hex>
+					{view.bytes.map(hexByte).join(' ')}
+				</code>
+			</p>
+		</figcaption>
+
+		<p class="pack__legend">
+			<span>
+				<i class="pack__key pack__key--one" aria-hidden="true"></i>1
+			</span>
+			<span>
+				<i class="pack__key pack__key--zero" aria-hidden="true"></i>0
+			</span>
+			<span>
+				<i class="pack__key pack__key--pad" aria-hidden="true"></i>
+				{t('qsl.wire.padding')}
+			</span>
+			{controls && <span class="pack__order">{t('qsl.wire.bitOrder')}</span>}
+		</p>
+
+		{controls && (
+			<fieldset class="pack__sliders">
+				<legend class="sr-only">{t('qsl.wire.values')}</legend>
+				{SAMPLE_FIELDS.map((field, index) => (
+					<div class={`pack__slider qsl-c-${field.color}`}>
+						<label for={`${id}-${field.name}`}>{field.name}</label>
+						<input
+							type="range"
+							id={`${id}-${field.name}`}
+							data-value-of={index}
+							min={field.min}
+							max={field.max}
+							value={field.initial}
+						/>
+						<output for={`${id}-${field.name}`} data-output-of={index}>
+							{field.initial}
+						</output>
+					</div>
+				))}
+			</fieldset>
+		)}
+
+		<p class="sr-only" aria-live="polite" data-announce></p>
+	</figure>
+</qsl-packing-strip>
+
+<script>
+	import { requireElement } from '../lib/dom';
+	import { hexByte } from '../lib/hex';
+	import { frameView } from '../lib/packing';
+	import { placeSegmentedThumb } from '../lib/segmented';
+	import { MODE_ATTRIBUTES, SAMPLE_FIELDS, type WireMode } from '../lib/wire';
+
+	interface Labels {
+		modes: Record<WireMode, string>;
+		bytes: string;
+	}
+
+	const MODES: readonly WireMode[] = ['default', 'compact', 'aligned'];
+	const isMode = (value: string): value is WireMode => (MODES as readonly string[]).includes(value);
+	/** Autoplay order: the step to `compact` is the one worth seeing, so it comes first and often. */
+	const AUTOPLAY_SEQUENCE: readonly WireMode[] = ['compact', 'aligned', 'compact', 'default'];
+	const AUTOPLAY_INTERVAL_MS = 2800;
+	const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+	class QslPackingStrip extends HTMLElement {
+		#labels: Labels = { modes: { default: '', compact: '', aligned: '' }, bytes: '' };
+		#control: HTMLElement | null = null;
+		#autoplay: { timer: number; step: number; observer: IntersectionObserver } | null = null;
+		#resizeObserver: ResizeObserver | null = null;
+
+		connectedCallback(): void {
+			this.#labels = JSON.parse(this.dataset.labels ?? '{}') as Labels;
+			this.#control = requireElement(this, '.qsl-segmented');
+			const control = this.#control;
+
+			this.addEventListener('input', (event) => {
+				if (event.isTrusted) this.#stopAutoplay();
+				this.#render();
+			});
+			this.addEventListener('change', () => this.#announce());
+
+			placeSegmentedThumb(control);
+			// Fonts loading or the layout changing moves the options.
+			this.#resizeObserver = new ResizeObserver(() => placeSegmentedThumb(control));
+			this.#resizeObserver.observe(control);
+
+			if (this.dataset.autoplay !== undefined && !reducedMotion.matches) this.#startAutoplay();
+		}
+
+		disconnectedCallback(): void {
+			this.#stopAutoplay();
+			this.#resizeObserver?.disconnect();
+		}
+
+		#mode(): WireMode {
+			const value = this.querySelector<HTMLInputElement>('input[type="radio"]:checked')?.value ?? '';
+			return isMode(value) ? value : 'compact';
+		}
+
+		#values(): number[] {
+			return SAMPLE_FIELDS.map((field, index) => {
+				const input = this.querySelector<HTMLInputElement>(`input[data-value-of="${index}"]`);
+				return input ? Number(input.value) : field.initial;
+			});
+		}
+
+		#render(): void {
+			const mode = this.#mode();
+			const values = this.#values();
+			const view = frameView(values, mode);
+
+			requireElement(this, '.pack__stage').style.setProperty('--bits', String(view.bitCount));
+			for (const bit of this.querySelectorAll<HTMLElement>('[data-slot]')) {
+				const state = view.slots[Number(bit.dataset.slot)];
+				bit.dataset.role = state.role;
+				bit.dataset.value = String(state.value);
+				bit.style.setProperty('--pos', String(state.position));
+			}
+			for (const field of this.querySelectorAll<HTMLElement>('[data-span]')) {
+				const span = view.fields[Number(field.dataset.span)];
+				field.style.setProperty('--from', String(span.from));
+				field.style.setProperty('--span', String(span.span));
+			}
+			for (const element of this.querySelectorAll<HTMLElement>('[data-field-value], [data-output-of]')) {
+				const index = Number(element.dataset.fieldValue ?? element.dataset.outputOf);
+				element.textContent = String(values[index]);
+			}
+			for (const byte of this.querySelectorAll<HTMLElement>('[data-byte]')) {
+				const index = Number(byte.dataset.byte);
+				const hidden = index >= view.bytes.length;
+				byte.toggleAttribute('data-hidden', hidden);
+				if (!hidden) byte.textContent = hexByte(view.bytes[index]);
+			}
+			requireElement(this, '[data-size]').textContent = String(view.bytes.length);
+			requireElement(this, '[data-hex]').textContent = view.bytes.map(hexByte).join(' ');
+			requireElement(this, '[data-attributes]').textContent = MODE_ATTRIBUTES[mode];
+			if (this.#control) placeSegmentedThumb(this.#control);
+		}
+
+		#announce(): void {
+			const mode = this.#mode();
+			const view = frameView(this.#values(), mode);
+			const text = `${this.#labels.modes[mode]}: ${view.bytes.length} ${this.#labels.bytes}, ${view.bytes.map(hexByte).join(' ')}`;
+			const region = requireElement(this, '[data-announce]');
+			if (region.textContent !== text) region.textContent = text;
+		}
+
+		#startAutoplay(): void {
+			const step = () => {
+				if (!this.#autoplay || document.hidden) return;
+				const next = AUTOPLAY_SEQUENCE[this.#autoplay.step++ % AUTOPLAY_SEQUENCE.length];
+				const radio = this.querySelector<HTMLInputElement>(`input[type="radio"][value="${next}"]`);
+				if (!radio) return;
+				radio.checked = true;
+				this.#render();
+			};
+			const observer = new IntersectionObserver(
+				([entry]) => {
+					if (!this.#autoplay) return;
+					window.clearInterval(this.#autoplay.timer);
+					this.#autoplay.timer = entry.isIntersecting ? window.setInterval(step, AUTOPLAY_INTERVAL_MS) : 0;
+				},
+				{ threshold: 0.6 },
+			);
+			this.#autoplay = { timer: 0, step: 0, observer };
+			observer.observe(this);
+			// Any deliberate interaction hands control to the reader.
+			for (const type of ['pointerdown', 'keydown'] as const) {
+				this.addEventListener(type, () => this.#stopAutoplay(), { once: true });
+			}
+		}
+
+		#stopAutoplay(): void {
+			if (!this.#autoplay) return;
+			window.clearInterval(this.#autoplay.timer);
+			this.#autoplay.observer.disconnect();
+			this.#autoplay = null;
+		}
+	}
+
+	customElements.define('qsl-packing-strip', QslPackingStrip);
+</script>
+
+<style>
+	qsl-packing-strip {
+		display: block;
+	}
+
+	.pack {
+		margin: 0;
+		/* Bit sizes follow the strip's own width. */
+		container-type: inline-size;
+	}
+
+	.pack__schema {
+		margin-block-end: 2rem;
+	}
+
+	/* ---------- Stage ---------- */
+
+	.pack__stage {
+		/* 32 columns: the widest frame. Narrower frames are centred. */
+		--pitch: calc(100cqi / 32);
+		--offset: calc((32 - var(--bits)) / 2 * var(--pitch));
+		position: relative;
+		height: calc(var(--pitch) + 5.25rem);
+		margin-block-end: 1.75rem;
+	}
+
+	.pack__row {
+		position: absolute;
+		inset-inline: 0;
+	}
+
+	.pack__row--fields {
+		inset-block-start: 0;
+		height: 2rem;
+	}
+
+	.pack__row--bits {
+		inset-block-start: 2.25rem;
+		height: var(--pitch);
+	}
+
+	.pack__row--bytes {
+		inset-block-start: calc(2.25rem + var(--pitch) + 0.75rem);
+		height: 2.25rem;
+	}
+
+	/* Positions are physical (left to right), like the bit order they show. */
+	.pack__row > * {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	/* ---------- Bits ---------- */
+
+	.pack__bit {
+		--size: calc(var(--pitch) * 0.76);
+		width: var(--size);
+		height: var(--size);
+		margin: calc((var(--pitch) - var(--size)) / 2);
+		border-radius: 24%;
+		transform: translateX(calc(var(--offset) + var(--pos) * var(--pitch)));
+		transition:
+			transform 820ms var(--qsl-ease-out),
+			opacity 420ms ease,
+			scale 560ms var(--qsl-ease-spring),
+			background-color 320ms ease,
+			box-shadow 320ms ease;
+		/* Bits leave one after another, like a wave down the wire. */
+		transition-delay: calc(var(--slot) * 8ms);
+	}
+
+	.pack__bit[data-role='data'][data-value='1'] {
+		background: var(--c);
+	}
+
+	.pack__bit[data-role='data'][data-value='0'] {
+		background: color-mix(in oklab, var(--c) 9%, transparent);
+		box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--c) 62%, transparent);
+	}
+
+	.pack__bit[data-role='pad'] {
+		background: repeating-linear-gradient(
+			135deg,
+			color-mix(in oklab, var(--sl-color-gray-3) 60%, transparent) 0 1.5px,
+			transparent 1.5px 4px
+		);
+		box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--sl-color-gray-3) 45%, transparent);
+	}
+
+	.pack__bit[data-role='hidden'] {
+		opacity: 0;
+		scale: 0.2;
+	}
+
+	/* ---------- Field brackets ---------- */
+
+	.pack__field {
+		width: calc(var(--span) * var(--pitch) - var(--pitch) * 0.24);
+		height: 100%;
+		margin-inline-start: calc(var(--pitch) * 0.12);
+		border-block-end: 2px solid var(--c);
+		transform: translateX(calc(var(--offset) + var(--from) * var(--pitch)));
+		transition:
+			transform 820ms var(--qsl-ease-out),
+			width 820ms var(--qsl-ease-out);
+	}
+
+	.pack__field::before,
+	.pack__field::after {
+		content: '';
+		position: absolute;
+		bottom: -2px;
+		width: 2px;
+		height: 0.45rem;
+		background: var(--c);
+	}
+
+	.pack__field::before {
+		left: 0;
+	}
+
+	.pack__field::after {
+		right: 0;
+	}
+
+	.pack__field-label {
+		position: absolute;
+		bottom: 0.4rem;
+		left: 0.1rem;
+		color: var(--c);
+		font-family: var(--__sl-font-mono);
+		font-size: 0.6875rem;
+		white-space: nowrap;
+	}
+
+	.pack__field-label b {
+		color: var(--sl-color-white);
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* ---------- Byte ruler ---------- */
+
+	.pack__byte {
+		display: grid;
+		place-items: end center;
+		width: calc(8 * var(--pitch));
+		height: 100%;
+		border-inline: 1px solid transparent;
+		background: linear-gradient(var(--sl-color-gray-4), var(--sl-color-gray-4)) top / calc(100% - 2px) 1px
+			no-repeat;
+		color: var(--sl-color-white);
+		font-family: var(--__sl-font-mono);
+		font-size: clamp(0.875rem, 3.2cqi, 1.375rem);
+		font-weight: 500;
+		transform: translateX(calc(var(--offset) + var(--byte) * 8 * var(--pitch)));
+		transition:
+			transform 820ms var(--qsl-ease-out),
+			opacity 420ms ease;
+	}
+
+	.pack__byte::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 1px;
+		height: 0.5rem;
+		background: var(--sl-color-gray-4);
+	}
+
+	.pack__byte[data-hidden] {
+		opacity: 0;
+	}
+
+	/* ---------- Caption ---------- */
+
+	.pack__caption {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem 1.5rem;
+	}
+
+	.pack__readout {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.25rem 1rem;
+		margin: 0;
+		color: var(--sl-color-gray-3);
+		font-size: var(--sl-text-sm);
+	}
+
+	.pack__size b {
+		color: var(--sl-color-white);
+		font-size: 1.375rem;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.pack__hex {
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--sl-color-white);
+		font-size: var(--sl-text-xs);
+	}
+
+	/* ---------- Legend ---------- */
+
+	.pack__legend {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.375rem 1.125rem;
+		margin: 1.25rem 0 0;
+		color: var(--sl-color-gray-3);
+		font-size: var(--sl-text-xs);
+	}
+
+	.pack__legend > span {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+	}
+
+	.pack__key {
+		width: 0.7rem;
+		height: 0.7rem;
+		border-radius: 24%;
+	}
+
+	.pack__key--one {
+		background: var(--sl-color-gray-2);
+	}
+
+	.pack__key--zero {
+		box-shadow: inset 0 0 0 1.5px var(--sl-color-gray-3);
+	}
+
+	.pack__key--pad {
+		background: repeating-linear-gradient(135deg, var(--sl-color-gray-3) 0 1.5px, transparent 1.5px 4px);
+		box-shadow: inset 0 0 0 1px var(--sl-color-gray-4);
+	}
+
+	.pack__legend .pack__order {
+		flex-basis: 100%;
+	}
+
+	/* ---------- Value sliders ---------- */
+
+	.pack__sliders {
+		display: grid;
+		gap: 0.625rem;
+		margin: 1.25rem 0 0;
+		padding: 1.25rem 0 0;
+		border: 0;
+		border-block-start: 1px solid var(--sl-color-hairline-light);
+	}
+
+	.pack__slider {
+		display: grid;
+		grid-template-columns: 4.5rem minmax(0, 1fr) 3rem;
+		align-items: center;
+		gap: 0.875rem;
+		font-family: var(--__sl-font-mono);
+		font-size: var(--sl-text-xs);
+	}
+
+	.pack__slider label {
+		color: var(--c);
+	}
+
+	.pack__slider input {
+		width: 100%;
+		accent-color: var(--c);
+	}
+
+	.pack__slider output {
+		color: var(--sl-color-white);
+		font-variant-numeric: tabular-nums;
+		text-align: end;
+	}
+
+	@container (max-width: 34rem) {
+		.pack__field-label {
+			display: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.pack__bit,
+		.pack__field,
+		.pack__byte {
+			transition-duration: 1ms;
+			transition-delay: 0ms;
+		}
+	}
+
+	/* System colors only: fills become text color, outlines stay outlines. */
+	@media (forced-colors: active) {
+		.pack__stage,
+		.pack__legend {
+			forced-color-adjust: none;
+		}
+
+		.pack__bit[data-role='data'][data-value='1'],
+		.pack__key--one {
+			background: CanvasText;
+			box-shadow: none;
+		}
+
+		.pack__bit[data-role='data'][data-value='0'],
+		.pack__key--zero {
+			background: Canvas;
+			box-shadow: inset 0 0 0 1.5px CanvasText;
+		}
+
+		.pack__bit[data-role='pad'],
+		.pack__key--pad {
+			background: repeating-linear-gradient(135deg, GrayText 0 1.5px, Canvas 1.5px 4px);
+			box-shadow: inset 0 0 0 1px GrayText;
+		}
+
+		.pack__field {
+			border-color: CanvasText;
+		}
+
+		.pack__field::before,
+		.pack__field::after,
+		.pack__byte::before {
+			background: CanvasText;
+		}
+
+		.pack__field-label,
+		.pack__field-label b,
+		.pack__byte,
+		.pack__legend {
+			color: CanvasText;
+		}
+	}
+</style>

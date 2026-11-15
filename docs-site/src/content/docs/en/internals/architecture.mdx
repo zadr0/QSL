@@ -1,0 +1,18 @@
+---
+title: 'Compiler architecture'
+description: 'QSL documentation: Compiler architecture.'
+---
+
+## Runtime boundaries
+
+no_std excludes std, not alloc. qsl-core always uses #![no_std]; its default alloc feature provides alloc String/Vec, SerOut and heap restoration. The application supplies the allocator; QSL does not declare a global allocator. Disable default features for caller-buffer-only operation.
+Crate           | Scope
+--------------- | ------------------------------------------------------------------------------------------------------------------------------------------
+qsl-core        | All runtime I/O, serialization/primitive traits and macros, containers, validation, QPS and transport-independent framing; optional alloc.
+qsl-rt          | no_std static-region providers implementing core FramePool/FrameStorage; a full pool returns PoolExhausted immediately.
+qsl-lexer       | Source collection, DEQ, schema descriptions, analysis and optimizer plans.
+qsl-interpreter | Specialized Rust source generation on the build host.
+qsl-macros-impl | Rust attribute expansion
+qsl             | Runtime reexports; optional compiler support. Runtime-only mode needs no std.
+Build scripts and test harnesses may use std without linking it into the target runtime. Actual generated schemas run in a no-allocator executable; a separate no_std library verifies alloc-backed storage. Both core profiles and qsl-rt cross-check for wasm32-wasip2.
+[Memory](/guides/manual-layout/) · [Runtime](/internals/runtime/)

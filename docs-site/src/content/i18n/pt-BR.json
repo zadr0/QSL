@@ -1,0 +1,23 @@
+{
+	"qsl.nav.label": "Seções",
+	"qsl.nav.docs": "Documentação",
+	"qsl.nav.reference": "Referência",
+	"qsl.nav.api": "API",
+	"qsl.theme.toLight": "Mudar para o tema claro",
+	"qsl.theme.toDark": "Mudar para o tema escuro",
+	"qsl.footer.license": "livre e de código aberto, sob a licença MIT",
+	"qsl.hero.pause": "Pausar a animação",
+	"qsl.wire.encoding": "Codificação",
+	"qsl.wire.values": "Valores dos campos",
+	"qsl.wire.mode.default": "padrão",
+	"qsl.wire.mode.compact": "compact",
+	"qsl.wire.mode.aligned": "compact + alignment",
+	"qsl.wire.bytes": "bytes no frame",
+	"qsl.wire.bitOrder": "Os bits aparecem na ordem em que são escritos: o bit menos significativo de cada byte vem primeiro.",
+	"qsl.wire.padding": "padding",
+	"qsl.bitmap.present": "presente",
+	"qsl.bitmap.mask": "máscara",
+	"qsl.bitmap.readOrder": "Ordem de leitura",
+	"qsl.bitmap.none": "nenhum campo opcional",
+	"qsl.bitmap.marker": "marcador"
+}

@@ -1,0 +1,18 @@
+---
+title: アーキテクチャ
+description: QSL のクレート構成、各クレートの担当範囲、スキーマのテキストから Rust コードが生成されるまでの流れ。
+---
+
+## ランタイムの境界
+
+no_std が除外するのは std であり、alloc ではありません。qsl-core は常に #![no_std] です。既定の alloc 機能は alloc String/Vec、SerOut、ヒープ復元を提供します。アロケータはアプリが用意し、QSL はグローバルアロケータを定義しません。既定機能を無効にすると呼び出し側のバッファだけを使えます。
+Crate           | Scope
+--------------- | ---------------------------------------------------------------------------------------------------------------------------------------
+qsl-core        | すべてのランタイム I/O、シリアライズとプリミティブの契約・マクロ、コンテナ、検証、QPS、転送方式に依存しないフレーム処理。alloc は任意。
+qsl-rt          | コアの FramePool/FrameStorage を実装する no_std 静的領域。満杯なら直ちに PoolExhausted。
+qsl-lexer       | ソースと DEQ の読み取り、スキーマ収集、解析、最適化計画。
+qsl-interpreter | ビルドホストで専用 Rust コードを生成。
+qsl-macros-impl | Rust attribute expansion
+qsl             | ランタイムの再エクスポートと任意のコンパイラ機能。ランタイムのみなら std は不要。
+ビルドスクリプトとテストは std を使えても、ターゲットのランタイムには含まれません。実際の生成スキーマをアロケータなしで実行し、別の no_std ライブラリで alloc コンテナを検証します。コアの両設定と qsl-rt は wasm32-wasip2 でもビルドします。
+[Memory](/guides/manual-layout/) · [Runtime](/internals/runtime/)

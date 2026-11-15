@@ -1,0 +1,30 @@
+---
+title: "Attributes and compatibility"
+description: "QSL documentation: Attributes and compatibility."
+---
+
+
+Attributes and additional mechanisms are optional. Required fields must precede optional fields. The native analyzer rejects unsupported combinations before generation.
+Attribute | Meaning
+---|---
+`safety` | Frame/value validation and checked APIs
+`compact` | Rank-based bit packing; affects wire
+`alignment` | Wire alignment according to the selected codec
+`inline` | Explicit method inlining policy
+`auto` | Physical layout of generated Self
+`auto[wire=1]` | Versioned canonical wire order
+`predict_seq` | Payload length → state index
+`opt_table` | Tag → static reader
+`optionals=bitmap` | Wire presence mask for optional fields
+`aggressive[bitmap]` | Private MaybeUninit slots and native presence mask
+`aggressive[group]` | Permit proven register/checked grouping
+`aggressive[pointing]` | Copy a proven initialized span
+`aggressive[shift=true]` | Physical len+1 string storage
+`qps / qps=Q16` | Reversible operand compression, not prediction
+`quant=Q2/Q4/Q8/Q16` | Compatible explicit quantum selection
+`lifetime` | Borrow supported wire; input must stay alive
+`transmutate` | Native contract with ABI/validity checks
+`loyal_cache` | Bounded storage within its declared budget
+`dyn[...]` | Explicit line/index v1 wire contract
+`decompress=true` | String field using QSL-LZ
+`step / values` | Exact discrete value domain[DEQ](/language/deq/) · [Limits](/reference/limits/)

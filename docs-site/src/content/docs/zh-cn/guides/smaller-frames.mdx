@@ -1,0 +1,66 @@
+---
+title: 缩小帧体积
+description: 在已知取值范围时，用 compact、alignment 和 qps 缩小帧。
+---
+
+
+默认情况下，整数编码后占满其原生宽度。如果 schema 给出了范围，QSL 可以用更少的位存储。有两种机制：`compact` 逐位打包字段，`qps` 按固定的 quantum 拆分每个带范围的数值，再把各部分打包。
+
+## compact
+
+`compact` 把每个带范围的值存储为 `x - min`，占 `bit_length(max - min)` 位。字段从最低有效位开始依次紧挨着打包，可以跨越字节边界。
+
+```qsl
+&Sample[safety,compact] {
+    u8(0..7)     kind;      // 3 位
+    u8(0..31)    channel;   // 5 位
+    u16(0..1023) value;     // 10 位
+}
+```
+
+共 18 位，所以是 3 字节而不是 4 字节。当 `kind = 5`、`channel = 17`、`value = 513` 时，帧为 `8d 01 02`；不使用 `compact` 时为 `05 11 01 02`。可以在下面修改字段值和编码方式：
+
+
+只允许一个值的字段（`u8(5..5)`）占 0 位。Rust 类型不变：`value` 在内存中仍然是 `u16`。
+
+`compact` 不能与 `predict_seq` 同时使用。带 `[safety]` 时，解码器会检查每个解包出的值都在范围内，并且未使用的位为零。
+
+## alignment
+
+与 `compact` 一起使用时，`alignment` 让每个字段从字节边界开始。读取更简单，代价是帧变大。在上面的例子中，帧又变回 `05 11 01 02`，即 4 字节。不使用 `compact` 时，`alignment` 对格式没有影响。
+
+这里指的是帧内字段的对齐，不是缓冲区的内存对齐。
+
+## qps
+
+`qps`（别名 `quant`）是对具有静态边界的数值字段做的可逆打包。每个值存储为它的 rank，即相对下界的偏移量 `r = x - min`；rank 按 quantum `Q` 拆成两部分，再通过静态的移位和掩码重新组合。不会丢失任何信息。quantum 是格式的一部分。
+
+```qsl
+&Packed[qps,safety] {
+    u64(0..15) f0;
+    u64(0..15) f1;
+    // ... 一直到 f7
+}
+```
+属性 | 含义
+---|---
+`qps` | 等同于 `qps=Q16`。
+`qps=Q2`、`Q4`、`Q8`、`Q16` | quantum。它可能改变字节，但不改变帧长度。
+`quant=Qn` | 等同于 `qps=Qn`。不带值的 `quant` 是错误，同时使用两个名字也是错误。
+`qps` 只打包数值。字符串、数组及其长度沿用各自的编解码方式，并且数值字段必须排在它们前面。它不预测哪些可选字段存在。打包没有收益时，类型使用普通编码。
+
+带 `qps` 的类型不能再使用 `compact`、`alignment`、`optionals=bitmap` 或 `opt_table=legacy`，否则构建失败。
+
+## 示例结果
+
+```text
+8 ranged u64 values: raw=64 B, compact=4 B, QPS=4 B; restored f0=3, f7=10
+Scalar Q16: 64 useful B -> 4 wire B
+Mixed Q16: 16 scalar B -> 1 B; string length stays 4 B, string stays 1024 B; frame=1029 B
+```
+
+8 个 `0..15` 范围内的值各需 4 位，共 32 位。在混合消息中，两个数值打包成 1 字节，而 1024 字节的字符串仍保留 4 字节的长度。
+
+:::note[ByteQps 是独立的 API]
+`qsl::qps::ByteQps<Q>` 压缩任意字节，并在前面加上 16 字节的 `QPB3` 头部。它是运行时 API，不是 schema 属性 `qps`，两种格式不能互换。它对小帧没有帮助：光头部就要 16 字节。
+:::

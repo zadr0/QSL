@@ -1,0 +1,77 @@
+---
+title: Champs optionnels
+description: "Comment une trame QSL indique quels champs optionnels sont présents (tags par défaut, bitmap, predict_seq) et comment opt_table choisit le lecteur."
+---
+
+
+Un champ écrit `T?` est optionnel. La trame doit indiquer quels champs optionnels sont présents. QSL propose trois façons de le faire, plus `opt_table`, qui ne change que la manière dont le lecteur généré aiguille.
+Mode | Attribut | Stockage de la présence | Mêmes octets que par défaut
+---|---|---|---
+Par défaut | aucun | Nombre de champs présents et leurs tags | Oui
+Bitmap | `optionals=bitmap` | Un masque avec un bit par champ optionnel | Non
+Index de longueur | `predict_seq` | Déduite de la longueur de la charge utile | Non
+Table de lecture | `opt_table` | Comme le mode auquel il est combiné | Oui
+## Par défaut : compteur et tags
+
+Sans attribut, la trame commence par un en-tête : le nombre de champs optionnels présents, puis un code de tag pour chaque champ présent. Viennent ensuite les valeurs obligatoires, puis les valeurs optionnelles présentes, dans l’ordre de déclaration. Un type qui n’a qu’un champ optionnel utilise un unique bit de présence. Le lecteur généré aiguille avec un `match` sur le tag.
+
+L’en-tête est empaqueté à partir du bit de poids faible. Le compteur occupe `bit_length(optional_count)` bits. Chaque code de tag vaut le tag du champ moins 1 et occupe `bit_length(max_tag - 1)` bits. Sans `compact`, l’en-tête est complété jusqu’à un octet entier.
+
+L’exemple `optionals` du dépôt encode `id = 42` et un sous-ensemble de `f0 = 11`, `f1 = 22`, `f2 = 33` :
+
+```qsl
+&Optional3Table[opt_table,safety] {
+    u32 id;
+    u8? f0;
+    u8? f1;
+    u8? f2;
+}
+```
+Présents | Trame
+---|---
+aucun | `00 2a 00 00 00`
+`f0`, `f2` | `36 2a 00 00 00 0b 21`
+`f0`, `f1`, `f2` | `e7 2a 00 00 00 0b 16 21`
+Les tags valent 1 pour `id` et 2 à 4 pour `f0` à `f2` : chaque code de tag occupe donc 2 bits, tout comme le compteur. Pour `f0` et `f2`, l’en-tête contient le compteur 2 (`10`), puis les codes 1 (`01`) et 3 (`11`) : `0b110110` = `36`. Les trames sont identiques sans `opt_table`.
+
+## Bitmap {#bitmap}
+
+`optionals=bitmap` écrit un masque little-endian qui ne couvre que les champs optionnels. Sa largeur dépend du nombre de champs optionnels du type :
+Champs optionnels | 0 | 1–8 | 9–16 | 17–32 | 33–64 | 65–128
+---|---|---|---|---|---|---
+Octets de masque | 0 | 1 | 2 | 4 | 8 | 16
+Le premier champ optionnel reçoit le marqueur 1, stocké dans le bit de poids fort. Le lecteur trouve les bits à 1 avec `trailing_zeros` : les valeurs présentes sont donc écrites et lues par ordre décroissant de marqueur. Les valeurs obligatoires gardent l’ordre de déclaration.
+
+
+Cochez ou décochez les champs pour voir la trame changer. Pour `&P[safety,optionals=bitmap,opt_table]{u8 id;u16? a;u8? b;}` avec `id = 9`, `a = 0x1234` et `b = 7`, la trame est `c0 09 07 34 12` : le masque, `id`, puis `b`, puis `a` en little-endian.
+
+Avec `[safety]`, le décodeur vérifie une fois qu’aucun bit du masque n’est à 1 pour un marqueur que le type ne possède pas, avant de parcourir le masque.
+
+:::caution[Changement de format]
+Le bitmap v2 (0.2.0 et versions suivantes) n’est pas compatible avec l’ancien masque, qui couvrait tous les champs. Mettez à jour les deux pairs en même temps.
+:::
+
+## Index de longueur : predict_seq {#length-index-predict_seq}
+
+Avec `predict_seq`, le décodeur déduit de la longueur de la charge utile quels champs optionnels sont présents. Cela ne fonctionne que si chaque combinaison de champs présents donne une longueur différente :
+
+- un seul champ optionnel peut être détecté par la fin de l’entrée ;
+- plusieurs champs exigent des tailles fixes dont toutes les sommes de sous-ensembles sont distinctes.
+
+Les combinaisons ambiguës et les champs optionnels encodés sur zéro octet sont rejetés à la compilation. Comme la présence se déduit de la longueur, le décodeur de confiance a besoin de la longueur de l’entrée, pas seulement d’un pointeur.
+
+`predict_seq` est ignoré quand `optionals=bitmap` est présent. Combiné à `compact`, il provoque une erreur de compilation.
+
+### predict_seq avec opt_table
+
+`[predict_seq,opt_table]` conserve le format que produisait `[opt_table]` seul avant la 0.2.0. Le graphe de longueurs prend en charge jusqu’à 12 champs et 65535 octets de charge utile. Au-delà de 12 champs, tous les champs doivent avoir la même largeur fixe, et la limite est de 64 champs. Si vous avez des trames écrites avec `[opt_table]` avant la 0.2.0, passez les deux côtés à `[predict_seq,opt_table]`.
+
+## Table de lecture : opt_table
+
+`opt_table` remplace le `match` par une table statique de fonctions de lecture, une par champ optionnel, indexée par marqueur. Il ne change ni les octets ni le hash du schéma. Il fonctionne avec le format par défaut, avec `compact` et avec le bitmap.
+
+Un appel indirect via la table n’est pas automatiquement plus rapide qu’un `match`. Mesurez sur vos données avant de le conserver.
+
+## Valeurs initiales
+
+`|default=N|` sur un champ numérique génère `impl Default` pour le type, avec ce champ initialisé à `N`. Pour un champ optionnel, la valeur par défaut est `Some(N)`. Cela ne change ni le format de trame ni le hash du schéma. Voir [`default=N`](/reference/attributes/#defaultn).

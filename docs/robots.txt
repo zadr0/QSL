@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zadr0.github.io/QSL/sitemap-index.xml

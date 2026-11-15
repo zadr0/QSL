@@ -1,0 +1,10 @@
+---
+import methods from '../data/builder.json';
+const lang=Astro.locals.starlightRoute.locale??'en';const ru=lang==='ru';
+---
+<div class="builder-reference">
+{methods.map(([id,signature,a,b,args])=><article id={String(id)} class="builder-method">
+ <h3><code>{signature}</code></h3><p>{ru?a:b}</p><dl>{(args as string[][]).map(([name,description,english])=><div><dt><code>{name}</code></dt><dd>{ru?description:english}</dd></div>)}</dl>
+</article>)}
+
+</div>

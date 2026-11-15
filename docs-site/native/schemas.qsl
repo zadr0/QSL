@@ -1,0 +1,15 @@
+&SampleRaw[safety]{u8(0..7) kind;u8(0..31) channel;u16(0..1023) value;}
+&SampleCompact[safety,compact]{u8(0..7) kind;u8(0..31) channel;u16(0..1023) value;}
+&SampleAligned[safety,compact,alignment]{u8(0..7) kind;u8(0..31) channel;u16(0..1023) value;}
+&TextRaw[safety]{str(0..255) text;u32 tail;}
+&TextStack[safety,aggressive]{str(0..255) text;u32 tail;}
+&TextLz[safety]{str(0..255) text|decompress=true|;u32 tail;}
+&OptionalDefault[safety]{u32 id;u8? a;u16? b;u32? c;}
+&OptionalPS[safety,predict_seq]{u32 id;u8? a;u16? b;u32? c;}
+&OptionalOT[safety,opt_table]{u32 id;u8? a;u16? b;u32? c;}
+&OptionalBoth[safety,predict_seq,opt_table]{u32 id;u8? a;u16? b;u32? c;}
+&OptionalBM[safety,optionals=bitmap]{u32 id;u8? a;u16? b;u32? c;}
+&LayoutPinned[safety]{u8 flag;u64 count;u16 id;}
+&LayoutAuto[safety,auto]{u8 flag;u64 count;u16 id;}
+&ArrayVec[safety]{array<u16>(0..16) data;}
+&ArrayInline[safety,aggressive]{array<u16>(0..16) data;}

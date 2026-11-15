@@ -1,0 +1,23 @@
+{
+	"qsl.nav.label": "섹션",
+	"qsl.nav.docs": "문서",
+	"qsl.nav.reference": "레퍼런스",
+	"qsl.nav.api": "API",
+	"qsl.theme.toLight": "밝은 테마로 전환",
+	"qsl.theme.toDark": "어두운 테마로 전환",
+	"qsl.footer.license": "MIT 라이선스의 자유 오픈 소스 소프트웨어",
+	"qsl.hero.pause": "애니메이션 일시 정지",
+	"qsl.wire.encoding": "인코딩",
+	"qsl.wire.values": "필드 값",
+	"qsl.wire.mode.default": "default",
+	"qsl.wire.mode.compact": "compact",
+	"qsl.wire.mode.aligned": "compact + alignment",
+	"qsl.wire.bytes": "바이트(와이어 기준)",
+	"qsl.wire.bitOrder": "비트는 쓰는 순서대로 표시합니다. 각 바이트의 최하위 비트가 먼저 옵니다.",
+	"qsl.wire.padding": "패딩",
+	"qsl.bitmap.present": "있음",
+	"qsl.bitmap.mask": "마스크",
+	"qsl.bitmap.readOrder": "읽는 순서",
+	"qsl.bitmap.none": "옵셔널 필드 없음",
+	"qsl.bitmap.marker": "마커"
+}

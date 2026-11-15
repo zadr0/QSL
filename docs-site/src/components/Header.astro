@@ -1,0 +1,357 @@
+---
+/**
+ * Override of Starlight's `Header` component.
+ *
+ * Documentation pages, wide screens: the header is the top row of the page
+ * grid. Its three cells stand over the page's three columns and its dividers
+ * continue the column borders:
+ *
+ *   | logo, version      | group / page          | search | lang | theme | GitHub |
+ *   | over the sidebar   | over the text column  | over the table of contents      |
+ *
+ * The middle cell repeats where the reader is: the sidebar group, then the
+ * page title once the page's own title has scrolled away. Both are in the
+ * sidebar and the page already, so assistive technology skips the cell.
+ *
+ * Splash pages (home, 404) have no columns to follow: the header lines up
+ * with the hero and links to the docs, the reference and the API instead.
+ *
+ * Narrow screens: logo and round icon buttons. On documentation pages
+ * language, theme and GitHub move into Starlight's menu.
+ */
+import Search from '@astrojs/starlight/components/Search.astro';
+
+import { DOCS_EDITION } from '../../config/site.mjs';
+import { localizeHref } from '../lib/links.mjs';
+import LanguageSelect from './LanguageSelect.astro';
+import SiteTitle from './SiteTitle.astro';
+import ThemeSelect from './ThemeSelect.astro';
+
+const { starlightRoute, t } = Astro.locals;
+const { entry, hasSidebar, sidebar, locale } = starlightRoute;
+
+type SidebarItem = (typeof sidebar)[number];
+const containsCurrent = (item: SidebarItem): boolean =>
+	item.type === 'link' ? item.isCurrent : item.entries.some(containsCurrent);
+const group = sidebar.find((item) => item.type === 'group' && containsCurrent(item));
+
+/** Section links of splash pages, root-relative and localized like links in Markdown. */
+const sections = [
+	{ label: t('qsl.nav.docs'), link: '/start/introduction/' },
+	{ label: t('qsl.nav.reference'), link: '/reference/attributes/' },
+].map(({ label, link }) => ({ label, href: localizeHref(link, { base: import.meta.env.BASE_URL, locale }) }));
+---
+
+<div class="qsl-header">
+	<div class="qsl-header__brand">
+		<SiteTitle />
+		<span class="qsl-header__version" translate="no">
+			{DOCS_EDITION}
+		</span>
+	</div>
+
+	{hasSidebar ? (
+		<div class="qsl-path" aria-hidden="true">
+			<div class="qsl-path__line">
+				{group && <span class="qsl-path__group">{group.label}</span>}
+				<span class="qsl-path__page">{entry.data.title}</span>
+			</div>
+		</div>
+	) : (
+		<nav class="qsl-sections" aria-label={t('qsl.nav.label')}>
+			{sections.map(({ label, href }) => (
+				<a href={href}>{label}</a>
+			))}
+		</nav>
+	)}
+
+	<div class="qsl-header__tools print:hidden">
+		<div class="qsl-header__search">
+			<Search />
+		</div>
+		<div class="qsl-header__cell qsl-header__preference">
+			<LanguageSelect />
+		</div>
+		<div class="qsl-header__cell qsl-header__preference">
+			<ThemeSelect />
+		</div>
+	</div>
+</div>
+
+<style>
+	/*
+	 * Geometry is Starlight's: --sl-sidebar-width for the sidebar, and at
+	 * 72rem the table of contents takes
+	 *   max(S, S + (100% - 2S - C) / 2)
+	 * of the viewport, where S is the sidebar width and C the content width
+	 * (see Starlight's TwoColumnContent). The header uses the same terms, so
+	 * its dividers meet the column borders at every width.
+	 */
+	.qsl-header {
+		/* Controls are round icon buttons by default; documentation pages make them cells (below). */
+		--qsl-control-inline: 2.5rem;
+		--qsl-control-block: 2.5rem;
+		--qsl-control-radius: 10px;
+		--qsl-control-pad: 0.75rem;
+		--qsl-toc-width: max(
+			var(--sl-sidebar-width),
+			calc(var(--sl-sidebar-width) + (100% - 2 * var(--sl-sidebar-width) - var(--sl-content-width)) / 2)
+		);
+
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		height: 100%;
+	}
+
+	/* ---------- Brand ---------- */
+
+	.qsl-header__brand {
+		display: flex;
+		align-items: center;
+		gap: 0.875rem;
+		min-width: 0;
+		padding-inline: var(--sl-nav-pad-x);
+	}
+
+	.qsl-header__version {
+		padding-block-start: 0.125rem;
+		color: var(--sl-color-gray-3);
+		font-family: var(--__sl-font-mono);
+		font-size: 0.6875rem;
+		letter-spacing: 0.02em;
+		white-space: nowrap;
+	}
+
+	/* ---------- Path (documentation pages) ---------- */
+
+	.qsl-path {
+		display: none;
+		align-items: center;
+		min-width: 0;
+		padding-inline: var(--sl-content-pad-x);
+	}
+
+	.qsl-path__line {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		min-width: 0;
+		font-size: var(--sl-text-sm);
+		white-space: nowrap;
+	}
+
+	.qsl-path__group {
+		flex: none;
+		color: var(--sl-color-gray-3);
+	}
+
+	.qsl-path__page {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		min-width: 0;
+		overflow: hidden;
+		color: var(--sl-color-white);
+		font-weight: 520;
+		text-overflow: ellipsis;
+	}
+
+	/* A bit separates the steps of the path. */
+	.qsl-path__group + .qsl-path__page::before {
+		content: '';
+		flex: none;
+		width: 5px;
+		height: 5px;
+		border: 1px solid var(--sl-color-gray-4);
+		border-radius: 1px;
+	}
+
+	/* The page title joins the path as the page's own title scrolls under the header. */
+	@supports (animation-timeline: scroll()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.qsl-path__page {
+				animation: qsl-path-in linear both;
+				animation-timeline: scroll(root);
+				animation-range: 48px 128px;
+			}
+		}
+	}
+
+	@keyframes qsl-path-in {
+		from {
+			opacity: 0;
+			translate: 0 0.375rem;
+		}
+	}
+
+	/* ---------- Sections (splash pages) ---------- */
+
+	.qsl-sections {
+		display: none;
+		align-items: center;
+		gap: 0.25rem;
+		padding-inline-start: 1rem;
+	}
+
+	.qsl-sections a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.5rem 0.75rem;
+		border-radius: 8px;
+		color: var(--sl-color-gray-2);
+		font-size: var(--sl-text-sm);
+		text-decoration: none;
+		transition:
+			color 160ms ease,
+			background-color 160ms ease;
+	}
+
+	.qsl-sections a:hover {
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-white);
+	}
+
+	.qsl-sections svg {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.4;
+		opacity: 0.6;
+	}
+
+	/* ---------- Tools ---------- */
+
+	.qsl-header__tools {
+		display: flex;
+		grid-column: 3;
+		align-items: center;
+		gap: 0.25rem;
+		min-width: 0;
+		padding-inline-end: var(--sl-nav-pad-x);
+	}
+
+	.qsl-header__search,
+	.qsl-header__cell {
+		display: flex;
+	}
+
+	.qsl-header__social :global(a) {
+		display: grid;
+		place-items: center;
+		width: var(--qsl-control-inline);
+		height: var(--qsl-control-block);
+		/* Starlight pads social links with a negative margin; these are fixed-size buttons. */
+		margin: 0;
+		padding: 0;
+		border-radius: var(--qsl-control-radius);
+		color: var(--sl-color-gray-2);
+		transition:
+			color 160ms ease,
+			background-color 160ms ease;
+	}
+
+	.qsl-header__social :global(a:hover) {
+		color: var(--sl-color-white);
+		background: var(--sl-color-gray-6);
+	}
+
+	/* Narrow screens: documentation pages keep search here and the rest in the menu. */
+	@media (width < 50rem) {
+		:global([data-has-sidebar]) .qsl-header__preference,
+		.qsl-header__social {
+			display: none;
+		}
+
+		/* Starlight's menu button sits after the tools (theme.css). */
+		:global([data-has-sidebar]) .qsl-header__tools {
+			padding-inline-end: 0;
+		}
+	}
+
+	@media (min-width: 50rem) {
+		.qsl-path,
+		.qsl-sections {
+			display: flex;
+		}
+
+		/* Documentation pages: the header becomes the top row of the page grid. */
+		:global([data-has-sidebar]) .qsl-header {
+			--qsl-control-inline: 3.5rem;
+			--qsl-control-block: calc(var(--sl-nav-height) - 1px);
+			--qsl-control-radius: 0;
+			--qsl-control-pad: 1rem;
+			/* The language list hangs from the bottom edge of the header. */
+			--qsl-popover-offset: 1px;
+			--qsl-popover-radius: 0 0 12px 12px;
+
+			grid-template-columns: var(--sl-sidebar-width) minmax(0, 1fr) auto;
+		}
+
+		:global([data-has-sidebar]) .qsl-header__brand {
+			border-inline-end: 1px solid var(--sl-color-hairline);
+		}
+
+		:global([data-has-sidebar]) .qsl-header__tools {
+			align-items: stretch;
+			gap: 0;
+			padding-inline-end: 0;
+		}
+
+		:global([data-has-sidebar]) .qsl-header__search,
+		:global([data-has-sidebar]) .qsl-header__cell {
+			border-inline-start: 1px solid var(--sl-color-hairline);
+		}
+
+		:global([data-has-sidebar]) .qsl-header__search {
+			flex: 0 0 13rem;
+		}
+
+		/* Starlight's search component is `display: contents`; its button fills the cell. */
+		.qsl-header__search :global(site-search > button[data-open-modal]) {
+			flex: 1;
+		}
+
+		/* Splash pages: a search field, apart from the icon buttons. */
+		:global(:root:not([data-has-sidebar])) .qsl-header__search {
+			width: 13rem;
+			margin-inline-end: 0.5rem;
+		}
+	}
+
+	@media (min-width: 72rem) {
+		/* With a table of contents, the tools cover its column and the path sits over the text. */
+		:global([data-has-sidebar][data-has-toc]) .qsl-header {
+			grid-template-columns: var(--sl-sidebar-width) minmax(0, 1fr) var(--qsl-toc-width);
+		}
+
+		:global([data-has-toc]) .qsl-header__search {
+			flex: 1;
+		}
+
+		/* Same box as Starlight's content column: at most C wide, at the end of the text pane. */
+		:global([data-has-toc]) .qsl-path {
+			justify-content: flex-end;
+		}
+
+		:global([data-has-toc]) .qsl-path__line {
+			width: min(var(--sl-content-width), 100%);
+		}
+	}
+
+	/*
+	 * Splash pages: the header spans the hero's column, not the viewport.
+	 * Starlight pads the content panel by --sl-content-pad-x and centers a
+	 * column of --qsl-splash-width in it; brand and tools end on its edges.
+	 */
+	:global(:root:not([data-has-sidebar])) .qsl-header {
+		padding-inline: max(0px, (100% - var(--qsl-splash-width)) / 2 - var(--sl-content-pad-x));
+	}
+
+	:global(:root:not([data-has-sidebar])) .qsl-header__brand {
+		padding-inline-start: var(--sl-content-pad-x);
+	}
+
+	:global(:root:not([data-has-sidebar])) .qsl-header__tools {
+		padding-inline-end: var(--sl-content-pad-x);
+	}
+</style>

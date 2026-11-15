@@ -1,0 +1,483 @@
+---
+/**
+ * The picture of the home page hero: QSL as a machine on a belt.
+ *
+ * A `Sample { kind: 5, channel: 17, value: 513 }` rides in from the left as
+ * three blocks, one per field, sized by their Rust types (u8, u8, u16). It
+ * goes into the machine, which carries the QSL mark on its lid and the schema
+ * on its side, and comes out on the right as the frame the schema produces
+ * with `[safety,compact]`: three bytes, 8d 01 02, computed by `encodeSample`
+ * (`src/lib/wire.ts`), the code the docs' diagrams use. Each byte is a row of
+ * eight bits in write order; a 1 is a raised tile in its field's color, a 0
+ * a flat one, padding a gray one.
+ *
+ * The scene is drawn in a fixed axonometric projection and rendered as
+ * static SVG. Motion is CSS only: the belt, the values and the frames move
+ * one period to the right and repeat, so the loop has no seam. The picture
+ * is decorative.
+ */
+import { hexByte } from '../lib/hex';
+import { MARK_CELLS, MARK_GLYPHS, MARK_TILE, MARK_WIDTH } from '../lib/mark';
+import { bitsToBytes, encodeSample, MODE_ATTRIBUTES, SAMPLE_FIELDS } from '../lib/wire';
+
+/* ---------- Projection ---------- */
+
+/** Pixels per world unit. */
+const K = 100;
+/** Screen directions of the world axes: u along the belt, v across it (toward the viewer), z up. */
+const U = [1, -0.2] as const;
+const V = [0.62, 0.34] as const;
+/** Screen position of the world origin: the machine's entrance at belt level. */
+const ORIGIN = [904, 470] as const;
+const VIEW_BOX = '0 0 1600 760';
+
+type Point = readonly [number, number];
+const at = (u: number, v: number, z: number): Point => [
+	ORIGIN[0] + K * (u * U[0] + v * V[0]),
+	ORIGIN[1] + K * (u * U[1] + v * V[1] - z),
+];
+const toPoints = (list: readonly Point[]) =>
+	list.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+
+/**
+ * The faces of a box that face the viewer: the top, the long side toward the
+ * viewer (+v) and the end toward the start of the belt (-u).
+ */
+function box(u0: number, u1: number, v0: number, v1: number, z0: number, z1: number) {
+	return {
+		top: toPoints([at(u0, v0, z1), at(u1, v0, z1), at(u1, v1, z1), at(u0, v1, z1)]),
+		side: toPoints([at(u0, v1, z0), at(u1, v1, z0), at(u1, v1, z1), at(u0, v1, z1)]),
+		end: toPoints([at(u0, v0, z0), at(u0, v1, z0), at(u0, v1, z1), at(u0, v0, z1)]),
+	};
+}
+
+/** SVG transform that lays text on a plane spanned by two world axes, given as screen vectors. */
+const textOn = ([x, y]: Point, a: readonly number[], b: readonly number[]) =>
+	`matrix(${a[0]} ${a[1]} ${b[0]} ${b[1]} ${x.toFixed(1)} ${y.toFixed(1)})`;
+
+/* ---------- The world ---------- */
+
+/** Distance one value or frame travels per loop, and the spacing between them. */
+const PERIOD = 3.2;
+const BELT = { u0: -14, u1: 14, width: 1.2, depth: 0.16 };
+const MACHINE = { length: 2.4, v0: -0.6, v1: 1.8, height: 1.5 };
+
+const belt = box(BELT.u0, BELT.u1, 0, BELT.width, -BELT.depth, 0);
+const slats = Array.from({ length: Math.round((BELT.u1 - BELT.u0) / 0.4) }, (_, i) => {
+	const u = BELT.u0 + i * 0.4;
+	return toPoints([at(u, 0.06, 0), at(u, BELT.width - 0.06, 0)]);
+});
+
+const machine = box(0, MACHINE.length, MACHINE.v0, MACHINE.v1, 0, MACHINE.height);
+const lid = box(
+	0.12,
+	MACHINE.length - 0.12,
+	MACHINE.v0 + 0.12,
+	MACHINE.v1 - 0.12,
+	MACHINE.height,
+	MACHINE.height + 0.1,
+);
+const lidTop = MACHINE.height + 0.1;
+
+/** The entrance: an arch in the machine's end face, wide enough for the belt. */
+const ENTRANCE = { v0: 0.08, v1: 1.12, z1: 0.72, radius: 0.22 };
+const arch: Point[] = [at(0, ENTRANCE.v0, 0)];
+for (const [vc, from] of [
+	[ENTRANCE.v0 + ENTRANCE.radius, Math.PI],
+	[ENTRANCE.v1 - ENTRANCE.radius, Math.PI / 2],
+] as const) {
+	for (let step = 0; step <= 6; step++) {
+		const angle = from - (step / 6) * (Math.PI / 2);
+		arch.push(
+			at(
+				0,
+				vc + ENTRANCE.radius * Math.cos(angle),
+				ENTRANCE.z1 - ENTRANCE.radius + ENTRANCE.radius * Math.sin(angle),
+			),
+		);
+	}
+}
+arch.push(at(0, ENTRANCE.v1, 0));
+const entrance = toPoints(arch);
+
+/** The QSL mark (`src/lib/mark.ts`, as in the footer), set into the lid. */
+const MARK = { pitchU: 0.11, pitchV: 0.19 };
+const markU0 = MACHINE.length / 2 - (MARK_WIDTH * MARK.pitchU) / 2;
+const markV0 = (MACHINE.v0 + MACHINE.v1) / 2 - (MARK_GLYPHS.length * MARK.pitchV) / 2;
+const mark = MARK_CELLS.map(({ x, y, on, color }) => {
+	const u = markU0 + x * MARK.pitchU;
+	const v = markV0 + y * MARK.pitchV;
+	const du = MARK.pitchU * MARK_TILE;
+	const dv = MARK.pitchV * MARK_TILE;
+	return {
+		on,
+		color,
+		points: toPoints([
+			at(u, v, lidTop),
+			at(u + du, v, lidTop),
+			at(u + du, v + dv, lidTop),
+			at(u, v + dv, lidTop),
+		]),
+	};
+});
+
+/** The schema the machine applies, printed on its side. */
+const schema = `&Sample[${MODE_ATTRIBUTES.compact}]`;
+const schemaAt = textOn(at(0.2, MACHINE.v1, 1.12), U, [0, 1]);
+
+/* ---------- Values in ---------- */
+
+const VALUE = { v0: 0.32, v1: 0.88, height: 0.46, gap: 0.15, unit: 0.45 };
+const values = SAMPLE_FIELDS.map((field) => field.initial);
+/** One `Sample`: a block per field, as long as its Rust type is wide. */
+const sample = (() => {
+	let u = 0;
+	return SAMPLE_FIELDS.map((field, index) => {
+		const length = (VALUE.unit * field.nativeBits) / 8;
+		const block = { u0: u, u1: u + length, color: field.color, value: values[index] };
+		u += length + VALUE.gap;
+		return block;
+	});
+})();
+const sampleLength = sample[sample.length - 1].u1;
+/** Copies of the sample along the belt, the first one just short of the entrance. */
+const inputs = Array.from({ length: 4 }, (_, k) => -0.5 - sampleLength - k * PERIOD).flatMap((start) =>
+	// Far blocks first, so nearer ones paint over them.
+	[...sample].reverse().map((block) => ({
+		...box(start + block.u0, start + block.u1, VALUE.v0, VALUE.v1, 0, VALUE.height),
+		color: block.color,
+		value: block.value,
+		label: textOn(at(start + (block.u0 + block.u1) / 2, VALUE.v1, VALUE.height / 2), U, [0, 1]),
+	})),
+);
+
+/**
+ * Everything of a value past the entrance plane (u > 0) is inside the machine.
+ * The visible faces of the value blocks are cut there: the side along a
+ * vertical line, the top along the line where it meets the plane.
+ */
+const entranceCut = (() => {
+	const [bottomX, bottomY] = at(0, VALUE.v1, 0);
+	const [frontX, frontY] = at(0, VALUE.v1, VALUE.height);
+	const [backX, backY] = at(0, VALUE.v0, VALUE.height);
+	const far = 4000;
+	return toPoints([
+		[backX, -far],
+		[-far, -far],
+		[-far, far],
+		[bottomX, far],
+		[bottomX, bottomY],
+		[frontX, frontY],
+		[backX, backY],
+	]);
+})();
+
+/* ---------- Frames out ---------- */
+
+const bits = encodeSample(values, 'compact');
+const bytes = bitsToBytes(bits);
+const BIT = { pitch: 0.2, size: 0.16, one: 0.16, zero: 0.03, rows: [0.3, 0.6, 0.9] };
+const frameLength = 8 * BIT.pitch;
+/** Viewer direction in world space; a larger dot product is nearer. */
+const nearness = (u: number, v: number, z: number) => -0.62 * u + v + 0.46 * z;
+const frame = bits
+	.map(({ field, value }, index) => {
+		const row = Math.floor(index / 8);
+		const u = (index % 8) * BIT.pitch;
+		const v = BIT.rows[row] - BIT.size / 2;
+		const kind = field === null ? 'pad' : value === 1 ? 'one' : 'zero';
+		return {
+			kind,
+			color: field === null ? undefined : SAMPLE_FIELDS[field].color,
+			u,
+			v,
+			height: kind === 'one' ? BIT.one : BIT.zero,
+			depth: nearness(u, v, 0),
+		};
+	})
+	.sort((a, b) => a.depth - b.depth);
+const outputs = Array.from({ length: 4 }, (_, k) => k * PERIOD).map((start) => ({
+	bits: frame.map((bit) => ({
+		...bit,
+		...box(start + bit.u, start + bit.u + BIT.size, bit.v, bit.v + BIT.size, 0, bit.height),
+	})),
+	labels: bytes.map((byte, row) => ({
+		text: hexByte(byte),
+		transform: textOn(at(start + frameLength + 0.08, BIT.rows[row] + 0.06, 0), U, V),
+	})),
+}));
+
+const motion = `--dx: ${(PERIOD * K * U[0]).toFixed(1)}px; --dy: ${(PERIOD * K * U[1]).toFixed(1)}px`;
+---
+
+<svg
+	class="scene"
+	viewBox={VIEW_BOX}
+	preserveAspectRatio="xMidYMax slice"
+	aria-hidden="true"
+	focusable="false"
+	style={motion}
+>
+	<defs>
+		<clipPath id="qsl-scene-entrance" clipPathUnits="userSpaceOnUse">
+			<polygon points={entranceCut} />
+		</clipPath>
+		<pattern
+			id="qsl-scene-hatch"
+			width="4"
+			height="4"
+			patternUnits="userSpaceOnUse"
+			patternTransform="rotate(45)"
+		>
+			<rect width="1.2" height="4" class="scene__hatch"></rect>
+		</pattern>
+	</defs>
+
+	<g class="scene__belt">
+		<polygon class="scene__belt-side" points={belt.side} />
+		<polygon class="scene__belt-top" points={belt.top} />
+	</g>
+	<g class="scene__move">
+		{slats.map((points) => (
+			<polyline class="scene__slat" points={points} />
+		))}
+	</g>
+
+	<g class="scene__move">
+		{outputs.map(({ bits, labels }) => (
+			<g>
+				{bits.map(({ kind, color, top, side, end }) => (
+					<g class:list={['scene__bit', `scene__bit--${kind}`]} style={color && `--c: var(--qsl-${color})`}>
+						<polygon class="scene__end" points={end} />
+						<polygon class="scene__side" points={side} />
+						<polygon class="scene__top" points={top} />
+					</g>
+				))}
+				{labels.map(({ text, transform }) => (
+					<text class="scene__hex" transform={transform}>
+						{text}
+					</text>
+				))}
+			</g>
+		))}
+	</g>
+
+	<g class="scene__machine">
+		<polygon class="scene__machine-end" points={machine.end} />
+		<polygon class="scene__entrance" points={entrance} />
+		<polygon class="scene__machine-side" points={machine.side} />
+		<polygon class="scene__machine-top" points={machine.top} />
+		<polygon class="scene__machine-end" points={lid.end} />
+		<polygon class="scene__machine-side" points={lid.side} />
+		<polygon class="scene__lid-top" points={lid.top} />
+		{mark.map(({ on, color, points }) => (
+			<polygon
+				class:list={['scene__mark', { on }]}
+				style={on ? `--c: var(--qsl-${color})` : undefined}
+				points={points}
+			/>
+		))}
+		<text class="scene__schema" transform={schemaAt}>
+			{schema}
+		</text>
+	</g>
+
+	<g clip-path="url(#qsl-scene-entrance)">
+		<g class="scene__move">
+			{inputs.map(({ color, value, label, top, side, end }) => (
+				<g class="scene__value" style={`--c: var(--qsl-${color})`}>
+					<polygon class="scene__end" points={end} />
+					<polygon class="scene__side" points={side} />
+					<polygon class="scene__top" points={top} />
+					<text class="scene__number" transform={label}>
+						{value}
+					</text>
+				</g>
+			))}
+		</g>
+	</g>
+</svg>
+
+<style>
+	.scene {
+		--belt-top: #12141c;
+		--belt-side: #0b0c11;
+		--belt-slat: #1d212c;
+		--machine-top: #232836;
+		--machine-lid: #1c202b;
+		--machine-side: #161921;
+		--machine-end: #1b1e28;
+		--machine-edge: #323848;
+		--entrance: #040506;
+		--mark-off: #2a2f3d;
+		--shade: #000;
+
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	:root[data-theme='light'] .scene {
+		--belt-top: #e8ebf1;
+		--belt-side: #d3d8e2;
+		--belt-slat: #dce0e9;
+		--machine-top: #ffffff;
+		--machine-lid: #f6f7fa;
+		--machine-side: #e3e7ef;
+		--machine-end: #edf0f5;
+		--machine-edge: #c8cedb;
+		--entrance: #1b1f2a;
+		--mark-off: #e3e6ed;
+		--shade: #1b2340;
+	}
+
+	/* ---------- Belt ---------- */
+
+	.scene__belt-top {
+		fill: var(--belt-top);
+	}
+
+	.scene__belt-side {
+		fill: var(--belt-side);
+	}
+
+	.scene__slat {
+		fill: none;
+		stroke: var(--belt-slat);
+		stroke-width: 2;
+		stroke-linecap: round;
+	}
+
+	/* ---------- Machine ---------- */
+
+	.scene__machine polygon:not(.scene__mark, .scene__entrance) {
+		stroke: var(--machine-edge);
+		stroke-width: 1;
+		stroke-linejoin: round;
+	}
+
+	.scene__machine-top {
+		fill: var(--machine-top);
+	}
+
+	.scene__lid-top {
+		fill: var(--machine-lid);
+	}
+
+	.scene__machine-side {
+		fill: var(--machine-side);
+	}
+
+	.scene__machine-end {
+		fill: var(--machine-end);
+	}
+
+	.scene__entrance {
+		fill: var(--entrance);
+	}
+
+	.scene__mark {
+		fill: var(--mark-off);
+	}
+
+	.scene__mark.on {
+		fill: var(--c);
+	}
+
+	.scene__schema {
+		fill: var(--sl-color-gray-3);
+		font-family: var(--__sl-font-mono);
+		font-size: 13px;
+		letter-spacing: 0.02em;
+	}
+
+	/* ---------- Values and bits ---------- */
+
+	.scene__top {
+		fill: color-mix(in oklab, var(--c) 88%, #fff);
+	}
+
+	.scene__end {
+		fill: color-mix(in oklab, var(--c) 76%, var(--shade));
+	}
+
+	.scene__side {
+		fill: color-mix(in oklab, var(--c) 56%, var(--shade));
+	}
+
+	.scene__number {
+		fill: #fff;
+		font-family: var(--__sl-font-mono);
+		font-size: 19px;
+		font-weight: 600;
+		text-anchor: middle;
+		dominant-baseline: central;
+	}
+
+	.scene__bit--zero .scene__top {
+		fill: color-mix(in oklab, var(--c) 22%, var(--belt-top));
+	}
+
+	.scene__bit--zero :is(.scene__end, .scene__side) {
+		fill: color-mix(in oklab, var(--c) 40%, var(--belt-side));
+	}
+
+	.scene__bit--pad .scene__top {
+		fill: url(#qsl-scene-hatch);
+	}
+
+	.scene__bit--pad :is(.scene__end, .scene__side) {
+		fill: var(--sl-color-gray-5);
+	}
+
+	.scene__hatch {
+		fill: var(--sl-color-gray-4);
+	}
+
+	.scene__hex {
+		fill: var(--sl-color-gray-2);
+		font-family: var(--__sl-font-mono);
+		font-size: 15px;
+		font-weight: 500;
+		dominant-baseline: central;
+	}
+
+	/* ---------- Motion ---------- */
+
+	/*
+	 * The belt and everything on it move one period and start over: the loop has
+	 * no seam. The hero pauses it with its button and while it is out of view.
+	 */
+	@media (prefers-reduced-motion: no-preference) {
+		.scene__move {
+			animation: scene-belt 5s linear infinite;
+		}
+	}
+
+	@keyframes scene-belt {
+		to {
+			transform: translate(var(--dx), var(--dy));
+		}
+	}
+
+	/*
+	 * High contrast: the picture becomes outlines in the system colors, with the
+	 * mark's set bits filled. !important because the color rules above are more
+	 * specific, and every one of them has to give way here.
+	 */
+	@media (forced-colors: active) {
+		.scene :is(polygon, polyline) {
+			fill: Canvas !important;
+			stroke: CanvasText !important;
+			stroke-width: 1px;
+		}
+
+		.scene .scene__mark.on {
+			fill: CanvasText !important;
+		}
+
+		.scene text {
+			fill: CanvasText;
+		}
+	}
+</style>

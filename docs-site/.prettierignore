@@ -1,0 +1,9 @@
+# Generated
+dist/
+.astro/
+node_modules/
+package-lock.json
+
+# Documentation content is reviewed by hand: Prettier rewraps tables and
+# MDX component blocks in ways that make translation diffs noisy.
+src/content/docs/

@@ -1,0 +1,13 @@
+---
+const { demo = 'numbers', compact = false } = Astro.props;
+import {tr} from '../lib/i18n';
+const lang = Astro.locals.starlightRoute.locale??'en';
+const ru=lang==='ru';
+---
+<qsl-native-lab class:list={['qsl-lab', 'not-content', { 'is-compact': compact }]} data-demo={demo} data-lang={lang}>
+  <div class="lab-heading"><span class="lab-kicker">{demo === 'dyn' ? 'BIT INDEX · MSB-FIRST' : demo === 'analyzer' ? 'QSL · NATIVE ANALYZER' : 'QSL · NATIVE RUST'}</span><span class="lab-connection" data-status role="status">{tr(lang,'Connecting…')}</span></div>
+  <div data-controls></div>
+  <div data-result aria-live="polite"><p class="lab-muted">{tr(lang,'Loading the prepared example.')}</p></div>
+  <noscript>{ru?'Для интерактивного примера нужен JavaScript. Контракты и примеры кода остаются в тексте страницы.':'Interactive examples need JavaScript. Contracts and code samples remain in the page text.'}</noscript>
+</qsl-native-lab>
+<script>import '../lib/lab-client';</script>

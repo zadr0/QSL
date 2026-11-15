@@ -1,0 +1,92 @@
+{
+  "optional_5/checked": [
+    "Чтение с проверками: 5 optional-полей",
+    "Checked read: five optional fields",
+    "Сравнение обычного хранения и приватных MaybeUninit-слотов.",
+    "Ordinary storage versus private MaybeUninit slots."
+  ],
+  "optional_5/unchecked": [
+    "Чтение без проверок: 5 optional-полей",
+    "Unchecked read: five optional fields",
+    "Тот же набор кадров; вызывающий код гарантирует валидность.",
+    "The same frame set; the caller guarantees validity."
+  ],
+  "optional_5_write": [
+    "Запись: 5 optional-полей",
+    "Write: five optional fields",
+    "Прямая запись полей и сохранённый код генератора 0.3.0. Буфер подготовлен заранее.",
+    "Direct field writes versus frozen 0.3.0 codegen, with prepared output."
+  ],
+  "physical_fixed": [
+    "Чтение: физический порядок полей",
+    "Read: physical field order",
+    "Обычный и auto-layout. Wire одинаков; изменяется размещение Rust-полей.",
+    "Pinned versus auto layout. Wire is identical; Rust field placement differs."
+  ],
+  "checked_scalar_island_5": [
+    "Чтение с проверками: группировка чисел",
+    "Checked read: grouped numeric fields",
+    "Пять optional-чисел: отдельные проверки и сгруппированные проверки.",
+    "Five optional integers: individual versus grouped validation."
+  ],
+  "numeric_domain_2xu32": [
+    "Чтение: два числовых диапазона",
+    "Read: two integer domains",
+    "Прежний декодер и точное ранговое представление двух u32.",
+    "Legacy decoding versus exact rank representation for two u32 fields."
+  ],
+  "array_window_u16x16": [
+    "Чтение массива: 16 чисел u16",
+    "Array read: sixteen u16 values",
+    "Прежнее u128-окно и выбранное планировщиком u32-окно. Чтение без проверок.",
+    "The legacy u128 window versus the planned u32 window. Unchecked reading."
+  ],
+  "pointing_checked_into_24": [
+    "Чтение в готовую память: 24 байта",
+    "Read into prepared storage: 24 bytes",
+    "Скалярное чтение и копирование доказанно инициализированного участка с проверками.",
+    "Scalar reading versus checked copying of a proven initialized region."
+  ],
+  "shift_string_read_into": [
+    "Строка: чтение в готовую память",
+    "String read into prepared storage",
+    "Строки длиной 0–100 байтов: физическая длина u32 либо NonZero.",
+    "Strings of 0–100 bytes: physical u32 or NonZero length storage."
+  ],
+  "shift_string_read_new": [
+    "Строка: создание нового значения",
+    "String read into a new value",
+    "Те же строки с возвратом нового Rust-объекта; это не String-аллокация.",
+    "The same strings returned as a new Rust value; this is not a String allocation."
+  ],
+  "checked_stack_string_into": [
+    "Строка: прямое восстановление",
+    "String read: direct materialization",
+    "Checked deserialize_into: прежний промежуточный объект и прямой ValidationCursor.",
+    "Checked deserialize_into: a frozen intermediate-object decoder versus direct ValidationCursor materialization."
+  ],
+  "register12_read": [
+    "Распаковка чисел: 4 × 12 бит",
+    "Integer unpacking: 4 × 12 bits",
+    "Изолированные scalar и BMI2-кандидаты; не полный сгенерированный метод.",
+    "Isolated scalar and BMI2 candidates, not a complete generated method."
+  ],
+  "register12_write": [
+    "Упаковка чисел: 4 × 12 бит",
+    "Integer packing: 4 × 12 bits",
+    "Изолированные scalar и BMI2-кандидаты.",
+    "Isolated scalar and BMI2 candidates."
+  ],
+  "generated_register12_read": [
+    "Чтение QSL: 4 × 12 бит",
+    "Generated QSL read: 4 × 12 bits",
+    "Полный сгенерированный unchecked-reader: scalar и профиль с PDEP. PDEP отклонён.",
+    "Complete generated unchecked readers: scalar versus PDEP profile. PDEP was rejected."
+  ],
+  "generated_register12_write": [
+    "Запись QSL: 4 × 12 бит",
+    "Generated QSL write: 4 × 12 bits",
+    "Полный сгенерированный unchecked-writer: scalar и профиль с PEXT. PEXT принят.",
+    "Complete generated unchecked writers: scalar versus PEXT profile. PEXT was accepted."
+  ]
+}

@@ -1,0 +1,18 @@
+---
+title: 架构
+description: QSL 的各个 crate、各自负责什么，以及从 schema 文本到生成的 Rust 代码的路径。
+---
+
+## 运行时边界
+
+no_std 排除 std，但不排除 alloc。qsl-core 始终使用 #![no_std]；默认 alloc 功能提供 alloc String/Vec、SerOut 和堆恢复。分配器由应用提供，QSL 不定义全局分配器。禁用默认功能即可仅使用调用方缓冲区。
+Crate           | Scope
+--------------- | ----------------------------------------------------------------------------------------
+qsl-core        | 所有运行时 I/O、序列化与原语契约及宏、容器、验证、QPS 和独立于传输的帧处理；alloc 可选。
+qsl-rt          | 实现核心 FramePool/FrameStorage 的 no_std 静态内存区域；池满时立即返回 PoolExhausted。
+qsl-lexer       | 读取源码与 DEQ、收集模式、分析和优化计划。
+qsl-interpreter | 在构建主机生成专用 Rust 源码。
+qsl-macros-impl | Rust attribute expansion
+qsl             | 重新导出运行时，编译器支持可选；仅运行时模式不需要 std。
+构建脚本和测试框架可以使用 std，但不进入目标运行时。真实生成的模式在无分配器程序中执行；独立 no_std 库验证 alloc 容器。核心的两种配置和 qsl-rt 也通过 wasm32-wasip2 构建。
+[Memory](/guides/manual-layout/) · [Runtime](/internals/runtime/)

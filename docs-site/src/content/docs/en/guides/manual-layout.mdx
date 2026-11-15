@@ -1,0 +1,82 @@
+---
+title: "Manual layout: wire and object memory"
+description: "Manual layout: wire and object memory — QSL"
+---
+
+Manual layout controls the **wire frame** and the **Rust object** separately. A compact message does not imply a compact object. Decide which representation must change before selecting options.
+
+## Format contract
+
+Declare types, integer ranges, UTF-8 byte bounds and array element counts. Every optional field must follow every required field, including after template expansion. This ordering rule is mandatory; optimization attributes are optional.
+
+Both endpoints must agree on wire-affecting settings. Reordering declarations, changing domains, adding wire padding or selecting another codec may change bytes and schema identity. Physical-only layout choices can retain both.
+
+## Wire packing and alignment
+
+Raw integers use the declared little-endian width. `compact` stores exact ranks. For an inclusive range:
+
+$$
+w=\lceil\log_2(b-a+1)\rceil.
+$$
+
+Constants need zero rank bits. Ordinary compact uses LSB-first; dyn index uses MSB-first. `alignment` adds a byte boundary after a compact field; it does not align the address of a Rust object. A 3-bit field followed by a 10-bit field uses 2 packed bytes or 3 individually byte-aligned bytes. Measure the affected operation before treating that trade-off as a speedup.
+
+## Physical order
+
+Without physical auto, supported generated repr(C) fields retain declaration order. On the documented x86-64 target, u8/u64/u16 uses 24 object bytes; u64/u16/u8 uses 16. Each raw payload contains 11 value bytes. Reordering declarations also changes wire order.
+
+`auto` selects physical placement while preserving logical/wire order. `auto[wire=1]` or `.auto_wire(1)` additionally authorizes versioned wire canonicalization. Generated size and offset assertions check the target layout. A useful manual starting point is decreasing field alignment while keeping all optional fields last.
+
+$$
+o_1=0,\qquad o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i).
+$$
+
+$$
+\operatorname{align}(x,a)=a\lceil x/a\rceil.
+$$
+
+$$
+S=\operatorname{align}(o_n+s_n,A).
+$$
+
+Here $s_i$ is field size, $a_i$ field alignment and $A$ object alignment. These formulas apply to known fixed repr(C) fields. External custom layouts cannot be inferred from names. There is no general API that assigns arbitrary physical offsets to every field.
+
+## Padding
+
+Schema `padding(N)` counts **bytes**; `padding_bits(N)` counts bits. Builder `.padding(N)` always takes **bits**; multiples of eight retain byte-padding behaviour. Checked input requires zero wire padding. Non-byte padding requires compact without dyn, QPS, predict_seq or state_bits. Wire padding is separate from uninitialized gaps in a Rust object; those gaps must never be transmitted.
+
+~~~qsl
+&Packet[safety,compact,alignment] {
+    u8(0..7) kind;
+    u16(0..1023) count;
+}
+&BitPacket[safety,compact] {
+    u8(0..7) prefix;
+    padding_bits(3) gap;
+    u8(0..3) tail;
+}
+~~~
+
+## Ownership and limits
+
+Fixed byte fields use fixed arrays. Bounded UTF-8 may use StackString or InlineString; String/Vec own external storage in the application facade. STACK_LIMIT defaults to 256 B and applies to all strings and arrays, including explicit inline selections. Larger fields use supported dynamic storage instead of bypassing the limit.
+
+`DeqBuilder.stack_limit(bytes)` controls that policy. `max_data_size(bytes)` controls frame/restoration/value limits, default 65535; it is a separate setting. A no_std core caller supplies its own buffers. Reuse can preserve String/Vec capacity, but growth can allocate.
+
+## Native regions
+
+`#region(aggressive_transmutate="Meta")` creates a nested fixed Rust type. Copy needs initialized valid fields, matching representation and aligned destination. Overlay additionally needs aligned immutable input with a lifetime covering the view. repr(C) alone does not prove wire compatibility: endianness, offsets, padding, ranges and UTF-8 still matter.
+
+Start with checked copy/view APIs and inspect `NATIVE_WIRE_COMPATIBLE` or the region compatibility constants. A documented copy fallback does not authorize an unchecked overlay. Unsafe methods retain the complete caller contract.
+
+## Review checklist
+
+1. Required fields precede all optional fields.
+2. Check wire lengths, headers, bit order and padding separately from Self size.
+3. Inspect object offsets/alignment and owned allocations independently.
+4. Distinguish physical auto from explicit auto-wire.
+5. Test malformed lengths, spare ranks and nonzero padding with checked methods.
+6. Measure only the affected read/write path with warmed buffers.
+
+The analyzer reports planned Self size, not full function stack usage, allocator capacity or process RAM. Unknown custom sizes remain unknown.
+· [Builder / DEQ](/language/deq/) · [Macros](/guides/custom-types/) · [Safety](/guides/safety/)

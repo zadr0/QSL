@@ -1,0 +1,35 @@
+---
+title: Quick Schema Language — Rust 二进制序列化
+description: Quick Schema Language (QSL) 在构建时把数据 schema 编译成 Rust 结构体和二进制编解码器。
+template: splash
+hero:
+  title: "面向 Rust 的二进制序列化"
+  actions:
+    - text: 开始使用
+      link: /start/quickstart/
+      variant: primary
+    - text: 工作原理
+      link: /start/how-it-works/
+      variant: secondary
+---
+
+import LandingSection from '../../../components/LandingSection.astro';
+
+<LandingSection title="你写 schema，QSL 写代码" id="usage" split>
+
+Quick Schema Language (QSL) 是一门面向 Rust 的 schema 语言。你只需把消息描述一次：它有哪些字段，每个数值的范围是多少，字符串可以有多长。执行 `cargo build` 时，QSL 会把这些描述变成一个结构体，以及把它写成字节、再读回来的代码。
+
+不用手写编解码器，运行时也不会解析 schema。像这里这样加上 `[safety]` 后，不符合 schema 的字节会作为错误返回，而不会变成一个 `User`。程序的另外两个文件在[快速上手](/start/quickstart/)里。
+
+<div slot="aside">
+
+```qsl title="user.qsl"
+&User[safety] {
+    u64 id;
+    str(1..100) name;
+}
+```
+
+</div>
+
+</LandingSection>

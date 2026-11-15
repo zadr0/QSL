@@ -1,0 +1,30 @@
+---
+title: "Атрибуты и совместимость"
+description: "Документация QSL: Атрибуты и совместимость."
+---
+
+
+Все атрибуты и дополнительные механики опциональны. Порядок required → optional обязателен. Не каждое сочетание допустимо; native-анализатор проверяет совместимость до генерации.
+Атрибут | Назначение
+---|---
+`safety` | Проверка кадра и значений; методы checked
+`compact` | Ранговая битовая упаковка; это wire-опция
+`alignment` | Выравнивание wire по правилам выбранного кодека
+`inline` | Явная политика атрибутов сгенерированных методов
+`auto` | Физическое размещение генерируемого Self
+`auto[wire=1]` | Версионированная канонизация порядка wire
+`predict_seq` | Длина payload → индекс состояния
+`opt_table` | Тег → статический читатель
+`optionals=bitmap` | Wire-маска только опциональных полей
+`aggressive[bitmap]` | Приватные MaybeUninit-поля и native presence mask
+`aggressive[group]` | Разрешение доказанных регистровых/checked-групп
+`aggressive[pointing]` | Копирование доказанного initialized-span
+`aggressive[shift=true]` | Физическая длина строки len+1
+`qps / qps=Q16` | Обратимое сжатие операндом; не предиктор
+`quant=Q2/Q4/Q8/Q16` | Совместимый явный выбор кванта
+`lifetime` | Borrow поддержанного wire; исходный буфер должен жить
+`transmutate` | Native-контракт с ABI/валидностью, не общий transmute
+`loyal_cache` | Bounded storage в согласованном бюджете
+`dyn[...]` | Новый явный wire-контракт line/index v1
+`decompress=true` | Поле строки с QSL-LZ
+`step / values` | Точный дискретный домен поля[DEQ](/language/deq/) · [Limits](/reference/limits/)

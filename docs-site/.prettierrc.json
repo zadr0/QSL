@@ -1,0 +1,17 @@
+{
+	"$schema": "https://json.schemastore.org/prettierrc",
+	"useTabs": true,
+	"singleQuote": true,
+	"printWidth": 110,
+	"plugins": ["prettier-plugin-astro"],
+	"overrides": [
+		{
+			"files": ["*.astro"],
+			"options": { "parser": "astro" }
+		},
+		{
+			"files": ["*.md", "*.mdx", "*.yml", "*.yaml", "package.json"],
+			"options": { "useTabs": false, "tabWidth": 2 }
+		}
+	]
+}

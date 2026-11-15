@@ -1,0 +1,205 @@
+[
+  [
+    "name",
+    "name(name: &str)",
+    "Создаёт новую схему. Имя используется для Rust-типа; следующая операция field относится к этой схеме.",
+    "Starts a schema. Its name becomes the Rust type name; following field declarations belong to it.",
+    [
+      [
+        "name: &str",
+        "Непустое допустимое имя Rust.",
+        "A nonempty valid Rust identifier."
+      ]
+    ]
+  ],
+  [
+    "field",
+    "field(name: &str)",
+    "Задаёт имя следующего поля. Само поле добавляется следующим методом типа, например u32 или str.",
+    "Names the next field. The following type method, such as u32 or str, commits the field.",
+    [
+      [
+        "name: &str",
+        "Имя поля; одинаковые имена запрещены.",
+        "Field name; duplicates are rejected."
+      ]
+    ]
+  ],
+  [
+    "integer",
+    "u32(min: u32, max: u32, default: u32, optional: bool)",
+    "Объявляет число. Для остальных целых типов набор аргументов такой же, но их Rust-тип соответствует выбранной ширине.",
+    "Declares an integer. Other integer methods use the same arguments with their corresponding Rust type.",
+    [
+      [
+        "min, max",
+        "Включительные границы допустимых значений. В compact влияют на число записываемых битов.",
+        "Inclusive value bounds. In compact mode they determine the encoded bit width."
+      ],
+      [
+        "default",
+        "Начальное значение нового объекта; обязано принадлежать диапазону. Не записывается вместо отсутствующего optional.",
+        "Initial value for a new object; must belong to the domain. Never replaces an absent optional on the wire."
+      ],
+      [
+        "optional: bool",
+        "true разрешает отсутствие. Все optional-поля должны идти после обязательных.",
+        "true allows absence. All optional fields must follow required fields."
+      ]
+    ]
+  ],
+  [
+    "str",
+    "str(min: u32, max: u32, decompress: bool, optional: bool)",
+    "Объявляет строку UTF-8. Длина считается в байтах: «Яa» занимает 3 B.",
+    "Declares a UTF-8 string. Length is bytes: “Яa” occupies 3 B.",
+    [
+      [
+        "min, max",
+        "Включительные границы числа UTF-8 байтов. max участвует в выборе заголовка и вместимости хранения.",
+        "Inclusive UTF-8 byte bounds. max affects the header and storage capacity."
+      ],
+      [
+        "decompress: bool",
+        "true выбирает строковый кодек QSL-LZ. Кодек использует raw, если сжатие невыгодно.",
+        "true selects QSL-LZ. The codec retains raw data when compression is not worthwhile."
+      ],
+      [
+        "optional: bool",
+        "Разрешает отсутствие всей строки; пустая строка и отсутствие — разные состояния.",
+        "Allows the entire string to be absent. Empty and absent are distinct states."
+      ]
+    ]
+  ],
+  [
+    "array",
+    "array::<T>(min: u32, max: u32, optional: bool)",
+    "Объявляет массив переменной длины. T — тип элемента с метаданными QslFieldType.",
+    "Declares a variable-length array. T supplies QslFieldType element metadata.",
+    [
+      [
+        "T",
+        "Тип каждого элемента. Бюджет памяти учитывает размер T, а wire использует кодек элемента.",
+        "Element type. Memory budgets use its native size; wire uses its codec."
+      ],
+      [
+        "min, max",
+        "Число элементов, а не байтов. Влияет на длину, capacity и выбор Vec/InlineArray.",
+        "Element count, not bytes. Affects lengths, capacity and Vec/InlineArray storage."
+      ],
+      [
+        "optional: bool",
+        "Разрешает отсутствие массива; пустой массив остаётся отдельным значением.",
+        "Allows absence; an empty array remains a distinct value."
+      ]
+    ]
+  ],
+  [
+    "fixed",
+    "fstr(size: u32, optional: bool) / farray::<T>(size: u32, optional: bool)",
+    "Фиксирует длину. Заголовок переменной длины не нужен; выбор хранения всё равно подчиняется STACK_LIMIT.",
+    "Fixes the length. A variable-length header is unnecessary; storage still obeys STACK_LIMIT.",
+    [
+      [
+        "size: u32",
+        "Для fstr — байты, для farray — элементы.",
+        "Bytes for fstr; elements for farray."
+      ]
+    ]
+  ],
+  [
+    "padding",
+    "padding(bits: u32)",
+    "Добавляет нулевые биты в wire. Кратные байту значения сохраняют прежнее поведение Padding; небайтовые значения требуют compact.",
+    "Adds zero wire bits. Byte multiples retain legacy Padding behavior; non-byte widths require compact.",
+    [
+      [
+        "bits: u32",
+        "Число битов. Checked reader проверяет, что они нулевые.",
+        "Bit count. Checked decoding requires zero padding."
+      ]
+    ]
+  ],
+  [
+    "domain",
+    "domain(domain, default_bits: Option<u128>, optional: bool)",
+    "Задаёт точный интервал, прогрессию или множество значений. Ранг обратимо сопоставляется исходному значению.",
+    "Declares an exact interval, progression or value set. Ranks map reversibly to values.",
+    [
+      [
+        "domain",
+        "NumericDomain: задаёт ширину, знак и допустимые значения.",
+        "NumericDomain: native width, signedness and valid values."
+      ],
+      [
+        "default_bits",
+        "None — без явного initializer; Some хранит native bit pattern начального значения.",
+        "None omits an explicit initializer; Some supplies the initial native bit pattern."
+      ]
+    ]
+  ],
+  [
+    "policies",
+    "compact() / auto() / inline() / ot() / ps() / bm() / q16()",
+    "Эти методы не принимают аргументов и включают конкретную механику. Их совместимость проверяется при build.",
+    "These methods take no arguments and enable individual mechanisms. build validates compatibility.",
+    [
+      [
+        "compact / q16",
+        "Меняют кодирование wire; одинаковая схема должна быть у обеих сторон.",
+        "Change wire encoding; peers need matching schemas."
+      ],
+      [
+        "auto / inline",
+        "auto меняет физический layout; inline задаёт политику Rust-методов.",
+        "auto changes physical layout; inline sets Rust method policy."
+      ],
+      [
+        "ps / ot / bm",
+        "Индекс длины / читатель по тегу / маска присутствия соответственно.",
+        "Length index / reader by tag / presence mask, respectively."
+      ]
+    ]
+  ],
+  [
+    "aggressive",
+    "group(enabled: bool) / pointing(enabled: bool) / aggresive(shift: bool, bitmap: bool)",
+    "Разрешает только доказанные оптимизации. Флаг сам по себе не делает произвольный объект пригодным для memcpy или SIMD.",
+    "Permits proven optimizations. A flag alone does not make arbitrary objects safe for memcpy or SIMD.",
+    [
+      [
+        "enabled: bool",
+        "true разрешает анализ кандидата; unsafe-условия и профиль остаются обязательными.",
+        "true permits candidate analysis; safety and profile requirements still apply."
+      ],
+      [
+        "shift / bitmap",
+        "Физическая длина len+1 / приватные optional-слоты и маска. Это не wire BM.",
+        "Physical len+1 lengths / private optional slots and mask. This is not wire BM."
+      ]
+    ]
+  ],
+  [
+    "dyn",
+    "dyn_line(width: u32, revision: u32) / dyn_index(width: u32, strict: bool, revision: u32)",
+    "Выбирает отдельный формат dyn v1. Поля получают явные метатеги через tag(u64).",
+    "Selects the separate dyn v1 format. tag(u64) assigns field metadata tags.",
+    [
+      [
+        "width: u32",
+        "line: 16/32/64; index: 32/64. index16 не поддержан.",
+        "line: 16/32/64; index: 32/64. index16 is unsupported."
+      ],
+      [
+        "strict: bool",
+        "Выбирает строгий вариант индексной схемы.",
+        "Selects the strict indexed-schema variant."
+      ],
+      [
+        "revision: u32",
+        "Версия схемы в согласованном dyn-контракте.",
+        "Schema revision in the agreed dyn contract."
+      ]
+    ]
+  ]
+]

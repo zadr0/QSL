@@ -1,0 +1,23 @@
+---
+title: "最適化とメモリ配置"
+description: "物理 auto は生成された構造体のパディングを減らしますが、wire 順序は維持します。wire の正規化には明示的な auto[wire=1] が必要です。直接コピーは初期化済みで表現が一致する領域だけに許されます。Kaby Lake の 4×12 ビットでは PEXT 書き込みを選択し、遅くなった PDEP 読み込みは採用しません。"
+qslResources: [{"label": "詳細リファレンスとソース", "url": "https://github.com/zadr0/QSL"}]
+---
+
+
+ローカル開発版 · 2026-11-14.
+
+物理 auto は生成された構造体のパディングを減らしますが、wire 順序は維持します。wire の正規化には明示的な auto[wire=1] が必要です。直接コピーは初期化済みで表現が一致する領域だけに許されます。Kaby Lake の 4×12 ビットでは PEXT 書き込みを選択し、遅くなった PDEP 読み込みは採用しません。
+
+詳細リファレンスとソース · [English](/en/internals/optimizer/)
+
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i),\qquad \operatorname{align}(x,a)=a\left\lceil\frac{x}{a}\right\rceil.
+$$
+
+$$
+S_{\mathrm{Self}}=\operatorname{align}(o_n+s_n,A).
+$$
+
+o: offset · s: size · a: field alignment · A: Self alignment.

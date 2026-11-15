@@ -1,0 +1,23 @@
+---
+title: "Numeric domains"
+description: "QSL documentation: Numeric domains."
+---
+
+
+$$
+N=max-min+1,\qquad w=\lceil\log_2N\rceil,\qquad rank=x-min.
+$$
+
+
+Widths use exact bit_length(max−min), without floating point. Constants use zero bits. Full u128 cardinality is represented without overflow. Signed domains use validated native bit patterns and appropriate wrapping arithmetic.
+
+Raw stores original LE integers. Ordinary COMPACT stores ranks LSB-first. Equal Rust types do not imply raw/COMPACT compatibility. Alignment inserts byte barriers after fields without reordering them.
+
+```qsl
+&Discrete[safety,compact] {
+    i32(-9..9) temperature|step=3|;
+    i128 state|values=[-1,0,1]|;
+}
+```
+
+A positive step maps $r=(x-\min)/s$ and must reach the inclusive upper endpoint. Sets are nonempty/unique, with canonical numeric order. Combining them requires each listed value to satisfy the interval/progression. Raw keeps native values and validates constraints. Checked decoding rejects spare ranks before reconstruction. Step/values are optional local syntax, not mandatory QSL mechanisms.

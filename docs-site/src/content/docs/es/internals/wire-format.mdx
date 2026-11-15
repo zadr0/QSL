@@ -1,0 +1,55 @@
+---
+title: Formato binario
+description: Cómo dispone QSL los enteros, las cadenas, los arrays y los metadatos de los campos opcionales en una trama.
+---
+
+
+Una trama QSL solo contiene valores y los metadatos que exige el esquema. En la trama no hay información de tipos, ni nombres de campo, ni hash del esquema.
+
+## Estructura de una trama
+
+```text
+[optional-field metadata] [required values in declaration order] [present optional values]
+```
+
+`opt_table=legacy` es la única excepción a este orden: su tabla de desplazamientos va después de los valores obligatorios. La parte de metadatos está vacía si el tipo no tiene campos opcionales.
+
+## Valores
+Valor | Codificación por defecto | Con `compact`
+---|---|---
+Entero | Little-endian, ancho nativo | `x - min` en `bit_length(max - min)` bits
+`str`, `str(A..B)` | Longitud `u32` en bytes y después UTF-8 | Longitud como posición dentro del rango, en el menor número de bits que permita el rango, y después UTF-8 desde el siguiente límite de byte
+`str(A..B)` con `decompress=true` o `decompress=true` | Cabecera de 1, 2 o 4 bytes para un límite superior de hasta 127, de hasta 32767 o mayor; su bit más alto indica compresión | Igual
+`str(N)` | `N` bytes, sin longitud | Igual
+`array<T>`, `array<T>(A..B)` | Número de elementos `u32` y después los elementos | Número como posición dentro del rango y después los elementos
+`array<T>(N)` | `N` elementos, sin contador | Igual
+`padding(N)` | `N` bytes a cero | Igual
+Con `compact`, los campos se empaquetan bit a bit, empezando por el bit menos significativo, y pueden abarcar varios bytes y palabras de máquina. El generador elige el ancho de los registros y emite para cada campo secuencias fijas de desplazamientos y máscaras.
+
+
+Los bytes de arriba se calculan en el navegador con las mismas reglas que el generador de Rust. Para `kind = 5`, `channel = 17`, `value = 513`:
+Codificación | Bytes
+---|---
+Por defecto | `05 11 01 02`
+`compact` | `8d 01 02`
+`compact` + `alignment` | `05 11 01 02`
+## Metadatos de los campos opcionales
+
+**Por defecto.** Un campo opcional: un bit de presencia. Varios: el número de campos presentes en `bit_length(optional_count)` bits y después, por cada campo presente, su etiqueta menos 1 en `bit_length(max_tag - 1)` bits. La cabecera se empaqueta desde el bit menos significativo y se rellena hasta completar un byte, salvo con `compact`. Su longitud depende de cuántos campos estén presentes. Consulta el [ejemplo resuelto](/language/optionals/).
+
+**Mapa de bits.** Una máscara little-endian solo sobre los campos opcionales: 0, 1, 2, 4, 8 o 16 bytes. El marcador 1 es el bit más significativo. Los valores van a continuación en orden descendente de marcador.
+
+
+**predict_seq.** La presencia se deduce de la longitud de la carga útil, así que no hay metadatos. Con `predict_seq,opt_table`, la trama empieza con una cabecera fija: un bit de presencia por campo opcional cuando las longitudes por sí solas son ambiguas, y una longitud de 1, 2 o 4 bytes por cada campo opcional de tamaño variable, salvo el último.
+
+**opt_table=legacy.** Después de los valores obligatorios: un byte con el número de campos y luego un `u32` little-endian por campo opcional, `0` si está ausente o, si no, el desplazamiento del valor en la carga útil opcional más 1.
+
+## Cadenas con decompress=true
+
+Una cadena comprimida con rango usa la cabecera inline descrita arriba, con el bit más alto activo cuando la carga útil está comprimida. QSL solo intenta comprimir cadenas de 32 bytes o más, y escribe los bytes sin comprimir cuando la compresión no reduce el resultado.
+
+Un `str(N)` fijo con `decompress=true` y `N` de 32 o más es, o bien `N` bytes sin comprimir, o bien un byte marcador `ff`, una longitud de 1 o 2 bytes y la carga útil comprimida. El UTF-8 válido nunca empieza por `ff`, así que los dos casos no se pueden confundir.
+
+## Compatibilidad
+
+Cambiar cualquiera de estos elementos cambia el formato: el orden de los campos, los tipos, los rangos, qué campos son opcionales, `compact`, `alignment` con `compact`, el modo de campos opcionales, `qps` y su quantum, `decompress`, `decompress=true`. La trama no lleva ninguna versión. Los [hashes del esquema](/guides/schema-identity/) cambian con el formato y se pueden intercambiar por un canal aparte.

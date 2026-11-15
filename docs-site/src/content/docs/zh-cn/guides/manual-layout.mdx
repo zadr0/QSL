@@ -1,0 +1,41 @@
+---
+title: "手动布局：线格式与对象内存"
+description: "手动布局：线格式与对象内存 — QSL"
+---
+
+## 格式与顺序
+
+先确定类型、整数范围、UTF-8 字节上限和数组元素数。所有可选字段必须位于必需字段之后，模板展开后也一样。优化属性可以省略，字段顺序规则不能省略。双方必须使用相同的线格式约定。
+
+## 线格式与内存
+
+raw 使用声明宽度的小端表示；compact 保存精确的秩。常量需要零位。普通 compact 为 LSB-first，dyn index 为 MSB-first。alignment 在字段后添加字节边界，不负责 Rust 对象地址对齐。3 位和 10 位字段紧密打包占 2 字节，分别对齐占 3 字节。
+
+x86-64 上，u8/u64/u16 的 Self 为 24 字节，u64/u16/u8 为 16 字节，raw 有效值均为 11 字节。修改声明顺序也修改 wire。auto 仅改变物理布局；auto[wire=1] 或 .auto_wire(1) 才允许 wire 规范化。大小和偏移断言检查目标布局。按对齐要求从大到小排列是起点，但可选字段必须保持在末尾。
+
+$$
+w=\lceil\log_2(b-a+1)\rceil.
+$$
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i).
+$$
+
+$$
+\operatorname{align}(x,a)=a\lceil x/a\rceil.
+$$
+
+$$
+S=\operatorname{align}(o_n+s_n,A).
+$$
+
+## 填充与限制
+
+模式 padding(N) 的单位为字节，padding_bits(N) 为位；Builder.padding(N) 总是以位为单位。非零 wire 填充会被拒绝。非字节填充要求 compact，且不能组合 dyn/QPS/predict_seq/state_bits。STACK_LIMIT 默认 256 B，适用于全部字符串和数组；stack_limit(bytes) 与默认 65535 的 max_data_size(bytes) 分别控制存储策略与数据预算。
+
+## 原生表示与检查
+
+native region 创建嵌套的固定 Rust 类型。copy 要求字段已初始化、表示兼容和目标对齐；overlay 还要求源对齐、借用期间不变且存活足够久。repr(C) 不单独证明 wire 兼容。先用 checked 方法并检查兼容常量。不要传输未初始化的对象填充或 String/Vec 指针。
+
+分别检查字段顺序、wire 长度、位序、Self 大小、偏移、对齐与外部内存。用损坏长度、非法秩和非零填充测试错误路径。分析器报告 Self，不是完整栈帧或进程 RAM；未知不等于零。只对受影响的读写操作进行预热测量。
+· [Builder / DEQ](/language/deq/) · [Macros](/guides/custom-types/)

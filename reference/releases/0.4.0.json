@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-15",
+  "packages": {
+    "qsl": "0.4.0",
+    "qsl-lexer": "0.4.0",
+    "qsl-interpreter": "0.4.0",
+    "qsl-core": "0.2.0",
+    "qsl-rt": "0.1.0",
+    "qsl-macros-impl": "0.1.1"
+  },
+  "registry_consumer": "stack/heap, UTF-8/LZ and optional tag dispatch passed",
+  "documentation": {
+    "locales": 9,
+    "routes_per_locale": 28,
+    "external_links": "footer only",
+    "interactive_labs": false,
+    "measurements": false
+  }
+}

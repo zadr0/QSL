@@ -1,0 +1,35 @@
+---
+title: Quick Schema Language — бинарная сериализация для Rust
+description: Quick Schema Language (QSL) генерирует структуры Rust и код бинарной сериализации по схемам во время сборки, с упаковкой битов и опциональными проверками.
+template: splash
+hero:
+  title: "Бинарная сериализация для Rust"
+  actions:
+    - text: Начать
+      link: /start/quickstart/
+      variant: primary
+    - text: Как это устроено
+      link: /start/how-it-works/
+      variant: secondary
+---
+
+import LandingSection from '../../../components/LandingSection.astro';
+
+<LandingSection title="Вы пишете схему, QSL пишет код" id="usage" split>
+
+**Quick Schema Language (QSL)** — язык схем и генератор кода для **бинарной сериализации в Rust**. Вы один раз описываете сообщение: его поля, диапазон каждого числа, допустимую длину строки. Во время `cargo build` QSL превращает это описание в структуру и код, который записывает её в байты и читает обратно.
+
+Кодек не нужно писать вручную, а схему программа во время работы не разбирает. С `[safety]`, как здесь, байты, не соответствующие схеме, возвращаются ошибкой, а не значением `User`. Остальные два файла программы — в [быстром старте](/start/quickstart/).
+
+<div slot="aside">
+
+```qsl title="user.qsl"
+&User[safety] {
+    u64 id;
+    str(1..100) name;
+}
+```
+
+</div>
+
+</LandingSection>

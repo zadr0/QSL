@@ -1,0 +1,41 @@
+---
+title: "수동 배치: 전송 형식과 객체 메모리"
+description: "수동 배치: 전송 형식과 객체 메모리 — QSL"
+---
+
+## 형식과 순서
+
+자료형, 정수 범위, UTF-8 바이트 길이, 배열 원소 수를 먼저 정합니다. 확장 후에도 모든 선택 필드는 필수 필드 뒤에 있어야 합니다. 최적화 속성은 선택 사항이지만 순서는 필수입니다. 양쪽이 같은 전송 계약을 사용해야 합니다.
+
+## 전송 형식과 메모리
+
+raw는 선언 폭의 little-endian, compact는 정확한 순위를 저장합니다. 상수의 비트 폭은 0입니다. 일반 compact는 LSB-first, dyn index는 MSB-first입니다. alignment는 필드 뒤를 바이트 경계에 맞추며 객체 주소를 정렬하지 않습니다. 3비트와 10비트는 밀집 시 2바이트, 각각 정렬하면 3바이트입니다.
+
+x86-64에서 u8/u64/u16의 Self는 24바이트, u64/u16/u8은 16바이트이며 raw 값은 모두 11바이트입니다. 선언 순서를 바꾸면 wire도 바뀝니다. auto는 물리 배치만, auto[wire=1] 또는 .auto_wire(1)는 wire 정규화도 허용합니다. 크기와 오프셋 검사로 대상 배치를 확인합니다. 큰 정렬 요구부터 배치하되 선택 필드는 끝에 둡니다.
+
+$$
+w=\lceil\log_2(b-a+1)\rceil.
+$$
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i).
+$$
+
+$$
+\operatorname{align}(x,a)=a\lceil x/a\rceil.
+$$
+
+$$
+S=\operatorname{align}(o_n+s_n,A).
+$$
+
+## 패딩과 제한
+
+스키마 padding(N)은 바이트, padding_bits(N)은 비트입니다. Builder.padding(N)은 항상 비트입니다. 0이 아닌 패딩은 거부됩니다. 비바이트 패딩은 compact가 필요하며 dyn/QPS/predict_seq/state_bits와 함께 쓸 수 없습니다. STACK_LIMIT 기본값 256 B는 모든 문자열과 배열에 적용됩니다. stack_limit(bytes)와 기본값 65535의 max_data_size(bytes)는 서로 다른 설정입니다.
+
+## 네이티브 표현과 검증
+
+native region은 고정 중첩 Rust 자료형을 만듭니다. copy는 초기화된 유효 필드·호환 표현·정렬된 목적지가 필요합니다. overlay는 입력 정렬과 불변성 및 충분한 수명도 요구합니다. repr(C)만으로 wire 호환성을 증명할 수 없습니다. checked API와 호환 상수를 먼저 검사하고 초기화되지 않은 패딩이나 String/Vec 포인터를 전송하지 마세요.
+
+순서, wire 길이, 비트 순서, Self, 오프셋, 정렬과 외부 메모리를 따로 검토합니다. 잘못된 길이·순위·패딩으로 오류 경로를 검사합니다. Self는 전체 함수 스택이나 프로세스 RAM이 아닙니다. 알 수 없는 크기는 0이 아닙니다. 영향받는 읽기와 쓰기만 예열해 측정합니다.
+· [Builder / DEQ](/language/deq/) · [Macros](/guides/custom-types/)

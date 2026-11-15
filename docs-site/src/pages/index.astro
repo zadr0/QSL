@@ -1,0 +1,139 @@
+---
+/**
+ * `/QSL/`: sends the reader to the home page in their language.
+ *
+ * Every language lives under its own prefix (`/QSL/en/`, `/QSL/ru/`, ...).
+ * This page picks one with `pickLocale`: the language chosen earlier in the
+ * language menu, else the browser's languages, else English. Without
+ * JavaScript it forwards to English at once. The list of languages is
+ * visible for the moment before the redirect and serves crawlers, together
+ * with the `hreflang` links.
+ */
+import { BASE_PATH, DEFAULT_LOCALE, LOCALES, SITE_URL } from '../../config/site.mjs';
+
+const home = (key: string) => `${BASE_PATH}/${key}/`;
+const languages = Object.entries(LOCALES).map(([key, { label, lang }]) => ({
+	key,
+	label,
+	lang,
+	href: home(key),
+}));
+const tags = Object.fromEntries(Object.entries(LOCALES).map(([key, { lang }]) => [key, lang]));
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>QSL</title>
+		<meta name="robots" content="noindex, follow" />
+		<link rel="icon" href={`${BASE_PATH}/favicon.svg`} type="image/svg+xml" />
+		{languages.map(({ lang, href }) => (
+			<link rel="alternate" hreflang={lang} href={new URL(href, SITE_URL)} />
+		))}
+		<link rel="alternate" hreflang="x-default" href={new URL(`${BASE_PATH}/`, SITE_URL)} />
+		<noscript>
+			<meta http-equiv="refresh" content={`0; url=${home(DEFAULT_LOCALE)}`} />
+		</noscript>
+		<script is:inline>
+			// Paint in the theme the reader picked on the site (Starlight's key), so the redirect does not flash.
+			try {
+				const theme = localStorage.getItem('starlight-theme');
+				if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+			} catch {
+				// Without storage the system theme applies.
+			}
+		</script>
+		<style>
+			:root {
+				color-scheme: dark;
+				font-family: system-ui, sans-serif;
+				background: #08090d;
+				color: #b9bfcf;
+			}
+
+			@media (prefers-color-scheme: light) {
+				:root:not([data-theme='dark']) {
+					color-scheme: light;
+					background: #fbfbfd;
+					color: #353b4c;
+				}
+			}
+
+			:root[data-theme='light'] {
+				color-scheme: light;
+				background: #fbfbfd;
+				color: #353b4c;
+			}
+
+			body {
+				display: grid;
+				place-items: center;
+				min-height: 100vh;
+				margin: 0;
+			}
+
+			ul {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				gap: 0.5rem 1.25rem;
+				max-width: 32rem;
+				margin: 0;
+				padding: 1rem;
+				list-style: none;
+			}
+
+			a {
+				color: inherit;
+			}
+		</style>
+	</head>
+	<body>
+		<ul>
+			{languages.map(({ label, lang, href }) => (
+				<li>
+					<a href={href} hreflang={lang} lang={lang}>
+						{label}
+					</a>
+				</li>
+			))}
+		</ul>
+		<script
+			is:inline
+			type="application/json"
+			id="qsl-locales"
+			set:html={JSON.stringify({
+				tags,
+				home: languages.map(({ key, href }) => [key, href]),
+				fallback: DEFAULT_LOCALE,
+			})}
+		/>
+		<script>
+			import { LOCALE_STORAGE_KEY, pickLocale } from '../lib/locale';
+
+			interface Config {
+				tags: Record<string, string>;
+				home: [string, string][];
+				fallback: string;
+			}
+
+			const config = JSON.parse(document.getElementById('qsl-locales')?.textContent ?? '{}') as Config;
+			let stored: string | null = null;
+			try {
+				stored = localStorage.getItem(LOCALE_STORAGE_KEY);
+			} catch {
+				// Storage can be unavailable (private mode); the browser languages decide.
+			}
+			const key = pickLocale(
+				config.tags,
+				navigator.languages ?? [navigator.language],
+				stored,
+				config.fallback,
+			);
+			const target = new Map(config.home).get(key);
+			if (target) location.replace(target + location.search + location.hash);
+		</script>
+	</body>
+</html>

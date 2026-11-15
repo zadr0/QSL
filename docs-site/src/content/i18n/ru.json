@@ -1,0 +1,23 @@
+{
+	"qsl.nav.label": "Разделы",
+	"qsl.nav.docs": "Документация",
+	"qsl.nav.reference": "Справочник",
+	"qsl.nav.api": "API",
+	"qsl.theme.toLight": "Включить светлую тему",
+	"qsl.theme.toDark": "Включить тёмную тему",
+	"qsl.footer.license": "свободное ПО с открытым кодом под лицензией MIT",
+	"qsl.hero.pause": "Остановить анимацию",
+	"qsl.wire.encoding": "Кодирование",
+	"qsl.wire.values": "Значения полей",
+	"qsl.wire.mode.default": "default",
+	"qsl.wire.mode.compact": "compact",
+	"qsl.wire.mode.aligned": "compact + alignment",
+	"qsl.wire.bytes": "байт в кадре",
+	"qsl.wire.bitOrder": "Биты показаны в порядке записи: младший бит каждого байта идёт первым.",
+	"qsl.wire.padding": "заполнение",
+	"qsl.bitmap.present": "присутствует",
+	"qsl.bitmap.mask": "маска",
+	"qsl.bitmap.readOrder": "Порядок чтения",
+	"qsl.bitmap.none": "нет опциональных полей",
+	"qsl.bitmap.marker": "маркер"
+}

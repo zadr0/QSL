@@ -1,0 +1,78 @@
+{
+  "generated_profile": [
+    "Профиль QSL",
+    "QSL profile"
+  ],
+  "scalar": [
+    "Обычный код",
+    "Scalar"
+  ],
+  "default": [
+    "Обычное хранение",
+    "Default storage"
+  ],
+  "maybeuninit": [
+    "Приватные слоты",
+    "Private slots"
+  ],
+  "direct_fields": [
+    "Прямая запись",
+    "Direct writes"
+  ],
+  "published_030_codegen": [
+    "Генератор 0.3.0",
+    "0.3.0 codegen"
+  ],
+  "auto": [
+    "Автораскладка",
+    "Auto layout"
+  ],
+  "pinned": [
+    "Порядок схемы",
+    "Declared order"
+  ],
+  "grouped": [
+    "Группировка",
+    "Grouped"
+  ],
+  "exact": [
+    "Точный диапазон",
+    "Exact domain"
+  ],
+  "legacy": [
+    "Прежний код",
+    "Legacy code"
+  ],
+  "legacy128": [
+    "Окно u128",
+    "u128 window"
+  ],
+  "planned32": [
+    "Окно u32",
+    "u32 window"
+  ],
+  "copy": [
+    "Копирование",
+    "Copy"
+  ],
+  "nonzero_length": [
+    "Длина NonZero",
+    "NonZero length"
+  ],
+  "u32_length": [
+    "Длина u32",
+    "u32 length"
+  ],
+  "frozen_self_move": [
+    "Промежуточный объект",
+    "Intermediate object"
+  ],
+  "native_cursor": [
+    "Прямое восстановление",
+    "Direct restoration"
+  ],
+  "bmi2": [
+    "BMI2",
+    "BMI2"
+  ]
+}

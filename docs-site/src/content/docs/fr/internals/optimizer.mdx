@@ -1,0 +1,23 @@
+---
+title: "Optimiseur et disposition"
+description: "auto physique réorganise les champs générés pour réduire le padding sans changer le wire. auto[wire=1] autorise séparément un ordre wire canonique versionné. La copie directe exige des octets initialisés et des représentations identiques. Pour Kaby Lake 4×12 bits, l’écriture PEXT est retenue ; la lecture PDEP, plus lente, reste scalaire."
+qslResources: [{"label": "Référence détaillée et sources", "url": "https://github.com/zadr0/QSL"}]
+---
+
+
+Édition locale de développement · 2026-11-14.
+
+auto physique réorganise les champs générés pour réduire le padding sans changer le wire. auto[wire=1] autorise séparément un ordre wire canonique versionné. La copie directe exige des octets initialisés et des représentations identiques. Pour Kaby Lake 4×12 bits, l’écriture PEXT est retenue ; la lecture PDEP, plus lente, reste scalaire.
+
+Référence détaillée et sources · [English](/en/internals/optimizer/)
+
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i),\qquad \operatorname{align}(x,a)=a\left\lceil\frac{x}{a}\right\rceil.
+$$
+
+$$
+S_{\mathrm{Self}}=\operatorname{align}(o_n+s_n,A).
+$$
+
+o: offset · s: size · a: field alignment · A: Self alignment.

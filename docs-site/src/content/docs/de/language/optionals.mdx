@@ -1,0 +1,77 @@
+---
+title: Optionale Felder
+description: Wie ein QSL-Frame markiert, welche optionalen Felder vorhanden sind – Standard-Tags, Bitmap, predict_seq – und wie opt_table den Reader auswählt.
+---
+
+
+Ein Feld der Form `T?` ist optional. Der Frame muss angeben, welche optionalen Felder vorhanden sind. Dafür kennt QSL drei Wege. Dazu kommt `opt_table`, das nur ändert, wie der generierte Reader verzweigt.
+Modus | Attribut | Vorhandensein wird gespeichert als | Gleiche Bytes wie Standard
+---|---|---|---
+Standard | keins | Anzahl der vorhandenen Felder und ihre Tags | Ja
+Bitmap | `optionals=bitmap` | Maske mit einem Bit pro optionalem Feld | Nein
+Längenindex | `predict_seq` | Abgeleitet aus der Länge der Nutzdaten | Nein
+Reader-Tabelle | `opt_table` | Wie im Modus, mit dem es kombiniert wird | Ja
+## Standard: Anzahl und Tags
+
+Ohne Attribute beginnt der Frame mit einem Header: der Anzahl der vorhandenen optionalen Felder, dann einem Tag-Code für jedes vorhandene Feld. Danach folgen die Pflichtwerte, dann die vorhandenen optionalen Werte in Deklarationsreihenfolge. Ein Typ mit nur einem optionalen Feld verwendet ein einzelnes Präsenzbit. Der generierte Reader verzweigt per `match` über das Tag.
+
+Der Header wird ab dem niedrigstwertigen Bit gepackt. Die Anzahl belegt `bit_length(optional_count)` Bits. Jeder Tag-Code ist das Tag des Felds minus 1 und belegt `bit_length(max_tag - 1)` Bits. Ohne `compact` wird der Header auf ein ganzes Byte aufgefüllt.
+
+Das Beispiel optionals im Repository kodiert `id = 42` und eine Teilmenge von `f0 = 11`, `f1 = 22`, `f2 = 33`:
+
+```qsl
+&Optional3Table[opt_table,safety] {
+    u32 id;
+    u8? f0;
+    u8? f1;
+    u8? f2;
+}
+```
+Vorhanden | Frame
+---|---
+keins | `00 2a 00 00 00`
+`f0`, `f2` | `36 2a 00 00 00 0b 21`
+`f0`, `f1`, `f2` | `e7 2a 00 00 00 0b 16 21`
+Die Tags sind 1 für `id` und 2 bis 4 für `f0` bis `f2`. Jeder Tag-Code belegt also 2 Bits, die Anzahl ebenfalls. Für `f0` und `f2` enthält der Header die Anzahl 2 (`10`), dann die Codes 1 (`01`) und 3 (`11`): `0b110110` = `36`. Ohne `opt_table` sind die Frames identisch.
+
+## Bitmap {#bitmap}
+
+`optionals=bitmap` schreibt eine Little-Endian-Maske, die nur die optionalen Felder abdeckt. Ihre Breite hängt davon ab, wie viele optionale Felder der Typ hat:
+Optionale Felder | 0 | 1–8 | 9–16 | 17–32 | 33–64 | 65–128
+---|---|---|---|---|---|---
+Masken-Bytes | 0 | 1 | 2 | 4 | 8 | 16
+Das erste optionale Feld bekommt Marker 1, gespeichert im höchstwertigen Bit. Der Reader findet gesetzte Bits mit `trailing_zeros`, deshalb werden vorhandene Werte in absteigender Marker-Reihenfolge geschrieben und gelesen. Pflichtwerte behalten die Deklarationsreihenfolge.
+
+
+Schalte die Felder um und sieh, wie sich der Frame ändert. Für `&P[safety,optionals=bitmap,opt_table]{u8 id;u16? a;u8? b;}` mit `id = 9`, `a = 0x1234` und `b = 7` lautet der Frame `c0 09 07 34 12`: die Maske, `id`, dann `b`, dann `a` in Little-Endian.
+
+Mit `[safety]` prüft der Decoder einmal, dass kein Maskenbit für einen Marker gesetzt ist, den der Typ nicht hat, bevor er die Maske durchläuft.
+
+:::caution[Formatänderung]
+Bitmap v2 (ab 0.2.0) ist nicht kompatibel mit der früheren Maske, die alle Felder abdeckte. Aktualisiere beide Seiten gemeinsam.
+:::
+
+## Längenindex: predict_seq {#length-index-predict_seq}
+
+Mit `predict_seq` ermittelt der Decoder aus der Länge der Nutzdaten, welche optionalen Felder vorhanden sind. Das klappt nur, wenn jede Kombination vorhandener Felder eine andere Länge ergibt:
+
+- ein einzelnes optionales Feld lässt sich am Ende der Eingabe erkennen;
+- mehrere Felder brauchen feste Größen, deren Teilsummen alle verschieden sind.
+
+Mehrdeutige Kombinationen und optionale Felder, die zu null Bytes kodieren, werden zur Build-Zeit abgelehnt. Weil sich das Vorhandensein aus der Länge ergibt, braucht der Decoder für vertrauenswürdige Eingaben die Eingabelänge, nicht nur einen Zeiger.
+
+Ist `optionals=bitmap` gesetzt, wird `predict_seq` ignoriert. Zusammen mit `compact` ist es ein Build-Fehler.
+
+### predict_seq mit opt_table
+
+`[predict_seq,opt_table]` behält das Format bei, das ein einfaches `[opt_table]` vor 0.2.0 erzeugt hat. Der Längengraph unterstützt bis zu 12 Felder und 65535 Bytes Nutzdaten. Bei mehr als 12 Feldern müssen alle Felder dieselbe feste Breite haben, und die Grenze liegt bei 64 Feldern. Hast du Frames, die vor 0.2.0 mit `[opt_table]` geschrieben wurden, stelle beide Seiten auf `[predict_seq,opt_table]` um.
+
+## Reader-Tabelle: opt_table
+
+`opt_table` ersetzt das `match` durch eine statische Tabelle von Reader-Funktionen, eine pro optionalem Feld, indiziert über den Marker. Bytes und Schema-Hash ändern sich nicht. Es funktioniert mit dem Standardformat, mit `compact` und mit der Bitmap.
+
+Ein indirekter Aufruf über die Tabelle ist nicht automatisch schneller als ein `match`. Miss mit deinen Daten nach, bevor du es beibehältst.
+
+## Startwerte
+
+`|default=N|` an einem numerischen Feld generiert `impl Default` für den Typ, wobei dieses Feld auf `N` gesetzt ist. Bei einem optionalen Feld ist der Standardwert `Some(N)`. Wire-Format und Schema-Hash ändern sich dadurch nicht. Siehe [`default=N`](/reference/attributes/#defaultn).

@@ -1,0 +1,313 @@
+---
+/**
+ * Interactive optional-field bitmap for the demo schema
+ *
+ * ```qsl
+ * &P[safety,optionals=bitmap,opt_table] { u8 id; u16? a; u8? b; }
+ * ```
+ *
+ * Readers switch the optional fields on and off and watch the frame change:
+ * the mask byte's bits, the bytes that follow and the order a reader visits
+ * them. Every byte the frame can contain is rendered once (`frameSlots` in
+ * `src/lib/bitmap.ts`); absent bytes fold away instead of being removed, so
+ * the rest slide into place.
+ */
+import { frameSlots, MARKERS, readOrder, type ByteRole } from '../lib/bitmap';
+import { hexByte } from '../lib/hex';
+
+const { t } = Astro.locals;
+
+const ALL = { a: true, b: true } as const;
+const ROLE_COLOR: Record<ByteRole, string> = { mask: 'meta', id: 'f1', a: 'f2', b: 'f3' };
+/** Mask bits, most significant first; the first two belong to markers 1 and 2. */
+const MASK_BITS = [
+	{ field: 'a', color: 'f2' },
+	{ field: 'b', color: 'f3' },
+	...Array.from({ length: 6 }, () => ({ field: null, color: 'meta' })),
+] as const;
+
+const slots = frameSlots(ALL);
+const mask = slots[0].value;
+const order = (presence: { a: boolean; b: boolean }) => [
+	'id',
+	...readOrder(presence).map((field) => `${field} (${t('qsl.bitmap.marker')} ${MARKERS[field]})`),
+];
+const labels = JSON.stringify({
+	marker: t('qsl.bitmap.marker'),
+	none: t('qsl.bitmap.none'),
+	bytes: t('qsl.wire.bytes'),
+});
+---
+
+<qsl-bitmap-demo data-labels={labels}>
+	<figure class="bitmap qsl-panel not-content">
+		<code class="qsl-schema">
+			&amp;P[<span class="qsl-schema__attrs">safety,optionals=bitmap,opt_table</span>] {'{'}
+			<span class="qsl-schema__decl">
+				u8 <span class="qsl-schema__field qsl-c-f1">id</span>;
+			</span>
+			<span class="qsl-schema__decl">
+				u16? <span class="qsl-schema__field qsl-c-f2">a</span>;
+			</span>
+			<span class="qsl-schema__decl">
+				u8? <span class="qsl-schema__field qsl-c-f3">b</span>;
+			</span>
+			{' }'}
+		</code>
+
+		<fieldset class="bitmap__toggles">
+			{(['a', 'b'] as const).map((field) => (
+				<label class={`qsl-toggle qsl-c-${ROLE_COLOR[field]}`}>
+					<input type="checkbox" data-optional={field} checked />
+					<span>
+						<b>{field}</b> {t('qsl.bitmap.present')}
+					</span>
+				</label>
+			))}
+		</fieldset>
+
+		<div class="bitmap__frame" aria-hidden="true">
+			{slots.map((slot, index) => (
+				<div
+					class={`bitmap__byte qsl-c-${ROLE_COLOR[slot.role]}`}
+					data-slot={index}
+					data-present={slot.present ? '' : undefined}
+				>
+					<b data-hex>{hexByte(slot.value)}</b>
+					{slot.role === 'mask' && (
+						<span class="bitmap__mask">
+							{MASK_BITS.map((bit, position) => (
+								<i
+									class={`qsl-c-${bit.color}`}
+									data-mask-bit={7 - position}
+									data-on={(mask >> (7 - position)) & 1 ? '' : undefined}
+								/>
+							))}
+						</span>
+					)}
+					<span class="bitmap__role">{slot.role === 'mask' ? t('qsl.bitmap.mask') : slot.role}</span>
+				</div>
+			))}
+		</div>
+
+		<figcaption class="bitmap__caption">
+			<span class="bitmap__size">
+				<b data-size>{slots.length}</b> {t('qsl.wire.bytes')}
+			</span>
+			<span class="bitmap__order">
+				{t('qsl.bitmap.readOrder')}: <span data-order>{order(ALL).join(' → ')}</span>
+			</span>
+		</figcaption>
+
+		<p class="sr-only" aria-live="polite" data-announce></p>
+	</figure>
+</qsl-bitmap-demo>
+
+<script>
+	import { frameSlots, MARKERS, readOrder, type Presence } from '../lib/bitmap';
+	import { requireElement } from '../lib/dom';
+	import { hexByte } from '../lib/hex';
+
+	interface Labels {
+		marker: string;
+		none: string;
+		bytes: string;
+	}
+
+	class QslBitmapDemo extends HTMLElement {
+		connectedCallback(): void {
+			const labels = JSON.parse(this.dataset.labels ?? '{}') as Labels;
+			const checked = (field: 'a' | 'b') =>
+				requireElement<HTMLInputElement>(this, `input[data-optional="${field}"]`).checked;
+
+			this.addEventListener('change', () => {
+				const presence: Presence = { a: checked('a'), b: checked('b') };
+				const slots = frameSlots(presence);
+				const present = slots.filter((slot) => slot.present);
+
+				for (const element of this.querySelectorAll<HTMLElement>('[data-slot]')) {
+					const slot = slots[Number(element.dataset.slot)];
+					element.toggleAttribute('data-present', slot.present);
+					if (slot.present) requireElement(element, '[data-hex]').textContent = hexByte(slot.value);
+				}
+				const mask = slots[0].value;
+				for (const bit of this.querySelectorAll<HTMLElement>('[data-mask-bit]')) {
+					bit.toggleAttribute('data-on', ((mask >> Number(bit.dataset.maskBit)) & 1) === 1);
+				}
+
+				const optional = readOrder(presence).map((field) => `${field} (${labels.marker} ${MARKERS[field]})`);
+				requireElement(this, '[data-size]').textContent = String(present.length);
+				requireElement(this, '[data-order]').textContent = ['id', ...optional].join(' → ');
+				requireElement(this, '[data-announce]').textContent =
+					`${present.length} ${labels.bytes}: ${present.map((slot) => hexByte(slot.value)).join(' ')}`;
+			});
+		}
+	}
+
+	customElements.define('qsl-bitmap-demo', QslBitmapDemo);
+</script>
+
+<style>
+	qsl-bitmap-demo {
+		display: block;
+	}
+
+	.bitmap {
+		/* Five byte tiles share the row; on narrow screens they shrink to fit it. */
+		--tile: min(4.25rem, (100cqi - 2.5rem) / 5);
+		container-type: inline-size;
+		margin: 0;
+	}
+
+	.bitmap__toggles {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin: 1.5rem 0 0;
+		padding: 0;
+		border: 0;
+	}
+
+	.bitmap__toggles b {
+		font-family: var(--__sl-font-mono);
+		font-weight: 600;
+	}
+
+	/* ---------- Frame ---------- */
+
+	.bitmap__frame {
+		display: flex;
+		margin-block: 1.75rem 1.5rem;
+		min-height: 4.75rem;
+	}
+
+	.bitmap__byte {
+		display: grid;
+		flex: none;
+		align-content: center;
+		justify-items: center;
+		gap: 0.375rem;
+		width: 0;
+		margin-inline-end: 0;
+		padding-block: 0.75rem;
+		overflow: hidden;
+		border: 1px solid transparent;
+		border-radius: 12px;
+		background: color-mix(in oklab, var(--c) 10%, transparent);
+		opacity: 0;
+		scale: 0.7;
+		transition:
+			width 520ms var(--qsl-ease-out),
+			margin 520ms var(--qsl-ease-out),
+			opacity 300ms ease,
+			scale 520ms var(--qsl-ease-spring),
+			border-color 300ms ease;
+	}
+
+	.bitmap__byte[data-present] {
+		width: var(--tile);
+		margin-inline-end: 0.5rem;
+		border-color: color-mix(in oklab, var(--c) 50%, transparent);
+		opacity: 1;
+		scale: 1;
+	}
+
+	.bitmap__byte b {
+		color: var(--sl-color-white);
+		font-family: var(--__sl-font-mono);
+		font-size: 1.125rem;
+		font-weight: 500;
+	}
+
+	.bitmap__role {
+		color: var(--c);
+		font-family: var(--__sl-font-mono);
+		font-size: 0.6875rem;
+	}
+
+	/* The mask byte shows its eight bits, most significant first. */
+	.bitmap__mask {
+		display: flex;
+		gap: 2px;
+	}
+
+	.bitmap__mask i {
+		width: 5px;
+		height: 5px;
+		border-radius: 1px;
+		box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--c) 60%, transparent);
+		transition:
+			background-color 260ms ease,
+			box-shadow 260ms ease;
+	}
+
+	.bitmap__mask i[data-on] {
+		background: var(--c);
+		box-shadow: none;
+	}
+
+	/* Tiles narrower than eight 5px bits get smaller bits. */
+	@container (max-width: 22rem) {
+		.bitmap__mask {
+			gap: 1.5px;
+		}
+
+		.bitmap__mask i {
+			width: 4px;
+			height: 4px;
+		}
+
+		.bitmap__byte b {
+			font-size: 1rem;
+		}
+	}
+
+	/* ---------- Caption ---------- */
+
+	.bitmap__caption {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.5rem 1.5rem;
+		color: var(--sl-color-gray-3);
+		font-size: var(--sl-text-sm);
+	}
+
+	.bitmap__size b {
+		color: var(--sl-color-white);
+		font-size: 1.375rem;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.bitmap__order span {
+		color: var(--sl-color-gray-1);
+		font-family: var(--__sl-font-mono);
+		font-size: var(--sl-text-xs);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.bitmap__byte,
+		.bitmap__mask i {
+			transition-duration: 1ms;
+		}
+	}
+
+	@media (forced-colors: active) {
+		.bitmap__byte[data-present] {
+			border-color: CanvasText;
+		}
+
+		.bitmap__mask {
+			forced-color-adjust: none;
+		}
+
+		.bitmap__mask i {
+			box-shadow: inset 0 0 0 1px CanvasText;
+		}
+
+		.bitmap__mask i[data-on] {
+			background: CanvasText;
+		}
+	}
+</style>

@@ -1,0 +1,11 @@
+---
+import { localizeHref } from '../lib/links.mjs';
+const ru=Astro.locals.starlightRoute.locale==='ru';
+const cards=[
+ ['01',ru?'Схема и Builder':'Schemas and Builder',ru?'Типы, диапазоны, DEQ и полный build.rs.':'Types, domains, DEQ and a complete build.rs.','/start/quickstart/'],
+ ['02',ru?'Байты и чтение':'Bytes and decoding',ru?'Упаковка чисел, UTF-8, PS, OT и bitmap.':'Number packing, UTF-8, PS, OT and bitmap.','/lab/numbers/'],
+ ['03',ru?'Память и безопасность':'Memory and safety',ru?'Владение, native layout, checked и unsafe-контракты.':'Ownership, native layout, checked and unsafe contracts.','/guides/safety/'],
+ ['04',ru?'Измерения и ограничения':'Measurements and limits',ru?'Criterion, кардиограммы, P=M/T и отклонённые кандидаты.':'Criterion, sample waveforms, P=M/T and rejected candidates.','/internals/performance/'],
+];
+---
+<div class="doc-map not-content">{cards.map(([n,title,body,url])=><a href={localizeHref(url,{base:import.meta.env.BASE_URL,locale:Astro.locals.starlightRoute.locale})}><span class="lab-kicker">{n}</span><h3>{title}</h3><p>{body}</p><span class="doc-map-arrow" aria-hidden="true">↗</span></a>)}</div>

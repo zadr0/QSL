@@ -1,0 +1,114 @@
+---
+title: クイックスタート
+description: Rust プロジェクトを作成してスキーマを追加し、build.rs でコードを生成して、値をエンコードしてからデコードで元に戻します。
+qslResources: [{"label": "リポジトリのサンプル", "url": "https://github.com/zadr0/QSL/tree/main/examples"}]
+---
+
+import { Steps, FileTree } from '@astrojs/starlight/components';
+
+Rust 1.98 以降が必要です。最終的に、`User` の値をバイト列にエンコードし、デコードして元に戻すプログラムができます。
+
+<FileTree>
+- qsl-demo/
+  - Cargo.toml
+  - build.rs
+  - user.qsl
+  - src/
+    - main.rs
+</FileTree>
+
+<Steps>
+
+1. プロジェクトを作成します。
+
+   ```sh
+   cargo new qsl-demo
+   cd qsl-demo
+   ```
+
+2. `Cargo.toml` に `qsl` を 2 回追加します。プログラム用に `[dependencies]` へ、`build.rs` 用に `[build-dependencies]` へ追加します。Cargo が作成した `[package]` セクションはそのまま残してください。どちらにも同じバージョンを指定します。
+
+   ```toml title="Cargo.toml" ins={7,9-10}
+   [package]
+   name = "qsl-demo"
+   version = "0.1.0"
+   edition = "2024"
+
+   [dependencies]
+   qsl = "=0.4.0"
+
+   [build-dependencies]
+   qsl = "=0.4.0"
+   ```
+
+3. `Cargo.toml` と同じディレクトリに `user.qsl` を作成し、メッセージを記述します。
+
+   ```qsl title="user.qsl"
+   &User[safety] {
+       u64 id;
+       str(1..100) name;
+   }
+   ```
+
+   `&User` は型を宣言します。`u64 id` は `id` という名前の `u64` 型のフィールドです。`str(1..100)` は 1〜100 バイトの UTF-8 文字列です。`[safety]` は、以降の手順で使うチェック付きデコードメソッドを追加します。
+
+4. ビルド時に Rust コードを生成します。プロジェクトのルートに `build.rs` を作成します。
+
+   ```rust title="build.rs"
+   fn main() -> Result<(), Box<dyn std::error::Error>> {
+       let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+       qsl::build_qsl_files(&["user.qsl"], &[], out)?;
+       Ok(())
+   }
+   ```
+
+   `build_qsl_files` は `qsl_gen.rs` を `OUT_DIR` に書き出し、`user.qsl` が変更されたら `build.rs` を再実行するよう Cargo に指示します。2 番目の引数には `.deq` 設定ファイルを列挙しますが、この時点ではまだありません。
+
+5. `src/main.rs` で生成ファイルをインクルードします。このファイルが `User` とそのメソッドを定義するので、`use` 行は不要です。
+
+   ```rust title="src/main.rs"
+   include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
+
+   fn main() -> qsl::QslResult<()> {
+       let user = User {
+           id: 42,
+           name: "Ada".into(),
+       };
+       let bytes = user.serialize_checked()?;
+       let restored = User::deserialize_checked(&bytes)?;
+       assert_eq!((restored.id, restored.name.as_str()), (42, "Ada"));
+       println!("{}: {} ({} bytes)", restored.id, restored.name, bytes.len());
+       Ok(())
+   }
+   ```
+
+6. 実行します。
+
+   ```sh
+   cargo run
+   ```
+
+   ```text
+   42: Ada (15 bytes)
+   ```
+
+</Steps>
+
+## 何が起きたか
+
+フレームは 15 バイトです。`id` に 8 バイト、`name` の長さプレフィックスに 4 バイト、UTF-8 に 3 バイトを使います。スキーマは `name` に 1〜100 バイトを許可しているので、`deserialize_checked` は長さプレフィックスがこの範囲外のフレームを、文字列のメモリを確保する前に拒否します。
+
+`serialize_checked` は、書き込む前に値をスキーマと照合します。どちらのメソッドも `qsl::QslResult` を返します。エラー型は [`QslError`](/reference/errors/) です。
+
+## 最初に知っておきたいルール
+
+- 必須フィールドが先に来ます。オプションフィールドの後に必須フィールドを置くとビルドエラーになります。
+- 文字列と配列の上下限は両端を含みます。文字列は UTF-8 のバイト数で、配列は要素数で数えます。
+- `deserialize_checked` と `deserialize_checked_into` は、`[safety]` を持つ型にだけ存在します。チェックなしのデコーダは常に生成され、有効なフレームを前提とします。
+- `MAX_DATA_SIZE` は、フレームとデコード後のデータのサイズを制限します。デフォルトは 65535 バイトです。変更は [DEQ ファイル](/language/deq/)で行います。
+
+## 次のステップ
+
+- [仕組み](/start/how-it-works/)：ビルド時に動くものと、プログラム内で動くもの。
+- [宣言](/language/declarations/)：スキーマ構文の全体。
+- リポジトリのサンプル：整数、文字列、オプションフィールド、QPS、RT プール、Rust テンプレート、検証を扱う 7 つのプログラム。

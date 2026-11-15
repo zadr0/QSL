@@ -1,0 +1,114 @@
+---
+title: 快速上手
+description: 创建 Rust 项目，添加 schema，在 build.rs 中生成代码，并让一个值完成编码再解码的往返。
+qslResources: [{"label": "仓库中的示例", "url": "https://github.com/zadr0/QSL/tree/main/examples"}]
+---
+
+import { Steps, FileTree } from '@astrojs/starlight/components';
+
+需要 Rust 1.98 或更高版本。最终得到的程序会把一个 `User` 值编码成字节，再解码回来。
+
+<FileTree>
+- qsl-demo/
+  - Cargo.toml
+  - build.rs
+  - user.qsl
+  - src/
+    - main.rs
+</FileTree>
+
+<Steps>
+
+1. 创建项目：
+
+   ```sh
+   cargo new qsl-demo
+   cd qsl-demo
+   ```
+
+2. 在 `Cargo.toml` 中添加两次 `qsl`：`[dependencies]` 下的供程序使用，`[build-dependencies]` 下的供 `build.rs` 使用。保留 Cargo 生成的 `[package]` 部分。两处使用相同的版本。
+
+   ```toml title="Cargo.toml" ins={7,9-10}
+   [package]
+   name = "qsl-demo"
+   version = "0.1.0"
+   edition = "2024"
+
+   [dependencies]
+   qsl = "=0.4.0"
+
+   [build-dependencies]
+   qsl = "=0.4.0"
+   ```
+
+3. 在 `Cargo.toml` 旁边创建 `user.qsl`，描述消息：
+
+   ```qsl title="user.qsl"
+   &User[safety] {
+       u64 id;
+       str(1..100) name;
+   }
+   ```
+
+   `&User` 声明一个类型。`u64 id` 是名为 `id`、类型为 `u64` 的字段。`str(1..100)` 是长度为 1 到 100 字节的 UTF-8 字符串。`[safety]` 会生成下面用到的带检查的解码方法。
+
+4. 在构建时生成 Rust 代码。在项目根目录创建 `build.rs`：
+
+   ```rust title="build.rs"
+   fn main() -> Result<(), Box<dyn std::error::Error>> {
+       let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+       qsl::build_qsl_files(&["user.qsl"], &[], out)?;
+       Ok(())
+   }
+   ```
+
+   `build_qsl_files` 把 `qsl_gen.rs` 写入 `OUT_DIR`，并告诉 Cargo 在 `user.qsl` 变化时重新运行 `build.rs`。第二个参数是 `.deq` 配置文件列表，目前还没有。
+
+5. 在 `src/main.rs` 中引入生成的文件。它定义了 `User` 及其方法，所以不需要 `use` 语句：
+
+   ```rust title="src/main.rs"
+   include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
+
+   fn main() -> qsl::QslResult<()> {
+       let user = User {
+           id: 42,
+           name: "Ada".into(),
+       };
+       let bytes = user.serialize_checked()?;
+       let restored = User::deserialize_checked(&bytes)?;
+       assert_eq!((restored.id, restored.name.as_str()), (42, "Ada"));
+       println!("{}: {} ({} bytes)", restored.id, restored.name, bytes.len());
+       Ok(())
+   }
+   ```
+
+6. 运行：
+
+   ```sh
+   cargo run
+   ```
+
+   ```text
+   42: Ada (15 bytes)
+   ```
+
+</Steps>
+
+## 发生了什么
+
+帧长 15 字节：`id` 占 8 字节，`name` 的长度前缀占 4 字节，UTF-8 内容占 3 字节。Schema 规定 `name` 为 1 到 100 字节，因此如果长度前缀超出这个范围，`deserialize_checked` 会在分配字符串之前就拒绝该帧。
+
+`serialize_checked` 在写入之前按 schema 检查值。两个方法都返回 `qsl::QslResult`，错误类型是 [`QslError`](/reference/errors/)。
+
+## 需要先了解的规则
+
+- 必填字段在前。必填字段出现在可选字段之后会导致构建错误。
+- 字符串和数组的边界都是闭区间。字符串按 UTF-8 字节计，数组按元素个数计。
+- 只有带 `[safety]` 的类型才有 `deserialize_checked` 和 `deserialize_checked_into`。无检查的解码器总会生成，它们要求输入是有效的帧。
+- `MAX_DATA_SIZE` 限制帧和解码后数据的大小，默认 65535 字节，可在 [DEQ 文件](/language/deq/)中修改。
+
+## 下一步
+
+- [工作原理](/start/how-it-works/)：哪些在构建时执行，哪些在你的程序中执行。
+- [声明](/language/declarations/)：完整的 schema 语法。
+- 仓库中的示例：七个程序，涵盖整数、字符串、可选字段、QPS、RT 池、Rust 模板和校验。

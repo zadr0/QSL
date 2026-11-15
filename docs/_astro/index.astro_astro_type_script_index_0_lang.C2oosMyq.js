@@ -1,0 +1,1 @@
+import{n as e,t}from"./locale.BKXYHF0i.js";var n=JSON.parse(document.getElementById(`qsl-locales`)?.textContent??`{}`),r=null;try{r=localStorage.getItem(t)}catch{}var i=e(n.tags,navigator.languages??[navigator.language],r,n.fallback),a=new Map(n.home).get(i);a&&location.replace(a+location.search+location.hash);

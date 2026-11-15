@@ -1,0 +1,114 @@
+---
+title: Início rápido
+description: Crie um projeto Rust, adicione um esquema, gere código no build.rs e faça um valor ir e voltar pela codificação.
+qslResources: [{"label": "Exemplos no repositório", "url": "https://github.com/zadr0/QSL/tree/main/examples"}]
+---
+
+import { Steps, FileTree } from '@astrojs/starlight/components';
+
+Você precisa do Rust 1.98 ou mais recente. O resultado é um programa que codifica um valor `User` em bytes e o decodifica de volta.
+
+<FileTree>
+- qsl-demo/
+  - Cargo.toml
+  - build.rs
+  - user.qsl
+  - src/
+    - main.rs
+</FileTree>
+
+<Steps>
+
+1. Crie o projeto:
+
+   ```sh
+   cargo new qsl-demo
+   cd qsl-demo
+   ```
+
+2. Adicione o `qsl` ao `Cargo.toml` duas vezes: em `[dependencies]` para o programa e em `[build-dependencies]` para o `build.rs`. Mantenha a seção `[package]` que o Cargo criou. Use a mesma versão nos dois lugares.
+
+   ```toml title="Cargo.toml" ins={7,9-10}
+   [package]
+   name = "qsl-demo"
+   version = "0.1.0"
+   edition = "2024"
+
+   [dependencies]
+   qsl = "=0.4.0"
+
+   [build-dependencies]
+   qsl = "=0.4.0"
+   ```
+
+3. Descreva a mensagem em `user.qsl`, ao lado do `Cargo.toml`:
+
+   ```qsl title="user.qsl"
+   &User[safety] {
+       u64 id;
+       str(1..100) name;
+   }
+   ```
+
+   `&User` declara um tipo. `u64 id` é um campo do tipo `u64` chamado `id`. `str(1..100)` é uma string de 1 a 100 bytes de UTF-8. `[safety]` adiciona os métodos de decodificação verificada usados mais abaixo.
+
+4. Gere o código Rust em tempo de build. Crie o `build.rs` na raiz do projeto:
+
+   ```rust title="build.rs"
+   fn main() -> Result<(), Box<dyn std::error::Error>> {
+       let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+       qsl::build_qsl_files(&["user.qsl"], &[], out)?;
+       Ok(())
+   }
+   ```
+
+   `build_qsl_files` grava `qsl_gen.rs` em `OUT_DIR` e avisa o Cargo para rodar o `build.rs` de novo quando `user.qsl` mudar. O segundo argumento lista arquivos de configuração `.deq`. Por enquanto não há nenhum.
+
+5. Inclua o arquivo gerado em `src/main.rs`. Ele define `User` e os seus métodos, então nenhuma linha `use` é necessária:
+
+   ```rust title="src/main.rs"
+   include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
+
+   fn main() -> qsl::QslResult<()> {
+       let user = User {
+           id: 42,
+           name: "Ada".into(),
+       };
+       let bytes = user.serialize_checked()?;
+       let restored = User::deserialize_checked(&bytes)?;
+       assert_eq!((restored.id, restored.name.as_str()), (42, "Ada"));
+       println!("{}: {} ({} bytes)", restored.id, restored.name, bytes.len());
+       Ok(())
+   }
+   ```
+
+6. Execute:
+
+   ```sh
+   cargo run
+   ```
+
+   ```text
+   42: Ada (15 bytes)
+   ```
+
+</Steps>
+
+## O que aconteceu
+
+O frame tem 15 bytes: 8 para `id`, um prefixo de comprimento de 4 bytes para `name` e 3 bytes de UTF-8. O esquema permite de 1 a 100 bytes para `name`, então `deserialize_checked` rejeita um frame cujo prefixo de comprimento esteja fora desse intervalo antes de alocar a string.
+
+`serialize_checked` verifica o valor contra o esquema antes de escrever. Os dois métodos retornam `qsl::QslResult`. O tipo de erro é [`QslError`](/reference/errors/).
+
+## Regras para conhecer desde o início
+
+- Os campos obrigatórios vêm primeiro. Um campo obrigatório depois de um opcional é erro de build.
+- Os limites de strings e arrays são inclusivos. Strings são medidas em bytes de UTF-8; arrays, em elementos.
+- `deserialize_checked` e `deserialize_checked_into` só existem em tipos com `[safety]`. Os decodificadores sem verificação são sempre gerados e exigem um frame válido.
+- `MAX_DATA_SIZE` limita o frame e os dados decodificados. O padrão é 65535 bytes. Para mudar, use um [arquivo DEQ](/language/deq/).
+
+## Próximos passos
+
+- [Como funciona](/start/how-it-works/): o que roda em tempo de build e o que roda no seu programa.
+- [Declarações](/language/declarations/): a sintaxe completa do esquema.
+- Exemplos no repositório: sete programas que cobrem inteiros, strings, campos opcionais, QPS, o pool RT, templates Rust e validação.

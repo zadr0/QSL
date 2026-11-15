@@ -1,0 +1,23 @@
+{
+	"qsl.nav.label": "Sections",
+	"qsl.nav.docs": "Docs",
+	"qsl.nav.reference": "Reference",
+	"qsl.nav.api": "API",
+	"qsl.theme.toLight": "Switch to light theme",
+	"qsl.theme.toDark": "Switch to dark theme",
+	"qsl.footer.license": "free and open source under the MIT license",
+	"qsl.hero.pause": "Pause animation",
+	"qsl.wire.encoding": "Encoding",
+	"qsl.wire.values": "Field values",
+	"qsl.wire.mode.default": "default",
+	"qsl.wire.mode.compact": "compact",
+	"qsl.wire.mode.aligned": "compact + alignment",
+	"qsl.wire.bytes": "bytes on the wire",
+	"qsl.wire.bitOrder": "Bits are shown in write order: the least significant bit of each byte comes first.",
+	"qsl.wire.padding": "padding",
+	"qsl.bitmap.present": "present",
+	"qsl.bitmap.mask": "mask",
+	"qsl.bitmap.readOrder": "Read order",
+	"qsl.bitmap.none": "no optional fields",
+	"qsl.bitmap.marker": "marker"
+}

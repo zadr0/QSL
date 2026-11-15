@@ -1,0 +1,55 @@
+---
+title: Formato binário
+description: Como o QSL organiza inteiros, strings, arrays e metadados de campos opcionais em um frame.
+---
+
+
+Um frame QSL contém só valores e os metadados que o esquema exige. Não há informação de tipo, nomes de campo nem hash do esquema no frame.
+
+## Layout de um frame
+
+```text
+[optional-field metadata] [required values in declaration order] [present optional values]
+```
+
+`opt_table=legacy` é a única exceção a essa ordem: a tabela de offsets dele vem depois dos valores obrigatórios. A parte de metadados fica vazia quando o tipo não tem campos opcionais.
+
+## Valores
+Valor | Codificação padrão | Com `compact`
+---|---|---
+Inteiro | Little-endian, largura nativa | `x - min` em `bit_length(max - min)` bits
+`str`, `str(A..B)` | Comprimento `u32` em bytes, depois UTF-8 | Comprimento como posição no intervalo, no menor número de bits que o intervalo permite, depois UTF-8 a partir da próxima fronteira de byte
+`str(A..B)` com `decompress=true` ou `decompress=true` | Cabeçalho de 1, 2 ou 4 bytes para limite superior de até 127, de até 32767 ou maior; o bit mais alto indica compressão | Igual
+`str(N)` | `N` bytes, sem comprimento | Igual
+`array<T>`, `array<T>(A..B)` | Contagem `u32` de elementos, depois os elementos | Contagem como posição no intervalo, depois os elementos
+`array<T>(N)` | `N` elementos, sem contagem | Igual
+`padding(N)` | `N` bytes zero | Igual
+Com `compact`, os campos são empacotados bit a bit, começando pelo bit menos significativo, e podem atravessar bytes e palavras de máquina. O gerador escolhe as larguras de registrador e emite sequências fixas de shift e máscara para cada campo.
+
+
+Os bytes acima são calculados no navegador com as mesmas regras do gerador Rust. Para `kind = 5`, `channel = 17`, `value = 513`:
+Codificação | Bytes
+---|---
+Padrão | `05 11 01 02`
+`compact` | `8d 01 02`
+`compact` + `alignment` | `05 11 01 02`
+## Metadados de campos opcionais
+
+**Padrão.** Um campo opcional: um bit de presença. Vários: o número de campos presentes em `bit_length(optional_count)` bits e, para cada campo presente, a tag dele menos 1 em `bit_length(max_tag - 1)` bits. O cabeçalho é empacotado a partir do bit menos significativo e completado com padding até um byte inteiro, exceto com `compact`. O comprimento dele depende de quantos campos estão presentes. Veja o [exemplo detalhado](/language/optionals/).
+
+**Bitmap.** Uma máscara little-endian só sobre os campos opcionais: 0, 1, 2, 4, 8 ou 16 bytes. O marcador 1 é o bit mais significativo. Os valores vêm em ordem decrescente de marcador.
+
+
+**predict_seq.** A presença é deduzida do comprimento do payload, então não há metadados. Com `predict_seq,opt_table`, o frame começa com um cabeçalho fixo: um bit de presença por campo opcional quando só os comprimentos são ambíguos, e um comprimento de 1, 2 ou 4 bytes para cada campo opcional de tamanho variável, exceto o último.
+
+**opt_table=legacy.** Depois dos valores obrigatórios: um byte de contagem e então um `u32` little-endian por campo opcional, `0` para ausente ou o offset do valor no payload opcional mais 1.
+
+## Strings com decompress=true
+
+Uma string comprimida com intervalo usa o cabeçalho inline descrito acima, com o bit mais alto ligado quando o payload está comprimido. O QSL só tenta comprimir strings de 32 bytes ou mais e escreve os bytes brutos quando a compressão não deixa o resultado menor.
+
+Uma `str(N)` fixa com `decompress=true` e `N` de 32 ou mais é ou `N` bytes brutos, ou um byte marcador `ff`, um comprimento de 1 ou 2 bytes e o payload comprimido. UTF-8 válido nunca começa com `ff`, então os dois casos não se confundem.
+
+## Compatibilidade
+
+Mudar qualquer um destes itens muda o formato: ordem dos campos, tipos, intervalos, quais campos são opcionais, `compact`, `alignment` com `compact`, o modo dos campos opcionais, `qps` e o quantum dele, `decompress`, `decompress=true`. Não há versão dentro do frame. Os [hashes do esquema](/guides/schema-identity/) mudam com o formato e podem ser trocados por um canal separado.

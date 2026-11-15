@@ -1,0 +1,23 @@
+{
+	"qsl.nav.label": "セクション",
+	"qsl.nav.docs": "ドキュメント",
+	"qsl.nav.reference": "リファレンス",
+	"qsl.nav.api": "API",
+	"qsl.theme.toLight": "ライトテーマに切り替える",
+	"qsl.theme.toDark": "ダークテーマに切り替える",
+	"qsl.footer.license": "MIT ライセンスのオープンソースソフトウェア",
+	"qsl.hero.pause": "アニメーションを一時停止",
+	"qsl.wire.encoding": "エンコーディング",
+	"qsl.wire.values": "フィールドの値",
+	"qsl.wire.mode.default": "default",
+	"qsl.wire.mode.compact": "compact",
+	"qsl.wire.mode.aligned": "compact + alignment",
+	"qsl.wire.bytes": "バイト（ワイヤ上）",
+	"qsl.wire.bitOrder": "ビットは書き込み順に表示しています。各バイトの最下位ビットが先頭です。",
+	"qsl.wire.padding": "パディング",
+	"qsl.bitmap.present": "あり",
+	"qsl.bitmap.mask": "マスク",
+	"qsl.bitmap.readOrder": "読み取り順",
+	"qsl.bitmap.none": "オプションフィールドなし",
+	"qsl.bitmap.marker": "マーカー"
+}

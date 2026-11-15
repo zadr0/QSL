@@ -1,0 +1,11 @@
+[package]
+name="qsl-docs-examples"
+version="0.0.0"
+edition="2021"
+publish=false
+[workspace]
+[dependencies]
+qsl={path="../../proofs/qsl"}
+serde_json="1"
+[build-dependencies]
+qsl={path="../../proofs/qsl"}

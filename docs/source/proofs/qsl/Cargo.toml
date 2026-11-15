@@ -1,0 +1,42 @@
+[package]
+name = "qsl"
+version = "0.4.0"
+edition = "2021"
+license = "MIT"
+rust-version = "1.98"
+authors = ["Arsa"]
+description = "Schema-driven binary serialization for Rust with explicit layouts and checked APIs."
+repository = "https://github.com/zadr0/QSL"
+homepage = "https://zadr0.github.io/QSL/"
+documentation = "https://docs.rs/qsl"
+readme = "README.md"
+keywords = ["serialization", "binary", "schema", "codegen", "protocol"]
+categories = ["encoding"]
+publish = ["crates-io"]
+include = ["src/**", "tests/*.rs", "Cargo.toml", "Cargo.lock", "README.md", "LICENSE", "CHANGELOG.md"]
+
+[package.metadata.docs.rs]
+all-features = true
+
+[features]
+default = ["compiler","alloc","macros"]
+compiler = ["dep:qsl-lexer","dep:qsl-interpreter"]
+alloc = ["qsl-core/alloc"]
+macros = ["dep:qsl-macros-impl"]
+diagnostics = ["qsl-core/diagnostics"]
+rust-macros = ["compiler","macros","qsl-lexer/rust-macros", "qsl-interpreter/rust-macros"]
+
+[dependencies]
+qsl-core = { version = "=0.2.0", path = "../../qsl-core", default-features=false }
+qsl-lexer = { version = "=0.4.0", path = "../../qsl-lexer", optional=true }
+qsl-interpreter = { version = "=0.4.0", path = "../../qsl-interpreter", optional=true }
+qsl-macros-impl = { version = "=0.1.1", path = "macros", optional=true }
+
+[dependencies.qsl-rt]
+version="=0.1.0"
+path="../../qsl-rt"
+
+[[bin]]
+name="qsl-analyze"
+path="src/bin/qsl-analyze.rs"
+required-features=["compiler"]

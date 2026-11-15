@@ -1,0 +1,28 @@
+---
+title: "From a schema to bytes"
+description: "QSL documentation: From a schema to bytes."
+---
+
+QSL compiles the schema during the Cargo build. The application exchanges bytes through generated Rust methods.
+
+1. The lexer identifies names, literals and attributes.
+2. The parser builds field and configuration descriptions.
+3. Analysis validates ranges, required/optional order and compatible options.
+4. The Rust backend chooses storage, computes offsets and emits source under OUT_DIR.
+5. The Rust compiler compiles the emitted source and qsl-core runtime.
+6. Serialization writes a frame; checked decoding validates and restores a value.
+
+Memory order, wire order and schema semantics are independent. auto changes physical layout; auto-wire requires an explicit version to change canonical wire order. predict_seq analyzes payload length, opt_table selects a reader by tag, and QPS performs reversible compression.
+
+
+```qsl
+&Record[safety,compact] { u32(0..4095) id; }
+```
+
+```rust
+let record = Record { id: 42 };
+let wire = record.serialize_checked()?;
+assert_eq!(Record::deserialize_checked(&wire)?.id, 42);
+```
+
+[Builder](/examples/builders/) · [Runtime](/internals/runtime/) · [Safety](/guides/safety/)

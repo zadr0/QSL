@@ -1,0 +1,41 @@
+---
+title: "手動配置：転送形式とオブジェクト"
+description: "手動配置：転送形式とオブジェクト — QSL"
+---
+
+## 形式と順序
+
+型、整数範囲、UTF-8 バイト上限、配列要素数を先に決めます。展開後も任意フィールドはすべての必須フィールドの後です。最適化属性は任意ですが順序は必須です。双方で転送形式を一致させます。
+
+## 転送形式とメモリ
+
+raw は宣言幅の little-endian、compact は正確なランクです。定数の幅はゼロです。通常 compact は LSB-first、dyn index は MSB-first です。alignment はフィールド後をバイト境界にそろえ、Rust オブジェクトのアドレスはそろえません。3 ビットと 10 ビットは密なら 2 バイト、個別整列なら 3 バイトです。
+
+x86-64 の u8/u64/u16 は Self が 24 バイト、u64/u16/u8 は 16 バイトで、raw 値はどちらも 11 バイトです。宣言順の変更は wire も変えます。auto は物理配置のみ、auto[wire=1] または .auto_wire(1) は wire 正規化も許可します。サイズ・オフセット検査で対象配置を確認します。整列要求の大きい順が出発点ですが、任意フィールドは最後です。
+
+$$
+w=\lceil\log_2(b-a+1)\rceil.
+$$
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i).
+$$
+
+$$
+\operatorname{align}(x,a)=a\lceil x/a\rceil.
+$$
+
+$$
+S=\operatorname{align}(o_n+s_n,A).
+$$
+
+## パディングと制限
+
+スキーマ padding(N) はバイト、padding_bits(N) はビットです。Builder.padding(N) は常にビットです。非ゼロ埋め草は拒否されます。非バイト padding は compact が必要で dyn/QPS/predict_seq/state_bits と併用不可です。STACK_LIMIT は既定 256 B、全文字列・配列に適用されます。stack_limit(bytes) と既定 65535 の max_data_size(bytes) は別設定です。
+
+## ネイティブ表現と検証
+
+native region は入れ子の固定 Rust 型です。copy は初期化済み有効フィールド、互換表現、整列出力を要求します。overlay は入力の整列・不変性・十分な寿命も要求します。repr(C) だけでは wire 互換性を証明できません。checked API と互換定数から始め、未初期化 padding や String/Vec ポインタを送らないでください。
+
+順序、wire 長、ビット順、Self、オフセット、整列、外部メモリを分けて確認します。不正長・ランク・padding でエラーを検証します。Self は関数全体のスタックや RAM ではなく、不明はゼロではありません。対象の読書きのみを予熱して測定します。
+· [Builder / DEQ](/language/deq/) · [Macros](/guides/custom-types/)

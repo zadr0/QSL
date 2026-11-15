@@ -1,0 +1,28 @@
+---
+/**
+ * Override of Starlight's `Head` component.
+ *
+ * Renders Starlight's head tags, then preloads the text, display and code
+ * fonts for the page's script. Without the preload the browser discovers the fonts only
+ * after parsing the CSS, paints the fallback face first and then reflows the
+ * page when the real one arrives.
+ */
+import Default from '@astrojs/starlight/components/Head.astro';
+
+import geologicaCyrillic from '@fontsource-variable/geologica/files/geologica-cyrillic-shrp-normal.woff2?url';
+import geologicaLatin from '@fontsource-variable/geologica/files/geologica-latin-shrp-normal.woff2?url';
+import monoLatin from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
+import literataCyrillic from '@fontsource-variable/literata/files/literata-cyrillic-opsz-normal.woff2?url';
+import literataLatin from '@fontsource-variable/literata/files/literata-latin-opsz-normal.woff2?url';
+
+const { lang } = Astro.locals.starlightRoute;
+/** CJK pages set headings in the text face (theme.css), so they skip the display face. */
+const display = ['zh-CN', 'ja', 'ko'].includes(lang) ? [] : [literataLatin];
+const cyrillic = lang === 'ru' ? [geologicaCyrillic, literataCyrillic] : [];
+const fonts = [geologicaLatin, monoLatin, ...display, ...cyrillic];
+---
+
+<Default />
+{fonts.map((href) => (
+	<link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+))}

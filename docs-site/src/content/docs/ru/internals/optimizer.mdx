@@ -1,0 +1,66 @@
+---
+title: "Оптимизатор и native layout"
+description: "Документация QSL: Оптимизатор и native layout."
+---
+
+
+Четыре независимых понятия: логическая схема, wire-layout, физический Self и окно I/O. auto меняет только физический порядок генерируемого repr(C). Для небольшого числа поддержанных полей используется ограниченный полный перебор, далее — стабильная эвристика. Сгенерированные size_of/offset_of assertions подтверждают выбранный layout. Opaque/optional/ABI-pinned представления ограничивают перестановку. Текущая цена planner описывает размер/padding, а не полную модель CPU.
+
+Padding Self нельзя считать инициализированными данными. repr(C) не гарантирует отсутствие padding; repr(Rust) не является фиксированным ABI. Новые агрессивные группы не реализуются через глобальный repr(packed).
+
+aggressive[group] агрегирует доступность и бюджет fixed optional-острова. Сейчас это raw tagged/BM, известные scalar ≤64 бит и ≥2 optional. Доменные проверки накапливаются и отклоняются общим решением. Это не универсальная SIMD-группировка произвольного Self.
+
+QslIoPlan выбирает None/u8/u16/u32/u64/u128 курсоры по регионам и byte barriers. u128 в Rust не является одним 128-битным GPR x86-64. Более узкий исходный контейнер может дать такой же машинный код после LLVM; улучшение задержки подтверждается отдельно.
+
+Явный `aggressive[shift=true]` включает физическую длину len+1 в NonZeroU8/U16/U32. Автоматическое включение строковой ниши отклонено измерениями; обычный aggressive не делает этот выбор. Pointing копирует только доказанно инициализированные участки. Регистровый planner показывает scalar/GPR/BMI2/SIMD-кандидаты; узкий BMI2 4×12 имеет отдельный opt-in CPU-профиль.
+
+### Native COPY и LIFETIME
+
+```qsl
+&NativeRecord[safety,transmutate] {
+    u64 id;
+    u32 count;
+    str(4) tag;
+}
+```
+API/свойство | Назначение
+---|---
+NATIVE_WIRE_COMPATIBLE | Совместимость конкретного Self/wire
+deserialize_transmutate_copy | Checked COPY с допустимым checked fallback
+deserialize_transmutate_copy_unchecked | Trusted COPY
+deserialize_overlay | Checked borrow совместимого Self
+deserialize_overlay_unchecked | Trusted overlay
+REGION_n_WIRE_COPY/VIEW_COMPATIBLE | Контракт отдельного native-региона
+COPY переносит байты в выровненное назначение; byte input не обязан быть выровнен как Self. Overlay требует точного размера/layout/endian, валидности и alignment источника. Его storage живёт и не изменяется весь lifetime результата.
+
+Это отдельные методы и проверяемые контракты, а не произвольный std::mem::transmute. Неизвестный padding не сериализуется, absent MaybeUninit не превращается в T. Custom/native типы требуют явного описания.
+
+## План генерации и CPU-профиль
+`PreparedSchema.plan()` возвращает неизменяемый `CompilationPlan`: исходную logical-схему, каноническую wire-схему, карты порядка, карту памяти, I/O-окна и список операций. Карта отличает initialized data, padding, dynamic descriptors и conditional storage. Объект IR существует при сборке; в сообщениях его нет.
+
+`!config CPU_PROFILE = portable;` — значение по умолчанию. `kaby_lake` и `DeqBuilder.cpu_profile(CpuProfile::KabyLake)` задают профиль оценки. Выбор не влияет на wire/hash. Для узкого `aggressive[group]` из четырёх u32-рангов по 12 бит доступен BMI2-кандидат: PEXT при записи; чтение сохраняет scalar после отклонения PDEP-кандидата замерами. Инструкции выполняются только в сборке приложения с `target-feature=bmi2`; иначе сохраняется scalar. Другие формы остаются скалярными до отдельных измерений. Оценки uops, зависимостей, регистров и размера кода являются моделью, а не показаниями PMU.
+
+### Битовый padding и лимиты
+
+```qsl
+&Packet[safety,compact] {
+    u8(0..7) prefix;
+    padding_bits(3) gap;
+    u8(0..3) tail;
+}
+```
+
+Здесь ровно 8 бит: prefix — 3 младших, gap — следующие 3 нулевых, tail — 2 старших. `padding(N)` сохраняет прежний байтовый барьер. `Builder.padding(N)` задаёт N бит: кратные восьми сохраняют прежнее байтовое поведение, остальные соответствуют `padding_bits`. Небайтовый вариант требует COMPACT и несовместим с dyn/QPS/predict_seq/state_bits. Checked-reader отклоняет ненулевой padding.
+
+Для точного `serialized_size` предел проверяется до резервирования Vec или записи в caller buffer. QSL-LZ может сообщать верхнюю границу, поэтому отдельно проверяются исходные значения, обязательный объём padding и окончательный записанный размер. Отрицательный результат записи не делает буфер пригодным к публикации.
+
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i),\qquad \operatorname{align}(x,a)=a\left\lceil\frac{x}{a}\right\rceil.
+$$
+
+$$
+S_{\mathrm{Self}}=\operatorname{align}(o_n+s_n,A).
+$$
+
+Здесь o — смещение поля, s — его размер, a — требуемое выравнивание, A — выравнивание всего типа. Перестановка может уменьшить промежутки Self. На число ранговых битов отдельного поля она не влияет.

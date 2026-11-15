@@ -1,0 +1,66 @@
+---
+title: Frames menores
+description: Use compact, alignment e qps para reduzir os frames quando os intervalos de valores são conhecidos.
+---
+
+
+Por padrão, um inteiro ocupa toda a largura nativa no frame. Se o esquema define um intervalo, o QSL pode armazenar menos bits. Há dois mecanismos: `compact` empacota os campos bit a bit, e `qps` divide cada número com intervalo em um quantum fixo e empacota as partes.
+
+## compact
+
+`compact` armazena cada valor com intervalo como `x - min` em `bit_length(max - min)` bits. Os campos são empacotados um depois do outro, a partir do bit menos significativo, e podem atravessar fronteiras de byte.
+
+```qsl
+&Sample[safety,compact] {
+    u8(0..7)     kind;      // 3 bits
+    u8(0..31)    channel;   // 5 bits
+    u16(0..1023) value;     // 10 bits
+}
+```
+
+São 18 bits, ou seja, 3 bytes em vez de 4. Para `kind = 5`, `channel = 17` e `value = 513`, o frame é `8d 01 02`. Sem `compact`, é `05 11 01 02`. Mude os valores e a codificação abaixo:
+
+
+Um campo com um único valor permitido (`u8(5..5)`) ocupa 0 bits. Os tipos Rust não mudam: `value` continua sendo um `u16` na memória.
+
+`compact` não pode ser combinado com `predict_seq`. Com `[safety]`, o decodificador verifica que cada valor desempacotado está no intervalo e que os bits não usados são zero.
+
+## alignment
+
+Com `compact`, `alignment` começa cada campo em uma fronteira de byte. A leitura fica mais simples, ao custo de um frame maior. No exemplo acima, o frame volta a ser `05 11 01 02`: 4 bytes. Sem `compact`, `alignment` não tem efeito no formato.
+
+Trata-se do alinhamento dos campos dentro do frame, não do alinhamento de buffers na memória.
+
+## qps
+
+`qps` (alias `quant`) é um empacotamento reversível de campos numéricos com limites estáticos. Cada valor é armazenado como a sua posição no intervalo, `r = x - min`, dividida em duas partes pelo quantum `Q` e recombinada com shifts e máscaras estáticos. Nenhuma informação se perde. O quantum faz parte do formato.
+
+```qsl
+&Packed[qps,safety] {
+    u64(0..15) f0;
+    u64(0..15) f1;
+    // ... até f7
+}
+```
+Atributo | Significado
+---|---
+`qps` | O mesmo que `qps=Q16`.
+`qps=Q2`, `Q4`, `Q8`, `Q16` | O quantum. Pode mudar os bytes, não o comprimento do frame.
+`quant=Qn` | O mesmo que `qps=Qn`. `quant` sem valor é erro, assim como usar os dois nomes.
+`qps` só empacota números. Strings, arrays e os comprimentos deles mantêm os próprios codecs, e os campos numéricos precisam vir antes deles. O `qps` não prevê quais campos opcionais estão presentes. Quando o empacotamento não traria ganho, o tipo usa a codificação comum.
+
+Um tipo com `qps` não pode ter também `compact`, `alignment`, `optionals=bitmap` ou `opt_table=legacy`. O build falha.
+
+## Resultados dos exemplos
+
+```text
+8 ranged u64 values: raw=64 B, compact=4 B, QPS=4 B; restored f0=3, f7=10
+Scalar Q16: 64 useful B -> 4 wire B
+Mixed Q16: 16 scalar B -> 1 B; string length stays 4 B, string stays 1024 B; frame=1029 B
+```
+
+Oito valores em `0..15` precisam de 4 bits cada: 32 bits no total. Na mensagem mista, dois números cabem em 1 byte, enquanto a string de 1024 bytes mantém o comprimento de 4 bytes.
+
+:::note[ByteQps é uma API separada]
+`qsl::qps::ByteQps<Q>` comprime bytes arbitrários atrás de um cabeçalho `QPB3` de 16 bytes. É uma API de runtime, não o atributo de esquema `qps`, e os dois formatos não são intercambiáveis. Ela não ajuda em frames pequenos: só o cabeçalho já custa 16 bytes.
+:::

@@ -1,0 +1,16 @@
+---
+const ru=Astro.locals.starlightRoute.locale==='ru';
+---
+<qsl-bench-explorer class="bench-explorer not-content" data-lang={ru?'ru':'en'}>
+ <div class="lab-heading"><span class="lab-kicker">CRITERION · i5-7400 · 14.11.2026</span><span class="lab-connection">{ru?'Сохранённые измерения':'Archived measurements'}</span></div>
+ <div class="bench-verdict"><div><small>{ru?'PEXT · запись, принято':'PEXT · write, accepted'}</small><strong>3.063 → 2.575 ns</strong><span>−15.9%</span></div><div><small>{ru?'PDEP · чтение, отклонено':'PDEP · read, rejected'}</small><strong>2.669 → 3.042 ns</strong><span class="bench-rejected">+14.0%</span></div></div>
+ <p class="lab-muted">{ru?'Средние обратного повтора для 4×12 бит. M=16 B, wire=6 B. Оба порядка подтвердили направление; ниже графики используют отдельно подписанный slope Criterion.':'Reverse-pass means for 4×12 bits. M=16 B, wire=6 B. Both orders agree; charts below use the separately labelled Criterion slope.'}</p>
+ <div class="bench-controls"><label><span>{ru?'Пара измерений':'Measured pair'}</span><select name="pair" aria-label={ru?'Пара измерений':'Measured pair'}></select></label><div class="bench-switch" role="group" aria-label={ru?'Показатель':'Metric'}><button data-metric="T" aria-pressed="true">T · ns</button><button data-metric="P" aria-pressed="false">P · B/ns</button></div></div>
+ <div data-bars class="bench-chart"></div>
+ <p class="lab-muted" data-bench-note></p>
+ <h3>{ru?'Кардиограмма выборок':'Sample waveform'}</h3><div data-wave class="bench-chart"></div>
+ <p class="lab-muted">{ru?'Каждая точка — среднее выборки Criterion, не задержка отдельного сообщения. Полосы погрешности показывают доверительный интервал 99%.':'Each point is a Criterion sample average, not individual-message latency. Error bars show a 99% confidence interval.'}</p>
+ <details class="lab-details"><summary>{ru?'Все 52 измерения и исходные данные':'All 52 measurements and source data'}</summary><div data-all class="lab-table"></div></details>
+
+</qsl-bench-explorer>
+<script>import '../lib/bench-client';</script>

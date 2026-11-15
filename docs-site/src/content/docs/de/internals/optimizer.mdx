@@ -1,0 +1,22 @@
+---
+title: "Optimierer und Speicherlayout"
+description: "Physisches auto reduziert Padding durch Umordnung generierter Felder und erhält die Wire-Reihenfolge. auto[wire=1] erlaubt separat eine versionierte kanonische Wire-Reihenfolge. Direkte Kopien benötigen initialisierte Bytes und identische Darstellung. Für Kaby Lake 4×12 Bit wird PEXT-Schreiben gewählt; langsameres PDEP-Lesen wurde verworfen und bleibt skalar."
+qslResources: [{"label": "Ausführliche Referenz und Quellcode", "url": "https://github.com/zadr0/QSL"}]
+---
+
+
+
+Physisches auto reduziert Padding durch Umordnung generierter Felder und erhält die Wire-Reihenfolge. auto[wire=1] erlaubt separat eine versionierte kanonische Wire-Reihenfolge. Direkte Kopien benötigen initialisierte Bytes und identische Darstellung. Für Kaby Lake 4×12 Bit wird PEXT-Schreiben gewählt; langsameres PDEP-Lesen wurde verworfen und bleibt skalar.
+
+Ausführliche Referenz und Quellcode · [English](/en/internals/optimizer/)
+
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i),\qquad \operatorname{align}(x,a)=a\left\lceil\frac{x}{a}\right\rceil.
+$$
+
+$$
+S_{\mathrm{Self}}=\operatorname{align}(o_n+s_n,A).
+$$
+
+o: offset · s: size · a: field alignment · A: Self alignment.

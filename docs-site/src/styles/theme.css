@@ -1,0 +1,768 @@
+/*
+ * QSL site theme.
+ *
+ * Starlight exposes its palette as --sl-color-* custom properties. Dark mode
+ * is the base (:root); light mode redefines the same names under
+ * [data-theme='light'] with the gray scale reversed (white = strongest text,
+ * black = page background).
+ *
+ * Project tokens:
+ * - --qsl-f1 ... --qsl-f4: one hue per schema field in diagrams. The same
+ *   four hues are the site's palette: the home page's machine, the 404
+ *   page's signal field and the footer mark use them too.
+ * - --qsl-font-display: Literata, a warm book face, for page titles and
+ *   section headings; Geologica sets everything else.
+ * - --qsl-ease-*: shared easing curves, so motion feels the same everywhere.
+ *
+ * No glows: color carries the meaning, and shadows are kept for things that
+ * float (menus, dialogs).
+ *
+ * Starlight's own styles live in cascade layers, so the unlayered rules below
+ * win without !important.
+ */
+
+:root {
+	--sl-font: 'Geologica Variable', 'Geologica';
+	--sl-font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+	--qsl-font-display: 'Literata Variable', 'Literata', Georgia, serif;
+
+	/* Blue-black neutrals, dark mode. */
+	--sl-color-white: #f4f6fb;
+	--sl-color-gray-1: #dde1ea;
+	--sl-color-gray-2: #b9bfcf;
+	--sl-color-gray-3: #8b93a8;
+	--sl-color-gray-4: #3b4152;
+	--sl-color-gray-5: #242836;
+	--sl-color-gray-6: #11131a;
+	--sl-color-black: #08090d;
+
+	/* Signal mint: links, focus, the active page. */
+	--sl-color-accent-low: #0c2a23;
+	--sl-color-accent: #4be3b5;
+	--sl-color-accent-high: #a8f7dd;
+
+	--sl-color-bg-nav: var(--sl-color-black);
+	--sl-color-bg-sidebar: var(--sl-color-black);
+	--sl-color-hairline: #191c25;
+	--sl-color-hairline-light: #242836;
+	--sl-color-hairline-shade: #191c25;
+	--sl-color-backdrop-overlay: rgb(4 5 8 / 0.72);
+
+	--qsl-f1: #6ea8ff;
+	--qsl-f2: #4be3b5;
+	--qsl-f3: #ff7ab8;
+	--qsl-f4: #ffc65c;
+	--qsl-meta: var(--sl-color-gray-1);
+	--qsl-cell-empty: #1a1d27;
+	--qsl-surface: #0d0f15;
+	/* Top of the home hero's panel; it fades into the page. */
+	--qsl-hero-panel: #151822;
+
+	--qsl-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--qsl-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+	--qsl-ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+	--sl-nav-height: 3.75rem;
+	/* Size of Starlight's menu button, the last control of the header on narrow screens. */
+	--qsl-menu-button: 2.5rem;
+	/* Content width Starlight gives splash pages (Page.astro); the splash header lines up with it. */
+	--qsl-splash-width: 67.5rem;
+	--sl-content-width: 46rem;
+	--sl-text-h1: clamp(2.125rem, 1.6rem + 1.6vw, 2.75rem);
+	--sl-text-h2: 1.625rem;
+	--sl-text-h3: 1.25rem;
+	--sl-text-h4: 1.0625rem;
+	--sl-line-height: 1.72;
+
+	color-scheme: dark;
+	accent-color: var(--sl-color-accent);
+	/* Keep the scrollbar's space reserved so pages of different length and
+	   the search dialog (which locks scrolling) do not shift the layout. */
+	scrollbar-gutter: stable;
+	scrollbar-color: var(--sl-color-gray-4) transparent;
+}
+
+:root[data-theme='light'] {
+	--sl-color-white: #0b0d13;
+	--sl-color-gray-1: #1d2230;
+	--sl-color-gray-2: #353b4c;
+	--sl-color-gray-3: #596075;
+	--sl-color-gray-4: #9aa1b3;
+	--sl-color-gray-5: #d9dde6;
+	--sl-color-gray-6: #eceef4;
+	--sl-color-gray-7: #f4f5f9;
+	--sl-color-black: #fbfbfd;
+
+	--sl-color-accent-low: #d5f5ea;
+	--sl-color-accent: #007a5a;
+	--sl-color-accent-high: #00563f;
+
+	--sl-color-hairline: #e7e9f0;
+	--sl-color-hairline-light: #dcdfe8;
+	--sl-color-hairline-shade: #e7e9f0;
+	--sl-color-backdrop-overlay: rgb(240 242 247 / 0.7);
+
+	--qsl-f1: #1d5fe0;
+	--qsl-f2: #007a5a;
+	--qsl-f3: #c01f73;
+	--qsl-f4: #8f5b00;
+	--qsl-meta: var(--sl-color-gray-2);
+	--qsl-cell-empty: #e6e9f0;
+	--qsl-surface: #ffffff;
+	--qsl-hero-panel: #eceef4;
+
+	color-scheme: light;
+}
+
+/*
+ * Geologica covers Latin and Cyrillic but not CJK. Name a system CJK face per
+ * language so the browser picks the right regional glyph variants instead of
+ * a generic fallback.
+ */
+:root:lang(zh-CN) {
+	--sl-font:
+		'Geologica Variable', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif;
+}
+
+:root:lang(ja) {
+	--sl-font:
+		'Geologica Variable', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', 'Noto Sans CJK JP', 'Noto Sans JP',
+		sans-serif;
+}
+
+:root:lang(ko) {
+	--sl-font:
+		'Geologica Variable', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans CJK KR', 'Noto Sans KR',
+		sans-serif;
+}
+
+/* Literata has no CJK glyphs; there headings stay in the text face. */
+:root:is(:lang(zh-CN), :lang(ja), :lang(ko)) {
+	--qsl-font-display: var(--sl-font);
+}
+
+/*
+ * Headings wrap between words, not inside them. Korean puts spaces between
+ * words, so keep-all is enough. Japanese has none: auto-phrase lets the
+ * browser find phrase boundaries where it supports that, and elsewhere
+ * headings wrap as before.
+ */
+:root:lang(ko) :is(h1, h2, h3) {
+	word-break: keep-all;
+}
+
+:root:lang(ja) :is(h1, h2, h3) {
+	word-break: auto-phrase;
+}
+
+/* ---------- Page transitions ---------- */
+
+/*
+ * Cross-document view transitions: navigating between pages cross-fades the
+ * content while the header and sidebar stay in place. Browsers without
+ * support navigate as usual.
+ */
+@view-transition {
+	navigation: auto;
+}
+
+header.header {
+	view-transition-name: qsl-header;
+}
+
+@media (min-width: 50rem) {
+	#starlight__sidebar {
+		view-transition-name: qsl-sidebar;
+	}
+}
+
+::view-transition-old(root) {
+	animation: 140ms var(--qsl-ease-in-out) both qsl-fade-out;
+}
+
+::view-transition-new(root) {
+	animation: 320ms var(--qsl-ease-out) both qsl-rise-in;
+}
+
+/* The theme toggle draws its own circular reveal; see ThemeSelect.astro. */
+:root[data-qsl-theme-switch]::view-transition-old(root),
+:root[data-qsl-theme-switch]::view-transition-new(root) {
+	animation: none;
+	mix-blend-mode: normal;
+}
+
+:root[data-qsl-theme-switch] header.header,
+:root[data-qsl-theme-switch] #starlight__sidebar {
+	view-transition-name: none;
+}
+
+@keyframes qsl-fade-out {
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes qsl-rise-in {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	@view-transition {
+		navigation: none;
+	}
+}
+
+/* ---------- Global type ---------- */
+
+body {
+	font-variation-settings: 'SHRP' 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+}
+
+::selection {
+	background: color-mix(in oklab, var(--sl-color-accent) 32%, transparent);
+	color: var(--sl-color-white);
+}
+
+:focus-visible {
+	outline: 2px solid var(--sl-color-accent);
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+/* Ligatures blur the difference between `<=` and `≤`; code shows the characters typed. */
+code,
+kbd,
+pre,
+samp {
+	font-variant-ligatures: none;
+}
+
+/* Headings marked not-content (the home page's sections) style themselves. */
+.sl-markdown-content :is(h1, h2, h3, h4):not(.not-content, :where(.not-content *)),
+:root:not([data-has-hero]) h1#_top {
+	font-weight: 560;
+	font-variation-settings: 'SHRP' 40;
+	letter-spacing: -0.02em;
+	text-wrap: balance;
+}
+
+:root:not([data-has-hero]) h1#_top {
+	font-size: var(--sl-text-h1);
+	line-height: 1.1;
+}
+
+/* Page titles and section headings are set in the display face, like the home page. */
+:root:not([data-has-hero]) h1#_top,
+.sl-markdown-content h2:not(.not-content, :where(.not-content *)) {
+	font-family: var(--qsl-font-display);
+	font-weight: 500;
+	font-variation-settings: normal;
+	font-optical-sizing: auto;
+	letter-spacing: -0.01em;
+}
+
+:root:is(:lang(zh-CN), :lang(ja), :lang(ko)):not([data-has-hero]) h1#_top,
+:root:is(:lang(zh-CN), :lang(ja), :lang(ko))
+	.sl-markdown-content
+	h2:not(.not-content, :where(.not-content *)) {
+	font-weight: 600;
+	letter-spacing: 0;
+}
+
+.sl-markdown-content :is(p, li) {
+	text-wrap: pretty;
+}
+
+.sl-markdown-content h2:not(.not-content, :where(.not-content *)) {
+	padding-top: 0.75rem;
+}
+
+/* Links: a thin underline that thickens and takes the accent on hover. */
+.sl-markdown-content a:not(:where(.not-content *, .sl-link-card *)) {
+	color: var(--sl-color-white);
+	text-decoration-line: underline;
+	text-decoration-color: color-mix(in oklab, var(--sl-color-accent) 55%, transparent);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.22em;
+	transition:
+		text-decoration-color 160ms ease,
+		text-decoration-thickness 160ms ease,
+		color 160ms ease;
+}
+
+.sl-markdown-content a:not(:where(.not-content *, .sl-link-card *)):hover {
+	color: var(--sl-color-text-accent);
+	text-decoration-color: var(--sl-color-accent);
+	text-decoration-thickness: 2px;
+}
+
+/* Inline code reads as a token, not a highlighted blob. */
+.sl-markdown-content :not(pre) > code:not(:where(.not-content *)) {
+	font-size: 0.82em;
+	padding: 0.1em 0.38em;
+	border: 1px solid var(--sl-color-hairline-light);
+	border-radius: 5px;
+	background: var(--qsl-surface);
+	color: var(--sl-color-gray-1);
+}
+
+/* Tables: hairlines only, compact rows. */
+.sl-markdown-content table:not(:where(.not-content *)) {
+	font-size: var(--sl-text-sm);
+	border-collapse: collapse;
+}
+
+.sl-markdown-content :is(th, td):not(:where(.not-content *)) {
+	border: 0;
+	border-block-end: 1px solid var(--sl-color-hairline);
+	padding-block: 0.6rem;
+	padding-inline: 0 0.875rem;
+	vertical-align: top;
+}
+
+.sl-markdown-content th:not(:where(.not-content *)) {
+	font-weight: 560;
+	color: var(--sl-color-white);
+	border-block-end-color: var(--sl-color-hairline-light);
+	background: transparent;
+}
+
+.sl-markdown-content tr:not(:where(.not-content *)) {
+	background: transparent;
+}
+
+/*
+ * Code blocks are one quiet surface. A title is a small label at the top of
+ * the block, on the same surface and with no rule under it; the code follows
+ * right below. The copy button sits on the title's line, or in the top corner
+ * of a block without a title, so it does not cover code.
+ */
+.expressive-code .frame.has-title:not(.is-terminal) .title {
+	padding: 0.625rem 1.125rem 0;
+	color: var(--sl-color-gray-3);
+	font-size: 0.75rem;
+	line-height: 1.5rem;
+	letter-spacing: 0.01em;
+}
+
+.expressive-code .frame.has-title:not(.is-terminal) pre > code {
+	padding-block-start: 0.375rem;
+}
+
+.expressive-code .copy {
+	inset-block-start: 0.5rem;
+	inset-inline-end: 0.5rem;
+}
+
+.expressive-code .copy button {
+	inline-size: 1.75rem;
+	block-size: 1.75rem;
+	border-radius: 6px;
+}
+
+.expressive-code .copy button::after {
+	margin: 0.4375rem;
+}
+
+/* ---------- Header ---------- */
+
+/*
+ * The header is the first row of the page grid: Header.astro draws its
+ * cells edge to edge, so it has no padding of its own and is opaque.
+ */
+header.header {
+	padding: 0;
+	border-block-end: 1px solid var(--sl-color-hairline);
+	background: var(--sl-color-black);
+}
+
+/* Narrow documentation pages keep the end of the header for the menu button. */
+@media (width < 50rem) {
+	:root[data-has-sidebar] header.header {
+		padding-inline-end: calc(var(--qsl-menu-button) + var(--sl-nav-pad-x) + 0.25rem);
+	}
+}
+
+/* On splash pages the header starts clear over the hero and frosts as the page scrolls. */
+:root[data-has-hero] header.header {
+	background: color-mix(in oklab, var(--sl-color-black) 80%, transparent);
+	backdrop-filter: blur(18px) saturate(160%);
+	-webkit-backdrop-filter: blur(18px) saturate(160%);
+}
+
+@supports (animation-timeline: scroll()) {
+	:root[data-has-hero] header.header {
+		animation: qsl-header-frost linear both;
+		animation-timeline: scroll(root);
+		animation-range: 0 120px;
+	}
+}
+
+@keyframes qsl-header-frost {
+	from {
+		border-block-end-color: transparent;
+		background: transparent;
+		backdrop-filter: none;
+		-webkit-backdrop-filter: none;
+	}
+}
+
+/* Starlight's menu button matches the header's other icon buttons instead of a filled disc. */
+.sl-menu-button,
+:root[data-theme='light'] .sl-menu-button {
+	top: calc((var(--sl-nav-height) - var(--qsl-menu-button)) / 2);
+	justify-content: center;
+	align-items: center;
+	width: var(--qsl-menu-button);
+	height: var(--qsl-menu-button);
+	padding: 0;
+	border-radius: 10px;
+	background: transparent;
+	color: var(--sl-color-gray-2);
+	font-size: 1.25rem;
+	box-shadow: none;
+	transition:
+		color 160ms ease,
+		background-color 160ms ease;
+}
+
+.sl-menu-button:hover,
+.sl-menu-button:has(~ :popover-open),
+:root[data-theme='light'] .sl-menu-button:has(~ :popover-open) {
+	background: var(--sl-color-gray-6);
+	color: var(--sl-color-white);
+}
+
+/* In the menu, language and theme are ordinary rounded buttons again. */
+.mobile-preferences {
+	align-items: center;
+	border-block-start-color: var(--sl-color-hairline);
+}
+
+/* ---------- Search ---------- */
+
+/* The search button fills its header cell: an icon on narrow screens, a label and shortcut on wider ones. */
+site-search > button[data-open-modal] {
+	justify-content: center;
+	gap: 0.625rem;
+	min-width: var(--qsl-control-inline, 2.25rem);
+	height: var(--qsl-control-block, 2.25rem);
+	padding: 0;
+	border: 0;
+	border-radius: var(--qsl-control-radius, 9px);
+	background: transparent;
+	color: var(--sl-color-gray-2);
+	font-size: 1.125rem;
+	transition:
+		color 160ms ease,
+		background-color 160ms ease;
+}
+
+site-search > button[data-open-modal]:hover {
+	background: var(--sl-color-gray-6);
+	color: var(--sl-color-white);
+}
+
+@media (min-width: 50rem) {
+	site-search > button[data-open-modal] {
+		justify-content: flex-start;
+		width: 100%;
+		max-width: none;
+		padding-inline: 1.125rem 0.875rem;
+		border: 0;
+		background: transparent;
+		color: var(--sl-color-gray-3);
+		font-size: var(--sl-text-sm);
+	}
+
+	site-search > button[data-open-modal]:hover {
+		border: 0;
+	}
+
+	/* Splash pages have no grid to sit in: search is a field there. */
+	:root:not([data-has-sidebar]) site-search > button[data-open-modal] {
+		padding-inline: 0.75rem 0.5rem;
+		border: 1px solid var(--sl-color-hairline-light);
+		background: var(--qsl-surface);
+	}
+
+	:root:not([data-has-sidebar]) site-search > button[data-open-modal]:hover {
+		border: 1px solid var(--sl-color-gray-4);
+		background: var(--qsl-surface);
+	}
+
+	site-search dialog {
+		border: 1px solid var(--sl-color-hairline-light);
+		border-radius: 14px;
+		box-shadow: 0 40px 120px -20px rgb(0 0 0 / 0.55);
+	}
+}
+
+site-search button > kbd {
+	gap: 0.125rem;
+	padding: 0;
+	background: none;
+}
+
+site-search button > kbd kbd {
+	min-width: 1.25rem;
+	padding: 0.125rem 0.3125rem;
+	border: 1px solid var(--sl-color-hairline-light);
+	border-radius: 4px;
+	color: var(--sl-color-gray-3);
+	font-family: var(--__sl-font-mono);
+	font-size: 0.625rem;
+	line-height: 1.4;
+	text-align: center;
+}
+
+site-search dialog {
+	background: var(--qsl-surface);
+}
+
+site-search dialog[open] {
+	animation: 260ms var(--qsl-ease-out) both qsl-dialog-in;
+}
+
+site-search dialog::backdrop {
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+}
+
+@keyframes qsl-dialog-in {
+	from {
+		opacity: 0;
+		transform: translateY(-8px) scale(0.985);
+	}
+}
+
+/* ---------- Sidebar ---------- */
+
+#starlight__sidebar {
+	border-inline-end: 1px solid var(--sl-color-hairline);
+}
+
+/* Panes that scroll inside the page get thin scrollbars without arrow buttons. */
+.sidebar-pane,
+.right-sidebar,
+.expressive-code pre {
+	scrollbar-width: thin;
+}
+
+nav.sidebar .top-level > li > details > summary .group-label > .large {
+	font-size: 0.8125rem;
+	font-weight: 600;
+	font-variation-settings: 'SHRP' 60;
+	color: var(--sl-color-white);
+}
+
+nav.sidebar a {
+	border-radius: 7px;
+	transition:
+		background-color 160ms ease,
+		color 160ms ease;
+}
+
+nav.sidebar a:not([aria-current='page']):hover {
+	background: var(--sl-color-gray-6);
+	color: var(--sl-color-white);
+}
+
+/* The current page is marked with a lit bit, the site's smallest unit. */
+nav.sidebar a[aria-current='page'],
+nav.sidebar a[aria-current='page']:hover,
+nav.sidebar a[aria-current='page']:focus {
+	position: relative;
+	background: color-mix(in oklab, var(--sl-color-accent) 12%, transparent);
+	color: var(--sl-color-white);
+	font-weight: 560;
+}
+
+nav.sidebar a[aria-current='page']::before {
+	content: '';
+	position: absolute;
+	inset-inline-start: -0.625rem;
+	inset-block-start: calc(50% - 3px);
+	width: 6px;
+	height: 6px;
+	border-radius: 1.5px;
+	background: var(--sl-color-accent);
+}
+
+/* ---------- Right sidebar ---------- */
+
+.right-sidebar h2 {
+	font-size: 0.8125rem;
+	font-weight: 600;
+	color: var(--sl-color-white);
+}
+
+.right-sidebar a {
+	transition: color 160ms ease;
+}
+
+/* ---------- Asides ---------- */
+
+/*
+ * An aside is a quiet card on the code surface. Its kind shows as one lit
+ * bit before the title, in the site's own field colors, and a thin rule on
+ * the starting edge. The fill stays a trace of that color so long asides
+ * read like the rest of the page.
+ */
+.starlight-aside--note {
+	--qsl-aside: var(--qsl-f1);
+}
+
+.starlight-aside--tip {
+	--qsl-aside: var(--qsl-f2);
+}
+
+.starlight-aside--caution {
+	--qsl-aside: var(--qsl-f4);
+}
+
+.starlight-aside--danger {
+	--qsl-aside: var(--qsl-f3);
+}
+
+.starlight-aside {
+	--sl-color-asides-text-accent: var(--qsl-aside);
+	--sl-color-asides-border: var(--qsl-aside);
+	padding: 0.875rem 1.125rem 0.9375rem;
+	border: 1px solid var(--sl-color-hairline-light);
+	border-inline-start: 2px solid var(--qsl-aside);
+	border-start-start-radius: 0;
+	border-end-start-radius: 0;
+	border-start-end-radius: 12px;
+	border-end-end-radius: 12px;
+	background: color-mix(in oklab, var(--qsl-aside) 5%, var(--qsl-surface));
+	color: var(--sl-color-gray-1);
+	font-size: var(--sl-text-sm);
+}
+
+.starlight-aside__title {
+	gap: 0.625rem;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+}
+
+.starlight-aside__icon {
+	display: none;
+}
+
+.starlight-aside__title::before {
+	content: '';
+	flex: none;
+	width: 7px;
+	height: 7px;
+	border-radius: 1.5px;
+	background: var(--qsl-aside);
+}
+
+.starlight-aside__title + .starlight-aside__content {
+	margin-top: 0.375rem;
+}
+
+@media (forced-colors: active) {
+	.starlight-aside__title::before {
+		background: CanvasText;
+	}
+}
+
+/* ---------- Cards ---------- */
+
+.sl-link-card {
+	border-color: var(--sl-color-hairline-light);
+	border-radius: 12px;
+	background: var(--qsl-surface);
+	transition:
+		border-color 220ms ease,
+		transform 320ms var(--qsl-ease-out);
+}
+
+.sl-link-card:hover {
+	border-color: color-mix(in oklab, var(--sl-color-accent) 55%, var(--sl-color-hairline-light));
+	transform: translateY(-2px);
+}
+
+.sl-link-card .icon {
+	transition: transform 320ms var(--qsl-ease-out);
+}
+
+.sl-link-card:hover .icon {
+	transform: translateX(3px);
+}
+
+/* ---------- Pagination ---------- */
+
+.pagination-links a {
+	border-radius: 12px;
+	border-color: var(--sl-color-hairline-light);
+	transition:
+		border-color 220ms ease,
+		background-color 220ms ease;
+}
+
+.pagination-links a:hover {
+	border-color: var(--sl-color-gray-4);
+	background: var(--sl-color-gray-6);
+}
+
+/*
+ * Splash pages (home, 404): keep the content column centred at every width,
+ * and clip the hero backdrop, which is as wide as the viewport, so it never
+ * causes horizontal scrolling. `.main-frame` is Starlight's content frame.
+ */
+:root[data-has-hero] .sl-container {
+	margin-inline: auto;
+}
+
+:root[data-has-hero] .main-frame {
+	overflow-x: clip;
+}
+
+/* The home page uses the splash template; hide the footer chrome it does not need. */
+[data-has-hero] .pagination-links,
+[data-has-hero] .meta {
+	display: none;
+}
+
+/* ---------- Scroll reveal ---------- */
+
+/*
+ * Blocks marked with .qsl-reveal fade in as they scroll into view. Without
+ * support for scroll-driven animations they are simply visible.
+ */
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		.qsl-reveal {
+			animation: qsl-reveal linear both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 60%;
+		}
+	}
+}
+
+@keyframes qsl-reveal {
+	from {
+		opacity: 0;
+		transform: translateY(24px);
+	}
+}
+
+/* Reference layout: fixed hierarchy, restrained accents, no decorative motion. */
+:root{--qsl-font-display:var(--sl-font);--sl-color-accent:#8eaee8;--sl-color-accent-high:#bfd1f3;--sl-line-height:1.65;--sl-content-width:46rem}
+:root[data-theme='light']{--sl-color-accent:#315f9c;--sl-color-accent-high:#244d82;--sl-color-accent-low:#e8eef7}
+.sl-markdown-content :is(h1,h2,h3,h4){font-family:var(--sl-font);font-weight:600;letter-spacing:-.018em}
+.sl-markdown-content h2{margin-top:2.75rem;padding-top:1rem;border-top:1px solid var(--sl-color-hairline)}
+.sl-markdown-content p{max-width:76ch}.sl-markdown-content :is(table,pre){font-size:.875rem}
+.sl-markdown-content pre{border:1px solid var(--sl-color-hairline);border-radius:4px}
+.sl-markdown-content table{width:100%}.sl-markdown-content th{text-align:left;background:var(--qsl-surface)}
+@media(prefers-reduced-motion:no-preference){::view-transition-old(root),::view-transition-new(root){animation-duration:0s}}

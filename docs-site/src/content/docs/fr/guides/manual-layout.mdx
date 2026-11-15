@@ -1,0 +1,41 @@
+---
+title: "Disposition manuelle : trame et mémoire"
+description: "Disposition manuelle : trame et mémoire — QSL"
+---
+
+## Format et ordre
+
+Définissez types, intervalles entiers, limites UTF-8 en octets et nombres d’éléments. Les optionnels suivent tous les obligatoires, même après expansion des modèles. Les attributs sont facultatifs ; cet ordre est obligatoire. Les deux extrémités doivent partager le format.
+
+## Trame et mémoire
+
+raw utilise la largeur déclarée en little-endian ; compact stocke des rangs exacts. Une constante demande zéro bit. compact ordinaire est LSB-first, dyn index MSB-first. alignment ajoute une frontière d’octet après les champs, sans aligner l’adresse de l’objet. Des champs de 3 et 10 bits occupent 2 octets serrés ou 3 séparément alignés.
+
+Sur x86-64, u8/u64/u16 occupe 24 octets de Self et u64/u16/u8 en occupe 16 ; les deux contiennent 11 octets raw utiles. Changer les déclarations change aussi wire. auto modifie seulement la disposition physique ; auto[wire=1] ou .auto_wire(1) autorise aussi la canonicalisation wire. Les assertions de taille et déplacement vérifient la cible. Commencez par l’alignement décroissant, en gardant les optionnels à la fin.
+
+$$
+w=\lceil\log_2(b-a+1)\rceil.
+$$
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i).
+$$
+
+$$
+\operatorname{align}(x,a)=a\lceil x/a\rceil.
+$$
+
+$$
+S=\operatorname{align}(o_n+s_n,A).
+$$
+
+## Bourrage et limites
+
+padding(N) du schéma compte des octets ; padding_bits(N), des bits. Builder.padding(N) compte toujours des bits. checked refuse le bourrage non nul. Le bourrage non multiple d’octet exige compact sans dyn/QPS/predict_seq/state_bits. STACK_LIMIT vaut 256 B pour toutes les chaînes et tableaux. stack_limit(bytes) et max_data_size(bytes), défaut 65535, sont distincts.
+
+## Représentation native et vérification
+
+Une région native crée un type Rust fixe imbriqué. copy exige champs valides initialisés, représentation compatible et destination alignée. overlay exige aussi une source alignée, immuable et de durée de vie suffisante. repr(C) seul ne prouve pas la compatibilité wire. Commencez par checked et les constantes de compatibilité. Ne transmettez ni bourrage non initialisé ni pointeurs String/Vec.
+
+Vérifiez séparément ordre, longueur wire, bits, Self, déplacements, alignement et mémoire externe. Testez les longueurs corrompues, rangs invalides et bourrage non nul. Self n’est ni toute la pile ni la RAM du processus. Inconnu ne veut pas dire zéro. Mesurez seulement les lectures/écritures concernées avec des buffers préchauffés.
+· [Builder / DEQ](/language/deq/) · [Macros](/guides/custom-types/)

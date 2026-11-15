@@ -1,0 +1,18 @@
+---
+title: 아키텍처
+description: QSL 크레이트 구성, 각 크레이트가 맡는 영역, 스키마 텍스트에서 생성된 Rust 코드까지의 경로.
+---
+
+## 런타임 경계
+
+no_std는 std를 제외하며 alloc을 제외하지 않습니다. qsl-core는 항상 #![no_std]입니다. 기본 alloc 기능은 alloc String/Vec, SerOut, 힙 복원을 제공합니다. 할당자는 애플리케이션이 제공하며 QSL은 전역 할당자를 정의하지 않습니다. 기본 기능을 끄면 호출자 버퍼만 사용할 수 있습니다.
+Crate           | Scope
+--------------- | ---------------------------------------------------------------------------------------------------------------
+qsl-core        | 모든 런타임 I/O, 직렬화·프리미티브 계약과 매크로, 컨테이너, 검증, QPS 및 전송 독립 프레이밍. alloc은 선택 사항.
+qsl-rt          | 코어 FramePool/FrameStorage를 구현하는 no_std 정적 영역. 풀이 차면 즉시 PoolExhausted 반환.
+qsl-lexer       | 소스와 DEQ 읽기, 스키마 수집, 분석 및 최적화 계획.
+qsl-interpreter | 빌드 호스트에서 특화된 Rust 소스 생성.
+qsl-macros-impl | Rust attribute expansion
+qsl             | 런타임 재내보내기 및 선택적 컴파일러 지원. 런타임 전용 모드에는 std가 필요하지 않습니다.
+빌드 스크립트와 테스트의 std는 대상 런타임에 포함되지 않습니다. 실제 생성 스키마를 할당자 없이 실행하고 별도 no_std 라이브러리로 alloc 컨테이너를 검증합니다. 코어의 두 구성과 qsl-rt를 wasm32-wasip2에서도 빌드합니다.
+[Memory](/guides/manual-layout/) · [Runtime](/internals/runtime/)

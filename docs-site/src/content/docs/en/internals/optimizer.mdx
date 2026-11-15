@@ -1,0 +1,49 @@
+---
+title: "Optimizer and native layout"
+description: "QSL documentation: Optimizer and native layout."
+qslResources: [{"label": "PEXT", "url": "https://doc.rust-lang.org/core/arch/x86_64/fn._pext_u64.html"}, {"label": "PDEP", "url": "https://doc.rust-lang.org/core/arch/x86_64/fn._pdep_u64.html"}, {"label": "PSHUFB", "url": "https://doc.rust-lang.org/core/arch/x86_64/fn._mm_shuffle_epi8.html"}, {"label": "PACKUSDW", "url": "https://doc.rust-lang.org/core/arch/x86_64/fn._mm_packus_epi32.html"}, {"label": "PMADDWD", "url": "https://doc.rust-lang.org/core/arch/x86_64/fn._mm_madd_epi16.html"}]
+---
+
+
+The compiler owns a `CompilationPlan` per prepared schema. It contains the logical declaration, canonical wire schema, both order maps, physical memory facts, I/O windows, initialized extents, operations and register candidates. `PreparedSchema.plan()` exposes it for inspection. The Rust backend consumes the prepared I/O plan. None of these compiler objects are carried in a message.
+
+Physical `auto` changes generated field declarations, with bounded exact search for small records and stable heuristics for larger ones. It preserves wire order. External Rust definitions and opaque ABI are barriers. `repr(C)` establishes order/alignment but does not initialize padding.
+
+Explicit `auto[wire=1]` / `.auto_wire(1)` enables a different versioned contract. Within eligible required-field islands, fixed fields precede dynamic fields and names provide the stable sort key. Conditional/opaque barriers stay pinned. Both peers need the same canonicalization. The version affects schema identity; the CPU does not choose wire order.
+
+A memory map distinguishes initialized data, padding, descriptors, metadata and conditional slots. Pointing copies only a complete proven data span with matching wire order and native-endian facts. Generated compile-time assertions check offsets, sizes, alignment and no-Drop requirements. A record with padding is never made serializable by copying the entire Self allocation.
+
+`transmutate` COPY reconstructs owned values through the native contract. LIFETIME overlay additionally requires complete layout equality, proper alignment, initialized bytes, valid field representations and a live source. A mismatching overlay is an error. User codecs must not claim native layout without the explicit primitive/native contract.
+
+### CPU profiles and register candidates
+
+`CPU_PROFILE=portable` is the default DEQ setting. `CPU_PROFILE=kaby_lake`, the `GenerationConfig.cpu_profile` field, or `DeqBuilder.cpu_profile(CpuProfile::KabyLake)` selects a build-time cost profile. This setting is excluded from wire identity.
+
+The report includes scalar/GPR, BMI2 PEXT/PDEP, SSSE3 byte shuffle, SSE4.1 PACKUSDW/PMADDWD and AVX2 candidates. Eligibility requires the appropriate shape, initialization map and normalization. Estimates cover dependencies, uops, registers, transfers and code bytes; they are scheduling proxies, not measured cycles or PMU counters.
+
+Only the narrow four-u32/12-bit candidate has paired complete-record evidence. Explicit `aggressive[group]` and the Kaby Lake profile request its PEXT writer; the separately selected reader stays scalar after PDEP regressed. Generated `cfg(target_feature="bmi2")` gates the instructions; builds without it retain scalar. Other shapes/profiles do not automatically select intrinsics. The application controls compilation flags and deployment CPU requirements. Feature detection is outside per-field hot code.
+
+Primary instruction references: PEXT, PDEP, PSHUFB, PACKUSDW, PMADDWD. Saturating operations are considered only after proving that saturation cannot occur.
+
+### Physical shifted lengths
+
+Explicit `aggressive[shift=true]` permits `StackString&lt;N, LengthWord&gt;` / `InlineString&lt;N, LengthWord&gt;` to store len+1. Capacities up to 254 use NonZeroU8; up to 65534 use NonZeroU16; larger supported capacities use NonZeroU32. Storage selection still obeys STACK_LIMIT and string codec bounds. Zero means absence only when an actual Option niche is used; an empty present string stores one.
+
+This is a physical representation choice. Wire length and UTF-8 bytes stay unchanged. Measurements rejected automatic shifted string storage: new-value decoding slowed down and reuse showed no confirmed gain. Plain aggressive therefore does not automatically enable shifted string lengths.
+
+### Exact padding
+
+`padding(N)` is byte padding with the legacy byte barrier. `padding_bits(N)` is exact zero bit padding in COMPACT. Programmatic `.padding(N)` takes bits: byte multiples preserve the old byte behavior; other values lower to BitPadding. Dyn/QPS/predict_seq/state_bits combinations are rejected. Checked decoding rejects nonzero padding.
+
+A three-bit prefix, three padding bits and two-bit suffix occupy exactly one byte. The untrusted reader validates every chunk before publishing a value. Large padding also participates in size budgets, including optional and LZ combinations.
+
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i),\qquad \operatorname{align}(x,a)=a\left\lceil\frac{x}{a}\right\rceil.
+$$
+
+$$
+S_{\mathrm{Self}}=\operatorname{align}(o_n+s_n,A).
+$$
+
+Here o is the field offset, s its size, a its alignment and A the object alignment. Permutation may reduce Self gaps; it does not change the rank width of an individual field.

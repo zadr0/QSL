@@ -1,0 +1,114 @@
+---
+title: Démarrage rapide
+description: "Créer un projet Rust, ajouter un schéma, générer le code dans build.rs et faire l’aller-retour d’une valeur."
+qslResources: [{"label": "Exemples du dépôt", "url": "https://github.com/zadr0/QSL/tree/main/examples"}]
+---
+
+import { Steps, FileTree } from '@astrojs/starlight/components';
+
+Il vous faut Rust 1.98 ou plus récent. Vous obtiendrez un programme qui encode une valeur `User` en octets, puis la décode.
+
+<FileTree>
+- qsl-demo/
+  - Cargo.toml
+  - build.rs
+  - user.qsl
+  - src/
+    - main.rs
+</FileTree>
+
+<Steps>
+
+1. Créez le projet :
+
+   ```sh
+   cargo new qsl-demo
+   cd qsl-demo
+   ```
+
+2. Ajoutez `qsl` deux fois à `Cargo.toml` : dans `[dependencies]` pour le programme et dans `[build-dependencies]` pour `build.rs`. Conservez la section `[package]` créée par Cargo. Utilisez la même version aux deux endroits.
+
+   ```toml title="Cargo.toml" ins={7,9-10}
+   [package]
+   name = "qsl-demo"
+   version = "0.1.0"
+   edition = "2024"
+
+   [dependencies]
+   qsl = "=0.4.0"
+
+   [build-dependencies]
+   qsl = "=0.4.0"
+   ```
+
+3. Décrivez le message dans `user.qsl`, à côté de `Cargo.toml` :
+
+   ```qsl title="user.qsl"
+   &User[safety] {
+       u64 id;
+       str(1..100) name;
+   }
+   ```
+
+   `&User` déclare un type. `u64 id` est un champ de type `u64` nommé `id`. `str(1..100)` est une chaîne de 1 à 100 octets d’UTF-8. `[safety]` ajoute les méthodes de décodage vérifié utilisées plus bas.
+
+4. Générez le code Rust à la compilation. Créez `build.rs` à la racine du projet :
+
+   ```rust title="build.rs"
+   fn main() -> Result<(), Box<dyn std::error::Error>> {
+       let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+       qsl::build_qsl_files(&["user.qsl"], &[], out)?;
+       Ok(())
+   }
+   ```
+
+   `build_qsl_files` écrit `qsl_gen.rs` dans `OUT_DIR` et demande à Cargo de relancer `build.rs` quand `user.qsl` change. Le second argument liste les fichiers de configuration `.deq`. Il n’y en a pas encore.
+
+5. Incluez le fichier généré dans `src/main.rs`. Il définit `User` et ses méthodes, aucune ligne `use` n’est donc nécessaire :
+
+   ```rust title="src/main.rs"
+   include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
+
+   fn main() -> qsl::QslResult<()> {
+       let user = User {
+           id: 42,
+           name: "Ada".into(),
+       };
+       let bytes = user.serialize_checked()?;
+       let restored = User::deserialize_checked(&bytes)?;
+       assert_eq!((restored.id, restored.name.as_str()), (42, "Ada"));
+       println!("{}: {} ({} bytes)", restored.id, restored.name, bytes.len());
+       Ok(())
+   }
+   ```
+
+6. Lancez le programme :
+
+   ```sh
+   cargo run
+   ```
+
+   ```text
+   42: Ada (15 bytes)
+   ```
+
+</Steps>
+
+## Ce qui s’est passé
+
+La trame fait 15 octets : 8 pour `id`, un préfixe de longueur de 4 octets pour `name` et 3 octets d’UTF-8. Le schéma autorise 1 à 100 octets pour `name` : `deserialize_checked` rejette donc une trame dont le préfixe de longueur sort de cette plage, avant d’allouer la chaîne.
+
+`serialize_checked` vérifie la valeur par rapport au schéma avant d’écrire. Les deux méthodes renvoient `qsl::QslResult`. Le type d’erreur est [`QslError`](/reference/errors/).
+
+## Règles à connaître dès le départ
+
+- Les champs obligatoires viennent en premier. Un champ obligatoire placé après un champ optionnel provoque une erreur de compilation.
+- Les bornes des chaînes et des tableaux sont inclusives. Les chaînes se mesurent en octets UTF-8, les tableaux en éléments.
+- `deserialize_checked` et `deserialize_checked_into` n’existent que pour les types avec `[safety]`. Les décodeurs non vérifiés sont toujours générés et exigent une trame valide.
+- `MAX_DATA_SIZE` limite la taille d’une trame et des données décodées. La valeur par défaut est de 65535 octets. Modifiez-la dans un [fichier DEQ](/language/deq/).
+
+## Suite
+
+- [Fonctionnement](/start/how-it-works/) : ce qui s’exécute à la compilation et ce qui s’exécute dans votre programme.
+- [Déclarations](/language/declarations/) : la syntaxe complète des schémas.
+- Exemples du dépôt : sept programmes qui couvrent les entiers, les chaînes, les champs optionnels, QPS, le pool RT, les modèles Rust et la validation.

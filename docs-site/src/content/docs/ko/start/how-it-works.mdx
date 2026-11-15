@@ -1,0 +1,58 @@
+---
+title: 동작 방식
+description: cargo build 중에 QSL이 하는 일, 생성된 코드가 크레이트에 들어가는 방식, 런타임에 실행되는 것.
+---
+
+
+스키마에 의존하는 작업은 모두 크레이트를 빌드하는 동안 일어납니다. 런타임에는 생성된 코드만 실행됩니다.
+
+## 빌드 타임
+
+`build.rs`는 `.qsl` 스키마와 `.deq` 설정 파일을 인자로 `qsl::build_qsl_files`를 호출합니다. 이 호출이 처음 다섯 단계를 실행하고, 여섯 번째 단계는 Cargo가 크레이트를 컴파일할 때 일어납니다.
+
+1. **파싱.** 렉서와 파서가 스키마와 DEQ 파일을 읽고, `MAX_LEN * 2` 같은 상수 표현식을 계산하고, 각 필드에 선언 순서대로 태그를 붙입니다.
+2. **전개와 검사.** Rust 템플릿과 네이티브 리전을 전개합니다. 이름, 필드 순서, 속성 조합을 검사합니다.
+3. **분석.** `qsl-core`의 코드가 비트 폭, 길이 경계, 옵셔널 필드 레이아웃, 스키마 해시를 계산합니다.
+4. **저장 방식 결정.** 속성과 `STACK_LIMIT`에 따라 문자열·배열 필드마다 Rust 타입을 정합니다.
+5. **생성.** 인터프리터가 구조체, 메서드, 정적 테이블을 `OUT_DIR`의 `qsl_gen.rs`에 씁니다.
+6. **컴파일.** `rustc`가 생성된 파일을 사용자 코드와 함께 컴파일합니다.
+
+범위가 뒤집혔거나 필드가 중복되는 등 스키마에 오류가 있으면 `build.rs`가 에러를 반환하고, 빌드는 그 메시지와 함께 실패합니다.
+
+## 생성된 코드 사용하기
+
+`qsl_gen.rs`에는 구조체, `impl` 블록, static 같은 아이템이 들어 있습니다. 이 파일은 모듈 수준에서 포함합니다. [빠른 시작](/start/quickstart/)처럼 크레이트 루트에 두거나 별도 모듈에 둡니다.
+
+```rust title="src/main.rs"
+mod wire {
+    include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
+}
+
+use wire::Packet;
+
+fn roundtrip(packet: &Packet) -> qsl::QslResult<Packet> {
+    let bytes = packet.serialize_checked()?;  // 값을 검사한 다음 쓴다
+    Packet::deserialize_checked(&bytes)       // 읽으면서 검사한다
+}
+```
+
+생성된 코드는 런타임을 `::qsl::...`로 참조합니다. 따라서 크레이트는 `[build-dependencies]`뿐 아니라 `[dependencies]`에도 `qsl`을 두어야 합니다.
+
+## 런타임
+
+생성된 메서드에는 각 필드의 타입과 폭이 상수로 들어 있습니다. 프레임에는 타입 기술자가 없고, 런타임에 스키마를 조회하는 코드도 없습니다.
+
+검증 디코더는 커서 하나로 읽기와 검증을 함께 합니다. 별도의 검증 패스를 먼저 돌리지 않습니다.
+
+## 서로 다른 두 크기
+
+**와이어 크기**는 인코딩된 프레임의 길이입니다. **객체 크기**는 생성된 구조체의 `size_of::<T>()`입니다. 생성된 구조체는 `#[repr(C)]`이므로 필드는 선언 순서를 유지하고, Rust가 정렬을 위해 패딩을 넣습니다. `u16(0..1023)` 필드는 `compact`를 쓰면 와이어에서 10비트지만 메모리에서는 여전히 2바이트 `u16`입니다. 각 타입에는 메모리상 크기와 정렬을 나타내는 상수 `NATIVE_BYTES`와 `NATIVE_ALIGNMENT`가 있습니다.
+
+## 코드 위치
+단계 | 크레이트 | 주요 파일
+---|---|---
+파싱, 전개 | `qsl-lexer` | `lexer.rs`, `parser.rs`, `deq.rs`, `builder.rs`
+분석 | `qsl-core` | `analysis.rs`, `schema_hash.rs`, `types.rs`
+생성 | `qsl-interpreter` | `frontend.rs`, `interpreter.rs`, `codegen_*.rs`
+런타임 | `qsl-core`(`qsl`이 다시 내보냄) | `io.rs`, `bit_io.rs`, `validation.rs`, `strings.rs`
+자세한 내용은 [아키텍처](/internals/architecture/)와 [와이어 포맷](/internals/wire-format/)에 있습니다.

@@ -1,0 +1,33 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+
+# environment
+.env
+.env.*
+
+# os
+.DS_Store
+Thumbs.db
+
+# local editor and agent settings
+.claude/
+.vscode/
+.idea/
+
+# local deployment state and caches
+.vercel/
+.npm-cache/
+.preview.*.log
+.indexing-build.log
+
+.vercel
+
+.state/
+.runtime/

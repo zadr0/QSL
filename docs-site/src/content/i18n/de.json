@@ -1,0 +1,23 @@
+{
+	"qsl.nav.label": "Bereiche",
+	"qsl.nav.docs": "Dokumentation",
+	"qsl.nav.reference": "Referenz",
+	"qsl.nav.api": "API",
+	"qsl.theme.toLight": "Zum hellen Farbschema wechseln",
+	"qsl.theme.toDark": "Zum dunklen Farbschema wechseln",
+	"qsl.footer.license": "frei und quelloffen unter der MIT-Lizenz",
+	"qsl.hero.pause": "Animation anhalten",
+	"qsl.wire.encoding": "Kodierung",
+	"qsl.wire.values": "Feldwerte",
+	"qsl.wire.mode.default": "default",
+	"qsl.wire.mode.compact": "compact",
+	"qsl.wire.mode.aligned": "compact + alignment",
+	"qsl.wire.bytes": "Bytes im Frame",
+	"qsl.wire.bitOrder": "Die Bits stehen in Schreibreihenfolge: Das niedrigstwertige Bit jedes Bytes kommt zuerst.",
+	"qsl.wire.padding": "Padding",
+	"qsl.bitmap.present": "vorhanden",
+	"qsl.bitmap.mask": "Maske",
+	"qsl.bitmap.readOrder": "Lesereihenfolge",
+	"qsl.bitmap.none": "keine optionalen Felder",
+	"qsl.bitmap.marker": "Marker"
+}

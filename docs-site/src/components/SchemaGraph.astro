@@ -1,0 +1,9 @@
+---
+const { kind='pipeline' }=Astro.props;
+const lang=Astro.locals.starlightRoute.locale??'en';
+---
+<qsl-schema-graph class="schema-graph not-content" data-kind={kind} data-lang={lang}>
+ <div data-graph-input></div><div data-graph-status role="status"></div>
+ <div data-graph-view></div><div data-graph-detail aria-live="polite"></div>
+</qsl-schema-graph>
+<script>import '../lib/schema-graph';</script>

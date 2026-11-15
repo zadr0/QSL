@@ -1,0 +1,23 @@
+{
+	"qsl.nav.label": "栏目",
+	"qsl.nav.docs": "文档",
+	"qsl.nav.reference": "参考",
+	"qsl.nav.api": "API",
+	"qsl.theme.toLight": "切换到浅色主题",
+	"qsl.theme.toDark": "切换到深色主题",
+	"qsl.footer.license": "基于 MIT 许可证的自由开源软件",
+	"qsl.hero.pause": "暂停动画",
+	"qsl.wire.encoding": "编码方式",
+	"qsl.wire.values": "字段值",
+	"qsl.wire.mode.default": "默认",
+	"qsl.wire.mode.compact": "compact",
+	"qsl.wire.mode.aligned": "compact + alignment",
+	"qsl.wire.bytes": "字节（编码后）",
+	"qsl.wire.bitOrder": "各位按写入顺序显示：每个字节的最低有效位在前。",
+	"qsl.wire.padding": "填充",
+	"qsl.bitmap.present": "存在",
+	"qsl.bitmap.mask": "掩码",
+	"qsl.bitmap.readOrder": "读取顺序",
+	"qsl.bitmap.none": "没有可选字段",
+	"qsl.bitmap.marker": "标记"
+}

@@ -1,0 +1,41 @@
+---
+title: "Distribución manual: trama y memoria"
+description: "Distribución manual: trama y memoria — QSL"
+---
+
+## Formato y orden
+
+Defina tipos, intervalos enteros, límites UTF-8 en bytes y cantidades de elementos. Todos los campos opcionales siguen a los obligatorios, incluso tras expandir plantillas. Los atributos son opcionales; el orden es obligatorio. Ambos extremos deben acordar el formato.
+
+## Trama y memoria
+
+raw usa el ancho declarado en little-endian; compact guarda rangos exactos. Una constante necesita cero bits. compact normal es LSB-first; dyn index es MSB-first. alignment añade fronteras de byte tras los campos, sin alinear la dirección del objeto. Campos de 3 y 10 bits ocupan 2 bytes juntos o 3 individualmente alineados.
+
+En x86-64, u8/u64/u16 ocupa 24 bytes de Self y u64/u16/u8 ocupa 16; ambos contienen 11 bytes raw útiles. Cambiar declaraciones cambia wire. auto altera solo el diseño físico; auto[wire=1] o .auto_wire(1) autoriza también la canonicalización wire. Las aserciones de tamaño y offset verifican el destino. Ordene inicialmente por alineación decreciente, manteniendo los opcionales al final.
+
+$$
+w=\lceil\log_2(b-a+1)\rceil.
+$$
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i).
+$$
+
+$$
+\operatorname{align}(x,a)=a\lceil x/a\rceil.
+$$
+
+$$
+S=\operatorname{align}(o_n+s_n,A).
+$$
+
+## Relleno y límites
+
+padding(N) del esquema cuenta bytes; padding_bits(N), bits. Builder.padding(N) siempre cuenta bits. checked rechaza relleno no nulo. El relleno no múltiplo de byte exige compact sin dyn/QPS/predict_seq/state_bits. STACK_LIMIT es 256 B para todas las cadenas y matrices. stack_limit(bytes) y max_data_size(bytes), por defecto 65535, controlan políticas distintas.
+
+## Representación nativa y revisión
+
+Una región nativa crea un tipo Rust fijo anidado. copy exige campos inicializados válidos, representación compatible y destino alineado. overlay también exige origen alineado, inmutable y con vida suficiente. repr(C) solo no prueba compatibilidad wire. Use primero checked y constantes de compatibilidad. No transmita relleno sin inicializar ni punteros String/Vec.
+
+Revise orden, longitud wire, bits, Self, offsets, alineación y memoria externa por separado. Pruebe longitudes corruptas, rangos inválidos y relleno no nulo. Self no es toda la pila ni RAM del proceso. Desconocido no es cero. Mida solo lectura/escritura afectada con buffers precalentados.
+· [Builder / DEQ](/language/deq/) · [Macros](/guides/custom-types/)

@@ -1,0 +1,23 @@
+---
+title: "최적화와 메모리 배치"
+description: "물리 auto는 구조체 필드를 재배치해 패딩을 줄이지만 wire 순서는 유지합니다. wire 재정렬에는 명시적인 auto[wire=1]이 필요합니다. 직접 복사는 초기화되고 표현이 일치하는 영역만 허용됩니다. Kaby Lake의 4×12비트는 PEXT 쓰기를 채택하고, 느려진 PDEP 읽기는 스칼라로 유지합니다."
+qslResources: [{"label": "상세 참조와 소스", "url": "https://github.com/zadr0/QSL"}]
+---
+
+
+로컬 개발 버전 · 2026-11-14.
+
+물리 auto는 구조체 필드를 재배치해 패딩을 줄이지만 wire 순서는 유지합니다. wire 재정렬에는 명시적인 auto[wire=1]이 필요합니다. 직접 복사는 초기화되고 표현이 일치하는 영역만 허용됩니다. Kaby Lake의 4×12비트는 PEXT 쓰기를 채택하고, 느려진 PDEP 읽기는 스칼라로 유지합니다.
+
+상세 참조와 소스 · [English](/en/internals/optimizer/)
+
+
+$$
+o_i=\operatorname{align}(o_{i-1}+s_{i-1},a_i),\qquad \operatorname{align}(x,a)=a\left\lceil\frac{x}{a}\right\rceil.
+$$
+
+$$
+S_{\mathrm{Self}}=\operatorname{align}(o_n+s_n,A).
+$$
+
+o: offset · s: size · a: field alignment · A: Self alignment.

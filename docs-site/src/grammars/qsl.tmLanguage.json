@@ -1,0 +1,115 @@
+{
+	"name": "qsl",
+	"displayName": "QSL",
+	"scopeName": "source.qsl",
+	"aliases": ["deq"],
+	"patterns": [
+		{ "include": "#comments" },
+		{ "include": "#directives" },
+		{ "include": "#regions" },
+		{ "include": "#declaration" },
+		{ "include": "#modifiers" },
+		{ "include": "#types" },
+		{ "include": "#custom-types" },
+		{ "include": "#literals" },
+		{ "include": "#operators" },
+		{ "include": "#field" }
+	],
+	"repository": {
+		"comments": {
+			"patterns": [
+				{ "name": "comment.line.double-slash.qsl", "match": "//.*$" },
+				{ "name": "comment.block.qsl", "begin": "/\\*", "end": "\\*/" }
+			]
+		},
+		"directives": {
+			"patterns": [
+				{
+					"match": "(!define)\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*(:)\\s*([A-Za-z_][A-Za-z0-9_]*)",
+					"captures": {
+						"1": { "name": "keyword.control.directive.qsl" },
+						"2": { "name": "variable.other.constant.qsl" },
+						"3": { "name": "punctuation.separator.qsl" },
+						"4": { "name": "support.type.primitive.qsl" }
+					}
+				},
+				{
+					"match": "(!config)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+					"captures": {
+						"1": { "name": "keyword.control.directive.qsl" },
+						"2": { "name": "variable.other.constant.qsl" }
+					}
+				}
+			]
+		},
+		"regions": {
+			"match": "(#(?:region|end_region))\\b",
+			"captures": { "1": { "name": "keyword.control.region.qsl" } }
+		},
+		"declaration": {
+			"begin": "(&)([A-Za-z_][A-Za-z0-9_]*)",
+			"beginCaptures": {
+				"1": { "name": "keyword.operator.declaration.qsl" },
+				"2": { "name": "entity.name.type.qsl" }
+			},
+			"end": "(?=\\{)|$",
+			"patterns": [{ "include": "#attributes" }]
+		},
+		"attributes": {
+			"begin": "\\[",
+			"beginCaptures": { "0": { "name": "punctuation.section.attributes.begin.qsl" } },
+			"end": "\\]",
+			"endCaptures": { "0": { "name": "punctuation.section.attributes.end.qsl" } },
+			"patterns": [{ "include": "#option" }]
+		},
+		"modifiers": {
+			"begin": "\\|",
+			"beginCaptures": { "0": { "name": "punctuation.section.modifiers.begin.qsl" } },
+			"end": "\\|",
+			"endCaptures": { "0": { "name": "punctuation.section.modifiers.end.qsl" } },
+			"patterns": [{ "include": "#option" }]
+		},
+		"option": {
+			"patterns": [
+				{
+					"match": "([A-Za-z_][A-Za-z0-9_]*)\\s*(=)\\s*(\"[^\"]*\"|[A-Za-z0-9_]+)",
+					"captures": {
+						"1": { "name": "entity.other.attribute-name.qsl" },
+						"2": { "name": "keyword.operator.assignment.qsl" },
+						"3": { "name": "constant.language.qsl" }
+					}
+				},
+				{ "name": "entity.other.attribute-name.qsl", "match": "[A-Za-z_][A-Za-z0-9_]*" },
+				{ "name": "punctuation.separator.comma.qsl", "match": "," }
+			]
+		},
+		"types": {
+			"name": "support.type.primitive.qsl",
+			"match": "\\b(?:u8|u16|u32|u64|i8|i16|i32|i64|str|string|String|array|vec|flags|padding)\\b"
+		},
+		"custom-types": {
+			"name": "entity.name.type.custom.qsl",
+			"match": "\\b[A-Z][A-Za-z0-9_]*\\b"
+		},
+		"literals": {
+			"patterns": [
+				{ "name": "string.quoted.double.qsl", "match": "\"[^\"]*\"" },
+				{ "name": "constant.numeric.hex.qsl", "match": "\\b0x[0-9A-Fa-f_]+\\b" },
+				{ "name": "constant.numeric.decimal.qsl", "match": "\\b[0-9][0-9_]*\\b" },
+				{ "name": "constant.language.qsl", "match": "\\b(?:true|false)\\b" }
+			]
+		},
+		"operators": {
+			"patterns": [
+				{ "name": "keyword.operator.range.qsl", "match": "\\.\\." },
+				{ "name": "keyword.operator.optional.qsl", "match": "\\?" },
+				{ "name": "keyword.operator.arithmetic.qsl", "match": "[-+*/%=]" },
+				{ "name": "punctuation.terminator.qsl", "match": ";" }
+			]
+		},
+		"field": {
+			"match": "\\b([a-z_][A-Za-z0-9_]*)\\s*(?=[;|])",
+			"captures": { "1": { "name": "variable.other.property.qsl" } }
+		}
+	}
+}

@@ -1,0 +1,58 @@
+---
+title: 工作原理
+description: QSL 在 cargo build 期间做了什么，生成的代码如何进入你的 crate，以及运行时执行的是什么。
+---
+
+
+所有依赖 schema 的工作都在 crate 构建时完成。运行时只执行生成的代码。
+
+## 构建时
+
+`build.rs` 以你的 `.qsl` schema 和 `.deq` 配置文件为参数调用 `qsl::build_qsl_files`。这次调用执行前五步，第六步在 Cargo 编译你的 crate 时进行：
+
+1. **解析**：词法分析器和解析器读取 schema 和 DEQ 文件，计算 `MAX_LEN * 2` 这类常量表达式，并按声明顺序为每个字段分配标签。
+2. **展开与检查**：展开 Rust 模板和原生区域，检查名称、字段顺序和属性组合。
+3. **分析**：`qsl-core` 中的代码计算位宽、长度边界、可选字段布局和 schema 哈希。
+4. **选择存储**：根据属性和 `STACK_LIMIT` 确定每个字符串字段和数组字段的 Rust 类型。
+5. **生成**：解释器把结构体、方法和静态表写入 `OUT_DIR` 中的 `qsl_gen.rs`。
+6. **编译**：`rustc` 将生成的文件与你的代码一起编译。
+
+Schema 中的错误（例如上下界颠倒的范围或重复的字段）会让 `build.rs` 返回错误，构建随之失败并输出该错误信息。
+
+## 使用生成的代码
+
+`qsl_gen.rs` 中只有条目（item）：结构体、`impl` 块和静态变量。要在模块级别引入它，可以像[快速上手](/start/quickstart/)那样放在 crate 根，也可以放进单独的模块：
+
+```rust title="src/main.rs"
+mod wire {
+    include!(concat!(env!("OUT_DIR"), "/qsl_gen.rs"));
+}
+
+use wire::Packet;
+
+fn roundtrip(packet: &Packet) -> qsl::QslResult<Packet> {
+    let bytes = packet.serialize_checked()?;  // 先检查值，再写入
+    Packet::deserialize_checked(&bytes)       // 边读取边检查
+}
+```
+
+生成的代码通过 `::qsl::...` 引用运行时，所以 crate 不仅要在 `[build-dependencies]` 中依赖 `qsl`，也必须在 `[dependencies]` 中依赖它。
+
+## 运行时
+
+生成的方法把每个字段的类型和宽度作为常量写在代码里。帧中不携带类型描述符，运行时也不会查找 schema。
+
+带检查的解码器用同一个游标边读取边校验，不会先单独跑一遍校验。
+
+## 两种不同的大小
+
+**编码大小**是编码后帧的长度。**对象大小**是生成的结构体的 `size_of::<T>()`。生成的结构体都是 `#[repr(C)]`：字段保持声明顺序，Rust 会为对齐插入填充。使用 `compact` 时，`u16(0..1023)` 字段编码后只占 10 位，但在内存中仍是 2 字节的 `u16`。每个类型都有常量 `NATIVE_BYTES` 和 `NATIVE_ALIGNMENT`，分别表示它在内存中的大小和对齐。
+
+## 代码位置
+阶段 | Crate | 主要文件
+---|---|---
+解析、展开 | `qsl-lexer` | `lexer.rs`、`parser.rs`、`deq.rs`、`builder.rs`
+分析 | `qsl-core` | `analysis.rs`、`schema_hash.rs`、`types.rs`
+生成 | `qsl-interpreter` | `frontend.rs`、`interpreter.rs`、`codegen_*.rs`
+运行时 | `qsl-core`，由 `qsl` 重新导出 | `io.rs`、`bit_io.rs`、`validation.rs`、`strings.rs`
+更多细节见[架构](/internals/architecture/)和[编码格式](/internals/wire-format/)。

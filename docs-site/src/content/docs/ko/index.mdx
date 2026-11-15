@@ -1,0 +1,35 @@
+---
+title: Quick Schema Language — Rust 바이너리 직렬화
+description: Quick Schema Language (QSL)은 빌드 타임에 데이터 스키마를 Rust 구조체와 바이너리 코덱으로 컴파일합니다.
+template: splash
+hero:
+  title: "Rust용 바이너리 직렬화"
+  actions:
+    - text: 시작하기
+      link: /start/quickstart/
+      variant: primary
+    - text: 동작 방식
+      link: /start/how-it-works/
+      variant: secondary
+---
+
+import LandingSection from '../../../components/LandingSection.astro';
+
+<LandingSection title="스키마는 여러분이, 코드는 QSL이" id="usage" split>
+
+Quick Schema Language (QSL)은 Rust용 스키마 언어입니다. 메시지에 어떤 필드가 있는지, 각 숫자의 범위는 어디까지인지, 문자열은 얼마나 길 수 있는지 한 번만 적어 두면, `cargo build` 중에 QSL이 이를 구조체로 바꾸고, 그 구조체를 바이트로 쓰고 다시 읽어 들이는 코드도 함께 만듭니다.
+
+코덱을 손으로 작성할 필요가 없고, 런타임에 스키마를 파싱하지도 않습니다. 이 예제처럼 `[safety]`를 붙이면 스키마에 맞지 않는 바이트는 `User`가 아니라 에러로 돌아옵니다. 프로그램의 나머지 두 파일은 [빠른 시작](/start/quickstart/)에 있습니다.
+
+<div slot="aside">
+
+```qsl title="user.qsl"
+&User[safety] {
+    u64 id;
+    str(1..100) name;
+}
+```
+
+</div>
+
+</LandingSection>

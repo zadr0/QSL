@@ -1,0 +1,151 @@
+---
+/**
+ * Animated backdrop of the home page hero, drawn by `src/lib/signal-field.ts`.
+ *
+ * The canvas fills its positioned parent. Colors come from the theme's
+ * custom properties (`--qsl-f1` ... `--qsl-f4`, `--sl-color-gray-3`) and
+ * are read again when the theme changes, so the field always matches the
+ * page.
+ *
+ * Elements marked `data-signal-quiet` inside the same `.qsl-hero` are kept
+ * clear: their text boxes, plus one cell of air, become quiet zones that the
+ * packets fade out over. The boxes are measured again whenever the hero
+ * changes size or the web fonts finish loading.
+ *
+ * Without WebGL the element keeps its CSS fallback: the same dot grid,
+ * static. With reduced motion the shader draws a single still frame.
+ */
+---
+
+<qsl-signal-field aria-hidden="true">
+	<canvas></canvas>
+</qsl-signal-field>
+
+<script>
+	import { requireElement } from '../lib/dom';
+	import {
+		createSignalField,
+		parseHexColor,
+		type QuietZone,
+		type SignalField,
+		type SignalPalette,
+	} from '../lib/signal-field';
+
+	/** Packet opacity per theme; light backgrounds need less to read the same. */
+	const STRENGTH = { dark: 1, light: 0.7 } as const;
+
+	/** Air around each quiet zone, in CSS pixels: one cell of the grid. */
+	const QUIET_PADDING = 14;
+
+	/** The box of an element's content (its text, not its full block width), relative to `origin`. */
+	function quietZone(element: Element, origin: DOMRect): QuietZone {
+		const range = document.createRange();
+		range.selectNodeContents(element);
+		const box = range.getBoundingClientRect();
+		return {
+			left: box.left - origin.left - QUIET_PADDING,
+			top: box.top - origin.top - QUIET_PADDING,
+			right: box.right - origin.left + QUIET_PADDING,
+			bottom: box.bottom - origin.top + QUIET_PADDING,
+		};
+	}
+
+	function readPalette(): SignalPalette {
+		const style = getComputedStyle(document.documentElement);
+		const color = (name: string) => parseHexColor(style.getPropertyValue(name));
+		return {
+			fields: [color('--qsl-f1'), color('--qsl-f2'), color('--qsl-f3'), color('--qsl-f4')],
+			grid: color('--sl-color-gray-3'),
+			strength: document.documentElement.dataset.theme === 'light' ? STRENGTH.light : STRENGTH.dark,
+		};
+	}
+
+	class QslSignalField extends HTMLElement {
+		#field: SignalField | null = null;
+		#themeObserver: MutationObserver | null = null;
+		#layoutObserver: ResizeObserver | null = null;
+
+		connectedCallback(): void {
+			const canvas = requireElement<HTMLCanvasElement>(this, 'canvas');
+			let palette: SignalPalette;
+			try {
+				palette = readPalette();
+			} catch {
+				// A theme without hex colors keeps the CSS fallback.
+				return;
+			}
+			this.#field = createSignalField(canvas, {
+				palette,
+				still: matchMedia('(prefers-reduced-motion: reduce)').matches,
+			});
+			if (!this.#field) return;
+			this.dataset.ready = '';
+
+			this.#themeObserver = new MutationObserver(() => this.#field?.setPalette(readPalette()));
+			this.#themeObserver.observe(document.documentElement, { attributeFilter: ['data-theme'] });
+
+			const hero = this.closest('.qsl-hero');
+			if (!hero) return;
+			const measure = () => {
+				const origin = canvas.getBoundingClientRect();
+				const zones = [...hero.querySelectorAll('[data-signal-quiet]')].map((element) =>
+					quietZone(element, origin),
+				);
+				this.#field?.setQuietZones(zones);
+			};
+			this.#layoutObserver = new ResizeObserver(measure);
+			this.#layoutObserver.observe(hero);
+			void document.fonts.ready.then(measure);
+		}
+
+		disconnectedCallback(): void {
+			this.#themeObserver?.disconnect();
+			this.#layoutObserver?.disconnect();
+			this.#field?.destroy();
+			this.#field = null;
+		}
+	}
+
+	customElements.define('qsl-signal-field', QslSignalField);
+</script>
+
+<style>
+	qsl-signal-field {
+		position: absolute;
+		inset: 0;
+		display: block;
+		pointer-events: none;
+		mask-image: linear-gradient(to bottom, #000 55%, transparent);
+	}
+
+	/* Fallback and first paint: the shader's static dot grid. */
+	qsl-signal-field::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background-image: radial-gradient(
+			circle at center,
+			color-mix(in oklab, var(--sl-color-gray-3) 22%, transparent) 1px,
+			transparent 1.5px
+		);
+		background-size: 14px 14px;
+		transition: opacity 1200ms var(--qsl-ease-out);
+	}
+
+	canvas {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		transition: opacity 1200ms var(--qsl-ease-out);
+	}
+
+	qsl-signal-field[data-ready]::before {
+		opacity: 0;
+	}
+
+	qsl-signal-field[data-ready] canvas {
+		opacity: 1;
+	}
+</style>
