@@ -1,0 +1,42 @@
+﻿[
+    {
+        "elapsed":  5.7678683,
+        "totalCpuPercent":  22.568093385214006,
+        "selectedCorePercent":  23
+    },
+    {
+        "elapsed":  8.0657041,
+        "totalCpuPercent":  10.658914728682166,
+        "selectedCorePercent":  13
+    },
+    {
+        "elapsed":  10.3485307,
+        "totalCpuPercent":  13.28125,
+        "selectedCorePercent":  11
+    },
+    {
+        "elapsed":  12.617873099999999,
+        "totalCpuPercent":  33.464566929133852,
+        "selectedCorePercent":  52
+    },
+    {
+        "elapsed":  14.899216899999999,
+        "totalCpuPercent":  45.5078125,
+        "selectedCorePercent":  13
+    },
+    {
+        "elapsed":  17.182277799999998,
+        "totalCpuPercent":  15.503875968992254,
+        "selectedCorePercent":  5
+    },
+    {
+        "elapsed":  19.4666042,
+        "totalCpuPercent":  18.023255813953487,
+        "selectedCorePercent":  13
+    },
+    {
+        "elapsed":  21.7493139,
+        "totalCpuPercent":  10.852713178294572,
+        "selectedCorePercent":  16
+    }
+]

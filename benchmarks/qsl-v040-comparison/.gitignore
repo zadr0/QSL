@@ -5,5 +5,9 @@ dyn/target/
 http/target/
 layout/target/
 layout/build-artifacts.jsonl
+realistic/target/
+realistic/build-artifacts.jsonl
+qsl-features/target/
+qsl-features/build-artifacts.jsonl
 build-artifacts.jsonl
 dyn/build-artifacts.jsonl

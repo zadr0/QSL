@@ -1,0 +1,22 @@
+﻿[
+    {
+        "elapsed":  2.6436143,
+        "totalCpuPercent":  25.9765625,
+        "selectedCorePercent":  5
+    },
+    {
+        "elapsed":  4.9107965,
+        "totalCpuPercent":  9.4488188976378,
+        "selectedCorePercent":  17
+    },
+    {
+        "elapsed":  7.2101231,
+        "totalCpuPercent":  10.546875,
+        "selectedCorePercent":  23
+    },
+    {
+        "elapsed":  9.4937901,
+        "totalCpuPercent":  11.821705426356587,
+        "selectedCorePercent":  7
+    }
+]

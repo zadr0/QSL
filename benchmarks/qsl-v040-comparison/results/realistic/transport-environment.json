@@ -1,0 +1,15 @@
+﻿{
+    "socketStartedAt":  "2026-11-23T18:29:18.4019049+05:00",
+    "socketExecutableSha256":  "907F146F5963C70290DF6E89327E1234463670B4F0F94CDDA36A8E6FD5537895",
+    "httpStartedAt":  "2026-11-23T18:29:25.7321365+05:00",
+    "serverExecutableSha256":  "A4F5E08F4C206A22B3977AC63FFB553D8D5CC57B03A97BE3AC430A61A77FF6DB",
+    "k6":  "k6.exe v2.2.0 (commit/00a9a1b7f5, go1.26.5, windows/amd64)",
+    "serverAffinity":  2,
+    "clientAffinity":  [
+                           0,
+                           1,
+                           3
+                       ],
+    "k6ScriptSha256":  "21DAA431213EEE681135C4419632F226807A65CB7D654DFFBF58B89BCC9F6ADA",
+    "topology":  "loopback TCP and HTTP/1.1 persistent connections"
+}

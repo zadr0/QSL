@@ -1,0 +1,190 @@
+&GeoPlain[safety] {
+    u32? zone;
+    str?(0..192) city;
+    u32? altitude_m;
+}
+
+&GeoBitmap[safety,optionals=bitmap] {
+    u32? zone;
+    str?(0..192) city;
+    u32? altitude_m;
+}
+
+&AuthPlain[safety] {
+    u64? session_id;
+    str?(0..192) scope;
+    u32? quota;
+}
+
+&AuthBitmap[safety,optionals=bitmap] {
+    u64? session_id;
+    str?(0..192) scope;
+    u32? quota;
+}
+
+&ContextPlain[safety] {
+    u32? gateway;
+    str?(0..192) label;
+    vec<u8>?(0..16384) geo;
+    vec<u8>?(0..16384) auth;
+}
+
+&ContextBitmap[safety,optionals=bitmap] {
+    u32? gateway;
+    str?(0..192) label;
+    vec<u8>?(0..16384) geo;
+    vec<u8>?(0..16384) auth;
+}
+
+&StatsPlain[safety] {
+    u32 minimum;
+    u32 maximum;
+    u32? error_count;
+}
+
+&StatsBitmap[safety,optionals=bitmap] {
+    u32 minimum;
+    u32 maximum;
+    u32? error_count;
+}
+
+&ReadingPlain[safety] {
+    u32 sensor_id;
+    vec<u32>(0..32) values;
+    str?(0..192) unit;
+    u32? scale;
+    vec<u8>?(0..16384) stats;
+}
+
+&ReadingBitmap[safety,optionals=bitmap] {
+    u32 sensor_id;
+    vec<u32>(0..32) values;
+    str?(0..192) unit;
+    u32? scale;
+    vec<u8>?(0..16384) stats;
+}
+
+&LimitsPlain[safety] {
+    u32? low;
+    u32? high;
+}
+
+&LimitsBitmap[safety,optionals=bitmap] {
+    u32? low;
+    u32? high;
+}
+
+&PatchPlain[safety] {
+    str?(0..192) firmware;
+    u8?(0..1) enabled;
+    vec<u8>?(0..16384) limits;
+    u32? reboot_after_ms;
+}
+
+&PatchBitmap[safety,optionals=bitmap] {
+    str?(0..192) firmware;
+    u8?(0..1) enabled;
+    vec<u8>?(0..16384) limits;
+    u32? reboot_after_ms;
+}
+
+&UpdatePlain[safety] {
+    u32 entity_id;
+    u32 mask;
+    vec<u8>?(0..16384) patch;
+    u32? generation;
+    str?(0..192) reason;
+}
+
+&UpdateBitmap[safety,optionals=bitmap] {
+    u32 entity_id;
+    u32 mask;
+    vec<u8>?(0..16384) patch;
+    u32? generation;
+    str?(0..192) reason;
+}
+
+&RetryPlain[safety] {
+    u32? attempt;
+    u32? backoff_ms;
+    str?(0..192) token;
+}
+
+&RetryBitmap[safety,optionals=bitmap] {
+    u32? attempt;
+    u32? backoff_ms;
+    str?(0..192) token;
+}
+
+&NoticePlain[safety] {
+    u32 severity;
+    u32 code;
+    vec<u32>(0..32) related;
+    str?(0..192) summary;
+    vec<u8>?(0..16384) retry;
+}
+
+&NoticeBitmap[safety,optionals=bitmap] {
+    u32 severity;
+    u32 code;
+    vec<u32>(0..32) related;
+    str?(0..192) summary;
+    vec<u8>?(0..16384) retry;
+}
+
+&HeartbeatPlain[safety] {
+    u32 sequence;
+    u64 uptime_ms;
+    u32? lag_ms;
+}
+
+&HeartbeatBitmap[safety,optionals=bitmap] {
+    u32 sequence;
+    u64 uptime_ms;
+    u32? lag_ms;
+}
+
+&EventPlain[safety] {
+    u32 sequence;
+    u32 topic;
+    vec<u32>(0..32) affected;
+    str?(0..192) note;
+    vec<u8>?(0..16384) retry;
+    vec<u8>?(0..16384) patch;
+}
+
+&EventBitmap[safety,optionals=bitmap] {
+    u32 sequence;
+    u32 topic;
+    vec<u32>(0..32) affected;
+    str?(0..192) note;
+    vec<u8>?(0..16384) retry;
+    vec<u8>?(0..16384) patch;
+}
+
+&EnvelopePlain[safety] {
+    u32 request_id;
+    u32 revision;
+    u64 timestamp_ms;
+    u8(1..5) kind;
+    vec<u8>(0..16384) payload;
+    u32? deadline_ms;
+    u32? device_id;
+    u8?(0..1) tracing;
+    str?(0..192) trace;
+    vec<u8>?(0..16384) context;
+}
+
+&EnvelopeBitmap[safety,optionals=bitmap] {
+    u32 request_id;
+    u32 revision;
+    u64 timestamp_ms;
+    u8(1..5) kind;
+    vec<u8>(0..16384) payload;
+    u32? deadline_ms;
+    u32? device_id;
+    u8?(0..1) tracing;
+    str?(0..192) trace;
+    vec<u8>?(0..16384) context;
+}
+

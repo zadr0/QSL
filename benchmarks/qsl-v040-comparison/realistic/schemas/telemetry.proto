@@ -1,0 +1,102 @@
+syntax = "proto3";
+package qsl.realistic;
+message Geo {
+  optional uint32 zone = 1;
+  optional string city = 2;
+  optional uint32 altitude_m = 3;
+}
+
+message Auth {
+  optional uint64 session_id = 1;
+  optional string scope = 2;
+  optional uint32 quota = 3;
+}
+
+message Context {
+  optional uint32 gateway = 1;
+  optional string label = 2;
+  Geo geo = 3;
+  Auth auth = 4;
+}
+
+message Stats {
+  uint32 minimum = 1;
+  uint32 maximum = 2;
+  optional uint32 error_count = 3;
+}
+
+message Reading {
+  uint32 sensor_id = 1;
+  repeated uint32 values = 2;
+  optional string unit = 3;
+  optional uint32 scale = 4;
+  Stats stats = 5;
+}
+
+message Limits {
+  optional uint32 low = 1;
+  optional uint32 high = 2;
+}
+
+message Patch {
+  optional string firmware = 1;
+  optional bool enabled = 2;
+  Limits limits = 3;
+  optional uint32 reboot_after_ms = 4;
+}
+
+message Update {
+  uint32 entity_id = 1;
+  uint32 mask = 2;
+  Patch patch = 3;
+  optional uint32 generation = 4;
+  optional string reason = 5;
+}
+
+message Retry {
+  optional uint32 attempt = 1;
+  optional uint32 backoff_ms = 2;
+  optional string token = 3;
+}
+
+message Notice {
+  uint32 severity = 1;
+  uint32 code = 2;
+  repeated uint32 related = 3;
+  optional string summary = 4;
+  Retry retry = 5;
+}
+
+message Heartbeat {
+  uint32 sequence = 1;
+  uint64 uptime_ms = 2;
+  optional uint32 lag_ms = 3;
+}
+
+message Event {
+  uint32 sequence = 1;
+  uint32 topic = 2;
+  repeated uint32 affected = 3;
+  optional string note = 4;
+  Retry retry = 5;
+  Patch patch = 6;
+}
+
+message Envelope {
+  uint32 request_id = 1;
+  uint32 revision = 2;
+  uint64 timestamp_ms = 3;
+  optional uint32 deadline_ms = 4;
+  optional uint32 device_id = 5;
+  optional bool tracing = 6;
+  optional string trace = 7;
+  Context context = 8;
+  oneof body {
+    Reading reading = 20;
+    Update update = 21;
+    Notice notice = 22;
+    Heartbeat heartbeat = 23;
+    Event event = 24;
+  }
+}
+

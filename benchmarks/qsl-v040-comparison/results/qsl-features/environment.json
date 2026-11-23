@@ -1,0 +1,50 @@
+{
+  "dateLocal": "2026-11-23T18:32:23.5454940+05:00",
+  "timeZone": "Ekaterinburg Standard Time",
+  "cpu": {
+    "Name": "Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz",
+    "NumberOfCores": 4,
+    "NumberOfLogicalProcessors": 4,
+    "MaxClockSpeed": 3001
+  },
+  "os": {
+    "Caption": "Майкрософт Windows 11 Pro",
+    "Version": "10.0.26200",
+    "TotalVisibleMemorySize": 25110108
+  },
+  "memory": [
+    {
+      "Capacity": 17179869184,
+      "Speed": 2133
+    },
+    {
+      "Capacity": 8589934592,
+      "Speed": 2133
+    }
+  ],
+  "rust": "rustc 1.98.0 (88d9e12ae 2026-08-18)\r\nbinary: rustc\r\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\r\ncommit-date: 2026-08-18\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.98.0\r\nLLVM version: 22.1.8\r\n",
+  "cargo": "cargo 1.98.0 (797e8a9bc 2026-08-05)\r\n",
+  "rustFlags": "-C target-cpu=native",
+  "affinityCore": 2,
+  "priority": "AboveNormal",
+  "mode": "released desktop: total CPU <=20% pre-run; affinity core 2; two reverse-order passes",
+  "warmupSeconds": 1,
+  "measurementSeconds": 3,
+  "samples": 200,
+  "confidence": 0.99,
+  "resamples": 10000,
+  "executable": "target/release/deps/comparison-347b0a2667e87bfe.exe",
+  "executableSha256": "93A52EFE4EE284974994733B5632840E72A3406C75B47A86472295066CF7ADB9",
+  "sources": {
+    "build.rs": "3826D9F303F48DF7D070ADA3C4F32401BEAC1891AB7D384782BA76FB39DF2094",
+    "src\\bin\\probe.rs": "1BE43E3C15144A204E104040261932DAE1D3D551F2D27D036701D705E3BBA4AF",
+    "src\\lib.rs": "421FF22A4E1A471258E8815CF48354C21880EC4188893B3722F3BB609FE9BE2C",
+    "tests\\contracts.rs": "B191F34792F329B866565B4C35BA10F50B7A5179BBBEE6B3207FAAF3844E428A",
+    "Cargo.lock": "6E936535BB5D80B78193749F092660F211ACB8B246A8EB2D7B0CBF667DAA432A",
+    "schemas\\features.qsl": "3FC28A5AC57E1442E211D9134152D14F076A9173342284A57DC8F75384A29A32",
+    "schemas\\settings.deq": "2421AF83F6420C53266312A59A04C65762CD9750B9791D3AD0DDA8CE5D452EC3",
+    "Cargo.toml": "5E085C78EA2639E90ADFA340833B6E3E1C3EDD44D1F207426DE3C8640A3AC0C5",
+    "benches\\comparison.rs": "08BFB1D0B873E91199AF7E68EA9387D56AFEF90340391B9D69395E89492D81CA"
+  },
+  "powerPlan": "GUID схемы питания: 11111111-1111-1111-1111-111111111111  (Power Scheme)\r\n"
+}

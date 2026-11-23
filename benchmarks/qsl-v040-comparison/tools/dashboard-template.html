@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QSL 0.4.0 · Результаты бенчмарков</title>
+<style>
+:root{color-scheme:dark;--bg:#0e1116;--surface:#171c25;--line:#303746;--text:#eaf0f7;--muted:#bac5d3;--accent:#83bcff;--good:#80e4b2;font:16px/1.55 system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text)}
+main,header>div,nav>div,footer>div{width:min(1260px,100% - 40px);margin:auto}
+header{padding:32px 0 25px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:clamp(26px,4vw,40px);line-height:1.2}
+h2{font-size:27px;margin:0 0 .35em}
+h3{font-size:20px;margin:1.4em 0 .4em}
+p{max-width:83ch;color:var(--muted)}
+a{color:var(--accent);text-underline-offset:3px}
+nav{position:sticky;top:0;z-index:2;border-bottom:1px solid var(--line);background:var(--bg)}
+nav>div{display:flex;gap:7px;overflow-x:auto;padding:9px 0;scrollbar-width:thin}
+button,select,input{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:.45em .7em}
+button{cursor:pointer;white-space:nowrap}
+button[aria-selected=true]{background:#243951;border-color:var(--accent);color:#ecf6ff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+section{padding:28px 0 30px;scroll-margin-top:70px}
+section[hidden]{display:none}
+.note{background:var(--surface);border-left:3px solid var(--accent);padding:10px 15px;max-width:100%}
+.method{font-size:.91em}
+.table{overflow:auto;border:1px solid var(--line);border-radius:8px;margin:16px 0;scrollbar-width:thin}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.92rem}
+td,th{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{background:var(--surface);font-weight:650}
+tbody th{font-weight:600}
+tr:last-child td,tr:last-child th{border-bottom:0}
+details{margin:14px 0}
+details>summary{cursor:pointer;font-weight:600;color:var(--accent)}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.controls label{display:grid;gap:5px;color:var(--muted)}
+.controls input,.controls select{width:100%}
+.filters{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.chart{display:grid;gap:7px;margin:14px 0}
+.bar-row{display:grid;grid-template-columns:min(31%,180px) 1fr min(20%,110px);gap:10px;align-items:center;font-size:.9em}
+.bar-track{background:#242b37;border-radius:4px;overflow:hidden;height:9px}
+.bar-fill{height:100%;display:block;border-radius:inherit;background:var(--accent)}
+.bar-number{text-align:right;font-variant-numeric:tabular-nums}
+.output{margin-top:22px;display:grid;gap:8px}
+.outcome{font-size:1.45rem;font-weight:650}
+.tag{color:var(--accent);font-weight:650}
+footer{border-top:1px solid var(--line);padding:14px 0 28px;color:var(--muted);font-size:.9em}
+.keyboard-note{font-size:.88em;color:var(--muted)}
+@media (max-width:620px){main,header>div,nav>div,footer>div{width:calc(100% - 24px)}header{padding:23px 0 17px}td,th{padding:8px 9px}}
+</style>
+</head>
+<body>
+<header><div><h1>Бенчмарки QSL 0.4.0</h1><p id="hardware"></p></div></header>
+<nav aria-label="Группы измерений"><div role="tablist">
+<button role="tab" id="tab-codec" aria-controls="codec" aria-selected="true">Кодеки</button>
+<button role="tab" id="tab-http" aria-controls="http" aria-selected="false">HTTP API</button>
+<button role="tab" id="tab-socket" aria-controls="socket" aria-selected="false">TCP Heartbeat / Events</button>
+<button role="tab" id="tab-features" aria-controls="features" aria-selected="false">Функции QSL</button>
+<button role="tab" id="tab-economy" aria-controls="economy" aria-selected="false">Экономия трафика</button>
+<button role="tab" id="tab-previous" aria-controls="previous" aria-selected="false">Прошлые серии</button>
+</div></nav>
+<main>
+<section id="codec" role="tabpanel" aria-labelledby="tab-codec">
+<h2>Время и память кодека</h2>
+<p class="note">Одна запись в памяти → бинарный кадр или бинарный кадр → владеющая Rust-структура. Замер Criterion проходит без транспорта.</p>
+<p>Модель API использует Reading, Update и Notice. Отдельные наборы Heartbeat и Event используют ту же общую оболочку. У всех протоколов одинаковые значения и признаки присутствия, включая <code>Some(0)</code>, <code>Some(false)</code> и пустые строки.</p>
+<div class="filters">
+<label>Структура <select id="workload"></select></label>
+<label>Показать на графике <select id="chart-metric"><option value="wire_mean">Размер кадра</option><option value="encode_ns">Запись</option><option value="decode_ns">Чтение</option></select></label>
+</div>
+<div id="codec-chart" class="chart" role="img" aria-label="Сравнение кодеков по выбранной метрике"></div>
+<div id="codec-table" class="table"></div>
+<details><summary>Контракт и память</summary>
+<p>Запись принимает готовую модель по значению и создаёт выходной буфер. Клонирование для повторов идёт вне таймера. Чтение создаёт одну общую Rust-модель с владением данными. В QSL дочерние переменные кадры вкладываются как байтовые массивы с длиной, а ветка выбирается по дискриминанту. Цена обработки дочерних кадров учтена. Protobuf использует oneof, Cap’n Proto — union, Bincode — enum.</p>
+<p>Счётчик памяти измеряет вызовы alloc/realloc и сумму запрошенных байтов на операцию. Размер общей Rust-модели в таблице относится только к её встроенной части. Числа — средние двух медиан на прогретом наборе из 256 записей.</p>
+</details>
+<p><a href="REALISTIC.md">Методика сценариев</a> · <a href="results/realistic/codec.csv">CSV кодеков</a></p>
+</section>
+<section id="http" role="tabpanel" aria-labelledby="tab-http" hidden>
+<h2>HTTP API · запрос и нормализованный ответ</h2>
+<p class="note">HTTP/1.1 keep-alive, localhost, 8 VU. Сервер декодирует POST, проверяет вариант сообщения, увеличивает <code>revision</code> и кодирует ответ. k6 сверяет его побайтно.</p>
+<p id="http-count"></p>
+<div id="http-table" class="table"></div>
+<p>RPS — завершённые запросы за 8 с измерения. В квадратных скобках RPS двух отдельных прогонов. p95 приведён как среднее двух независимых p95. Размеры тел — среднее по набору из 256 записей. Быстрые ответы могут попадать ниже разрешения таймера k6.</p>
+<p><a href="results/realistic/http.csv">CSV HTTP по прогонам</a> · <a href="REALISTIC.md#http-api">Методика HTTP</a></p>
+</section>
+<section id="socket" role="tabpanel" aria-labelledby="tab-socket" hidden>
+<h2>TCP · Heartbeat и 32 Events</h2>
+<p class="note">Постоянное соединение. Heartbeat: один запрос и один бинарный ответ. Events: пакет из 32 кадров и подтверждение с количеством и контрольной суммой.</p>
+<div id="socket-table" class="table"></div>
+<p>В объём входят 4 байта длины каждого кадра и ACK размера 16 байт на пакет. Следующее измерение начинается после проверки ответа. Events/с рассчитаны только по активному времени пакетов, включая ожидание ACK. TCP/IP и системные накладные расходы передачи здесь учтены во времени.</p>
+<p><a href="results/realistic/socket.csv">CSV TCP по прогонам</a> · <a href="REALISTIC.md#tcp-heartbeat--events">Методика TCP</a></p>
+</section>
+<section id="features" role="tabpanel" aria-labelledby="tab-features" hidden>
+<h2>Функции QSL</h2>
+<h3>Трансмутация</h3>
+<p>Тот же 16-байтный кадр при каждом чтении. Обычное чтение и копирование возвращают объект. Overlay заимствует входной буфер и требует выравнивания. В измерение входят проверки и общий потребитель полей.</p>
+<div id="native-table" class="table"></div>
+<h3>String, StackString и QSL-LZ</h3>
+<p>У каждой записи текст длиной 1024 байта. Запись использует готовый буфер, чтение проверяет и потребляет все байты. Период 16 байт включает сжатую ветку. Шум и журнал с длинным периодом показывают raw-ветку QSL-LZ.</p>
+<label for="corpus">Корпус</label> <select id="corpus"></select>
+<div id="string-table" class="table"></div>
+<p><a href="QSL-FEATURES.md">Контракты функций</a> · <a href="results/qsl-features/native.csv">CSV трансмутации</a> · <a href="results/qsl-features/strings.csv">CSV строк</a></p>
+</section>
+<section id="economy" role="tabpanel" aria-labelledby="tab-economy" hidden>
+<h2>Экономия при вашей нагрузке</h2>
+<p>Подставляются измеренные средние размеры. Можно обнулить любой поток. Частоты в примере заданы как параметры модели нагрузки.</p>
+<form class="controls" id="parameters">
+<label>Базовый формат<select id="base"></select></label>
+<label>Сравниваемый формат<select id="candidate"></select></label>
+<label>Запросов API в секунду<input id="api-rate" type="number" value="1000" min="0" step="any"></label>
+<label>Активных сокетов<input id="connections" type="number" value="10000" min="0" step="1"></label>
+<label>Heartbeat каждые, с<input id="heartbeat-period" type="number" value="30" min="1" step="any"></label>
+<label>Событий/с на сокет<input id="event-rate" type="number" value="0.5" min="0" step="any"></label>
+<label>Цена за GiB, условные единицы<input id="price" type="number" value="0" min="0" step="any"></label>
+</form>
+<div id="economy-output" class="output" aria-live="polite"></div>
+<p class="note">Расчёт на сутки суммирует объём в обе стороны. Для API берутся тела HTTP, для сокета — длины кадра, Heartbeat/pong и доля ACK на событие. Сюда не входят HTTP-заголовки, TCP/IP, TLS, ретрансляции и правила тарификации провайдера.</p>
+</section>
+<section id="previous" role="tabpanel" aria-labelledby="tab-previous" hidden>
+<h2>Предыдущие серии измерений</h2>
+<ul>
+<li><a href="report.html">Основные графики HTML</a> — числа, опциональные поля и строки.</li>
+<li><a href="SAME-STRUCTURES.md">Сравнение одинаковых структур</a> — фиксированный вариант каждого кодека.</li>
+<li><a href="QSL-ONLY.md">Варианты QSL</a> — compact, PS, OT, BM и хранение строк.</li>
+<li><a href="DYN.md">Все семь режимов Dyn</a> — изолированные измерения.</li>
+<li><a href="LAYOUT.md">Автоматические раскладки</a> — смещения, размер объекта, проход по массиву.</li>
+<li><a href="K6.md">Прежняя матрица k6</a> — отдельные HTTP encode/decode, все режимы Dyn.</li>
+</ul>
+</section>
+</main>
+<footer><div><a href="README.md">Оглавление и воспроизведение</a> · <a href="results/realistic/scenario-summary.json">Объединённый JSON</a></div></footer>
+<script>
+const data = /* BENCHMARK_DATA */;
+const get = id => document.getElementById(id);
+const number = (n, digits = 2) => n.toLocaleString('ru-RU', {minimumFractionDigits:digits,maximumFractionDigits:digits});
+const name = key => data.names[key] ?? key;
+const usec = n => number(n / 1000, 3);
+const ms = n => n === 0 ? '< разрешения' : number(n, 3);
+const cells = (id, labels, rows) => {
+  const table = document.createElement('table');
+  const headings = table.createTHead().insertRow();
+  for (const label of labels) {
+    const cell = document.createElement('th');
+    cell.scope = 'col';
+    cell.textContent = label;
+    headings.append(cell);
+  }
+  const body = table.createTBody();
+  for (const values of rows) {
+    const row = body.insertRow();
+    for (let i = 0; i < values.length; i++) {
+      const cell = document.createElement(i === 0 ? 'th' : 'td');
+      if (i === 0) cell.scope = 'row';
+      cell.textContent = values[i];
+      row.append(cell);
+    }
+  }
+  get(id).replaceChildren(table);
+};
+function options(id, entries, initial) {
+  const select = get(id);
+  for (const [key, label] of entries) select.add(new Option(label, key));
+  select.value = initial;
+}
+function profiles(id, rows) {
+  cells(id, ['Кодек','Кадр, B','Запись, мкс','Чтение, мкс','alloc запис./чтен.','Запрошено B запис./чтен.','Объект Rust, B','Дрейф, %'],
+    rows.map(r => [name(r.codec),number(r.wire_mean),usec(r.encode_ns),usec(r.decode_ns),
+      number(r.encode_allocs)+' / '+number(r.decode_allocs),
+      number(r.encode_alloc_bytes,1)+' / '+number(r.decode_alloc_bytes,1),
+      number(r.object_bytes,0),number(r.drift_percent)]));
+}
+get('hardware').textContent = data.realistic.environment.cpu.Name.trim() + ' · Windows · Сопоставление по типу нагрузки';
+options('workload',Object.entries(data.workloads),'api');
+options('corpus',Object.entries(data.corpora),'periodic_16');
+function renderCodecs() {
+  const rows = data.codecRows.filter(row=>row.workload===get('workload').value);
+  const metric = get('chart-metric').value;
+  const maximum = Math.max(...rows.map(row=>row[metric]));
+  const chart = get('codec-chart');
+  const format = value => metric === 'wire_mean' ? number(value)+' B' : usec(value)+' мкс';
+  const sorted = rows.toSorted((a,b)=>a[metric]-b[metric]);
+  chart.setAttribute('aria-label',sorted.map(row=>name(row.codec)+': '+format(row[metric])).join(', '));
+  chart.replaceChildren(...sorted.map(row=>{
+    const bar = document.createElement('div');
+    bar.className = 'bar-row';
+    const label = document.createElement('span');
+    label.textContent = name(row.codec);
+    const track = document.createElement('div');
+    track.className = 'bar-track';
+    const fill = document.createElement('span');
+    fill.className = 'bar-fill';
+    fill.style.width = 100*row[metric]/maximum+'%';
+    track.append(fill);
+    const value = document.createElement('span');
+    value.className = 'bar-number';
+    value.textContent = format(row[metric]);
+    bar.append(label,track,value);
+    return bar;
+  }));
+  profiles('codec-table',rows);
+}
+const renderStrings = () => profiles('string-table',data.stringRows.filter(row=>row.workload===get('corpus').value));
+get('workload').onchange = renderCodecs;
+get('chart-metric').onchange = renderCodecs;
+get('corpus').onchange = renderStrings;
+renderCodecs();
+renderStrings();
+get('http-count').textContent = number(data.measuredHttpRequests,0) + ' проверенных запросов в измерительных фазах. Ошибок содержимого и HTTP нет.';
+cells('http-table',['Кодек','Запросов/с [прогоны]','p50, мс','p95, мс','p99, мс','Запрос + ответ, B'],data.httpRows.map(r=>[
+  name(r.codec),number(r.rps,0)+' ['+r.rps_range.map(x=>number(x,0)).join(' / ')+']',
+  ms(r.p50_ms),ms(r.p95_ms),ms(r.p99_ms),number(r.api_body_bytes),
+]));
+cells('socket-table',['Кодек','Heartbeat p95, мкс','Heartbeat/pong, B','32 Events + ACK p95, мкс','Events/с','На Event, B'],
+  data.tcpRows.map(r=>[name(r.codec),number(r.heartbeat_p95_us),number(r.heartbeat_bytes),number(r.batch_p95_us),number(r.active_events_per_s,0),number(r.event_bytes)]));
+cells('native-table',['Способ чтения','Время, нс','Дрейф, %'],
+  ['fields','copy_aligned','copy_unaligned','overlay_aligned'].map(mode=>{
+    const row=data.native.find(r=>r.codec===mode);
+    return [name(mode),number(row.median_ns),number(row.drift_percent)];
+  }));
+const configurations = data.codecs.map(id=>[id,name(id)]);
+options('base',configurations,'protobuf');
+options('candidate',configurations,'qsl_bitmap');
+const input = id => Math.max(0,Number(get(id).value) || 0);
+function economy() {
+  const calculate = id => {
+    const http = data.httpRows.find(row=>row.codec===id);
+    const tcp = data.tcpRows.find(row=>row.codec===id);
+    return [http.api_body_bytes * input('api-rate'),
+      tcp.heartbeat_bytes * input('connections') / Math.max(1,input('heartbeat-period')),
+      tcp.event_bytes * input('connections') * input('event-rate')]
+      .map(bytesPerSecond => bytesPerSecond * 86400 / 2**30);
+  };
+  const a = get('base').value;
+  const b = get('candidate').value;
+  const first = calculate(a);
+  const second = calculate(b);
+  const total = values => values.reduce((sum,x)=>sum+x,0);
+  const difference = total(first) - total(second);
+  const output = get('economy-output');
+  const headline = document.createElement('div');
+  headline.className = 'outcome';
+  headline.textContent = (difference >= 0 ? 'Экономия ' : 'Дополнительный объём ') + number(Math.abs(difference)) + ' GiB/сутки'
+    + (total(first)>0 ? ' · ' + number(100*Math.abs(difference)/total(first)) + '%' : '');
+  const breakdown = document.createElement('div');
+  breakdown.className = 'table';
+  breakdown.id = 'economy-table';
+  output.replaceChildren(headline,breakdown);
+  if (input('price') > 0) {
+    const cost = document.createElement('div');
+    cost.textContent = 'Разница в условных единицах за 30 суток: ' + number(Math.abs(difference)*30*input('price'));
+    output.append(cost);
+  }
+  cells('economy-table',['Формат','HTTP, GiB','Heartbeat, GiB','Events, GiB','Всего за сутки, GiB'],
+    [[name(a),...first.map(x=>number(x)),number(total(first))],[name(b),...second.map(x=>number(x)),number(total(second))]]);
+}
+get('parameters').addEventListener('input',economy);
+get('parameters').addEventListener('change',economy);
+get('parameters').addEventListener('submit',event=>event.preventDefault());
+economy();
+
+const tabs = [...document.querySelectorAll('[role=tab]')];
+function activate(tab, focus = false, bringHeadingIntoView = false) {
+  const selected = tab.getAttribute('aria-controls');
+  for (const item of tabs) {
+    const active = item === tab;
+    item.setAttribute('aria-selected',String(active));
+    item.tabIndex = active ? 0 : -1;
+    get(item.getAttribute('aria-controls')).hidden = !active;
+  }
+  if (location.hash !== '#'+selected) history.replaceState(null,'','#'+selected);
+  if (focus) tab.focus();
+  const headerBottom = document.querySelector('header').offsetHeight;
+  if (bringHeadingIntoView && window.scrollY > headerBottom) window.scrollTo(0,headerBottom);
+}
+for (const [index, tab] of tabs.entries()) {
+  tab.addEventListener('click',()=>activate(tab,false,true));
+  tab.addEventListener('keydown',event=>{
+    const target = event.key === 'ArrowRight' ? tabs[(index+1)%tabs.length]
+      : event.key === 'ArrowLeft' ? tabs[(index+tabs.length-1)%tabs.length]
+      : event.key === 'Home' ? tabs[0] : event.key === 'End' ? tabs.at(-1) : null;
+    if (target) { event.preventDefault(); activate(target,true,true); }
+  });
+}
+const fromHash = () => activate(tabs.find(tab=>tab.getAttribute('aria-controls')===location.hash.slice(1)) ?? tabs[0]);
+window.addEventListener('hashchange',fromHash);
+fromHash();
+</script>
+</body>
+</html>

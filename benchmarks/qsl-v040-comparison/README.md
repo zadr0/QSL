@@ -6,13 +6,16 @@
 
 | Отчёт | Что измерено |
 |---|---|
+| [HTML с вкладками](dashboard.html) | Кодеки, полный HTTP API, TCP Heartbeat/Events, функции QSL и калькулятор трафика |
+| [Прикладные сценарии](REALISTIC.md) | Полиморфные вложенные сообщения, одни входы для шести вариантов, k6 и постоянные TCP-соединения |
+| [Трансмутация и строки](QSL-FEATURES.md) | Чтение по полям, copy, overlay, String, StackString и QSL-LZ |
 | [Одинаковые структуры](SAME-STRUCTURES.md) | По одному фиксированному baseline QSL / Protobuf / Bincode / Cap’n Proto на общем наборе данных и с одинаковым владением |
 | [Только QSL](QSL-ONLY.md) | default, compact, alignment, pointing, group/BMI2, PS, OT, BM, String/StackString/&str |
 | [Все режимы Dyn](DYN.md) | line 16/32/64, index(dynamic) 32/64, index(strict) 32/64; compact для индексов; owned и borrowed |
 | [Автоматические раскладки](LAYOUT.md) | Rust-смещения, размер и выравнивание, изменения кадра, индексы памяти и скорости для `auto` и `auto[wire=1]` |
 | [k6 / HTTP](K6.md) | Запись и чтение трёх структур для четырёх протоколов и всех семи Dyn-режимов; closed и open model |
 | [Полная исходная матрица](RESULTS.md) | Все основные варианты, размеры кадров, аллокации и ограничения |
-| [HTML](report.html) | Локально открываемый отчёт с графиками основной матрицы |
+| [HTML основной матрицы](report.html) | Графики прежних изолированных замеров чисел, optional-полей и строк |
 
 Разделы сравнения одинаковых структур и вариантов QSL являются разными срезами одного полного основного прогона. Dyn измерен отдельным исполняемым файлом и отдельными проходами. k6 выполняется после всех микробенчмарков; нагрузочные тесты не идут одновременно с ними.
 
@@ -115,6 +118,19 @@ cargo run --release --locked --manifest-path layout/Cargo.toml --bin probe > res
 ./tools/run-dyn.ps1 -Suite layout -Prefix layout-
 node tools/layout-report.mjs
 ~~~
+
+## Воспроизведение прикладных сценариев и функций QSL
+
+Сохраните старые `results/realistic` и `results/qsl-features` в другой папке перед новым запуском. Для первого запуска с пустым Cargo cache загрузите зависимости командой `cargo fetch --locked --manifest-path realistic/Cargo.toml` и аналогично для `qsl-features/Cargo.toml`. В каталоге `tools/bin` нужен компилятор Cap’n Proto из предыдущего шага.
+
+~~~powershell
+./tools/run-realistic.ps1
+./tools/run-dyn.ps1 -Suite qsl-features -Prefix qsl-features-
+node tools/scenario-report.mjs
+node tools/serve-reports.mjs 7360
+~~~
+
+[Локальный HTML](http://127.0.0.1:7360/dashboard.html) доступен при запущенном сервере. Можно также открыть скачанный `dashboard.html` напрямую. Оба транспорта используют loopback. Изолированные замеры, сокеты и k6 выполняются последовательно.
 
 ## Обозначения QSL
 

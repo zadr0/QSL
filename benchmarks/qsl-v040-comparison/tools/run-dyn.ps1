@@ -1,9 +1,19 @@
-param([int]$Passes=2,[int]$Core=2,[ValidateSet('dyn','layout')][string]$Suite='dyn',[string]$Prefix="$Suite-",[string]$Compiler=$env:CAPNP,[int]$StartPass=1,[double]$MaxCpuPercent=20,[int]$GateTimeoutSeconds=600)
+param([int]$Passes=2,[int]$Core=2,[ValidateSet('dyn','layout','realistic','qsl-features')][string]$Suite='dyn',[string]$Prefix="$Suite-",[string]$Compiler=$env:CAPNP,[int]$StartPass=1,[double]$MaxCpuPercent=20,[int]$GateTimeoutSeconds=600)
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot "../$Suite"))
 Set-Location -LiteralPath $root
 if($Compiler){$env:CAPNP=$Compiler}
 $env:RUSTFLAGS='-C target-cpu=native'
+if($Suite -eq 'qsl-features'){
+ $env:CARGO_TARGET_DIR=[IO.Path]::GetFullPath((Join-Path $root '../target'))
+ cargo test --offline --release --locked
+ if($LASTEXITCODE -ne 0){throw 'QSL feature contracts failed'}
+ cargo bench --offline --locked --bench comparison --no-run --message-format=json > build-artifacts.jsonl
+ if($LASTEXITCODE -ne 0){throw 'QSL feature Criterion build failed'}
+ New-Item -ItemType Directory -Force -Path '../results/qsl-features' | Out-Null
+ cargo run --offline --release --locked --bin probe > ../results/qsl-features/profiles.json
+ if($LASTEXITCODE -ne 0){throw 'QSL feature allocation probe failed'}
+}
 if(-not(Test-Path -LiteralPath 'build-artifacts.jsonl')){throw 'Build first with the documented cargo bench --no-run command.'}
 $artifact=Get-Content -LiteralPath 'build-artifacts.jsonl' | ForEach-Object {try{$_|ConvertFrom-Json}catch{}} | Where-Object {$_.reason -eq 'compiler-artifact' -and $_.target.name -eq 'comparison' -and $_.executable} | Select-Object -Last 1
 if(-not $artifact){throw 'Benchmark executable was not found in build-artifacts.jsonl'}

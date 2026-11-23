@@ -1,0 +1,44 @@
+﻿[
+    {
+        "run":  "qsl-features-run-1",
+        "exitCode":  0,
+        "elapsedSeconds":  100.36966629999999,
+        "processCpuSeconds":  92.78125,
+        "systemBefore":  [
+                             5985928906250,
+                             7607173437500,
+                             3422691250000
+                         ],
+        "systemAfter":  [
+                            5988183437500,
+                            7609842812500,
+                            3424036875000
+                        ],
+        "activeCpuSeconds":  176.046875,
+        "otherSystemCpuCoreEquivalent":  0.82958953705318839,
+        "preRunTotalCpuPercent":  12.5,
+        "peakWorkingSetBytes":  null,
+        "reverseOrder":  false
+    },
+    {
+        "run":  "qsl-features-run-2",
+        "exitCode":  0,
+        "elapsedSeconds":  99.909894299999991,
+        "processCpuSeconds":  92.53125,
+        "systemBefore":  [
+                             5988501875000,
+                             7610195312500,
+                             3424064375000
+                         ],
+        "systemAfter":  [
+                            5990771093750,
+                            7612840625000,
+                            3425415937500
+                        ],
+        "activeCpuSeconds":  172.765625,
+        "otherSystemCpuCoreEquivalent":  0.80306735946571817,
+        "preRunTotalCpuPercent":  11.821705426356587,
+        "peakWorkingSetBytes":  null,
+        "reverseOrder":  true
+    }
+]

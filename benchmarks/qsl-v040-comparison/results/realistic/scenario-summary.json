@@ -1,0 +1,2524 @@
+{
+  "names": {
+    "qsl": "QSL",
+    "qsl_bitmap": "QSL bitmap",
+    "protobuf": "Protobuf / Prost",
+    "bincode_varint": "Bincode varint",
+    "capnp": "Cap’n Proto",
+    "capnp_packed": "Cap’n Proto packed",
+    "string": "String",
+    "stack_string": "StackString",
+    "qsl_lz": "QSL-LZ / InlineString",
+    "fields": "Чтение по полям",
+    "copy_aligned": "Трансмутация с копией",
+    "copy_unaligned": "Копия со смещённого адреса",
+    "overlay_aligned": "Заимствование overlay"
+  },
+  "workloads": {
+    "api": "API · вложенные сообщения",
+    "heartbeat": "Heartbeat · контроль связи",
+    "event": "Event · одно событие"
+  },
+  "corpora": {
+    "periodic_16": "Период 16 байт",
+    "structured_log": "Структурированный журнал",
+    "noisy_ascii": "Шумовой ASCII"
+  },
+  "codecs": [
+    "qsl",
+    "qsl_bitmap",
+    "protobuf",
+    "bincode_varint",
+    "capnp",
+    "capnp_packed"
+  ],
+  "codecRows": [
+    {
+      "workload": "api",
+      "codec": "qsl",
+      "object_bytes": 336,
+      "wire_mean": 123.453125,
+      "wire_min": 54,
+      "wire_max": 276,
+      "encode_ns": 567.4726213225174,
+      "decode_ns": 2870.6558898313883,
+      "drift_percent": 1.4433871292215037,
+      "encode_allocs": 4.65625,
+      "encode_alloc_bytes": 225.68359375,
+      "decode_allocs": 5.63671875,
+      "decode_alloc_bytes": 156.375
+    },
+    {
+      "workload": "api",
+      "codec": "qsl_bitmap",
+      "object_bytes": 336,
+      "wire_mean": 121.5859375,
+      "wire_min": 53,
+      "wire_max": 274,
+      "encode_ns": 529.7511603740586,
+      "decode_ns": 2702.7924546359377,
+      "drift_percent": 0.655895084466821,
+      "encode_allocs": 4.65625,
+      "encode_alloc_bytes": 223.23046875,
+      "decode_allocs": 5.63671875,
+      "decode_alloc_bytes": 155.7890625
+    },
+    {
+      "workload": "api",
+      "codec": "protobuf",
+      "object_bytes": 336,
+      "wire_mean": 85.7421875,
+      "wire_min": 35,
+      "wire_max": 213,
+      "encode_ns": 414.01792745789623,
+      "decode_ns": 581.713108914709,
+      "drift_percent": 1.1902077196572938,
+      "encode_allocs": 1,
+      "encode_alloc_bytes": 85.7421875,
+      "decode_allocs": 3.16015625,
+      "decode_alloc_bytes": 105.08203125
+    },
+    {
+      "workload": "api",
+      "codec": "bincode_varint",
+      "object_bytes": 336,
+      "wire_mean": 91.8671875,
+      "wire_min": 40,
+      "wire_max": 220,
+      "encode_ns": 341.93463915947086,
+      "decode_ns": 422.7027041691451,
+      "drift_percent": 2.335410856551925,
+      "encode_allocs": 1,
+      "encode_alloc_bytes": 91.8671875,
+      "decode_allocs": 1.98046875,
+      "decode_alloc_bytes": 54.14453125
+    },
+    {
+      "workload": "api",
+      "codec": "capnp",
+      "object_bytes": 336,
+      "wire_mean": 237.15625,
+      "wire_min": 128,
+      "wire_max": 400,
+      "encode_ns": 592.5493916420035,
+      "decode_ns": 573.3719827119851,
+      "drift_percent": 14.298661206798698,
+      "encode_allocs": 3,
+      "encode_alloc_bytes": 8493.15625,
+      "decode_allocs": 1.98046875,
+      "decode_alloc_bytes": 55.17578125
+    },
+    {
+      "workload": "api",
+      "codec": "capnp_packed",
+      "object_bytes": 336,
+      "wire_mean": 107.32421875,
+      "wire_min": 47,
+      "wire_max": 240,
+      "encode_ns": 1059.5721858880338,
+      "decode_ns": 868.3224010128547,
+      "drift_percent": 1.1210177739279488,
+      "encode_allocs": 5.3671875,
+      "encode_alloc_bytes": 8516.0625,
+      "decode_allocs": 3.98046875,
+      "decode_alloc_bytes": 300.33203125
+    },
+    {
+      "workload": "heartbeat",
+      "codec": "qsl",
+      "object_bytes": 336,
+      "wire_mean": 35.375,
+      "wire_min": 35,
+      "wire_max": 39,
+      "encode_ns": 206.45939052350485,
+      "decode_ns": 492.2232006139997,
+      "drift_percent": 0.49691493461061825,
+      "encode_allocs": 2,
+      "encode_alloc_bytes": 48.75,
+      "decode_allocs": 1,
+      "decode_alloc_bytes": 13.375
+    },
+    {
+      "workload": "heartbeat",
+      "codec": "qsl_bitmap",
+      "object_bytes": 336,
+      "wire_mean": 35.375,
+      "wire_min": 35,
+      "wire_max": 39,
+      "encode_ns": 196.71441804399723,
+      "decode_ns": 452.8972006681179,
+      "drift_percent": 2.974698180216606,
+      "encode_allocs": 2,
+      "encode_alloc_bytes": 48.75,
+      "decode_allocs": 1,
+      "decode_alloc_bytes": 13.375
+    },
+    {
+      "workload": "heartbeat",
+      "codec": "protobuf",
+      "object_bytes": 336,
+      "wire_mean": 23.4296875,
+      "wire_min": 21,
+      "wire_max": 26,
+      "encode_ns": 138.41405486380052,
+      "decode_ns": 110.84994096641341,
+      "drift_percent": 2.8298527602991985,
+      "encode_allocs": 1,
+      "encode_alloc_bytes": 23.4296875,
+      "decode_allocs": 0,
+      "decode_alloc_bytes": 0
+    },
+    {
+      "workload": "heartbeat",
+      "codec": "bincode_varint",
+      "object_bytes": 336,
+      "wire_mean": 27.1328125,
+      "wire_min": 27,
+      "wire_max": 30,
+      "encode_ns": 140.64333882796882,
+      "decode_ns": 108.4666558984224,
+      "drift_percent": 3.797140700511711,
+      "encode_allocs": 1,
+      "encode_alloc_bytes": 27.1328125,
+      "decode_allocs": 0,
+      "decode_alloc_bytes": 0
+    },
+    {
+      "workload": "heartbeat",
+      "codec": "capnp",
+      "object_bytes": 336,
+      "wire_mean": 96,
+      "wire_min": 96,
+      "wire_max": 96,
+      "encode_ns": 395.0563393012545,
+      "decode_ns": 157.9174689853691,
+      "drift_percent": 1.7233753671696819,
+      "encode_allocs": 3,
+      "encode_alloc_bytes": 8352,
+      "decode_allocs": 0,
+      "decode_alloc_bytes": 0
+    },
+    {
+      "workload": "heartbeat",
+      "codec": "capnp_packed",
+      "object_bytes": 336,
+      "wire_mean": 29.921875,
+      "wire_min": 27,
+      "wire_max": 31,
+      "encode_ns": 548.6736093340157,
+      "decode_ns": 345.4838425572844,
+      "drift_percent": 1.5504513058661944,
+      "encode_allocs": 4,
+      "encode_alloc_bytes": 8293.921875,
+      "decode_allocs": 2,
+      "decode_alloc_bytes": 104
+    },
+    {
+      "workload": "event",
+      "codec": "qsl",
+      "object_bytes": 336,
+      "wire_mean": 133.56640625,
+      "wire_min": 45,
+      "wire_max": 245,
+      "encode_ns": 543.9013646058064,
+      "decode_ns": 3002.729747688213,
+      "drift_percent": 0.6859422547771037,
+      "encode_allocs": 4.49609375,
+      "encode_alloc_bytes": 245.10546875,
+      "decode_allocs": 5.42578125,
+      "decode_alloc_bytes": 178.11328125
+    },
+    {
+      "workload": "event",
+      "codec": "qsl_bitmap",
+      "object_bytes": 336,
+      "wire_mean": 131.859375,
+      "wire_min": 44,
+      "wire_max": 243,
+      "encode_ns": 514.8331194342738,
+      "decode_ns": 2900.5666702118137,
+      "drift_percent": 2.4759718082642803,
+      "encode_allocs": 4.49609375,
+      "encode_alloc_bytes": 242.9921875,
+      "decode_allocs": 5.42578125,
+      "decode_alloc_bytes": 177.70703125
+    },
+    {
+      "workload": "event",
+      "codec": "protobuf",
+      "object_bytes": 336,
+      "wire_mean": 91.34765625,
+      "wire_min": 29,
+      "wire_max": 179,
+      "encode_ns": 455.3481879288078,
+      "decode_ns": 633.6105262629142,
+      "drift_percent": 3.317770811248098,
+      "encode_allocs": 1,
+      "encode_alloc_bytes": 91.34765625,
+      "decode_allocs": 3.6015625,
+      "decode_alloc_bytes": 136.26171875
+    },
+    {
+      "workload": "event",
+      "codec": "bincode_varint",
+      "object_bytes": 336,
+      "wire_mean": 97.84375,
+      "wire_min": 31,
+      "wire_max": 186,
+      "encode_ns": 340.1066860092059,
+      "decode_ns": 416.9954797091899,
+      "drift_percent": 1.1156748290978244,
+      "encode_allocs": 1,
+      "encode_alloc_bytes": 97.84375,
+      "decode_allocs": 1.9296875,
+      "decode_alloc_bytes": 66.57421875
+    },
+    {
+      "workload": "event",
+      "codec": "capnp",
+      "object_bytes": 336,
+      "wire_mean": 251.90625,
+      "wire_min": 120,
+      "wire_max": 408,
+      "encode_ns": 584.9734857100474,
+      "decode_ns": 524.1081374030811,
+      "drift_percent": 0.7505959697812433,
+      "encode_allocs": 3,
+      "encode_alloc_bytes": 8507.90625,
+      "decode_allocs": 1.9296875,
+      "decode_alloc_bytes": 67.60546875
+    },
+    {
+      "workload": "event",
+      "codec": "capnp_packed",
+      "object_bytes": 336,
+      "wire_mean": 111.30078125,
+      "wire_min": 36,
+      "wire_max": 218,
+      "encode_ns": 1075.2759995029216,
+      "decode_ns": 1084.7533749356799,
+      "drift_percent": 28.87310412270764,
+      "encode_allocs": 5.40234375,
+      "encode_alloc_bytes": 8523.890625,
+      "decode_allocs": 3.9296875,
+      "decode_alloc_bytes": 327.51171875
+    }
+  ],
+  "stringRows": [
+    {
+      "workload": "periodic_16",
+      "codec": "string",
+      "object_bytes": 32,
+      "wire_mean": 1032,
+      "wire_min": 1032,
+      "wire_max": 1032,
+      "encode_ns": 24.904584545838524,
+      "decode_ns": 194.98648317706952,
+      "drift_percent": 3.5423396870451214,
+      "encode_allocs": 0,
+      "encode_alloc_bytes": 0,
+      "decode_allocs": 1,
+      "decode_alloc_bytes": 1024
+    },
+    {
+      "workload": "periodic_16",
+      "codec": "stack_string",
+      "object_bytes": 1032,
+      "wire_mean": 1032,
+      "wire_min": 1032,
+      "wire_max": 1032,
+      "encode_ns": 21.945005560630335,
+      "decode_ns": 148.941699818239,
+      "drift_percent": 2.1201430422011884,
+      "encode_allocs": 0,
+      "encode_alloc_bytes": 0,
+      "decode_allocs": 0,
+      "decode_alloc_bytes": 0
+    },
+    {
+      "workload": "periodic_16",
+      "codec": "qsl_lz",
+      "object_bytes": 1032,
+      "wire_mean": 47,
+      "wire_min": 47,
+      "wire_max": 47,
+      "encode_ns": 86.77659260180889,
+      "decode_ns": 2247.0423627013515,
+      "drift_percent": 0.5451065068105652,
+      "encode_allocs": 0,
+      "encode_alloc_bytes": 0,
+      "decode_allocs": 0,
+      "decode_alloc_bytes": 0
+    },
+    {
+      "workload": "structured_log",
+      "codec": "string",
+      "object_bytes": 32,
+      "wire_mean": 1032,
+      "wire_min": 1032,
+      "wire_max": 1032,
+      "encode_ns": 27.641029765801605,
+      "decode_ns": 193.06420689410905,
+      "drift_percent": 1.8651382354499602,
+      "encode_allocs": 0,
+      "encode_alloc_bytes": 0,
+      "decode_allocs": 1,
+      "decode_alloc_bytes": 1024
+    },
+    {
+      "workload": "structured_log",
+      "codec": "stack_string",
+      "object_bytes": 1032,
+      "wire_mean": 1032,
+      "wire_min": 1032,
+      "wire_max": 1032,
+      "encode_ns": 21.804111895648063,
+      "decode_ns": 151.92904585290034,
+      "drift_percent": 7.818883456841585,
+      "encode_allocs": 0,
+      "encode_alloc_bytes": 0,
+      "decode_allocs": 0,
+      "decode_alloc_bytes": 0
+    },
+    {
+      "workload": "structured_log",
+      "codec": "qsl_lz",
+      "object_bytes": 1032,
+      "wire_mean": 1030,
+      "wire_min": 1030,
+      "wire_max": 1030,
+      "encode_ns": 24.69756153305607,
+      "decode_ns": 173.24064935044473,
+      "drift_percent": 2.3150828193880173,
+      "encode_allocs": 0,
+      "encode_alloc_bytes": 0,
+      "decode_allocs": 0,
+      "decode_alloc_bytes": 0
+    },
+    {
+      "workload": "noisy_ascii",
+      "codec": "string",
+      "object_bytes": 32,
+      "wire_mean": 1032,
+      "wire_min": 1032,
+      "wire_max": 1032,
+      "encode_ns": 33.00013163740209,
+      "decode_ns": 191.99370493578056,
+      "drift_percent": 2.73317139438083,
+      "encode_allocs": 0,
+      "encode_alloc_bytes": 0,
+      "decode_allocs": 1,
+      "decode_alloc_bytes": 1024
+    },
+    {
+      "workload": "noisy_ascii",
+      "codec": "stack_string",
+      "object_bytes": 1032,
+      "wire_mean": 1032,
+      "wire_min": 1032,
+      "wire_max": 1032,
+      "encode_ns": 21.876013032431025,
+      "decode_ns": 146.18681951464092,
+      "drift_percent": 4.29762084621585,
+      "encode_allocs": 0,
+      "encode_alloc_bytes": 0,
+      "decode_allocs": 0,
+      "decode_alloc_bytes": 0
+    },
+    {
+      "workload": "noisy_ascii",
+      "codec": "qsl_lz",
+      "object_bytes": 1032,
+      "wire_mean": 1030,
+      "wire_min": 1030,
+      "wire_max": 1030,
+      "encode_ns": 24.542449379922886,
+      "decode_ns": 169.1360370585636,
+      "drift_percent": 2.466270952181521,
+      "encode_allocs": 0,
+      "encode_alloc_bytes": 0,
+      "decode_allocs": 0,
+      "decode_alloc_bytes": 0
+    }
+  ],
+  "native": [
+    {
+      "id": "native/read/copy_aligned",
+      "workload": "native",
+      "operation": "read",
+      "codec": "copy_aligned",
+      "median_ns": 3.6652632873150455,
+      "runs_ns": [
+        3.6692426462653254,
+        3.6612839283647656
+      ],
+      "ci99_ns": [
+        [
+          3.618323652830173,
+          3.7009116473870716
+        ],
+        [
+          3.631417993404682,
+          3.6990765674693336
+        ]
+      ],
+      "drift_percent": 0.21713905050433313
+    },
+    {
+      "id": "native/read/copy_unaligned",
+      "workload": "native",
+      "operation": "read",
+      "codec": "copy_unaligned",
+      "median_ns": 3.862521611412209,
+      "runs_ns": [
+        3.8629111046629308,
+        3.8621321181614876
+      ],
+      "ci99_ns": [
+        [
+          3.81630765650848,
+          3.920561436190506
+        ],
+        [
+          3.8208322680397586,
+          3.9367764501751044
+        ]
+      ],
+      "drift_percent": 0.02016782246969317
+    },
+    {
+      "id": "native/read/fields",
+      "workload": "native",
+      "operation": "read",
+      "codec": "fields",
+      "median_ns": 4.795822956698742,
+      "runs_ns": [
+        4.764778440960651,
+        4.826867472436833
+      ],
+      "ci99_ns": [
+        [
+          4.71936397339421,
+          4.813114702428013
+        ],
+        [
+          4.7906555179596175,
+          4.901522155522027
+        ]
+      ],
+      "drift_percent": 1.2946481143441047
+    },
+    {
+      "id": "native/read/overlay_aligned",
+      "workload": "native",
+      "operation": "read",
+      "codec": "overlay_aligned",
+      "median_ns": 4.180763228449,
+      "runs_ns": [
+        4.217541188985136,
+        4.143985267912864
+      ],
+      "ci99_ns": [
+        [
+          4.148570366723814,
+          4.258610674727812
+        ],
+        [
+          4.102576113955185,
+          4.1869763280986625
+        ]
+      ],
+      "drift_percent": 1.7593897825101121
+    }
+  ],
+  "nativeMeta": {
+    "alignment": 8,
+    "copy_allocs": [
+      0,
+      0
+    ],
+    "copy_unaligned_allocs": [
+      0,
+      0
+    ],
+    "field_allocs": [
+      0,
+      0
+    ],
+    "native_object_bytes": 16,
+    "overlay_allocs": [
+      0,
+      0
+    ],
+    "wire_bytes": 16
+  },
+  "httpRows": [
+    {
+      "codec": "qsl",
+      "trials": [
+        {
+          "pass": 1,
+          "requests": 40379,
+          "rps": 5047.375,
+          "p50_ms": 1.0027,
+          "p95_ms": 5.567029999999994,
+          "p99_ms": 10.4637,
+          "binary_body_bytes": 246.90611456450134
+        },
+        {
+          "pass": 2,
+          "requests": 40469,
+          "rps": 5058.625,
+          "p50_ms": 1.0004,
+          "p95_ms": 5.7489799999999756,
+          "p99_ms": 11.092159999999991,
+          "binary_body_bytes": 246.9010353603993
+        }
+      ],
+      "requests": 80848,
+      "rps": 5053,
+      "rps_range": [
+        5047.375,
+        5058.625
+      ],
+      "p50_ms": 1.00155,
+      "p95_ms": 5.658004999999985,
+      "p99_ms": 10.777929999999994,
+      "drift_percent": 0.2226400158321789,
+      "api_body_bytes": 246.90625,
+      "request_bytes": 123.453125,
+      "response_bytes": 123.453125
+    },
+    {
+      "codec": "qsl_bitmap",
+      "trials": [
+        {
+          "pass": 1,
+          "requests": 41680,
+          "rps": 5210,
+          "p50_ms": 0.9977,
+          "p95_ms": 5.5786,
+          "p99_ms": 10.942534999999989,
+          "binary_body_bytes": 243.16909788867562
+        },
+        {
+          "pass": 2,
+          "requests": 40144,
+          "rps": 5018,
+          "p50_ms": 0.9997,
+          "p95_ms": 5.64,
+          "p99_ms": 10.807469,
+          "binary_body_bytes": 243.16899163013153
+        }
+      ],
+      "requests": 81824,
+      "rps": 5114,
+      "rps_range": [
+        5210,
+        5018
+      ],
+      "p50_ms": 0.9987,
+      "p95_ms": 5.609299999999999,
+      "p99_ms": 10.875001999999995,
+      "drift_percent": 3.7543996871333594,
+      "api_body_bytes": 243.171875,
+      "request_bytes": 121.5859375,
+      "response_bytes": 121.5859375
+    },
+    {
+      "codec": "protobuf",
+      "trials": [
+        {
+          "pass": 1,
+          "requests": 41412,
+          "rps": 5176.5,
+          "p50_ms": 0.6985,
+          "p95_ms": 6.3008,
+          "p99_ms": 11.4918,
+          "binary_body_bytes": 171.73374867188255
+        },
+        {
+          "pass": 2,
+          "requests": 42738,
+          "rps": 5342.25,
+          "p50_ms": 1.0056,
+          "p95_ms": 5.249530000000015,
+          "p99_ms": 10.4103,
+          "binary_body_bytes": 171.73976320838597
+        }
+      ],
+      "requests": 84150,
+      "rps": 5259.375,
+      "rps_range": [
+        5176.5,
+        5342.25
+      ],
+      "p50_ms": 0.85205,
+      "p95_ms": 5.775165000000007,
+      "p99_ms": 10.951049999999999,
+      "drift_percent": 3.1515151515151514,
+      "api_body_bytes": 171.734375,
+      "request_bytes": 85.7421875,
+      "response_bytes": 85.9921875
+    },
+    {
+      "codec": "bincode_varint",
+      "trials": [
+        {
+          "pass": 1,
+          "requests": 42200,
+          "rps": 5275,
+          "p50_ms": 1.0019,
+          "p95_ms": 5.0501,
+          "p99_ms": 10.4446,
+          "binary_body_bytes": 183.73938388625592
+        },
+        {
+          "pass": 2,
+          "requests": 42573,
+          "rps": 5321.625,
+          "p50_ms": 1.0026,
+          "p95_ms": 5.5375,
+          "p99_ms": 10.882679999999995,
+          "binary_body_bytes": 183.72841942075965
+        }
+      ],
+      "requests": 84773,
+      "rps": 5298.3125,
+      "rps_range": [
+        5275,
+        5321.625
+      ],
+      "p50_ms": 1.00225,
+      "p95_ms": 5.293799999999999,
+      "p99_ms": 10.663639999999997,
+      "drift_percent": 0.8799971689099123,
+      "api_body_bytes": 183.734375,
+      "request_bytes": 91.8671875,
+      "response_bytes": 91.8671875
+    },
+    {
+      "codec": "capnp",
+      "trials": [
+        {
+          "pass": 1,
+          "requests": 40283,
+          "rps": 5035.375,
+          "p50_ms": 1.0021,
+          "p95_ms": 4.509130000000008,
+          "p99_ms": 10.318,
+          "binary_body_bytes": 474.30588585755777
+        },
+        {
+          "pass": 2,
+          "requests": 37044,
+          "rps": 4630.5,
+          "p50_ms": 0.9979,
+          "p95_ms": 4.922339999999997,
+          "p99_ms": 10.457109999999998,
+          "binary_body_bytes": 474.3094698196739
+        }
+      ],
+      "requests": 77327,
+      "rps": 4832.9375,
+      "rps_range": [
+        5035.375,
+        4630.5
+      ],
+      "p50_ms": 1,
+      "p95_ms": 4.715735000000002,
+      "p99_ms": 10.387554999999999,
+      "drift_percent": 8.377410218940344,
+      "api_body_bytes": 474.3125,
+      "request_bytes": 237.15625,
+      "response_bytes": 237.15625
+    },
+    {
+      "codec": "capnp_packed",
+      "trials": [
+        {
+          "pass": 1,
+          "requests": 41248,
+          "rps": 5156,
+          "p50_ms": 1.0044499999999998,
+          "p95_ms": 4.5565,
+          "p99_ms": 10.9255,
+          "binary_body_bytes": 214.7704131109387
+        },
+        {
+          "pass": 2,
+          "requests": 40492,
+          "rps": 5061.5,
+          "p50_ms": 0.998,
+          "p95_ms": 5.880694999999998,
+          "p99_ms": 11.380281999999932,
+          "binary_body_bytes": 214.76805294873063
+        }
+      ],
+      "requests": 81740,
+      "rps": 5108.75,
+      "rps_range": [
+        5156,
+        5061.5
+      ],
+      "p50_ms": 1.0012249999999998,
+      "p95_ms": 5.218597499999999,
+      "p99_ms": 11.152890999999965,
+      "drift_percent": 1.8497675556643014,
+      "api_body_bytes": 214.7734375,
+      "request_bytes": 107.32421875,
+      "response_bytes": 107.44921875
+    }
+  ],
+  "tcpRows": [
+    {
+      "codec": "qsl",
+      "trials": [
+        {
+          "pass": 1,
+          "count": 2048,
+          "batch": 32,
+          "heartbeat_p50_us": 51.8,
+          "heartbeat_p95_us": 102.5,
+          "heartbeat_p99_us": 186.28899999999996,
+          "batch_p50_us": 185.2,
+          "batch_p95_us": 273.51999999999987,
+          "batch_p99_us": 813.8619999999999,
+          "heartbeat_bytes": 78.75,
+          "event_bytes": 138.06640625,
+          "active_events_per_s": 152844.26867809624
+        },
+        {
+          "pass": 2,
+          "count": 2048,
+          "batch": 32,
+          "heartbeat_p50_us": 47.8,
+          "heartbeat_p95_us": 120.36499999999998,
+          "heartbeat_p99_us": 196.6439999999999,
+          "batch_p50_us": 173.1,
+          "batch_p95_us": 297.32499999999993,
+          "batch_p99_us": 896.5279999999993,
+          "heartbeat_bytes": 78.75,
+          "event_bytes": 138.06640625,
+          "active_events_per_s": 159659.16510262273
+        }
+      ],
+      "heartbeat_p50_us": 49.8,
+      "heartbeat_p95_us": 111.43249999999999,
+      "heartbeat_p99_us": 191.46649999999994,
+      "batch_p50_us": 179.14999999999998,
+      "batch_p95_us": 285.4224999999999,
+      "batch_p99_us": 855.1949999999996,
+      "heartbeat_bytes": 78.75,
+      "event_bytes": 138.06640625,
+      "active_events_per_s": 156251.71689035947
+    },
+    {
+      "codec": "qsl_bitmap",
+      "trials": [
+        {
+          "pass": 1,
+          "count": 2048,
+          "batch": 32,
+          "heartbeat_p50_us": 47,
+          "heartbeat_p95_us": 118.73999999999978,
+          "heartbeat_p99_us": 249.10699999999994,
+          "batch_p50_us": 169.8,
+          "batch_p95_us": 277.67999999999984,
+          "batch_p99_us": 652.7339999999971,
+          "heartbeat_bytes": 78.75,
+          "event_bytes": 136.359375,
+          "active_events_per_s": 164981.7147112304
+        },
+        {
+          "pass": 2,
+          "count": 2048,
+          "batch": 32,
+          "heartbeat_p50_us": 49.7,
+          "heartbeat_p95_us": 122.6,
+          "heartbeat_p99_us": 223.91799999999998,
+          "batch_p50_us": 171.4,
+          "batch_p95_us": 281.42499999999995,
+          "batch_p99_us": 737.4809999999995,
+          "heartbeat_bytes": 78.75,
+          "event_bytes": 136.359375,
+          "active_events_per_s": 162765.05886002368
+        }
+      ],
+      "heartbeat_p50_us": 48.35,
+      "heartbeat_p95_us": 120.66999999999989,
+      "heartbeat_p99_us": 236.51249999999996,
+      "batch_p50_us": 170.60000000000002,
+      "batch_p95_us": 279.5524999999999,
+      "batch_p99_us": 695.1074999999983,
+      "heartbeat_bytes": 78.75,
+      "event_bytes": 136.359375,
+      "active_events_per_s": 163873.38678562705
+    },
+    {
+      "codec": "protobuf",
+      "trials": [
+        {
+          "pass": 1,
+          "count": 2048,
+          "batch": 32,
+          "heartbeat_p50_us": 48.6,
+          "heartbeat_p95_us": 131.2899999999999,
+          "heartbeat_p99_us": 377.53199999999987,
+          "batch_p50_us": 103,
+          "batch_p95_us": 224.8899999999999,
+          "batch_p99_us": 489.9319999999985,
+          "heartbeat_bytes": 55.109375,
+          "event_bytes": 95.84765625,
+          "active_events_per_s": 243564.23794935682
+        },
+        {
+          "pass": 2,
+          "count": 2048,
+          "batch": 32,
+          "heartbeat_p50_us": 45.6,
+          "heartbeat_p95_us": 85.24999999999987,
+          "heartbeat_p99_us": 159.1669999999999,
+          "batch_p50_us": 95.5,
+          "batch_p95_us": 158.165,
+          "batch_p99_us": 245.31999999999988,
+          "heartbeat_bytes": 55.109375,
+          "event_bytes": 95.84765625,
+          "active_events_per_s": 298650.97582438216
+        }
+      ],
+      "heartbeat_p50_us": 47.1,
+      "heartbeat_p95_us": 108.2699999999999,
+      "heartbeat_p99_us": 268.34949999999986,
+      "batch_p50_us": 99.25,
+      "batch_p95_us": 191.52749999999995,
+      "batch_p99_us": 367.6259999999992,
+      "heartbeat_bytes": 55.109375,
+      "event_bytes": 95.84765625,
+      "active_events_per_s": 271107.6068868695
+    },
+    {
+      "codec": "bincode_varint",
+      "trials": [
+        {
+          "pass": 1,
+          "count": 2048,
+          "batch": 32,
+          "heartbeat_p50_us": 46.5,
+          "heartbeat_p95_us": 97.1749999999998,
+          "heartbeat_p99_us": 204.10799999999992,
+          "batch_p50_us": 89.8,
+          "batch_p95_us": 161.49499999999998,
+          "batch_p99_us": 307.00699999999966,
+          "heartbeat_bytes": 62.265625,
+          "event_bytes": 102.34375,
+          "active_events_per_s": 310609.81632426725
+        },
+        {
+          "pass": 2,
+          "count": 2048,
+          "batch": 32,
+          "heartbeat_p50_us": 48.6,
+          "heartbeat_p95_us": 104.65999999999994,
+          "heartbeat_p99_us": 161.01299999999995,
+          "batch_p50_us": 91.2,
+          "batch_p95_us": 160.6899999999999,
+          "batch_p99_us": 255.66599999999994,
+          "heartbeat_bytes": 62.265625,
+          "event_bytes": 102.34375,
+          "active_events_per_s": 301957.59158226865
+        }
+      ],
+      "heartbeat_p50_us": 47.55,
+      "heartbeat_p95_us": 100.91749999999988,
+      "heartbeat_p99_us": 182.56049999999993,
+      "batch_p50_us": 90.5,
+      "batch_p95_us": 161.09249999999994,
+      "batch_p99_us": 281.3364999999998,
+      "heartbeat_bytes": 62.265625,
+      "event_bytes": 102.34375,
+      "active_events_per_s": 306283.70395326795
+    },
+    {
+      "codec": "capnp",
+      "trials": [
+        {
+          "pass": 1,
+          "count": 2048,
+          "batch": 32,
+          "heartbeat_p50_us": 49,
+          "heartbeat_p95_us": 104.2,
+          "heartbeat_p99_us": 170.47799999999995,
+          "batch_p50_us": 97.8,
+          "batch_p95_us": 163.2,
+          "batch_p99_us": 378.33,
+          "heartbeat_bytes": 200,
+          "event_bytes": 256.40625,
+          "active_events_per_s": 278050.2540534853
+        },
+        {
+          "pass": 2,
+          "count": 2048,
+          "batch": 32,
+          "heartbeat_p50_us": 47.7,
+          "heartbeat_p95_us": 100.16499999999999,
+          "heartbeat_p99_us": 185.10699999999994,
+          "batch_p50_us": 96.1,
+          "batch_p95_us": 166.72999999999996,
+          "batch_p99_us": 317.95699999999954,
+          "heartbeat_bytes": 200,
+          "event_bytes": 256.40625,
+          "active_events_per_s": 286208.402480566
+        }
+      ],
+      "heartbeat_p50_us": 48.35,
+      "heartbeat_p95_us": 102.1825,
+      "heartbeat_p99_us": 177.79249999999996,
+      "batch_p50_us": 96.94999999999999,
+      "batch_p95_us": 164.96499999999997,
+      "batch_p99_us": 348.1434999999998,
+      "heartbeat_bytes": 200,
+      "event_bytes": 256.40625,
+      "active_events_per_s": 282129.32826702564
+    },
+    {
+      "codec": "capnp_packed",
+      "trials": [
+        {
+          "pass": 1,
+          "count": 2048,
+          "batch": 32,
+          "heartbeat_p50_us": 47.7,
+          "heartbeat_p95_us": 94.79499999999996,
+          "heartbeat_p99_us": 165.853,
+          "batch_p50_us": 103.7,
+          "batch_p95_us": 168.3,
+          "batch_p99_us": 393.0569999999987,
+          "heartbeat_bytes": 67.96875,
+          "event_bytes": 115.80078125,
+          "active_events_per_s": 270037.6320448832
+        },
+        {
+          "pass": 2,
+          "count": 2048,
+          "batch": 32,
+          "heartbeat_p50_us": 47.9,
+          "heartbeat_p95_us": 107.72499999999992,
+          "heartbeat_p99_us": 182.28899999999996,
+          "batch_p50_us": 105.3,
+          "batch_p95_us": 180.92999999999998,
+          "batch_p99_us": 298.44899999999967,
+          "heartbeat_bytes": 67.96875,
+          "event_bytes": 115.80078125,
+          "active_events_per_s": 258050.29019632548
+        }
+      ],
+      "heartbeat_p50_us": 47.8,
+      "heartbeat_p95_us": 101.25999999999993,
+      "heartbeat_p99_us": 174.07099999999997,
+      "batch_p50_us": 104.5,
+      "batch_p95_us": 174.615,
+      "batch_p99_us": 345.7529999999992,
+      "heartbeat_bytes": 67.96875,
+      "event_bytes": 115.80078125,
+      "active_events_per_s": 264043.96112060436
+    }
+  ],
+  "realistic": {
+    "environment": {
+      "dateLocal": "2026-11-23T18:22:44.7592953+05:00",
+      "timeZone": "Ekaterinburg Standard Time",
+      "cpu": {
+        "Name": "Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz",
+        "NumberOfCores": 4,
+        "NumberOfLogicalProcessors": 4,
+        "MaxClockSpeed": 3001
+      },
+      "os": {
+        "Caption": "Майкрософт Windows 11 Pro",
+        "Version": "10.0.26200",
+        "TotalVisibleMemorySize": 25110108
+      },
+      "memory": [
+        {
+          "Capacity": 17179869184,
+          "Speed": 2133
+        },
+        {
+          "Capacity": 8589934592,
+          "Speed": 2133
+        }
+      ],
+      "rust": "rustc 1.98.0 (88d9e12ae 2026-08-18)\r\nbinary: rustc\r\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\r\ncommit-date: 2026-08-18\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.98.0\r\nLLVM version: 22.1.8\r\n",
+      "cargo": "cargo 1.98.0 (797e8a9bc 2026-08-05)\r\n",
+      "rustFlags": "-C target-cpu=native",
+      "affinityCore": 2,
+      "priority": "AboveNormal",
+      "mode": "released desktop: total CPU <=20% pre-run; affinity core 2; two reverse-order passes",
+      "warmupSeconds": 1,
+      "measurementSeconds": 3,
+      "samples": 200,
+      "confidence": 0.99,
+      "resamples": 10000,
+      "executable": "target/release/deps/comparison-0720bae5e5012039.exe",
+      "executableSha256": "DD8CF8259247E647D7E59C70AF4B2193FCA5443C68F83E8A710BB2A26AA868BE",
+      "sources": {
+        "src\\bin\\api.rs": "EDA77A150535C6E6ADD4DB4B615148FA7CC60BBCBDF5138B8AC84E07A3EA6A49",
+        "src\\lib.rs": "65D7255D70C41F3E99E6FB4C7E54CD2C479BC263624FE1138BEAC90BA4824CFE",
+        "src\\cap_codec.rs": "726E2EC54B0120B601410D2CAE1EB033F91F614B2D13CE906A1F190EC0FA8E98",
+        "Cargo.toml": "3C93C9EB7ADA7BB37FE37FA74D8638F4B8780D2EE7453E6673EA0DE1BE7E81C9",
+        "schemas\\telemetry.proto": "58613E591949025E3071BFE52C78EFEA9F5C4E58B811A96A0CBD798E58C63157",
+        "build.rs": "6767BBBBB1E164FE5E3D5CE4B5F8BD509674F29F782AF67A182437BF32F6AF8F",
+        "schemas\\settings.deq": "DFFECBC492B5603359E8403FF0FDEA07A2D83F7F6922EE22FC716CF7EE8B76BB",
+        "src\\model.rs": "EA8F5C4CA12978CE26AF582829936293AD1747496AA00695C20AB8841DC97E91",
+        "Cargo.lock": "9E3C4C682837E07550B279741D49359621786EC0A571D8A021162B029369ED18",
+        "schemas\\telemetry.qsl": "A01CFA056C222D7825FBD566CB713F3124058DD0B83FA8EAE751F9A0562D03C3",
+        "tests\\round_trip.rs": "89B904D6B0090C1AA3E8AE4DA60D593164E0BC32B4E83D1F064E822543B6D0EC",
+        "schemas\\telemetry.capnp": "DDDF7DA4A4930C9CADAF7BDE7BC073C63D64807E72EC7BC0670FECB886084983",
+        "src\\bin\\probe.rs": "8F29F53DACB30779CCE3F280E3A05DCEFB1B241993134AD848761387D3D4CFBD",
+        "benches\\comparison.rs": "7533BAFC42837157343C28FB9EB56606B640597ED3D66F0FEA46872EC7213F44",
+        "src\\bin\\socket.rs": "805E0B5AAFFD034D3C05C645CE1C19566E3413306C0548D1761BD84A12E480F2",
+        "src\\transport.rs": "FB408849E4AB04B949F1CA919BE84E100C4892F80FC37C4D6D5E96007E634F10",
+        "src\\qsl_codec.rs": "6013A46FD2537B70AEE225657CBC10D65940AF27EF18DA852F562B476B53285C",
+        "src\\fixture.rs": "08F41DFA3F71CB2C18AE9BA0ADB00E38F7C001BC034D7E9BD5F79FD04FA7587A"
+      },
+      "powerPlan": "GUID схемы питания: 11111111-1111-1111-1111-111111111111  (Power Scheme)\r\n"
+    },
+    "runs": [
+      {
+        "run": "realistic-run-1",
+        "exitCode": 0,
+        "elapsedSeconds": 160.04646409999998,
+        "processCpuSeconds": 148.546875,
+        "systemBefore": [
+          5975320937500,
+          7592326875000,
+          3414967656250
+        ],
+        "systemAfter": [
+          5978998437500,
+          7596718125000,
+          3416978437500
+        ],
+        "activeCpuSeconds": 272.453125,
+        "otherSystemCpuCoreEquivalent": 0.774189237461573,
+        "preRunTotalCpuPercent": 10.852713178294572,
+        "peakWorkingSetBytes": null,
+        "reverseOrder": false
+      },
+      {
+        "run": "realistic-run-2",
+        "exitCode": 0,
+        "elapsedSeconds": 158.738454,
+        "processCpuSeconds": 147.375,
+        "systemBefore": [
+          5980503437500,
+          7598418750000,
+          3417392812500
+        ],
+        "systemAfter": [
+          5983984375000,
+          7602670468750,
+          3419491093750
+        ],
+        "activeCpuSeconds": 286.90625,
+        "otherSystemCpuCoreEquivalent": 0.8790009382351677,
+        "preRunTotalCpuPercent": 18.6046511627907,
+        "peakWorkingSetBytes": null,
+        "reverseOrder": true
+      }
+    ],
+    "rows": [
+      {
+        "id": "api/decode/bincode_varint",
+        "workload": "api",
+        "operation": "decode",
+        "codec": "bincode_varint",
+        "median_ns": 422.7027041691451,
+        "runs_ns": [
+          420.7893638505068,
+          424.61604448778337
+        ],
+        "ci99_ns": [
+          [
+            412.86471778662906,
+            424.8485982518269
+          ],
+          [
+            417.94588075210294,
+            429.0759722155071
+          ]
+        ],
+        "drift_percent": 0.9052888944247988
+      },
+      {
+        "id": "api/decode/capnp",
+        "workload": "api",
+        "operation": "decode",
+        "codec": "capnp",
+        "median_ns": 573.3719827119851,
+        "runs_ns": [
+          532.3797240806394,
+          614.3642413433306
+        ],
+        "ci99_ns": [
+          [
+            520.7125093412719,
+            543.001244919102
+          ],
+          [
+            608.5961322867583,
+            623.8738931428327
+          ]
+        ],
+        "drift_percent": 14.298661206798698
+      },
+      {
+        "id": "api/decode/capnp_packed",
+        "workload": "api",
+        "operation": "decode",
+        "codec": "capnp_packed",
+        "median_ns": 868.3224010128547,
+        "runs_ns": [
+          863.4553767876787,
+          873.1894252380307
+        ],
+        "ci99_ns": [
+          [
+            853.0578898225957,
+            871.9409919713119
+          ],
+          [
+            862.1243389429587,
+            886.4710692672732
+          ]
+        ],
+        "drift_percent": 1.1210177739279488
+      },
+      {
+        "id": "api/decode/protobuf",
+        "workload": "api",
+        "operation": "decode",
+        "codec": "protobuf",
+        "median_ns": 581.713108914709,
+        "runs_ns": [
+          585.1749060789897,
+          578.2513117504284
+        ],
+        "ci99_ns": [
+          [
+            577.5459776444029,
+            592.3771921975663
+          ],
+          [
+            569.7088216690851,
+            586.6202058281876
+          ]
+        ],
+        "drift_percent": 1.1902077196572938
+      },
+      {
+        "id": "api/decode/qsl",
+        "workload": "api",
+        "operation": "decode",
+        "codec": "qsl",
+        "median_ns": 2870.6558898313883,
+        "runs_ns": [
+          2863.131746031746,
+          2878.1800336310307
+        ],
+        "ci99_ns": [
+          [
+            2821.946499641156,
+            2896.9600306263164
+          ],
+          [
+            2837.6365441906655,
+            2902.240241176776
+          ]
+        ],
+        "drift_percent": 0.5242107788881885
+      },
+      {
+        "id": "api/decode/qsl_bitmap",
+        "workload": "api",
+        "operation": "decode",
+        "codec": "qsl_bitmap",
+        "median_ns": 2702.7924546359377,
+        "runs_ns": [
+          2704.2040847993485,
+          2701.380824472527
+        ],
+        "ci99_ns": [
+          [
+            2680.383287723291,
+            2724.810505586368
+          ],
+          [
+            2659.8955276997904,
+            2749.641850412586
+          ]
+        ],
+        "drift_percent": 0.10445716325643183
+      },
+      {
+        "id": "api/encode/bincode_varint",
+        "workload": "api",
+        "operation": "encode",
+        "codec": "bincode_varint",
+        "median_ns": 341.93463915947086,
+        "runs_ns": [
+          345.9274285020918,
+          337.94184981684987
+        ],
+        "ci99_ns": [
+          [
+            336.8806346916697,
+            351.1505887213386
+          ],
+          [
+            329.69649398220827,
+            343.565233785822
+          ]
+        ],
+        "drift_percent": 2.335410856551925
+      },
+      {
+        "id": "api/encode/capnp",
+        "workload": "api",
+        "operation": "encode",
+        "codec": "capnp",
+        "median_ns": 592.5493916420035,
+        "runs_ns": [
+          597.1766513056835,
+          587.9221319783235
+        ],
+        "ci99_ns": [
+          [
+            584.1070564516128,
+            607.8709676682735
+          ],
+          [
+            579.0833458883582,
+            597.1885654340415
+          ]
+        ],
+        "drift_percent": 1.5618139952376007
+      },
+      {
+        "id": "api/encode/capnp_packed",
+        "workload": "api",
+        "operation": "encode",
+        "codec": "capnp_packed",
+        "median_ns": 1059.5721858880338,
+        "runs_ns": [
+          1056.4966445033401,
+          1062.6477272727275
+        ],
+        "ci99_ns": [
+          [
+            1043.2827102803737,
+            1076.0407816482582
+          ],
+          [
+            1047.5314685314684,
+            1075.0788880540947
+          ]
+        ],
+        "drift_percent": 0.5805251262076211
+      },
+      {
+        "id": "api/encode/protobuf",
+        "workload": "api",
+        "operation": "encode",
+        "codec": "protobuf",
+        "median_ns": 414.01792745789623,
+        "runs_ns": [
+          412.21212414689063,
+          415.8237307689018
+        ],
+        "ci99_ns": [
+          [
+            399.1835818834576,
+            424.95992323855074
+          ],
+          [
+            403.98815190944674,
+            420.8529857359289
+          ]
+        ],
+        "drift_percent": 0.8723309746963641
+      },
+      {
+        "id": "api/encode/qsl",
+        "workload": "api",
+        "operation": "encode",
+        "codec": "qsl",
+        "median_ns": 567.4726213225174,
+        "runs_ns": [
+          563.3772079335049,
+          571.56803471153
+        ],
+        "ci99_ns": [
+          [
+            552.2554187949215,
+            570.9367759020192
+          ],
+          [
+            559.279187478403,
+            579.4101768715966
+          ]
+        ],
+        "drift_percent": 1.4433871292215037
+      },
+      {
+        "id": "api/encode/qsl_bitmap",
+        "workload": "api",
+        "operation": "encode",
+        "codec": "qsl_bitmap",
+        "median_ns": 529.7511603740586,
+        "runs_ns": [
+          528.0138544636588,
+          531.4884662844582
+        ],
+        "ci99_ns": [
+          [
+            507.95033152501503,
+            542.7243867243867
+          ],
+          [
+            517.0287565665576,
+            545.7598145733739
+          ]
+        ],
+        "drift_percent": 0.655895084466821
+      },
+      {
+        "id": "event/decode/bincode_varint",
+        "workload": "event",
+        "operation": "decode",
+        "codec": "bincode_varint",
+        "median_ns": 416.9954797091899,
+        "runs_ns": [
+          414.8704374805732,
+          419.12052193780664
+        ],
+        "ci99_ns": [
+          [
+            409.77306912399365,
+            420.7862787151796
+          ],
+          [
+            413.87404889104744,
+            424.1552589192444
+          ]
+        ],
+        "drift_percent": 1.0192159541387482
+      },
+      {
+        "id": "event/decode/capnp",
+        "workload": "event",
+        "operation": "decode",
+        "codec": "capnp",
+        "median_ns": 524.1081374030811,
+        "runs_ns": [
+          526.053926297511,
+          522.1623485086511
+        ],
+        "ci99_ns": [
+          [
+            519.1800804828974,
+            534.6510813704037
+          ],
+          [
+            518.0380524982894,
+            527.991409570357
+          ]
+        ],
+        "drift_percent": 0.7425142849608043
+      },
+      {
+        "id": "event/decode/capnp_packed",
+        "workload": "event",
+        "operation": "decode",
+        "codec": "capnp_packed",
+        "median_ns": 1084.7533749356799,
+        "runs_ns": [
+          928.1523892257978,
+          1241.3543606455619
+        ],
+        "ci99_ns": [
+          [
+            912.0449859757731,
+            942.2076575887393
+          ],
+          [
+            1224.015702997617,
+            1252.9695929183247
+          ]
+        ],
+        "drift_percent": 28.87310412270764
+      },
+      {
+        "id": "event/decode/protobuf",
+        "workload": "event",
+        "operation": "decode",
+        "codec": "protobuf",
+        "median_ns": 633.6105262629142,
+        "runs_ns": [
+          635.8093570402299,
+          631.4116954855983
+        ],
+        "ci99_ns": [
+          [
+            626.6133499515303,
+            647.5768670292455
+          ],
+          [
+            624.940609232437,
+            644.6309481351323
+          ]
+        ],
+        "drift_percent": 0.6940638408533576
+      },
+      {
+        "id": "event/decode/qsl",
+        "workload": "event",
+        "operation": "decode",
+        "codec": "qsl",
+        "median_ns": 3002.729747688213,
+        "runs_ns": [
+          3001.087165048946,
+          3004.37233032748
+        ],
+        "ci99_ns": [
+          [
+            2982.732621525933,
+            3041.4615722219405
+          ],
+          [
+            2968.538471289137,
+            3040.5117270788915
+          ]
+        ],
+        "drift_percent": 0.10940595906318669
+      },
+      {
+        "id": "event/decode/qsl_bitmap",
+        "workload": "event",
+        "operation": "decode",
+        "codec": "qsl_bitmap",
+        "median_ns": 2900.5666702118137,
+        "runs_ns": [
+          2889.6369289403738,
+          2911.4964114832537
+        ],
+        "ci99_ns": [
+          [
+            2848.577580895746,
+            2919.9095022624433
+          ],
+          [
+            2863.0434782608695,
+            2955.525115280212
+          ]
+        ],
+        "drift_percent": 0.7536279985346337
+      },
+      {
+        "id": "event/encode/bincode_varint",
+        "workload": "event",
+        "operation": "encode",
+        "codec": "bincode_varint",
+        "median_ns": 340.1066860092059,
+        "runs_ns": [
+          338.20944366526413,
+          342.0039283531476
+        ],
+        "ci99_ns": [
+          [
+            330.9315985946421,
+            347.900092506938
+          ],
+          [
+            332.6249391509949,
+            348.7136314655172
+          ]
+        ],
+        "drift_percent": 1.1156748290978244
+      },
+      {
+        "id": "event/encode/capnp",
+        "workload": "event",
+        "operation": "encode",
+        "codec": "capnp",
+        "median_ns": 584.9734857100474,
+        "runs_ns": [
+          587.1688794140616,
+          582.7780920060331
+        ],
+        "ci99_ns": [
+          [
+            579.2676501580611,
+            597.5845991637301
+          ],
+          [
+            569.505211866323,
+            597.0787342198826
+          ]
+        ],
+        "drift_percent": 0.7505959697812433
+      },
+      {
+        "id": "event/encode/capnp_packed",
+        "workload": "event",
+        "operation": "encode",
+        "codec": "capnp_packed",
+        "median_ns": 1075.2759995029216,
+        "runs_ns": [
+          1076.3793645630017,
+          1074.1726344428416
+        ],
+        "ci99_ns": [
+          [
+            1057.8715998379485,
+            1092.3102237823607
+          ],
+          [
+            1047.211296939346,
+            1091.9568748360007
+          ]
+        ],
+        "drift_percent": 0.20522453036989316
+      },
+      {
+        "id": "event/encode/protobuf",
+        "workload": "event",
+        "operation": "encode",
+        "codec": "protobuf",
+        "median_ns": 455.3481879288078,
+        "runs_ns": [
+          462.9018925631324,
+          447.79448329448326
+        ],
+        "ci99_ns": [
+          [
+            450.9000929985386,
+            473.0852242272646
+          ],
+          [
+            434.5093101343101,
+            456.85847935847937
+          ]
+        ],
+        "drift_percent": 3.317770811248098
+      },
+      {
+        "id": "event/encode/qsl",
+        "workload": "event",
+        "operation": "encode",
+        "codec": "qsl",
+        "median_ns": 543.9013646058064,
+        "runs_ns": [
+          542.0359399637362,
+          545.7667892478767
+        ],
+        "ci99_ns": [
+          [
+            521.9113022754192,
+            555.8939193730366
+          ],
+          [
+            536.2713675213676,
+            555.1787087634082
+          ]
+        ],
+        "drift_percent": 0.6859422547771037
+      },
+      {
+        "id": "event/encode/qsl_bitmap",
+        "workload": "event",
+        "operation": "encode",
+        "codec": "qsl_bitmap",
+        "median_ns": 514.8331194342738,
+        "runs_ns": [
+          508.45955798587374,
+          521.2066808826739
+        ],
+        "ci99_ns": [
+          [
+            496.3809523809524,
+            518.7532178154281
+          ],
+          [
+            504.05871621416486,
+            533.5306313536651
+          ]
+        ],
+        "drift_percent": 2.4759718082642803
+      },
+      {
+        "id": "heartbeat/decode/bincode_varint",
+        "workload": "heartbeat",
+        "operation": "decode",
+        "codec": "bincode_varint",
+        "median_ns": 108.4666558984224,
+        "runs_ns": [
+          107.22655635415259,
+          109.70675544269221
+        ],
+        "ci99_ns": [
+          [
+            106.29109775457562,
+            109.11020321004554
+          ],
+          [
+            108.40537249898235,
+            110.69427361863414
+          ]
+        ],
+        "drift_percent": 2.286600493023676
+      },
+      {
+        "id": "heartbeat/decode/capnp",
+        "workload": "heartbeat",
+        "operation": "decode",
+        "codec": "capnp",
+        "median_ns": 157.9174689853691,
+        "runs_ns": [
+          156.55671360489328,
+          159.27822436584495
+        ],
+        "ci99_ns": [
+          [
+            153.63734230526535,
+            159.09595235537793
+          ],
+          [
+            157.33941910990978,
+            161.59613281799776
+          ]
+        ],
+        "drift_percent": 1.7233753671696819
+      },
+      {
+        "id": "heartbeat/decode/capnp_packed",
+        "workload": "heartbeat",
+        "operation": "decode",
+        "codec": "capnp_packed",
+        "median_ns": 345.4838425572844,
+        "runs_ns": [
+          348.16212193152745,
+          342.80556318304133
+        ],
+        "ci99_ns": [
+          [
+            342.66430435574944,
+            355.725116876196
+          ],
+          [
+            339.7944501541624,
+            347.1187618580407
+          ]
+        ],
+        "drift_percent": 1.5504513058661944
+      },
+      {
+        "id": "heartbeat/decode/protobuf",
+        "workload": "heartbeat",
+        "operation": "decode",
+        "codec": "protobuf",
+        "median_ns": 110.84994096641341,
+        "runs_ns": [
+          111.910402265745,
+          109.78947966708182
+        ],
+        "ci99_ns": [
+          [
+            109.7915686317597,
+            113.33924680983505
+          ],
+          [
+            108.78379108004034,
+            110.86373734387368
+          ]
+        ],
+        "drift_percent": 1.9133276753893864
+      },
+      {
+        "id": "heartbeat/decode/qsl",
+        "workload": "heartbeat",
+        "operation": "decode",
+        "codec": "qsl",
+        "median_ns": 492.2232006139997,
+        "runs_ns": [
+          491.00023531626505,
+          493.4461659117344
+        ],
+        "ci99_ns": [
+          [
+            483.31463790037947,
+            498.64595103578154
+          ],
+          [
+            488.9257234942244,
+            500.3781388292403
+          ]
+        ],
+        "drift_percent": 0.49691493461061825
+      },
+      {
+        "id": "heartbeat/decode/qsl_bitmap",
+        "workload": "heartbeat",
+        "operation": "decode",
+        "codec": "qsl_bitmap",
+        "median_ns": 452.8972006681179,
+        "runs_ns": [
+          454.4278264436176,
+          451.36657489261813
+        ],
+        "ci99_ns": [
+          [
+            448.3650331293388,
+            458.35498028389424
+          ],
+          [
+            445.9484330526566,
+            454.975195411997
+          ]
+        ],
+        "drift_percent": 0.6759263573463253
+      },
+      {
+        "id": "heartbeat/encode/bincode_varint",
+        "workload": "heartbeat",
+        "operation": "encode",
+        "codec": "bincode_varint",
+        "median_ns": 140.64333882796882,
+        "runs_ns": [
+          143.31355155856653,
+          137.97312609737114
+        ],
+        "ci99_ns": [
+          [
+            140.71455568154028,
+            147.24965217686383
+          ],
+          [
+            133.91612006087,
+            142.78637770897834
+          ]
+        ],
+        "drift_percent": 3.797140700511711
+      },
+      {
+        "id": "heartbeat/encode/capnp",
+        "workload": "heartbeat",
+        "operation": "encode",
+        "codec": "capnp",
+        "median_ns": 395.0563393012545,
+        "runs_ns": [
+          394.5320404263112,
+          395.5806381761978
+        ],
+        "ci99_ns": [
+          [
+            383.1764753399344,
+            400.75068466147695
+          ],
+          [
+            388.94357976653697,
+            404.25332081041194
+          ]
+        ],
+        "drift_percent": 0.26542992620781025
+      },
+      {
+        "id": "heartbeat/encode/capnp_packed",
+        "workload": "heartbeat",
+        "operation": "encode",
+        "codec": "capnp_packed",
+        "median_ns": 548.6736093340157,
+        "runs_ns": [
+          548.2246150811422,
+          549.1226035868892
+        ],
+        "ci99_ns": [
+          [
+            538.3927832703695,
+            554.7174228576556
+          ],
+          [
+            542.5355512619249,
+            554.5944005743
+          ]
+        ],
+        "drift_percent": 0.16366533590652654
+      },
+      {
+        "id": "heartbeat/encode/protobuf",
+        "workload": "heartbeat",
+        "operation": "encode",
+        "codec": "protobuf",
+        "median_ns": 138.41405486380052,
+        "runs_ns": [
+          140.37251183990315,
+          136.45559788769785
+        ],
+        "ci99_ns": [
+          [
+            136.50669368705476,
+            142.93656913681525
+          ],
+          [
+            131.52770340832194,
+            141.4952260378752
+          ]
+        ],
+        "drift_percent": 2.8298527602991985
+      },
+      {
+        "id": "heartbeat/encode/qsl",
+        "workload": "heartbeat",
+        "operation": "encode",
+        "codec": "qsl",
+        "median_ns": 206.45939052350485,
+        "runs_ns": [
+          206.74663146059132,
+          206.17214958641839
+        ],
+        "ci99_ns": [
+          [
+            198.93103448275863,
+            211.76543288934425
+          ],
+          [
+            200.54153757286142,
+            212.63719451835894
+          ]
+        ],
+        "drift_percent": 0.27825417517520407
+      },
+      {
+        "id": "heartbeat/encode/qsl_bitmap",
+        "workload": "heartbeat",
+        "operation": "encode",
+        "codec": "qsl_bitmap",
+        "median_ns": 196.71441804399723,
+        "runs_ns": [
+          193.788587937108,
+          199.64024815088646
+        ],
+        "ci99_ns": [
+          [
+            188.85486681603186,
+            199.98778775111435
+          ],
+          [
+            195.18794326241135,
+            206.83006062945273
+          ]
+        ],
+        "drift_percent": 2.974698180216606
+      }
+    ]
+  },
+  "features": {
+    "environment": {
+      "dateLocal": "2026-11-23T18:32:23.5454940+05:00",
+      "timeZone": "Ekaterinburg Standard Time",
+      "cpu": {
+        "Name": "Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz",
+        "NumberOfCores": 4,
+        "NumberOfLogicalProcessors": 4,
+        "MaxClockSpeed": 3001
+      },
+      "os": {
+        "Caption": "Майкрософт Windows 11 Pro",
+        "Version": "10.0.26200",
+        "TotalVisibleMemorySize": 25110108
+      },
+      "memory": [
+        {
+          "Capacity": 17179869184,
+          "Speed": 2133
+        },
+        {
+          "Capacity": 8589934592,
+          "Speed": 2133
+        }
+      ],
+      "rust": "rustc 1.98.0 (88d9e12ae 2026-08-18)\r\nbinary: rustc\r\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\r\ncommit-date: 2026-08-18\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.98.0\r\nLLVM version: 22.1.8\r\n",
+      "cargo": "cargo 1.98.0 (797e8a9bc 2026-08-05)\r\n",
+      "rustFlags": "-C target-cpu=native",
+      "affinityCore": 2,
+      "priority": "AboveNormal",
+      "mode": "released desktop: total CPU <=20% pre-run; affinity core 2; two reverse-order passes",
+      "warmupSeconds": 1,
+      "measurementSeconds": 3,
+      "samples": 200,
+      "confidence": 0.99,
+      "resamples": 10000,
+      "executable": "target/release/deps/comparison-347b0a2667e87bfe.exe",
+      "executableSha256": "93A52EFE4EE284974994733B5632840E72A3406C75B47A86472295066CF7ADB9",
+      "sources": {
+        "build.rs": "3826D9F303F48DF7D070ADA3C4F32401BEAC1891AB7D384782BA76FB39DF2094",
+        "src\\bin\\probe.rs": "1BE43E3C15144A204E104040261932DAE1D3D551F2D27D036701D705E3BBA4AF",
+        "src\\lib.rs": "421FF22A4E1A471258E8815CF48354C21880EC4188893B3722F3BB609FE9BE2C",
+        "tests\\contracts.rs": "B191F34792F329B866565B4C35BA10F50B7A5179BBBEE6B3207FAAF3844E428A",
+        "Cargo.lock": "6E936535BB5D80B78193749F092660F211ACB8B246A8EB2D7B0CBF667DAA432A",
+        "schemas\\features.qsl": "3FC28A5AC57E1442E211D9134152D14F076A9173342284A57DC8F75384A29A32",
+        "schemas\\settings.deq": "2421AF83F6420C53266312A59A04C65762CD9750B9791D3AD0DDA8CE5D452EC3",
+        "Cargo.toml": "5E085C78EA2639E90ADFA340833B6E3E1C3EDD44D1F207426DE3C8640A3AC0C5",
+        "benches\\comparison.rs": "08BFB1D0B873E91199AF7E68EA9387D56AFEF90340391B9D69395E89492D81CA"
+      },
+      "powerPlan": "GUID схемы питания: 11111111-1111-1111-1111-111111111111  (Power Scheme)\r\n"
+    },
+    "runs": [
+      {
+        "run": "qsl-features-run-1",
+        "exitCode": 0,
+        "elapsedSeconds": 100.36966629999999,
+        "processCpuSeconds": 92.78125,
+        "systemBefore": [
+          5985928906250,
+          7607173437500,
+          3422691250000
+        ],
+        "systemAfter": [
+          5988183437500,
+          7609842812500,
+          3424036875000
+        ],
+        "activeCpuSeconds": 176.046875,
+        "otherSystemCpuCoreEquivalent": 0.8295895370531884,
+        "preRunTotalCpuPercent": 12.5,
+        "peakWorkingSetBytes": null,
+        "reverseOrder": false
+      },
+      {
+        "run": "qsl-features-run-2",
+        "exitCode": 0,
+        "elapsedSeconds": 99.90989429999999,
+        "processCpuSeconds": 92.53125,
+        "systemBefore": [
+          5988501875000,
+          7610195312500,
+          3424064375000
+        ],
+        "systemAfter": [
+          5990771093750,
+          7612840625000,
+          3425415937500
+        ],
+        "activeCpuSeconds": 172.765625,
+        "otherSystemCpuCoreEquivalent": 0.8030673594657182,
+        "preRunTotalCpuPercent": 11.821705426356587,
+        "peakWorkingSetBytes": null,
+        "reverseOrder": true
+      }
+    ],
+    "rows": [
+      {
+        "id": "native/read/copy_aligned",
+        "workload": "native",
+        "operation": "read",
+        "codec": "copy_aligned",
+        "median_ns": 3.6652632873150455,
+        "runs_ns": [
+          3.6692426462653254,
+          3.6612839283647656
+        ],
+        "ci99_ns": [
+          [
+            3.618323652830173,
+            3.7009116473870716
+          ],
+          [
+            3.631417993404682,
+            3.6990765674693336
+          ]
+        ],
+        "drift_percent": 0.21713905050433313
+      },
+      {
+        "id": "native/read/copy_unaligned",
+        "workload": "native",
+        "operation": "read",
+        "codec": "copy_unaligned",
+        "median_ns": 3.862521611412209,
+        "runs_ns": [
+          3.8629111046629308,
+          3.8621321181614876
+        ],
+        "ci99_ns": [
+          [
+            3.81630765650848,
+            3.920561436190506
+          ],
+          [
+            3.8208322680397586,
+            3.9367764501751044
+          ]
+        ],
+        "drift_percent": 0.02016782246969317
+      },
+      {
+        "id": "native/read/fields",
+        "workload": "native",
+        "operation": "read",
+        "codec": "fields",
+        "median_ns": 4.795822956698742,
+        "runs_ns": [
+          4.764778440960651,
+          4.826867472436833
+        ],
+        "ci99_ns": [
+          [
+            4.71936397339421,
+            4.813114702428013
+          ],
+          [
+            4.7906555179596175,
+            4.901522155522027
+          ]
+        ],
+        "drift_percent": 1.2946481143441047
+      },
+      {
+        "id": "native/read/overlay_aligned",
+        "workload": "native",
+        "operation": "read",
+        "codec": "overlay_aligned",
+        "median_ns": 4.180763228449,
+        "runs_ns": [
+          4.217541188985136,
+          4.143985267912864
+        ],
+        "ci99_ns": [
+          [
+            4.148570366723814,
+            4.258610674727812
+          ],
+          [
+            4.102576113955185,
+            4.1869763280986625
+          ]
+        ],
+        "drift_percent": 1.7593897825101121
+      },
+      {
+        "id": "noisy_ascii/decode/qsl_lz",
+        "workload": "noisy_ascii",
+        "operation": "decode",
+        "codec": "qsl_lz",
+        "median_ns": 169.1360370585636,
+        "runs_ns": [
+          171.22171353438677,
+          167.05036058274044
+        ],
+        "ci99_ns": [
+          [
+            168.46907993966818,
+            174.26362344647583
+          ],
+          [
+            164.8236799071583,
+            169.31578284021805
+          ]
+        ],
+        "drift_percent": 2.466270952181521
+      },
+      {
+        "id": "noisy_ascii/decode/stack_string",
+        "workload": "noisy_ascii",
+        "operation": "decode",
+        "codec": "stack_string",
+        "median_ns": 146.18681951464092,
+        "runs_ns": [
+          146.82637095116257,
+          145.54726807811926
+        ],
+        "ci99_ns": [
+          [
+            145.17751479289942,
+            149.10429806879512
+          ],
+          [
+            143.72320079260163,
+            148.25324341889876
+          ]
+        ],
+        "drift_percent": 0.8749782485795234
+      },
+      {
+        "id": "noisy_ascii/decode/string",
+        "workload": "noisy_ascii",
+        "operation": "decode",
+        "codec": "string",
+        "median_ns": 191.99370493578056,
+        "runs_ns": [
+          193.09911100214305,
+          190.88829886941807
+        ],
+        "ci99_ns": [
+          [
+            189.86833080570747,
+            196.65442676458588
+          ],
+          [
+            188.83696961274782,
+            194.1135115822808
+          ]
+        ],
+        "drift_percent": 1.1515024065317507
+      },
+      {
+        "id": "noisy_ascii/encode/qsl_lz",
+        "workload": "noisy_ascii",
+        "operation": "encode",
+        "codec": "qsl_lz",
+        "median_ns": 24.542449379922886,
+        "runs_ns": [
+          24.705299512644384,
+          24.37959924720139
+        ],
+        "ci99_ns": [
+          [
+            24.269035624123422,
+            25.091221440277643
+          ],
+          [
+            24.02006037160776,
+            24.87523839796567
+          ]
+        ],
+        "drift_percent": 1.327089486469246
+      },
+      {
+        "id": "noisy_ascii/encode/stack_string",
+        "workload": "noisy_ascii",
+        "operation": "encode",
+        "codec": "stack_string",
+        "median_ns": 21.876013032431025,
+        "runs_ns": [
+          22.34608708063235,
+          21.4059389842297
+        ],
+        "ci99_ns": [
+          [
+            22.036153001416935,
+            22.712350837630645
+          ],
+          [
+            21.00325522817672,
+            21.805458099438653
+          ]
+        ],
+        "drift_percent": 4.29762084621585
+      },
+      {
+        "id": "noisy_ascii/encode/string",
+        "workload": "noisy_ascii",
+        "operation": "encode",
+        "codec": "string",
+        "median_ns": 33.00013163740209,
+        "runs_ns": [
+          33.45110671641284,
+          32.549156558391346
+        ],
+        "ci99_ns": [
+          [
+            33.07524285199958,
+            34.010660541272784
+          ],
+          [
+            32.045694934335664,
+            32.97209475692755
+          ]
+        ],
+        "drift_percent": 2.73317139438083
+      },
+      {
+        "id": "periodic_16/decode/qsl_lz",
+        "workload": "periodic_16",
+        "operation": "decode",
+        "codec": "qsl_lz",
+        "median_ns": 2247.0423627013515,
+        "runs_ns": [
+          2245.6602953551383,
+          2248.4244300475643
+        ],
+        "ci99_ns": [
+          [
+            2222.0609770384253,
+            2284.981433796089
+          ],
+          [
+            2225.9964565328937,
+            2271.1774461028194
+          ]
+        ],
+        "drift_percent": 0.12301213089294315
+      },
+      {
+        "id": "periodic_16/decode/stack_string",
+        "workload": "periodic_16",
+        "operation": "decode",
+        "codec": "stack_string",
+        "median_ns": 148.941699818239,
+        "runs_ns": [
+          150.52058836105527,
+          147.3628112754227
+        ],
+        "ci99_ns": [
+          [
+            148.5093600977151,
+            152.39756816326758
+          ],
+          [
+            145.34197464228262,
+            149.25225471303793
+          ]
+        ],
+        "drift_percent": 2.1201430422011884
+      },
+      {
+        "id": "periodic_16/decode/string",
+        "workload": "periodic_16",
+        "operation": "decode",
+        "codec": "string",
+        "median_ns": 194.98648317706952,
+        "runs_ns": [
+          191.53294138809207,
+          198.44002496604696
+        ],
+        "ci99_ns": [
+          [
+            188.74825675241615,
+            193.83628764951723
+          ],
+          [
+            196.00912851233775,
+            200.9030766778256
+          ]
+        ],
+        "drift_percent": 3.5423396870451214
+      },
+      {
+        "id": "periodic_16/encode/qsl_lz",
+        "workload": "periodic_16",
+        "operation": "encode",
+        "codec": "qsl_lz",
+        "median_ns": 86.77659260180889,
+        "runs_ns": [
+          86.54008017547841,
+          87.01310502813936
+        ],
+        "ci99_ns": [
+          [
+            85.3302693981323,
+            87.72737782029817
+          ],
+          [
+            86.0273286271038,
+            87.87307259612203
+          ]
+        ],
+        "drift_percent": 0.5451065068105652
+      },
+      {
+        "id": "periodic_16/encode/stack_string",
+        "workload": "periodic_16",
+        "operation": "encode",
+        "codec": "stack_string",
+        "median_ns": 21.945005560630335,
+        "runs_ns": [
+          21.906613330581386,
+          21.983397790679284
+        ],
+        "ci99_ns": [
+          [
+            21.687005314615398,
+            22.153840146473105
+          ],
+          [
+            21.54663488988558,
+            22.373367854311013
+          ]
+        ],
+        "drift_percent": 0.3498949220393454
+      },
+      {
+        "id": "periodic_16/encode/string",
+        "workload": "periodic_16",
+        "operation": "encode",
+        "codec": "string",
+        "median_ns": 24.904584545838524,
+        "runs_ns": [
+          24.515248069910303,
+          25.293921021766742
+        ],
+        "ci99_ns": [
+          [
+            24.13497922725066,
+            24.762956400412584
+          ],
+          [
+            24.898848576120503,
+            25.810170700184948
+          ]
+        ],
+        "drift_percent": 3.1266249409751867
+      },
+      {
+        "id": "structured_log/decode/qsl_lz",
+        "workload": "structured_log",
+        "operation": "decode",
+        "codec": "qsl_lz",
+        "median_ns": 173.24064935044473,
+        "runs_ns": [
+          172.78160973317387,
+          173.6996889677156
+        ],
+        "ci99_ns": [
+          [
+            169.41277080957812,
+            176.1924889485539
+          ],
+          [
+            171.07077929947886,
+            177.3571748119387
+          ]
+        ],
+        "drift_percent": 0.5299444662577772
+      },
+      {
+        "id": "structured_log/decode/stack_string",
+        "workload": "structured_log",
+        "operation": "decode",
+        "codec": "stack_string",
+        "median_ns": 151.92904585290034,
+        "runs_ns": [
+          157.86862336906518,
+          145.98946833673548
+        ],
+        "ci99_ns": [
+          [
+            154.86723256067037,
+            161.61702805986945
+          ],
+          [
+            143.95171922083512,
+            148.95803866100897
+          ]
+        ],
+        "drift_percent": 7.818883456841585
+      },
+      {
+        "id": "structured_log/decode/string",
+        "workload": "structured_log",
+        "operation": "decode",
+        "codec": "string",
+        "median_ns": 193.06420689410905,
+        "runs_ns": [
+          193.26724860175142,
+          192.86116518646668
+        ],
+        "ci99_ns": [
+          [
+            190.0252102869964,
+            195.45990755175754
+          ],
+          [
+            189.67644082670677,
+            196.64664459877227
+          ]
+        ],
+        "drift_percent": 0.21033594047159
+      },
+      {
+        "id": "structured_log/encode/qsl_lz",
+        "workload": "structured_log",
+        "operation": "encode",
+        "codec": "qsl_lz",
+        "median_ns": 24.69756153305607,
+        "runs_ns": [
+          24.983446034985853,
+          24.41167703112629
+        ],
+        "ci99_ns": [
+          [
+            24.661401757087845,
+            25.434821958624337
+          ],
+          [
+            24.078955459793267,
+            24.67511692809289
+          ]
+        ],
+        "drift_percent": 2.3150828193880173
+      },
+      {
+        "id": "structured_log/encode/stack_string",
+        "workload": "structured_log",
+        "operation": "encode",
+        "codec": "stack_string",
+        "median_ns": 21.804111895648063,
+        "runs_ns": [
+          21.98498834478898,
+          21.62323544650714
+        ],
+        "ci99_ns": [
+          [
+            21.744888332722777,
+            22.26759752482048
+          ],
+          [
+            21.339009901864365,
+            21.85615958272553
+          ]
+        ],
+        "drift_percent": 1.6591040259431176
+      },
+      {
+        "id": "structured_log/encode/string",
+        "workload": "structured_log",
+        "operation": "encode",
+        "codec": "string",
+        "median_ns": 27.641029765801605,
+        "runs_ns": [
+          27.89880147321864,
+          27.38325805838457
+        ],
+        "ci99_ns": [
+          [
+            27.641895459465587,
+            28.28494308820227
+          ],
+          [
+            26.989984185556143,
+            27.609362218024096
+          ]
+        ],
+        "drift_percent": 1.8651382354499602
+      }
+    ]
+  },
+  "transport": {
+    "socketStartedAt": "2026-11-23T18:29:18.4019049+05:00",
+    "socketExecutableSha256": "907F146F5963C70290DF6E89327E1234463670B4F0F94CDDA36A8E6FD5537895",
+    "httpStartedAt": "2026-11-23T18:29:25.7321365+05:00",
+    "serverExecutableSha256": "A4F5E08F4C206A22B3977AC63FFB553D8D5CC57B03A97BE3AC430A61A77FF6DB",
+    "k6": "k6.exe v2.2.0 (commit/00a9a1b7f5, go1.26.5, windows/amd64)",
+    "serverAffinity": 2,
+    "clientAffinity": [
+      0,
+      1,
+      3
+    ],
+    "k6ScriptSha256": "21DAA431213EEE681135C4419632F226807A65CB7D654DFFBF58B89BCC9F6ADA",
+    "topology": "loopback TCP and HTTP/1.1 persistent connections"
+  },
+  "measuredHttpRequests": 490662
+}

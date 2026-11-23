@@ -1,0 +1,86 @@
+﻿[
+    {
+        "id":  "pass-1-qsl",
+        "pass":  1,
+        "codec":  "qsl",
+        "exitCode":  0,
+        "elapsedSeconds":  11.1559483
+    },
+    {
+        "id":  "pass-1-qsl_bitmap",
+        "pass":  1,
+        "codec":  "qsl_bitmap",
+        "exitCode":  0,
+        "elapsedSeconds":  11.1728627
+    },
+    {
+        "id":  "pass-1-protobuf",
+        "pass":  1,
+        "codec":  "protobuf",
+        "exitCode":  0,
+        "elapsedSeconds":  11.1913137
+    },
+    {
+        "id":  "pass-1-bincode_varint",
+        "pass":  1,
+        "codec":  "bincode_varint",
+        "exitCode":  0,
+        "elapsedSeconds":  11.1584147
+    },
+    {
+        "id":  "pass-1-capnp",
+        "pass":  1,
+        "codec":  "capnp",
+        "exitCode":  0,
+        "elapsedSeconds":  11.149982999999999
+    },
+    {
+        "id":  "pass-1-capnp_packed",
+        "pass":  1,
+        "codec":  "capnp_packed",
+        "exitCode":  0,
+        "elapsedSeconds":  11.1465332
+    },
+    {
+        "id":  "pass-2-capnp_packed",
+        "pass":  2,
+        "codec":  "capnp_packed",
+        "exitCode":  0,
+        "elapsedSeconds":  11.222787799999999
+    },
+    {
+        "id":  "pass-2-capnp",
+        "pass":  2,
+        "codec":  "capnp",
+        "exitCode":  0,
+        "elapsedSeconds":  11.1471644
+    },
+    {
+        "id":  "pass-2-bincode_varint",
+        "pass":  2,
+        "codec":  "bincode_varint",
+        "exitCode":  0,
+        "elapsedSeconds":  11.147078299999999
+    },
+    {
+        "id":  "pass-2-protobuf",
+        "pass":  2,
+        "codec":  "protobuf",
+        "exitCode":  0,
+        "elapsedSeconds":  11.1512643
+    },
+    {
+        "id":  "pass-2-qsl_bitmap",
+        "pass":  2,
+        "codec":  "qsl_bitmap",
+        "exitCode":  0,
+        "elapsedSeconds":  11.149054999999999
+    },
+    {
+        "id":  "pass-2-qsl",
+        "pass":  2,
+        "codec":  "qsl",
+        "exitCode":  0,
+        "elapsedSeconds":  11.1456325
+    }
+]

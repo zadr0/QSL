@@ -1,0 +1,7 @@
+&Plain[safety] { u64 timestamp; u32 counter; u16(0..4095) region; u8 code; u8 flags; }
+&Native[safety,transmutate,lifetime] { u64 timestamp; u32 counter; u16(0..4095) region; u8 code; u8 flags; }
+&NativeCopy[safety,transmutate] { u64 timestamp; u32 counter; u16(0..4095) region; u8 code; u8 flags; }
+&HeapText[safety] { u32 id; str(0..1024) text; }
+&StackText[safety,aggressive] { u32 id; str(0..1024) text; }
+&CompressedText[safety] { u32 id; str(0..1024) text|decompress=true|; }
+
