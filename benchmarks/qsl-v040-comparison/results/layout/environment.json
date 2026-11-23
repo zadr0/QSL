@@ -1,0 +1,49 @@
+{
+  "dateLocal": "2026-11-23T17:58:36.4128257+05:00",
+  "timeZone": "Ekaterinburg Standard Time",
+  "cpu": {
+    "Name": "Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz",
+    "NumberOfCores": 4,
+    "NumberOfLogicalProcessors": 4,
+    "MaxClockSpeed": 3001
+  },
+  "os": {
+    "Caption": "Майкрософт Windows 11 Pro",
+    "Version": "10.0.26200",
+    "TotalVisibleMemorySize": 25110108
+  },
+  "memory": [
+    {
+      "Capacity": 17179869184,
+      "Speed": 2133
+    },
+    {
+      "Capacity": 8589934592,
+      "Speed": 2133
+    }
+  ],
+  "rust": "rustc 1.98.0 (88d9e12ae 2026-08-18)\r\nbinary: rustc\r\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\r\ncommit-date: 2026-08-18\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.98.0\r\nLLVM version: 22.1.8\r\n",
+  "cargo": "cargo 1.98.0 (797e8a9bc 2026-08-05)\r\n",
+  "rustFlags": "-C target-cpu=native",
+  "affinityCore": 2,
+  "priority": "AboveNormal",
+  "mode": "released desktop: total CPU <=20% pre-run; affinity core 2; two reverse-order passes",
+  "warmupSeconds": 1,
+  "measurementSeconds": 3,
+  "samples": 200,
+  "confidence": 0.99,
+  "resamples": 10000,
+  "executable": "target/release/deps/comparison-82ec7986226d2e25.exe",
+  "executableSha256": "C938FF87EF4D6397DBE4F360FF0EB4A4900822D83FBAEA157C9BC77D2578A419",
+  "sources": {
+    "build.rs": "D93AD16F96B1A3E57BCE36A13522C77CFA222F3364285E7A2113193D6FF43AD0",
+    "src\\bin\\probe.rs": "0C89F259FBDF9ED48271E020C1DFF88784C035E95AEFD7A2FEFD285BE34C7876",
+    "src\\lib.rs": "B82C4645CF2912A598D266DEE4989C3122167F01B683853AD45D81A9A8B6861E",
+    "schemas\\layout.qsl": "C9601A46AAC66D9D208712C7DA0729FCBAF7A9C37952138A6A08AC2CE7904F59",
+    "tests\\layout.rs": "57E61A0D0B164887E43ADE1BB8A025E43E3EEA927E35F77E7CD2169A9945E774",
+    "Cargo.lock": "98E1DA229CEB1C3D16A1D847FCBC52DCE9CDB9A8166DA144FB76BDCAD4EB68E7",
+    "Cargo.toml": "1C127B0371748A5552E97CAFCED70143C756D3CB76C71C3FC63DCFA8DAE2CB59",
+    "benches\\comparison.rs": "9385618B632F478AF0ADDD20DDEBF90C76B0D054C81C2E6CC2BE4611FB316EEC"
+  },
+  "powerPlan": "GUID схемы питания: 11111111-1111-1111-1111-111111111111  (Power Scheme)\r\n"
+}

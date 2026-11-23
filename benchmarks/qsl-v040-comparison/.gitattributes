@@ -1,0 +1,2 @@
+# Preserve measured source and evidence byte for byte, including final blank lines.
+* -text whitespace=cr-at-eol,-blank-at-eof

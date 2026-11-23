@@ -1,0 +1,80 @@
+&NumDefault[safety] {
+u32(0..4095) f0;
+u32(0..4095) f1;
+u32(0..4095) f2;
+u32(0..4095) f3;
+}
+
+&NumCompact[safety,compact] {
+u32(0..4095) f0;
+u32(0..4095) f1;
+u32(0..4095) f2;
+u32(0..4095) f3;
+}
+
+&NumAligned[safety,compact,alignment] {
+u32(0..4095) f0;
+u32(0..4095) f1;
+u32(0..4095) f2;
+u32(0..4095) f3;
+}
+
+&NumPointing[safety,aggressive[pointing=true]] {
+u32(0..4095) f0;
+u32(0..4095) f1;
+u32(0..4095) f2;
+u32(0..4095) f3;
+}
+
+&NumBmi2[safety,compact,aggressive[group=true]] {
+u32(0..4095) f0;
+u32(0..4095) f1;
+u32(0..4095) f2;
+u32(0..4095) f3;
+}
+
+&OptDefault[safety] {
+u32 id;
+u8? a;
+u16? b;
+u32? c;
+}
+
+&OptTable[safety,opt_table] {
+u32 id;
+u8? a;
+u16? b;
+u32? c;
+}
+
+&OptPredict[safety,predict_seq] {
+u32 id;
+u8? a;
+u16? b;
+u32? c;
+}
+
+&OptPredictTable[safety,predict_seq,opt_table] {
+u32 id;
+u8? a;
+u16? b;
+u32? c;
+}
+
+&OptBitmap[safety,optionals=bitmap] {
+u32 id;
+u8? a;
+u16? b;
+u32? c;
+}
+
+&OptBitmapTable[safety,optionals=bitmap,opt_table] {
+u32 id;
+u8? a;
+u16? b;
+u32? c;
+}
+
+&TextHeap[safety] {u32 id;str(0..1024) text;}
+&TextInline[safety,aggressive] {u32 id;str(0..1024) text;}
+&TextBorrow[safety,lifetime] {u32 id;str(0..1024) text;}

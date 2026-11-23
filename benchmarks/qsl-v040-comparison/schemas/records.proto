@@ -1,0 +1,6 @@
+syntax = "proto3";
+package comparison;
+message Numeric { uint32 f0=1; uint32 f1=2; uint32 f2=3; uint32 f3=4; }
+message NumericFixed { fixed32 f0=1; fixed32 f1=2; fixed32 f2=3; fixed32 f3=4; }
+message Optionals { uint32 id=1; optional uint32 a=2; optional uint32 b=3; optional uint32 c=4; }
+message TextRecord { uint32 id=1; string text=2; }

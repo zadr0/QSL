@@ -1,0 +1,129 @@
+&NumLine16[safety,dyn[type=line,width=16,revision=1]] {
+u32(0..4095) f0 = 1; u32(0..4095) f1 = 2; u32(0..4095) f2 = 3; u32(0..4095) f3 = 4;
+}
+
+&OptLine16[safety,dyn[type=line,width=16,revision=1]] {
+u32 id = 1; u8? a = 2; u16? b = 3; u32? c = 4;
+}
+
+&TextLine16[safety,dyn[type=line,width=16,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&BorrowLine16[safety,lifetime,dyn[type=line,width=16,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&NumLine32[safety,dyn[type=line,width=32,revision=1]] {
+u32(0..4095) f0 = 1; u32(0..4095) f1 = 2; u32(0..4095) f2 = 3; u32(0..4095) f3 = 4;
+}
+
+&OptLine32[safety,dyn[type=line,width=32,revision=1]] {
+u32 id = 1; u8? a = 2; u16? b = 3; u32? c = 4;
+}
+
+&TextLine32[safety,dyn[type=line,width=32,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&BorrowLine32[safety,lifetime,dyn[type=line,width=32,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&NumLine64[safety,dyn[type=line,width=64,revision=1]] {
+u32(0..4095) f0 = 1; u32(0..4095) f1 = 2; u32(0..4095) f2 = 3; u32(0..4095) f3 = 4;
+}
+
+&OptLine64[safety,dyn[type=line,width=64,revision=1]] {
+u32 id = 1; u8? a = 2; u16? b = 3; u32? c = 4;
+}
+
+&TextLine64[safety,dyn[type=line,width=64,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&BorrowLine64[safety,lifetime,dyn[type=line,width=64,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&NumDynamic32[safety,dyn[type=index(dynamic),width=32,revision=1]] {
+u32(0..4095) f0 = 1; u32(0..4095) f1 = 2; u32(0..4095) f2 = 3; u32(0..4095) f3 = 4;
+}
+
+&OptDynamic32[safety,dyn[type=index(dynamic),width=32,revision=1]] {
+u32 id = 1; u8? a = 2; u16? b = 3; u32? c = 4;
+}
+
+&TextDynamic32[safety,dyn[type=index(dynamic),width=32,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&BorrowDynamic32[safety,lifetime,dyn[type=index(dynamic),width=32,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&NumCompactDynamic32[safety,compact,dyn[type=index(dynamic),width=32,revision=1]] {
+u32(0..4095) f0 = 1; u32(0..4095) f1 = 2; u32(0..4095) f2 = 3; u32(0..4095) f3 = 4;
+}
+
+&NumDynamic64[safety,dyn[type=index(dynamic),width=64,revision=1]] {
+u32(0..4095) f0 = 1; u32(0..4095) f1 = 2; u32(0..4095) f2 = 3; u32(0..4095) f3 = 4;
+}
+
+&OptDynamic64[safety,dyn[type=index(dynamic),width=64,revision=1]] {
+u32 id = 1; u8? a = 2; u16? b = 3; u32? c = 4;
+}
+
+&TextDynamic64[safety,dyn[type=index(dynamic),width=64,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&BorrowDynamic64[safety,lifetime,dyn[type=index(dynamic),width=64,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&NumCompactDynamic64[safety,compact,dyn[type=index(dynamic),width=64,revision=1]] {
+u32(0..4095) f0 = 1; u32(0..4095) f1 = 2; u32(0..4095) f2 = 3; u32(0..4095) f3 = 4;
+}
+
+&NumStrict32[safety,dyn[type=index(strict),width=32,revision=1]] {
+u32(0..4095) f0 = 1; u32(0..4095) f1 = 2; u32(0..4095) f2 = 3; u32(0..4095) f3 = 4;
+}
+
+&OptStrict32[safety,dyn[type=index(strict),width=32,revision=1]] {
+u32 id = 1; u8? a = 2; u16? b = 3; u32? c = 4;
+}
+
+&TextStrict32[safety,dyn[type=index(strict),width=32,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&BorrowStrict32[safety,lifetime,dyn[type=index(strict),width=32,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&NumCompactStrict32[safety,compact,dyn[type=index(strict),width=32,revision=1]] {
+u32(0..4095) f0 = 1; u32(0..4095) f1 = 2; u32(0..4095) f2 = 3; u32(0..4095) f3 = 4;
+}
+
+&NumStrict64[safety,dyn[type=index(strict),width=64,revision=1]] {
+u32(0..4095) f0 = 1; u32(0..4095) f1 = 2; u32(0..4095) f2 = 3; u32(0..4095) f3 = 4;
+}
+
+&OptStrict64[safety,dyn[type=index(strict),width=64,revision=1]] {
+u32 id = 1; u8? a = 2; u16? b = 3; u32? c = 4;
+}
+
+&TextStrict64[safety,dyn[type=index(strict),width=64,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&BorrowStrict64[safety,lifetime,dyn[type=index(strict),width=64,revision=1]] {
+u32 id = 1; str(0..1024) text = 2;
+}
+
+&NumCompactStrict64[safety,compact,dyn[type=index(strict),width=64,revision=1]] {
+u32(0..4095) f0 = 1; u32(0..4095) f1 = 2; u32(0..4095) f2 = 3; u32(0..4095) f3 = 4;
+}
+
+

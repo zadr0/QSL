@@ -1,0 +1,64 @@
+{
+  "dateLocal": "2026-11-23T16:40:35.5031132+05:00",
+  "timeZone": "Ekaterinburg Standard Time",
+  "cpu": {
+    "Name": "Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz",
+    "NumberOfCores": 4,
+    "NumberOfLogicalProcessors": 4,
+    "MaxClockSpeed": 3001
+  },
+  "os": {
+    "Caption": "Майкрософт Windows 11 Pro",
+    "Version": "10.0.26200",
+    "TotalVisibleMemorySize": 25110108
+  },
+  "memory": [
+    {
+      "Capacity": 17179869184,
+      "Speed": 2133
+    },
+    {
+      "Capacity": 8589934592,
+      "Speed": 2133
+    }
+  ],
+  "rust": "rustc 1.98.0 (88d9e12ae 2026-08-18)\r\nbinary: rustc\r\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\r\ncommit-date: 2026-08-18\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.98.0\r\nLLVM version: 22.1.8\r\n",
+  "cargo": "cargo 1.98.0 (797e8a9bc 2026-08-05)\r\n",
+  "rustFlags": "-C target-cpu=native",
+  "affinityCore": 2,
+  "priority": "AboveNormal",
+  "mode": "desktop background recorded; original pass gate <=20%; resumed pass gate <=20%; affinity core 2; two reverse-order passes",
+  "warmupSeconds": 1,
+  "measurementSeconds": 3,
+  "samples": 200,
+  "confidence": 0.99,
+  "resamples": 10000,
+  "executable": "target/release/deps/comparison-dc71e0dba1335f29.exe",
+  "executableSha256": "C305C38AD00D99B8EA4662296DCFA0F15777CBE0088E0740C7D6797E2415DFFA",
+  "sources": {
+    "src\\lib.rs": "AC02C98B49B57AC0AD29AE3EEEC5D121AE3D7B8299CA01BAA8B5966E58544C48",
+    "../Cargo.lock": "C5FC36A62EC36EB8B2B834B15A3C03278ECA9EBA2A958F636C196203EC05F32F",
+    "../src/lib.rs": "8F82531CD2BA5261B0E0500046487EA7C72B86CDF3AD69A62D3551B3042550C9",
+    "build.rs": "56EEE5ABFA6EC0B47A2E8637B71D81F862A51D1B66BBBCF7FD2258FA4415CE98",
+    "../src/cases.rs": "9CBDEAA43B3D3625963AC72707792C73D582F3F5F18A422FEB9186E8AE52314C",
+    "schemas\\settings.deq": "04F6F190E8B15E8C829CA5DF0BC7AED8C49EA6C7A38A78684BF7428ACC82809B",
+    "../schemas/settings.deq": "E9D99D7A80E5569F5810E3C9F941818C9E37FAD2672139BB7256615E0852C344",
+    "Cargo.lock": "D849F4877968E6D532B39C6983C2AAFCBCA27F5AECFFFFCECD539D7DB198FE07",
+    "tests\\contracts.rs": "FA5E2859482A7BEE11E74933B393E8580E73B9CAF81DB19CF52A6F7D539AE034",
+    "../schemas/records.qsl": "78DD7246A18866A90F79B602F09525A75840E03A32AB1942AA8C25EC2FC4D5B2",
+    "../schemas/records.proto": "D7389986213CC82E3539C6B0F731996B82AE682B909CE9539B2C41270A3BAAB7",
+    "../schemas/records.capnp": "728345FD120250245877B7B729DDEE0C51E6A56CF5CB26B1879566E0328F99D1",
+    "src\\bin\\probe.rs": "B4138D8E6803452B28FD0C28331E6A97799CF962E50C5FAB6071F1B8DF4D5BD1",
+    "benches\\comparison.rs": "1374A795DF95CAD3E59816298CA60CF1A8A378FE85FF075D7B0D3B2A42B9F148",
+    "../src/codecs.rs": "D2F805162AA33B8472A9D8EDC71286D0B75187B416EE4ABB08AB1DA7382CF23A",
+    "../src/fixtures.rs": "039FDBBA33CACF40A68B267DEB20E62DA4AE9D5A9C0261DFB060D2CF3ABE9899",
+    "schemas\\records.qsl": "5F2B8CF05B24F0A5078AD6F5842F4877CF71B6354FC2B2CA664FEF777616C840",
+    "Cargo.toml": "CF520A03585003C70D01C1A49352D80163C800AB4371B60B878649FC18486167",
+    "../build.rs": "811751C7C890F86CA4ED1ECAF823FB3AEEA1659251FDF9586099DAFC486CC559",
+    "../Cargo.toml": "A8CC60500FE8E02494C53D4001F69AEE9FEC0ADDE53A5C4BA896A63BC05AE87D",
+    "../src/bin/probe.rs": "F90789551C26F4B32034567ACEDB180D4A2C05ABAC1CC14C5ED64F0952CF4228"
+  },
+  "powerPlan": "GUID схемы питания: 11111111-1111-1111-1111-111111111111  (Power Scheme)\r\n",
+  "resumedAt": "2026-11-23T16:50:37.0804007+05:00",
+  "resumeCpuLimitPercent": 20
+}

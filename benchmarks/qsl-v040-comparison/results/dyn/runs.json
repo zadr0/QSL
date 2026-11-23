@@ -1,0 +1,44 @@
+﻿[
+    {
+        "run":  "dyn-run-1",
+        "exitCode":  0,
+        "elapsedSeconds":  274.0648793,
+        "processCpuSeconds":  262.71875,
+        "systemBefore":  [
+                             5879785625000,
+                             7452311093750,
+                             3309228593750
+                         ],
+        "systemAfter":  [
+                            5886609687500,
+                            7459795468750,
+                            3312707343750
+                        ],
+        "activeCpuSeconds":  413.90625,
+        "otherSystemCpuCoreEquivalent":  0.5516485745497709,
+        "preRunTotalCpuPercent":  8.527131782945741,
+        "peakWorkingSetBytes":  null,
+        "reverseOrder":  false
+    },
+    {
+        "run":  "dyn-run-2",
+        "exitCode":  0,
+        "elapsedSeconds":  273.1559524,
+        "processCpuSeconds":  261.828125,
+        "systemBefore":  [
+                             5910910312500,
+                             7495792343750,
+                             3361009843750
+                         ],
+        "systemAfter":  [
+                            5917615156250,
+                            7503227812500,
+                            3364500625000
+                        ],
+        "activeCpuSeconds":  422.140625,
+        "otherSystemCpuCoreEquivalent":  0.58689001133405283,
+        "preRunTotalCpuPercent":  13.4765625,
+        "peakWorkingSetBytes":  null,
+        "reverseOrder":  true
+    }
+]

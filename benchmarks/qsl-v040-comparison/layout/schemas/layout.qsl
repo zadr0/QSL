@@ -1,0 +1,32 @@
+&Declared[safety] {
+  u8 flag;
+  u64 count;
+  u16 id;
+  u32 time;
+  u8 quality;
+}
+
+&Auto[safety,auto] {
+  u8 flag;
+  u64 count;
+  u16 id;
+  u32 time;
+  u8 quality;
+}
+
+&Canonical[safety,auto[wire=1]] {
+  u8 flag;
+  u64 count;
+  u16 id;
+  u32 time;
+  u8 quality;
+}
+
+&Manual[safety] {
+  u64 count;
+  u32 time;
+  u16 id;
+  u8 flag;
+  u8 quality;
+}
+

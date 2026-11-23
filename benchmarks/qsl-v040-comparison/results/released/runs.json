@@ -1,0 +1,44 @@
+﻿[
+    {
+        "run":  "released-run-1",
+        "exitCode":  0,
+        "elapsedSeconds":  447.7882196,
+        "processCpuSeconds":  429.46875,
+        "systemBefore":  [
+                             5852911718750,
+                             7422341093750,
+                             3294820468750
+                         ],
+        "systemAfter":  [
+                            5863779843750,
+                            7434451562500,
+                            3300621250000
+                        ],
+        "activeCpuSeconds":  704.3125,
+        "otherSystemCpuCoreEquivalent":  0.61378066230842843,
+        "preRunTotalCpuPercent":  5.2734375,
+        "peakWorkingSetBytes":  null,
+        "reverseOrder":  false
+    },
+    {
+        "run":  "released-run-2",
+        "exitCode":  0,
+        "elapsedSeconds":  454.61032359999996,
+        "processCpuSeconds":  440.40625,
+        "systemBefore":  [
+                             5864108281250,
+                             7434828593750,
+                             3300667343750
+                         ],
+        "systemAfter":  [
+                            5875470312500,
+                            7447301093750,
+                            3306379218750
+                        ],
+        "activeCpuSeconds":  682.234375,
+        "otherSystemCpuCoreEquivalent":  0.53194595997071636,
+        "preRunTotalCpuPercent":  16.929133858267718,
+        "peakWorkingSetBytes":  null,
+        "reverseOrder":  true
+    }
+]

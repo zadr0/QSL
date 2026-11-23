@@ -1,0 +1,54 @@
+﻿{
+    "dateLocal":  "2026-11-23T17:24:58.6860750+05:00",
+    "k6":  "k6.exe v2.2.0 (commit/00a9a1b7f5, go1.26.5, windows/amd64)\r\n",
+    "rust":  "rustc 1.98.0 (88d9e12ae 2026-08-18)\r\nbinary: rustc\r\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\r\ncommit-date: 2026-08-18\r\nhost: x86_64-pc-windows-msvc\r\nrelease: 1.98.0\r\nLLVM version: 22.1.8\r\n",
+    "cpu":  {
+                "Name":  "Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz",
+                "NumberOfLogicalProcessors":  4
+            },
+    "os":  {
+               "Caption":  "Майкрософт Windows 11 Pro",
+               "Version":  "10.0.26200"
+           },
+    "serverAffinityCore":  2,
+    "clientAffinityCores":  [
+                                0,
+                                1,
+                                3
+                            ],
+    "transport":  "loopback HTTP/1.1 keep-alive; no TLS; client and server on one host",
+    "warmupSeconds":  2,
+    "measurementSeconds":  10,
+    "closedVUs":  8,
+    "openRate":  1000,
+    "openVUs":  32,
+    "serverExecutableSha256":  "C8B98BF9BD6769C8F26A2ED2A082281CEBF0F30A697633D32AFF5C385424DBD9",
+    "sources":  {
+                    "src\\lib.rs":  "8F82531CD2BA5261B0E0500046487EA7C72B86CDF3AD69A62D3551B3042550C9",
+                    "dyn\\schemas\\settings.deq":  "04F6F190E8B15E8C829CA5DF0BC7AED8C49EA6C7A38A78684BF7428ACC82809B",
+                    "http/src/main.rs":  "DDC1B9D1E6B8763B1CB78032DF36AD8EAAB1B57EDDB606F3EFB00E9662CE001B",
+                    "dyn\\src\\bin\\probe.rs":  "B4138D8E6803452B28FD0C28331E6A97799CF962E50C5FAB6071F1B8DF4D5BD1",
+                    "http/Cargo.lock":  "6FEE59C7EB1A30B89F4CE213DF0A43B9EA67A8D6C71B857F342A383AA40531FB",
+                    "src\\fixtures.rs":  "039FDBBA33CACF40A68B267DEB20E62DA4AE9D5A9C0261DFB060D2CF3ABE9899",
+                    "schemas\\settings.deq":  "E9D99D7A80E5569F5810E3C9F941818C9E37FAD2672139BB7256615E0852C344",
+                    "http\\src\\main.rs":  "DDC1B9D1E6B8763B1CB78032DF36AD8EAAB1B57EDDB606F3EFB00E9662CE001B",
+                    "schemas\\records.proto":  "D7389986213CC82E3539C6B0F731996B82AE682B909CE9539B2C41270A3BAAB7",
+                    "schemas\\records.capnp":  "728345FD120250245877B7B729DDEE0C51E6A56CF5CB26B1879566E0328F99D1",
+                    "k6\\load.js":  "FCCCC01ACFF2D9C4B47739AD1A3C654372A23CFA2EEFA06E59C29F99D6348C1C",
+                    "dyn/Cargo.toml":  "CF520A03585003C70D01C1A49352D80163C800AB4371B60B878649FC18486167",
+                    "tools/run-k6.ps1":  "C2E0507AC14D58D881E88E257DD0F10B905EF9133BAF084ECAB5B6DFB1DAFA6C",
+                    "http/Cargo.toml":  "6B6238CF472B70DF2DEFD09D6680FC4ED2810400C5B1A6860D22AF7A6A8AE0C4",
+                    "src\\bin\\probe.rs":  "F90789551C26F4B32034567ACEDB180D4A2C05ABAC1CC14C5ED64F0952CF4228",
+                    "dyn/Cargo.lock":  "D849F4877968E6D532B39C6983C2AAFCBCA27F5AECFFFFCECD539D7DB198FE07",
+                    "dyn\\schemas\\records.qsl":  "5F2B8CF05B24F0A5078AD6F5842F4877CF71B6354FC2B2CA664FEF777616C840",
+                    "Cargo.lock":  "C5FC36A62EC36EB8B2B834B15A3C03278ECA9EBA2A958F636C196203EC05F32F",
+                    "schemas\\records.qsl":  "78DD7246A18866A90F79B602F09525A75840E03A32AB1942AA8C25EC2FC4D5B2",
+                    "src\\codecs.rs":  "D2F805162AA33B8472A9D8EDC71286D0B75187B416EE4ABB08AB1DA7382CF23A",
+                    "Cargo.toml":  "A8CC60500FE8E02494C53D4001F69AEE9FEC0ADDE53A5C4BA896A63BC05AE87D",
+                    "dyn\\src\\lib.rs":  "AC02C98B49B57AC0AD29AE3EEEC5D121AE3D7B8299CA01BAA8B5966E58544C48",
+                    "dyn\\tests\\contracts.rs":  "FA5E2859482A7BEE11E74933B393E8580E73B9CAF81DB19CF52A6F7D539AE034",
+                    "src\\cases.rs":  "9CBDEAA43B3D3625963AC72707792C73D582F3F5F18A422FEB9186E8AE52314C",
+                    "dyn\\benches\\comparison.rs":  "1374A795DF95CAD3E59816298CA60CF1A8A378FE85FF075D7B0D3B2A42B9F148"
+                },
+    "powerPlan":  "GUID схемы питания: 11111111-1111-1111-1111-111111111111  (Power Scheme)\r\n"
+}

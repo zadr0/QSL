@@ -1,0 +1,26 @@
+[package]
+name = "qsl-dyn-bench"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+qsl = { version = "=0.4.0", default-features = false, features = ["alloc"] }
+qsl-v040-comparison = { path = ".." }
+serde_json = "=1.0.154"
+
+[build-dependencies]
+qsl = "=0.4.0"
+
+[dev-dependencies]
+criterion = { version = "=0.8.2", default-features = false, features = ["cargo_bench_support"] }
+
+[[bench]]
+name = "comparison"
+harness = false
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+debug = 1
+

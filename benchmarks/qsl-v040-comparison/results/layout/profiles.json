@@ -1,0 +1,77 @@
+{
+  "field_order": [
+    "flag",
+    "count",
+    "id",
+    "time",
+    "quality"
+  ],
+  "fixture_count": 256,
+  "large_count": 262144,
+  "profiles": [
+    {
+      "alignment": 8,
+      "case": "declared",
+      "frame_bytes": 16,
+      "frame_example_hex": "112233445566778899aabbccddeeff10",
+      "offsets": [
+        0,
+        8,
+        16,
+        20,
+        24
+      ],
+      "read_allocs_256": 0,
+      "size": 32,
+      "write_allocs_256": 0
+    },
+    {
+      "alignment": 8,
+      "case": "auto",
+      "frame_bytes": 16,
+      "frame_example_hex": "112233445566778899aabbccddeeff10",
+      "offsets": [
+        8,
+        0,
+        10,
+        12,
+        9
+      ],
+      "read_allocs_256": 0,
+      "size": 16,
+      "write_allocs_256": 0
+    },
+    {
+      "alignment": 8,
+      "case": "auto_wire_1",
+      "frame_bytes": 16,
+      "frame_example_hex": "223344556677889911aabb10ccddeeff",
+      "offsets": [
+        8,
+        0,
+        10,
+        12,
+        9
+      ],
+      "read_allocs_256": 0,
+      "size": 16,
+      "write_allocs_256": 0
+    },
+    {
+      "alignment": 8,
+      "case": "manual",
+      "frame_bytes": 16,
+      "frame_example_hex": "2233445566778899ccddeeffaabb1110",
+      "offsets": [
+        14,
+        0,
+        12,
+        8,
+        15
+      ],
+      "read_allocs_256": 0,
+      "size": 16,
+      "write_allocs_256": 0
+    }
+  ]
+}

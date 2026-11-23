@@ -1,0 +1,4 @@
+140052619:     	pextq	%r8, %rdx, %rdx
+14005261e:     	pextq	%r8, %rax, %rax
+14009c804:     	pextq	%rbx, %rcx, %rcx
+14009c809:     	pextq	%rbx, %rdx, %rdx
