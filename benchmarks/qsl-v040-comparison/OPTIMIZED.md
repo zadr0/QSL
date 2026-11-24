@@ -4,6 +4,8 @@ QSL, Protobuf, Cap’n Proto and Bincode process the same logical values with op
 
 [Dashboard](dashboard.html) · [Timing CSV](results/optimized/confirmed.csv) · [Historical benchmarks](HISTORY.md)
 
+The timing tables compare selected code paths on valid fixtures. QSL's `_trusted` profiles verify the records before the timer, while the other codec adapters retain their parsing checks inside the timer. An ingress comparison requires a shared acceptance contract for untrusted input.
+
 ## Results
 
 **5 confirmed leads, 2 confirmed deficits and 7 inconclusive comparisons** for QSL.
@@ -90,6 +92,10 @@ All QSL schemas enable automatic native placement via `auto`. In a profile name,
 The alternative configurations include Bincode fixed and variable integers, Protobuf fixed32 and varints for bounded integers, and Cap’n Proto packed and unpacked messages where each satisfies the operation contract.
 
 A profile ending in `_trusted` calls a generated QSL unchecked method. Its typed source values were checked beforehand. Its reads operate on immutable frames established by a checked encode and decode. The harness verifies that the unchecked writer produces the same bytes. The trusted timings apply to that prevalidated boundary. Use checked entry points for network or otherwise untrusted bytes. Checked candidate timings remain in the calibration data.
+
+In the zero-copy read, QSL's trusted reader reuses the prior UTF-8 validation. Prost converts its decoded byte field with `from_utf8`, Bincode decodes an `&str`, and Cap’n Proto calls `to_str` on the borrowed text. All four return views into the encoded frame. The time difference combines the costs of validation and decoding in each path. [Zero-copy adapters](optimized/src/zero_copy.rs)
+
+For matched validation, define the same allowed domains, field and container limits, and malformed-input behavior for the common model. Include each codec's parsing and any additional application checks in the timed operation. Measure trusted reads as a separate series with the validation cost accounted for at the boundary where data becomes trusted.
 
 Calibration uses records 0–255 and confirmation uses records 1024–1279. The runner freezes one winner per codec, workload and operation before confirmation, and reverses the candidate order in the second pass. The batch suite repeats selection independently for each batch size. Each confirmation pass uses 100 samples per single-record finalist and 60 per batch finalist.
 

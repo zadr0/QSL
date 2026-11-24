@@ -8,7 +8,7 @@ QSL, Protobuf through Prost, Cap’n Proto and Bincode encode and decode the sam
 | [Interactive dashboard](dashboard.html) | Confirmed latency, selected codec profiles, frame sizes and allocation counts. Download the HTML file to open it in a browser. |
 | [Historical benchmark series](HISTORY.md) | Earlier Dyn, k6, TCP, layout, transmutation, StackString and QSL-LZ measurements |
 
-All measured QSL schemas use automatic layout. The timed trusted QSL paths require immutable, prevalidated fixtures. The report documents those requirements and the exact contract for each operation.
+All measured QSL schemas use automatic layout. The timed trusted QSL paths require immutable, prevalidated fixtures. Other codecs retain their normal parsing checks. Read the results as performance of the selected paths on valid data. [Validation details](OPTIMIZED.md#configuration-and-validation)
 
 ## Reproduce on Windows
 

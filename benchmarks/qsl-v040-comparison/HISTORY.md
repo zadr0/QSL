@@ -2,6 +2,12 @@
 
 These runs remain available so their inputs and timing contracts can be audited. The [current report](OPTIMIZED.md) uses a prepared, warmed encoding contract and independently selected codec profiles.
 
+## Validation in the earlier comparisons
+
+The first API and socket benchmarks measured each adapter as implemented. QSL ran checked serialization and deserialization on the envelope and its nested QSL frames. Its schema enforced limits such as a 192-byte string maximum and a 32-element limit for readings. The other adapters ran their codec's parsing checks and their own frame or traversal checks. The shared application logic checked the frame size and payload presence, and the HTTP endpoint also checked the payload variant and revision increment. Field-level limits differed by adapter. The timings include those differences, along with the extra work of building the nested QSL frames. [QSL schema](realistic/schemas/telemetry.qsl) · [QSL adapter](realistic/src/qsl_codec.rs) · [Shared API adapters](realistic/src/lib.rs)
+
+The earlier scalar suite did add equivalent domain checks for specific cases. For example, the Protobuf, Bincode and Cap’n Proto numeric adapters explicitly enforced the same `0..=4095` range that QSL put in the schema. Treat this as a comparison of the particular contracts used by the adapters. [Scalar adapters](src/codecs.rs) · [Scalar QSL schemas](schemas/records.qsl)
+
 | Series | Scope | Evidence |
 |---|---|---|
 | Four-codec scalar comparison | Four bounded integers, optional fields and UTF-8 strings. The CSV separates owned and borrowed reads. | [Source statistics](results/released/measurements.csv) |

@@ -58,6 +58,7 @@ code{font-size:.82em;color:#dce6f8;overflow-wrap:anywhere}
 </header>
 <main>
   <h2 id="comparison"></h2>
+  <p class="intro" id="validation"></p>
   <div class="controls">
     <fieldset id="scope"><legend id="scope-title"></legend></fieldset>
     <label id="size-label" hidden><span id="size-title"></span><select id="size"></select></label>
@@ -94,10 +95,11 @@ set('intro','QSL, Protobuf, Cap’n Proto and Bincode on the same warmed workloa
 set('method','Method and results','Методика и результаты');
 set('history','Previous runs','Предыдущие замеры');
 set('comparison','Compare codecs','Сравнение кодеков');
+set('validation','QSL profiles marked trusted validate the data before timing. The other codec readers perform their usual parsing checks during timing.','Профили QSL с trusted проверяют данные до замера. Остальные кодеки выполняют обычные проверки при чтении во время замера.');
 set('scope-title','Run','Серия');
 set('size-title','Messages per batch','Сообщений в пачке');
 set('operations-title','Operation','Операция');
-set('note','Trusted QSL profiles use immutable, prevalidated data. The fastest encoder and decoder can use different formats. A lead requires separated 99% median intervals in both passes. Shorter bars indicate lower latency.','Профили QSL с trusted используют неизменяемые предварительно проверенные данные. Самые быстрые запись и чтение могут использовать разные форматы. Лидерство требует разделения 99% интервалов медианы в обоих проходах. Чем короче полоса, тем меньше задержка.');
+set('note','The fastest encoder and decoder can use different formats. A lead requires separated 99% median intervals in both passes. Shorter bars indicate lower latency.','Самые быстрые запись и чтение могут использовать разные форматы. Лидерство требует разделения 99% интервалов медианы в обоих проходах. Чем короче полоса, тем меньше задержка.');
 
 function button(parent, label, value, action) {
   const node = document.createElement('button');
