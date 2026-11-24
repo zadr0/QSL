@@ -1,0 +1,15 @@
+
+&FixedAuto[safety,auto] {
+    u32(0..4095) f0; u32(0..4095) f1; u32(0..4095) f2; u32(0..4095) f3;
+}
+&FixedPoint[safety,auto,aggressive[pointing=true]] {
+    u32(0..4095) f0; u32(0..4095) f1; u32(0..4095) f2; u32(0..4095) f3;
+}
+&FixedCompact[safety,auto,compact] {
+    u32(0..4095) f0; u32(0..4095) f1; u32(0..4095) f2; u32(0..4095) f3;
+}
+&FixedGroup[safety,auto,compact,aggressive[group=true]] {
+    u32(0..4095) f0; u32(0..4095) f1; u32(0..4095) f2; u32(0..4095) f3;
+}
+&BlobAuto[safety,auto,lifetime] { u32 id; str(0..8192) text; }
+&BlobAligned[safety,auto,lifetime,compact,alignment] { u32 id; str(0..8192) text; }

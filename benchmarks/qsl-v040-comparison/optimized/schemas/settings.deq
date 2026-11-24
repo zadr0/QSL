@@ -1,0 +1,3 @@
+!config MAX_DATA_SIZE = 32768;
+!config STACK_LIMIT = 0;
+!config CPU_PROFILE = kaby_lake;

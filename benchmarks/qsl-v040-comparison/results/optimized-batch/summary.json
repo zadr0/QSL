@@ -1,0 +1,5652 @@
+{
+  "rows": [
+    {
+      "id": "api/allocate/bincode_fixint/1",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 231.0743333676516,
+        "low": 213.44332338103573,
+        "high": 250.44900849502676
+      },
+      "second": {
+        "ns": 176.54712064251538,
+        "low": 168.26597744360902,
+        "high": 197.0259874284642
+      },
+      "ns": 203.8107270050835,
+      "nsPerRecord": 203.8107270050835,
+      "wireBytes": 132.421875,
+      "allocationCalls": 1,
+      "allocationBytes": 132.421875,
+      "allocationBytesPerBatch": 132.421875,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/allocate/bincode_fixint/256",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 43116,
+        "low": 41974.545454545456,
+        "high": 47696.02040816327
+      },
+      "second": {
+        "ns": 43971.61616161616,
+        "low": 40130.432187499995,
+        "high": 46564.41140099067
+      },
+      "ns": 43543.808080808085,
+      "nsPerRecord": 170.09300031565658,
+      "wireBytes": 132.421875,
+      "allocationCalls": 1,
+      "allocationBytes": 132.421875,
+      "allocationBytesPerBatch": 33900,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/allocate/bincode_fixint/64",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 10397.480106100797,
+        "low": 9835.526315789473,
+        "high": 11693.920145190563
+      },
+      "second": {
+        "ns": 10492.078382322285,
+        "low": 9849.382716049382,
+        "high": 12351.98717948718
+      },
+      "ns": 10444.77924421154,
+      "nsPerRecord": 163.19967569080532,
+      "wireBytes": 132.421875,
+      "allocationCalls": 1,
+      "allocationBytes": 132.421875,
+      "allocationBytesPerBatch": 8475,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/allocate/bincode_fixint/8",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 1280.8092326604556,
+        "low": 1216.255736714976,
+        "high": 1465.3322440087145
+      },
+      "second": {
+        "ns": 1360.9586833185972,
+        "low": 1248.9583333333333,
+        "high": 1540.4040404040404
+      },
+      "ns": 1320.8839579895264,
+      "nsPerRecord": 165.1104947486908,
+      "wireBytes": 132.421875,
+      "allocationCalls": 1,
+      "allocationBytes": 132.421875,
+      "allocationBytesPerBatch": 1059.375,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/allocate/capnp/1",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 104.6643846395971,
+        "low": 100.1699716713881,
+        "high": 114.063132335087
+      },
+      "second": {
+        "ns": 130.43529061862677,
+        "low": 126.6856189357889,
+        "high": 143.63771523648984
+      },
+      "ns": 117.54983762911193,
+      "nsPerRecord": 117.54983762911193,
+      "wireBytes": 238.59375,
+      "allocationCalls": 1,
+      "allocationBytes": 238.59375,
+      "allocationBytesPerBatch": 238.59375,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/allocate/capnp/256",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 29390.178571428572,
+        "low": 28371.428571428572,
+        "high": 34033.40995738955
+      },
+      "second": {
+        "ns": 29681.206896551725,
+        "low": 28522.89285714286,
+        "high": 33298.93264811978
+      },
+      "ns": 29535.69273399015,
+      "nsPerRecord": 115.37379974214902,
+      "wireBytes": 238.59375,
+      "allocationCalls": 1,
+      "allocationBytes": 238.59375,
+      "allocationBytesPerBatch": 61080,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/allocate/capnp/64",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 7406.157544378699,
+        "low": 7054.185520361991,
+        "high": 8426.923076923076
+      },
+      "second": {
+        "ns": 7337.852173913043,
+        "low": 7046.124794745484,
+        "high": 8859.438596491229
+      },
+      "ns": 7372.004859145871,
+      "nsPerRecord": 115.18757592415423,
+      "wireBytes": 238.59375,
+      "allocationCalls": 1,
+      "allocationBytes": 238.59375,
+      "allocationBytesPerBatch": 15270,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/allocate/capnp/8",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 968.1057504873295,
+        "low": 895.3430735930735,
+        "high": 1057.072619047619
+      },
+      "second": {
+        "ns": 969.7274330607664,
+        "low": 945.777621393385,
+        "high": 1096.6257362483777
+      },
+      "ns": 968.9165917740479,
+      "nsPerRecord": 121.11457397175599,
+      "wireBytes": 238.59375,
+      "allocationCalls": 1,
+      "allocationBytes": 238.59375,
+      "allocationBytesPerBatch": 1908.75,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/allocate/protobuf/1",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 354.4835581787521,
+        "low": 327.80861595153334,
+        "high": 394.5125970948062
+      },
+      "second": {
+        "ns": 318.83040900580863,
+        "low": 299.7181249517337,
+        "high": 369.5528358512523
+      },
+      "ns": 336.65698359228037,
+      "nsPerRecord": 336.65698359228037,
+      "wireBytes": 87.3359375,
+      "allocationCalls": 1,
+      "allocationBytes": 87.3359375,
+      "allocationBytesPerBatch": 87.3359375,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/allocate/protobuf/256",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 91749.25925925927,
+        "low": 86476.75811965813,
+        "high": 93610.66666666667
+      },
+      "second": {
+        "ns": 101579.5955882353,
+        "low": 98592.85714285714,
+        "high": 117933.65384615384
+      },
+      "ns": 96664.42742374729,
+      "nsPerRecord": 377.59541962401283,
+      "wireBytes": 87.3359375,
+      "allocationCalls": 1,
+      "allocationBytes": 87.3359375,
+      "allocationBytesPerBatch": 22358,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/allocate/protobuf/64",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 22613.555555555555,
+        "low": 21677.14132205514,
+        "high": 23249.342464678182
+      },
+      "second": {
+        "ns": 22550.198863636364,
+        "low": 21947.90254237288,
+        "high": 23803.673469387755
+      },
+      "ns": 22581.877209595958,
+      "nsPerRecord": 352.84183139993684,
+      "wireBytes": 87.3359375,
+      "allocationCalls": 1,
+      "allocationBytes": 87.3359375,
+      "allocationBytesPerBatch": 5589.5,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/allocate/protobuf/8",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 2399.688962651638,
+        "low": 2356.6476356120183,
+        "high": 2844.2797697368424
+      },
+      "second": {
+        "ns": 2559.447751322751,
+        "low": 2440.4486183971644,
+        "high": 2858.7688286372495
+      },
+      "ns": 2479.5683569871944,
+      "nsPerRecord": 309.9460446233993,
+      "wireBytes": 87.3359375,
+      "allocationCalls": 1,
+      "allocationBytes": 87.3359375,
+      "allocationBytesPerBatch": 698.6875,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/allocate/qsl_auto_bitmap_trusted/1",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 125.68522483940043,
+        "low": 121.74574552011721,
+        "high": 146.9542850367782
+      },
+      "second": {
+        "ns": 132.04986428068764,
+        "low": 122.87903667214012,
+        "high": 149.0298582487182
+      },
+      "ns": 128.86754456004405,
+      "nsPerRecord": 128.86754456004405,
+      "wireBytes": 110.50390625,
+      "allocationCalls": 1,
+      "allocationBytes": 110.50390625,
+      "allocationBytesPerBatch": 110.50390625,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/allocate/qsl_auto_bitmap_trusted/256",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 34991.15900383142,
+        "low": 32415.079365079364,
+        "high": 37823.99684210527
+      },
+      "second": {
+        "ns": 32151.48148148148,
+        "low": 30232.12962962963,
+        "high": 38058.0459770115
+      },
+      "ns": 33571.32024265645,
+      "nsPerRecord": 131.13796969787677,
+      "wireBytes": 110.50390625,
+      "allocationCalls": 1,
+      "allocationBytes": 110.50390625,
+      "allocationBytesPerBatch": 28289,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/allocate/qsl_auto_bounded_aligned_bitmap_trusted/64",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 7703.9473684210525,
+        "low": 7528.105590062112,
+        "high": 8348.858333333339
+      },
+      "second": {
+        "ns": 8707.065217391304,
+        "low": 7802.842809364549,
+        "high": 9634.120982986768
+      },
+      "ns": 8205.506292906179,
+      "nsPerRecord": 128.21103582665904,
+      "wireBytes": 74.75,
+      "allocationCalls": 1,
+      "allocationBytes": 74.75,
+      "allocationBytesPerBatch": 4784,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/allocate/qsl_auto_compact_bitmap_trusted/8",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 996.0732323232323,
+        "low": 975.9772229570841,
+        "high": 1090.565134099617
+      },
+      "second": {
+        "ns": 922.6243920688364,
+        "low": 902.1179537308569,
+        "high": 1104.3237250554323
+      },
+      "ns": 959.3488121960344,
+      "nsPerRecord": 119.9186015245043,
+      "wireBytes": 101.64453125,
+      "allocationCalls": 1,
+      "allocationBytes": 101.64453125,
+      "allocationBytesPerBatch": 813.15625,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/buffer/bincode_fixint/1",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 52.17271529524494,
+        "low": 49.718035974720465,
+        "high": 57.558574727996216
+      },
+      "second": {
+        "ns": 53.4017406451725,
+        "low": 48.80838350665937,
+        "high": 57.84499008885706
+      },
+      "ns": 52.78722797020872,
+      "nsPerRecord": 52.78722797020872,
+      "wireBytes": 132.421875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/buffer/bincode_fixint/256",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 12790.313521241831,
+        "low": 11291.54296875,
+        "high": 14489.726799532313
+      },
+      "second": {
+        "ns": 12577.008547008547,
+        "low": 12349.444444444445,
+        "high": 13713.09412861137
+      },
+      "ns": 12683.661034125189,
+      "nsPerRecord": 49.54555091455152,
+      "wireBytes": 132.421875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/buffer/bincode_fixint/64",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 3350.2373473983644,
+        "low": 3140.5929561963458,
+        "high": 3630.1049233252625
+      },
+      "second": {
+        "ns": 3212.0022379996913,
+        "low": 3005.5429793120793,
+        "high": 3546.0573476702507
+      },
+      "ns": 3281.119792699028,
+      "nsPerRecord": 51.26749676092231,
+      "wireBytes": 132.421875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/buffer/bincode_fixint/8",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 405.69419369867796,
+        "low": 388.1736291401148,
+        "high": 442.905019506557
+      },
+      "second": {
+        "ns": 364.23070525615435,
+        "low": 356.2230511465108,
+        "high": 430.8825420077217
+      },
+      "ns": 384.96244947741616,
+      "nsPerRecord": 48.12030618467702,
+      "wireBytes": 132.421875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/buffer/capnp/1",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 47.13855202990497,
+        "low": 45.00588545054673,
+        "high": 54.59113819303393
+      },
+      "second": {
+        "ns": 47.65681971084859,
+        "low": 44.8489803770681,
+        "high": 52.85957684874377
+      },
+      "ns": 47.397685870376776,
+      "nsPerRecord": 47.397685870376776,
+      "wireBytes": 238.59375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/buffer/capnp/256",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 11722.099087353325,
+        "low": 10528.206178534303,
+        "high": 13910.432791537667
+      },
+      "second": {
+        "ns": 11757.76230492197,
+        "low": 10885.989304812834,
+        "high": 13730.632630410655
+      },
+      "ns": 11739.930696137646,
+      "nsPerRecord": 45.85910428178768,
+      "wireBytes": 238.59375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/buffer/capnp/64",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 3089.5815295815296,
+        "low": 3027.325111166008,
+        "high": 3320.8012326656394
+      },
+      "second": {
+        "ns": 3139.3055555555557,
+        "low": 3020.4545454545455,
+        "high": 3298
+      },
+      "ns": 3114.4435425685424,
+      "nsPerRecord": 48.663180352633475,
+      "wireBytes": 238.59375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/buffer/capnp/8",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 382.9332584655218,
+        "low": 356.3459186491498,
+        "high": 406.88906164258276
+      },
+      "second": {
+        "ns": 369.11074153785955,
+        "low": 338.8682362660058,
+        "high": 410.0593349218987
+      },
+      "ns": 376.0220000016907,
+      "nsPerRecord": 47.002750000211336,
+      "wireBytes": 238.59375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/buffer/protobuf/1",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 219.4388440860215,
+        "low": 211.6084715853278,
+        "high": 243.8320707070707
+      },
+      "second": {
+        "ns": 220.3362816727099,
+        "low": 206.02991944764096,
+        "high": 248.19911155102454
+      },
+      "ns": 219.8875628793657,
+      "nsPerRecord": 219.8875628793657,
+      "wireBytes": 87.3359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/buffer/protobuf/256",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 57925.82417582418,
+        "low": 53467.52260981912,
+        "high": 61816.72082390651
+      },
+      "second": {
+        "ns": 57750.92592592593,
+        "low": 51183.333333333336,
+        "high": 63326.25
+      },
+      "ns": 57838.37505087505,
+      "nsPerRecord": 225.93115254248067,
+      "wireBytes": 87.3359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/buffer/protobuf/64",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 14236.210317460318,
+        "low": 13658.508403361346,
+        "high": 15952.005012531328
+      },
+      "second": {
+        "ns": 13349.037037037036,
+        "low": 12572.162698412698,
+        "high": 14848.677615813316
+      },
+      "ns": 13792.623677248677,
+      "nsPerRecord": 215.50974495701058,
+      "wireBytes": 87.3359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/buffer/protobuf/8",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 1655.585974227089,
+        "low": 1632.1185617103984,
+        "high": 1857.063492063492
+      },
+      "second": {
+        "ns": 1725.935782967033,
+        "low": 1585.9577922077922,
+        "high": 1872.4650022724609
+      },
+      "ns": 1690.760878597061,
+      "nsPerRecord": 211.34510982463263,
+      "wireBytes": 87.3359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/buffer/qsl_auto_bitmap_trusted/1",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 53.227139348838236,
+        "low": 51.78118913485099,
+        "high": 57.38034304383338
+      },
+      "second": {
+        "ns": 53.11389712997522,
+        "low": 51.23519205083074,
+        "high": 58.42720766170378
+      },
+      "ns": 53.17051823940673,
+      "nsPerRecord": 53.17051823940673,
+      "wireBytes": 110.50390625,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/buffer/qsl_auto_bitmap_trusted/64",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 2876.031746031746,
+        "low": 2728.83799438983,
+        "high": 3246.6329966329968
+      },
+      "second": {
+        "ns": 2728.1359044995406,
+        "low": 2675.137998575499,
+        "high": 3054.0782036667615
+      },
+      "ns": 2802.083825265643,
+      "nsPerRecord": 43.78255976977567,
+      "wireBytes": 110.50390625,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/buffer/qsl_auto_bitmap_trusted/8",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 365.9967555875992,
+        "low": 345.51447110928007,
+        "high": 407.4119373776908
+      },
+      "second": {
+        "ns": 384.91147741147745,
+        "low": 378.99305555555554,
+        "high": 417.0375745847444
+      },
+      "ns": 375.4541164995383,
+      "nsPerRecord": 46.93176456244229,
+      "wireBytes": 110.50390625,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/buffer/qsl_auto_bounded_aligned_bitmap_trusted/256",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 11632.620018115942,
+        "low": 11133.333333333334,
+        "high": 13617.083333333334
+      },
+      "second": {
+        "ns": 11537.03125,
+        "low": 11144.031018084219,
+        "high": 13637.176724137931
+      },
+      "ns": 11584.825634057972,
+      "nsPerRecord": 45.25322513303895,
+      "wireBytes": 74.75,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/owned/bincode_fixint/1",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 406.66362075649334,
+        "low": 383.506396411364,
+        "high": 417.8409175541819
+      },
+      "second": {
+        "ns": 386.31823259755765,
+        "low": 364.4703037630346,
+        "high": 421.08136869679106
+      },
+      "ns": 396.4909266770255,
+      "nsPerRecord": 396.4909266770255,
+      "wireBytes": 132.421875,
+      "allocationCalls": 1.984375,
+      "allocationBytes": 55.5859375,
+      "allocationBytesPerBatch": 55.5859375,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/owned/bincode_fixint/256",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 93730.84772370486,
+        "low": 87453.70370370371,
+        "high": 97593.00482525605
+      },
+      "second": {
+        "ns": 95582.56021409456,
+        "low": 84538.74901652243,
+        "high": 99101.8018018018
+      },
+      "ns": 94656.7039688997,
+      "nsPerRecord": 369.75274987851446,
+      "wireBytes": 132.421875,
+      "allocationCalls": 1.984375,
+      "allocationBytes": 55.5859375,
+      "allocationBytesPerBatch": 14230,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/owned/bincode_fixint/64",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 22891.188846098987,
+        "low": 21507.333333333332,
+        "high": 24958.613122668423
+      },
+      "second": {
+        "ns": 21153.308316080056,
+        "low": 20585.479129923573,
+        "high": 24511.666666666668
+      },
+      "ns": 22022.248581089523,
+      "nsPerRecord": 344.0976340795238,
+      "wireBytes": 132.421875,
+      "allocationCalls": 1.984375,
+      "allocationBytes": 55.5859375,
+      "allocationBytesPerBatch": 3557.5,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/owned/bincode_fixint/8",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 2995.0426439232406,
+        "low": 2641.248171641791,
+        "high": 3335.323383084577
+      },
+      "second": {
+        "ns": 3126.9776119402986,
+        "low": 2965.6716417910447,
+        "high": 3294.712198691771
+      },
+      "ns": 3061.0101279317696,
+      "nsPerRecord": 382.6262659914712,
+      "wireBytes": 132.421875,
+      "allocationCalls": 1.984375,
+      "allocationBytes": 55.5859375,
+      "allocationBytesPerBatch": 444.6875,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/owned/capnp/1",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 522.687559354226,
+        "low": 487.47117080450414,
+        "high": 608.6333514900223
+      },
+      "second": {
+        "ns": 505.12412957917047,
+        "low": 484.4683282577336,
+        "high": 585.9174586296272
+      },
+      "ns": 513.9058444666982,
+      "nsPerRecord": 513.9058444666982,
+      "wireBytes": 238.59375,
+      "allocationCalls": 1.984375,
+      "allocationBytes": 56.6171875,
+      "allocationBytesPerBatch": 56.6171875,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/owned/capnp/256",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 140080.06993006993,
+        "low": 125816.5650406504,
+        "high": 146626.76950998185
+      },
+      "second": {
+        "ns": 134883.5576923077,
+        "low": 124744.68460144926,
+        "high": 144962.22222222222
+      },
+      "ns": 137481.8138111888,
+      "nsPerRecord": 537.0383351999562,
+      "wireBytes": 238.59375,
+      "allocationCalls": 1.984375,
+      "allocationBytes": 56.6171875,
+      "allocationBytesPerBatch": 14494,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/owned/capnp/64",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 33840.78282828283,
+        "low": 32165.079365079364,
+        "high": 40068.56060606061
+      },
+      "second": {
+        "ns": 32473.55769230769,
+        "low": 31292.71186440678,
+        "high": 36531.45811594204
+      },
+      "ns": 33157.17026029526,
+      "nsPerRecord": 518.0807853171134,
+      "wireBytes": 238.59375,
+      "allocationCalls": 1.984375,
+      "allocationBytes": 56.6171875,
+      "allocationBytesPerBatch": 3623.5,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/owned/capnp/8",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 4469.886363636364,
+        "low": 3939.4071837253655,
+        "high": 4900.378787878788
+      },
+      "second": {
+        "ns": 3981.6995462079835,
+        "low": 3835.8754884932696,
+        "high": 4614.420803782506
+      },
+      "ns": 4225.7929549221735,
+      "nsPerRecord": 528.2241193652717,
+      "wireBytes": 238.59375,
+      "allocationCalls": 1.984375,
+      "allocationBytes": 56.6171875,
+      "allocationBytesPerBatch": 452.9375,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/owned/protobuf/1",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 637.1163245356794,
+        "low": 622.126467074285,
+        "high": 695.8096141682479
+      },
+      "second": {
+        "ns": 633.6896378269618,
+        "low": 623.4852977514208,
+        "high": 718.918720657277
+      },
+      "ns": 635.4029811813206,
+      "nsPerRecord": 635.4029811813206,
+      "wireBytes": 87.3359375,
+      "allocationCalls": 3.1875,
+      "allocationBytes": 108.5234375,
+      "allocationBytesPerBatch": 108.5234375,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/owned/protobuf/256",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 164778.41435185185,
+        "low": 157634.88372093023,
+        "high": 174858.2262659067
+      },
+      "second": {
+        "ns": 169659.4965675057,
+        "low": 152900,
+        "high": 174603.64261062216
+      },
+      "ns": 167218.95545967878,
+      "nsPerRecord": 653.1990447643702,
+      "wireBytes": 87.3359375,
+      "allocationCalls": 3.1875,
+      "allocationBytes": 108.5234375,
+      "allocationBytesPerBatch": 27782,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/owned/protobuf/64",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 37744.32894736842,
+        "low": 36500,
+        "high": 44922
+      },
+      "second": {
+        "ns": 38843.304843304846,
+        "low": 37249.333333333336,
+        "high": 45381.93535188216
+      },
+      "ns": 38293.81689533663,
+      "nsPerRecord": 598.3408889896349,
+      "wireBytes": 87.3359375,
+      "allocationCalls": 3.1875,
+      "allocationBytes": 108.5234375,
+      "allocationBytesPerBatch": 6945.5,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/owned/protobuf/8",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 4712.083333333334,
+        "low": 4576.109022556391,
+        "high": 5322.227443609023
+      },
+      "second": {
+        "ns": 5200.664682539683,
+        "low": 5094.047619047619,
+        "high": 5740.828092243187
+      },
+      "ns": 4956.374007936509,
+      "nsPerRecord": 619.5467509920636,
+      "wireBytes": 87.3359375,
+      "allocationCalls": 3.1875,
+      "allocationBytes": 108.5234375,
+      "allocationBytesPerBatch": 868.1875,
+      "outcome": "behind"
+    },
+    {
+      "id": "api/owned/qsl_auto_bitmap_trusted/256",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 74702.31668915879,
+        "low": 68582.11903417495,
+        "high": 78639.4724074075
+      },
+      "second": {
+        "ns": 91741.98717948719,
+        "low": 80989.58333333334,
+        "high": 95690.28770053478
+      },
+      "ns": 83222.15193432299,
+      "nsPerRecord": 325.0865309934492,
+      "wireBytes": 110.50390625,
+      "allocationCalls": 1.984375,
+      "allocationBytes": 55.5859375,
+      "allocationBytesPerBatch": 14230,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "api/owned/qsl_auto_bounded_aligned_bitmap_trusted/1",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 270.83067134478426,
+        "low": 255.05865102639297,
+        "high": 299.6060129222993
+      },
+      "second": {
+        "ns": 262.8008183471409,
+        "low": 253.36247910505335,
+        "high": 301.43881383212215
+      },
+      "ns": 266.81574484596257,
+      "nsPerRecord": 266.81574484596257,
+      "wireBytes": 74.75,
+      "allocationCalls": 1.984375,
+      "allocationBytes": 55.5859375,
+      "allocationBytesPerBatch": 55.5859375,
+      "outcome": "lead"
+    },
+    {
+      "id": "api/owned/qsl_auto_bounded_aligned_bitmap_trusted/64",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 16338.030303030304,
+        "low": 15792.207792207791,
+        "high": 19009.803921568626
+      },
+      "second": {
+        "ns": 18230.194805194806,
+        "low": 16302.84090909091,
+        "high": 19859.545454545456
+      },
+      "ns": 17284.112554112555,
+      "nsPerRecord": 270.06425865800867,
+      "wireBytes": 74.75,
+      "allocationCalls": 1.984375,
+      "allocationBytes": 55.5859375,
+      "allocationBytesPerBatch": 3557.5,
+      "outcome": "lead"
+    },
+    {
+      "id": "api/owned/qsl_auto_bounded_aligned_bitmap_trusted/8",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 2138.657098943033,
+        "low": 2017.3033707865168,
+        "high": 2511.8488253319715
+      },
+      "second": {
+        "ns": 2076.990487514863,
+        "low": 2007.9414838035527,
+        "high": 2310.3022562792676
+      },
+      "ns": 2107.823793228948,
+      "nsPerRecord": 263.4779741536185,
+      "wireBytes": 74.75,
+      "allocationCalls": 1.984375,
+      "allocationBytes": 55.5859375,
+      "allocationBytesPerBatch": 444.6875,
+      "outcome": "lead"
+    },
+    {
+      "id": "event/allocate/bincode_fixint/1",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 173.4172679172679,
+        "low": 163.91536308433632,
+        "high": 192.2638171534392
+      },
+      "second": {
+        "ns": 161.53575801303072,
+        "low": 150.67340067340066,
+        "high": 177.40772072577633
+      },
+      "ns": 167.4765129651493,
+      "nsPerRecord": 167.4765129651493,
+      "wireBytes": 143.17578125,
+      "allocationCalls": 1,
+      "allocationBytes": 143.17578125,
+      "allocationBytesPerBatch": 143.17578125,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/allocate/bincode_fixint/256",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 41092.5,
+        "low": 40206.25,
+        "high": 45096.32911490685
+      },
+      "second": {
+        "ns": 56760.815217391304,
+        "low": 50903.125,
+        "high": 62021.666666666664
+      },
+      "ns": 48926.65760869565,
+      "nsPerRecord": 191.11975628396738,
+      "wireBytes": 143.17578125,
+      "allocationCalls": 1,
+      "allocationBytes": 143.17578125,
+      "allocationBytesPerBatch": 36653,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/allocate/bincode_fixint/64",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 9998.646255060728,
+        "low": 9526.022590077344,
+        "high": 11044.804318488528
+      },
+      "second": {
+        "ns": 9998.086124401914,
+        "low": 9222.521419828641,
+        "high": 10984.48275862069
+      },
+      "ns": 9998.366189731321,
+      "nsPerRecord": 156.2244717145519,
+      "wireBytes": 143.17578125,
+      "allocationCalls": 1,
+      "allocationBytes": 143.17578125,
+      "allocationBytesPerBatch": 9163.25,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/allocate/bincode_fixint/8",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 1286.0649054142204,
+        "low": 1255.3756745537567,
+        "high": 1403.039383561644
+      },
+      "second": {
+        "ns": 1319.5793067226891,
+        "low": 1276.8598615916956,
+        "high": 1375.5607546048723
+      },
+      "ns": 1302.8221060684548,
+      "nsPerRecord": 162.85276325855685,
+      "wireBytes": 143.17578125,
+      "allocationCalls": 1,
+      "allocationBytes": 143.17578125,
+      "allocationBytesPerBatch": 1145.40625,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/allocate/capnp/1",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 135.399354919088,
+        "low": 128.20461215932914,
+        "high": 158.33766808905608
+      },
+      "second": {
+        "ns": 127.56740751062496,
+        "low": 124.41994114155078,
+        "high": 153.68721930816963
+      },
+      "ns": 131.48338121485648,
+      "nsPerRecord": 131.48338121485648,
+      "wireBytes": 252.59375,
+      "allocationCalls": 1,
+      "allocationBytes": 252.59375,
+      "allocationBytesPerBatch": 252.59375,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/allocate/capnp/256",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 36361.90476190476,
+        "low": 31920.515246671646,
+        "high": 38304.166666666664
+      },
+      "second": {
+        "ns": 32149.244751664104,
+        "low": 31002.82738095238,
+        "high": 37184.66562173459
+      },
+      "ns": 34255.57475678444,
+      "nsPerRecord": 133.8108388936892,
+      "wireBytes": 252.59375,
+      "allocationCalls": 1,
+      "allocationBytes": 252.59375,
+      "allocationBytesPerBatch": 64664,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/allocate/capnp/64",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 8143.5950413223145,
+        "low": 8007.752525252525,
+        "high": 9112.121212121212
+      },
+      "second": {
+        "ns": 8657.930346051464,
+        "low": 7788.963210702341,
+        "high": 9696.808249721293
+      },
+      "ns": 8400.76269368689,
+      "nsPerRecord": 131.26191708885764,
+      "wireBytes": 252.59375,
+      "allocationCalls": 1,
+      "allocationBytes": 252.59375,
+      "allocationBytesPerBatch": 16166,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/allocate/capnp/8",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 1050.7602339181287,
+        "low": 1040.6586642043706,
+        "high": 1149.5481127060075
+      },
+      "second": {
+        "ns": 1055.2170299938157,
+        "low": 1025.8333333333333,
+        "high": 1155.8068783068784
+      },
+      "ns": 1052.9886319559723,
+      "nsPerRecord": 131.62357899449654,
+      "wireBytes": 252.59375,
+      "allocationCalls": 1,
+      "allocationBytes": 252.59375,
+      "allocationBytesPerBatch": 2020.75,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/allocate/protobuf/1",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 364.34874311294766,
+        "low": 349.9898538961039,
+        "high": 412.9570056228947
+      },
+      "second": {
+        "ns": 337.63778206526297,
+        "low": 330.8291457523302,
+        "high": 398.9467733658349
+      },
+      "ns": 350.9932625891053,
+      "nsPerRecord": 350.9932625891053,
+      "wireBytes": 93.19921875,
+      "allocationCalls": 1,
+      "allocationBytes": 93.19921875,
+      "allocationBytesPerBatch": 93.19921875,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/allocate/protobuf/256",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 96426.80116959065,
+        "low": 86122.72727272728,
+        "high": 98806.42427946022
+      },
+      "second": {
+        "ns": 94388.63636363635,
+        "low": 85778.4856060606,
+        "high": 110676.18324272466
+      },
+      "ns": 95407.7187666135,
+      "nsPerRecord": 372.686401432084,
+      "wireBytes": 93.19921875,
+      "allocationCalls": 1,
+      "allocationBytes": 93.19921875,
+      "allocationBytesPerBatch": 23859,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/allocate/protobuf/64",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 24304.012345679013,
+        "low": 22087.719298245614,
+        "high": 26927.801827801828
+      },
+      "second": {
+        "ns": 21707.752489331437,
+        "low": 21122.444794094794,
+        "high": 25678.00314465409
+      },
+      "ns": 23005.882417505225,
+      "nsPerRecord": 359.46691277351914,
+      "wireBytes": 93.19921875,
+      "allocationCalls": 1,
+      "allocationBytes": 93.19921875,
+      "allocationBytesPerBatch": 5964.75,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/allocate/protobuf/8",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 2937.432359307359,
+        "low": 2706.186868686869,
+        "high": 3248.4848484848485
+      },
+      "second": {
+        "ns": 2839.212454212454,
+        "low": 2710.9615384615386,
+        "high": 3146.3043306967766
+      },
+      "ns": 2888.3224067599067,
+      "nsPerRecord": 361.04030084498834,
+      "wireBytes": 93.19921875,
+      "allocationCalls": 1,
+      "allocationBytes": 93.19921875,
+      "allocationBytesPerBatch": 745.59375,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/allocate/qsl_auto_bitmap_trusted/8",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 1114.8399014778324,
+        "low": 1052.8015426285456,
+        "high": 1274.8070607553366
+      },
+      "second": {
+        "ns": 1063.8916378030676,
+        "low": 1009.4767441860465,
+        "high": 1138.1794915640676
+      },
+      "ns": 1089.36576964045,
+      "nsPerRecord": 136.17072120505625,
+      "wireBytes": 121.33203125,
+      "allocationCalls": 1,
+      "allocationBytes": 121.33203125,
+      "allocationBytesPerBatch": 970.65625,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/allocate/qsl_auto_bounded_aligned_bitmap_trusted/1",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 121.57401460548539,
+        "low": 115.19337812690414,
+        "high": 140.96490233858475
+      },
+      "second": {
+        "ns": 132.45600634110917,
+        "low": 124.31060714115912,
+        "high": 152.52032520325204
+      },
+      "ns": 127.01501047329728,
+      "nsPerRecord": 127.01501047329728,
+      "wireBytes": 78.0625,
+      "allocationCalls": 1,
+      "allocationBytes": 78.0625,
+      "allocationBytesPerBatch": 78.0625,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/allocate/qsl_auto_bounded_aligned_bitmap_trusted/256",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 48373.25,
+        "low": 43747.857142857145,
+        "high": 52250.943396226416
+      },
+      "second": {
+        "ns": 32873.0907263853,
+        "low": 29712.531541239518,
+        "high": 36502.205086580085
+      },
+      "ns": 40623.17036319265,
+      "nsPerRecord": 158.6842592312213,
+      "wireBytes": 78.0625,
+      "allocationCalls": 1,
+      "allocationBytes": 78.0625,
+      "allocationBytesPerBatch": 19984,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/allocate/qsl_auto_bounded_aligned_bitmap_trusted/64",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 7680.178752535498,
+        "low": 7241.666666666667,
+        "high": 8650.083333333334
+      },
+      "second": {
+        "ns": 7565.844444444445,
+        "low": 7054.952380952381,
+        "high": 8900.285714285714
+      },
+      "ns": 7623.011598489971,
+      "nsPerRecord": 119.1095562264058,
+      "wireBytes": 78.0625,
+      "allocationCalls": 1,
+      "allocationBytes": 78.0625,
+      "allocationBytesPerBatch": 4996,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/buffer/bincode_fixint/1",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 57.346948371524405,
+        "low": 54.50523270654301,
+        "high": 62.94509912362801
+      },
+      "second": {
+        "ns": 59.67496333617183,
+        "low": 55.593007853155456,
+        "high": 63.788456177151595
+      },
+      "ns": 58.51095585384812,
+      "nsPerRecord": 58.51095585384812,
+      "wireBytes": 143.17578125,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/buffer/bincode_fixint/256",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 14554.11111111111,
+        "low": 14067.867094017096,
+        "high": 16006.9907259354
+      },
+      "second": {
+        "ns": 14358.214285714286,
+        "low": 12511.904761904761,
+        "high": 16060.084818054209
+      },
+      "ns": 14456.162698412698,
+      "nsPerRecord": 56.4693855406746,
+      "wireBytes": 143.17578125,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/buffer/bincode_fixint/64",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 3440.4797505126453,
+        "low": 3165.4411764705883,
+        "high": 3927.9948916317253
+      },
+      "second": {
+        "ns": 3479.424682395644,
+        "low": 3313.8744632865,
+        "high": 3857.152496626181
+      },
+      "ns": 3459.952216454145,
+      "nsPerRecord": 54.061753382096015,
+      "wireBytes": 143.17578125,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/buffer/bincode_fixint/8",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 390.18235949350503,
+        "low": 377.8888050946874,
+        "high": 482.1158528770986
+      },
+      "second": {
+        "ns": 406.4852742541696,
+        "low": 378.9511392999765,
+        "high": 464.0578791392063
+      },
+      "ns": 398.33381687383735,
+      "nsPerRecord": 49.79172710922967,
+      "wireBytes": 143.17578125,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/buffer/capnp/1",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 46.37602201507969,
+        "low": 45.547703667729934,
+        "high": 54.13828821809315
+      },
+      "second": {
+        "ns": 52.076317009703885,
+        "low": 48.44091001032651,
+        "high": 55.53878828526716
+      },
+      "ns": 49.22616951239179,
+      "nsPerRecord": 49.22616951239179,
+      "wireBytes": 252.59375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "event/buffer/capnp/256",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 12729.833698830409,
+        "low": 11716.374362244896,
+        "high": 13604.898852657007
+      },
+      "second": {
+        "ns": 12418.239795918367,
+        "low": 12245,
+        "high": 14208.662280701754
+      },
+      "ns": 12574.036747374388,
+      "nsPerRecord": 49.117331044431204,
+      "wireBytes": 252.59375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/buffer/capnp/64",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 2889.0448261416004,
+        "low": 2804.6543778801843,
+        "high": 3433.064516129032
+      },
+      "second": {
+        "ns": 2816.139657444005,
+        "low": 2714.8635368462956,
+        "high": 3303.8694793681498
+      },
+      "ns": 2852.5922417928027,
+      "nsPerRecord": 44.57175377801254,
+      "wireBytes": 252.59375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/buffer/capnp/8",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 365.92848785188244,
+        "low": 356.55867751676135,
+        "high": 406.16367265469063
+      },
+      "second": {
+        "ns": 357.70189832689834,
+        "low": 342.59514616657475,
+        "high": 408.7412408572452
+      },
+      "ns": 361.8151930893904,
+      "nsPerRecord": 45.2268991361738,
+      "wireBytes": 252.59375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/buffer/protobuf/1",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 247.6010843294794,
+        "low": 235.62164858461153,
+        "high": 276.0554793476604
+      },
+      "second": {
+        "ns": 270.1789373719198,
+        "low": 262.3694566276803,
+        "high": 294.3898207056102
+      },
+      "ns": 258.8900108506996,
+      "nsPerRecord": 258.8900108506996,
+      "wireBytes": 93.19921875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/buffer/protobuf/256",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 67806.24269433081,
+        "low": 59629.73154560811,
+        "high": 70415.72802197802
+      },
+      "second": {
+        "ns": 63973.92676767677,
+        "low": 60359.23576388889,
+        "high": 72782.15323166305
+      },
+      "ns": 65890.0847310038,
+      "nsPerRecord": 257.38314348048357,
+      "wireBytes": 93.19921875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/buffer/protobuf/64",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 16299.479166666668,
+        "low": 14707.46267667686,
+        "high": 18362.20482816783
+      },
+      "second": {
+        "ns": 17181.098484848488,
+        "low": 16437.872594185093,
+        "high": 18332.20338983051
+      },
+      "ns": 16740.288825757576,
+      "nsPerRecord": 261.5670129024621,
+      "wireBytes": 93.19921875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/buffer/protobuf/8",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 1881.2053925455987,
+        "low": 1829.9687484129804,
+        "high": 2131.173294059892
+      },
+      "second": {
+        "ns": 1913.1221064814815,
+        "low": 1846.4798850574712,
+        "high": 2219.8200113378684
+      },
+      "ns": 1897.16374951354,
+      "nsPerRecord": 237.1454686891925,
+      "wireBytes": 93.19921875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/buffer/qsl_auto_bitmap_trusted/256",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 13486.875,
+        "low": 12844.505494505494,
+        "high": 15348.88020143122
+      },
+      "second": {
+        "ns": 13323.621894409938,
+        "low": 12747.638888888889,
+        "high": 15585.714285714286
+      },
+      "ns": 13405.24844720497,
+      "nsPerRecord": 52.36425174689441,
+      "wireBytes": 121.33203125,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/buffer/qsl_auto_bounded_aligned_bitmap_trusted/1",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 56.197825779370845,
+        "low": 55.053152855727966,
+        "high": 62.17943527037381
+      },
+      "second": {
+        "ns": 59.7705573236622,
+        "low": 56.24454148471616,
+        "high": 63.822000415886876
+      },
+      "ns": 57.984191551516524,
+      "nsPerRecord": 57.984191551516524,
+      "wireBytes": 78.0625,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/buffer/qsl_auto_bounded_aligned_bitmap_trusted/64",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 3065.340909090909,
+        "low": 3004.202192265795,
+        "high": 3552.8622718559695
+      },
+      "second": {
+        "ns": 3554.576271186441,
+        "low": 3444.915254237288,
+        "high": 3729.021426287176
+      },
+      "ns": 3309.958590138675,
+      "nsPerRecord": 51.718102970916796,
+      "wireBytes": 78.0625,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/buffer/qsl_auto_bounded_aligned_bitmap_trusted/8",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 402.08251698014624,
+        "low": 383.2550800492611,
+        "high": 455.98699590882524
+      },
+      "second": {
+        "ns": 407.13976384911797,
+        "low": 380.239420935412,
+        "high": 466.27493721271856
+      },
+      "ns": 404.61114041463213,
+      "nsPerRecord": 50.57639255182902,
+      "wireBytes": 78.0625,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "event/owned/bincode_fixint/1",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 370.85141944818645,
+        "low": 341.4312977099237,
+        "high": 413.93997224149894
+      },
+      "second": {
+        "ns": 356.64981047264433,
+        "low": 322.37093690248565,
+        "high": 406.4130458671238
+      },
+      "ns": 363.7506149604154,
+      "nsPerRecord": 363.7506149604154,
+      "wireBytes": 143.17578125,
+      "allocationCalls": 1.91796875,
+      "allocationBytes": 68.01953125,
+      "allocationBytesPerBatch": 68.01953125,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/owned/bincode_fixint/256",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 94866.38095238095,
+        "low": 91048.41397849462,
+        "high": 97357.74968425374
+      },
+      "second": {
+        "ns": 97747.30730730732,
+        "low": 90475,
+        "high": 102306.91306089745
+      },
+      "ns": 96306.84412984413,
+      "nsPerRecord": 376.19860988220364,
+      "wireBytes": 143.17578125,
+      "allocationCalls": 1.91796875,
+      "allocationBytes": 68.01953125,
+      "allocationBytesPerBatch": 17413,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/owned/bincode_fixint/64",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 21493.50104821803,
+        "low": 20493.137254901958,
+        "high": 24550.518643117466
+      },
+      "second": {
+        "ns": 21047.291666666664,
+        "low": 20685.714285714286,
+        "high": 23610.3813559322
+      },
+      "ns": 21270.396357442347,
+      "nsPerRecord": 332.34994308503667,
+      "wireBytes": 143.17578125,
+      "allocationCalls": 1.91796875,
+      "allocationBytes": 68.01953125,
+      "allocationBytesPerBatch": 4353.25,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/owned/bincode_fixint/8",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 2622.1330049261082,
+        "low": 2522.3809523809523,
+        "high": 3111.113271728272
+      },
+      "second": {
+        "ns": 2803.8954819127234,
+        "low": 2730.151515151515,
+        "high": 3225.0909287766217
+      },
+      "ns": 2713.014243419416,
+      "nsPerRecord": 339.126780427427,
+      "wireBytes": 143.17578125,
+      "allocationCalls": 1.91796875,
+      "allocationBytes": 68.01953125,
+      "allocationBytesPerBatch": 544.15625,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/owned/capnp/1",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 533.2882661422484,
+        "low": 516.7298777918247,
+        "high": 570.8265607127807
+      },
+      "second": {
+        "ns": 479.61878453038673,
+        "low": 470.26633437424937,
+        "high": 539.0949811429133
+      },
+      "ns": 506.45352533631757,
+      "nsPerRecord": 506.45352533631757,
+      "wireBytes": 252.59375,
+      "allocationCalls": 1.91796875,
+      "allocationBytes": 69.05078125,
+      "allocationBytesPerBatch": 69.05078125,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/owned/capnp/256",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 144703.25091575092,
+        "low": 138494.45175438595,
+        "high": 152800
+      },
+      "second": {
+        "ns": 194047.53177966102,
+        "low": 176683.71212121213,
+        "high": 200388.39679597702
+      },
+      "ns": 169375.39134770597,
+      "nsPerRecord": 661.6226224519764,
+      "wireBytes": 252.59375,
+      "allocationCalls": 1.91796875,
+      "allocationBytes": 69.05078125,
+      "allocationBytesPerBatch": 17677,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/owned/capnp/64",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 32368.599033816427,
+        "low": 30145.46998125937,
+        "high": 35309.3567251462
+      },
+      "second": {
+        "ns": 33807.665598290594,
+        "low": 32170.208333333336,
+        "high": 36354.81270053476
+      },
+      "ns": 33088.13231605351,
+      "nsPerRecord": 517.0020674383361,
+      "wireBytes": 252.59375,
+      "allocationCalls": 1.91796875,
+      "allocationBytes": 69.05078125,
+      "allocationBytesPerBatch": 4419.25,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/owned/capnp/8",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 3806.1447811447815,
+        "low": 3699.2897727272725,
+        "high": 4382.758620689655
+      },
+      "second": {
+        "ns": 4473.297930283225,
+        "low": 3847.703703703704,
+        "high": 4910.765432098766
+      },
+      "ns": 4139.721355714003,
+      "nsPerRecord": 517.4651694642504,
+      "wireBytes": 252.59375,
+      "allocationCalls": 1.91796875,
+      "allocationBytes": 69.05078125,
+      "allocationBytesPerBatch": 552.40625,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/owned/protobuf/1",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 698.0173482032219,
+        "low": 676.8552870714581,
+        "high": 769.5388197349845
+      },
+      "second": {
+        "ns": 657.7119621237268,
+        "low": 635.2662357510573,
+        "high": 772.7809213154042
+      },
+      "ns": 677.8646551634744,
+      "nsPerRecord": 677.8646551634744,
+      "wireBytes": 93.19921875,
+      "allocationCalls": 3.62109375,
+      "allocationBytes": 140.45703125,
+      "allocationBytesPerBatch": 140.45703125,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/owned/protobuf/256",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 188151.88553682342,
+        "low": 176806.36363636365,
+        "high": 192812.16216216216
+      },
+      "second": {
+        "ns": 188420.5303030303,
+        "low": 173692.68292682926,
+        "high": 195373.61111111112
+      },
+      "ns": 188286.20791992685,
+      "nsPerRecord": 735.4929996872143,
+      "wireBytes": 93.19921875,
+      "allocationCalls": 3.62109375,
+      "allocationBytes": 140.45703125,
+      "allocationBytesPerBatch": 35957,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/owned/protobuf/64",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 43838.61111111111,
+        "low": 41976.71296296296,
+        "high": 48090.61224489796
+      },
+      "second": {
+        "ns": 48227.06896551725,
+        "low": 42072.72727272727,
+        "high": 50392.4871001032
+      },
+      "ns": 46032.84003831418,
+      "nsPerRecord": 719.263125598659,
+      "wireBytes": 93.19921875,
+      "allocationCalls": 3.62109375,
+      "allocationBytes": 140.45703125,
+      "allocationBytesPerBatch": 8989.25,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/owned/protobuf/8",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 5523.511904761905,
+        "low": 5448.33984375,
+        "high": 6001.363636363636
+      },
+      "second": {
+        "ns": 5515.308779761905,
+        "low": 5366.964285714286,
+        "high": 6077.1875
+      },
+      "ns": 5519.410342261905,
+      "nsPerRecord": 689.9262927827381,
+      "wireBytes": 93.19921875,
+      "allocationCalls": 3.62109375,
+      "allocationBytes": 140.45703125,
+      "allocationBytesPerBatch": 1123.65625,
+      "outcome": "behind"
+    },
+    {
+      "id": "event/owned/qsl_auto_bitmap_trusted/256",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 68429.87012987013,
+        "low": 64809.333333333336,
+        "high": 74894.04761904762
+      },
+      "second": {
+        "ns": 72010.37507562009,
+        "low": 67673.53895135871,
+        "high": 79906.36284497076
+      },
+      "ns": 70220.1226027451,
+      "nsPerRecord": 274.29735391697307,
+      "wireBytes": 121.33203125,
+      "allocationCalls": 1.91796875,
+      "allocationBytes": 68.01953125,
+      "allocationBytesPerBatch": 17413,
+      "outcome": "lead"
+    },
+    {
+      "id": "event/owned/qsl_auto_bitmap_trusted/64",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 17037.78409090909,
+        "low": 16563.636363636364,
+        "high": 19962.33766233766
+      },
+      "second": {
+        "ns": 16388.516746411482,
+        "low": 16090.87987012987,
+        "high": 18600
+      },
+      "ns": 16713.150418660283,
+      "nsPerRecord": 261.1429752915669,
+      "wireBytes": 121.33203125,
+      "allocationCalls": 1.91796875,
+      "allocationBytes": 68.01953125,
+      "allocationBytesPerBatch": 4353.25,
+      "outcome": "lead"
+    },
+    {
+      "id": "event/owned/qsl_auto_bitmap_trusted/8",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 2134.874111831943,
+        "low": 2077.8313253012047,
+        "high": 2378.3132530120483
+      },
+      "second": {
+        "ns": 2176.781204906205,
+        "low": 2128.747795414462,
+        "high": 2413.7721861471864
+      },
+      "ns": 2155.827658369074,
+      "nsPerRecord": 269.47845729613425,
+      "wireBytes": 121.33203125,
+      "allocationCalls": 1.91796875,
+      "allocationBytes": 68.01953125,
+      "allocationBytesPerBatch": 544.15625,
+      "outcome": "lead"
+    },
+    {
+      "id": "event/owned/qsl_auto_bounded_compact_bitmap_trusted/1",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 276.5291231992052,
+        "low": 263.07792727950147,
+        "high": 320.2580810935814
+      },
+      "second": {
+        "ns": 281.05027060112104,
+        "low": 263.76742386211515,
+        "high": 317.3729566808347
+      },
+      "ns": 278.7896969001631,
+      "nsPerRecord": 278.7896969001631,
+      "wireBytes": 77.5625,
+      "allocationCalls": 1.91796875,
+      "allocationBytes": 68.01953125,
+      "allocationBytesPerBatch": 68.01953125,
+      "outcome": "lead"
+    },
+    {
+      "id": "fixed/allocate/bincode_fixint/1",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 61.44641110788707,
+        "low": 58.87866477913872,
+        "high": 69.3699221394719
+      },
+      "second": {
+        "ns": 64.79751796211626,
+        "low": 59.56306838165101,
+        "high": 70.95558150425792
+      },
+      "ns": 63.121964535001666,
+      "nsPerRecord": 63.121964535001666,
+      "wireBytes": 16,
+      "allocationCalls": 1,
+      "allocationBytes": 16,
+      "allocationBytesPerBatch": 16,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/allocate/bincode_u16_fixint/256",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 14676.923076923078,
+        "low": 14126.019813519813,
+        "high": 16853.21821036107
+      },
+      "second": {
+        "ns": 15566.897580218405,
+        "low": 14651.173826173826,
+        "high": 17536.88362919132
+      },
+      "ns": 15121.910328570742,
+      "nsPerRecord": 59.06996222097946,
+      "wireBytes": 8,
+      "allocationCalls": 1,
+      "allocationBytes": 8,
+      "allocationBytesPerBatch": 2048,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/allocate/bincode_u16_fixint/64",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 3725.496453900709,
+        "low": 3599.259259259259,
+        "high": 4339.934035549706
+      },
+      "second": {
+        "ns": 3680.7623049219687,
+        "low": 3564.1196013289036,
+        "high": 4144.1910689960605
+      },
+      "ns": 3703.129379411339,
+      "nsPerRecord": 57.86139655330217,
+      "wireBytes": 8,
+      "allocationCalls": 1,
+      "allocationBytes": 8,
+      "allocationBytesPerBatch": 512,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/allocate/bincode_u16_fixint/8",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 472.4117326232374,
+        "low": 462.6943005181347,
+        "high": 536.3495054168629
+      },
+      "second": {
+        "ns": 514.7557204571372,
+        "low": 489.5107420111934,
+        "high": 565.7713466308848
+      },
+      "ns": 493.5837265401873,
+      "nsPerRecord": 61.69796581752341,
+      "wireBytes": 8,
+      "allocationCalls": 1,
+      "allocationBytes": 8,
+      "allocationBytesPerBatch": 64,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/allocate/capnp_u16/64",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "capnp_u16",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 5411.818181818182,
+        "low": 5075.674242424242,
+        "high": 6226.415094339623
+      },
+      "second": {
+        "ns": 5264.367283950617,
+        "low": 4954.655403828197,
+        "high": 6172.8125
+      },
+      "ns": 5338.092732884399,
+      "nsPerRecord": 83.40769895131874,
+      "wireBytes": 24,
+      "allocationCalls": 1,
+      "allocationBytes": 24,
+      "allocationBytesPerBatch": 1536,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/allocate/capnp/1",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 85.9351164871448,
+        "low": 81.25935724579188,
+        "high": 98.06640608995633
+      },
+      "second": {
+        "ns": 81.67542750682014,
+        "low": 78.74553640739016,
+        "high": 94.35092155166677
+      },
+      "ns": 83.80527199698247,
+      "nsPerRecord": 83.80527199698247,
+      "wireBytes": 32,
+      "allocationCalls": 1,
+      "allocationBytes": 32,
+      "allocationBytesPerBatch": 32,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/allocate/capnp/256",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 22375.925925925927,
+        "low": 20758.333333333332,
+        "high": 24701.94671013852
+      },
+      "second": {
+        "ns": 130561.28740970072,
+        "low": 120230,
+        "high": 134991.46341463414
+      },
+      "ns": 76468.60666781332,
+      "nsPerRecord": 298.7054947961458,
+      "wireBytes": 32,
+      "allocationCalls": 1,
+      "allocationBytes": 32,
+      "allocationBytesPerBatch": 8192,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/allocate/capnp/8",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 700.3474594138731,
+        "low": 667.4509803921569,
+        "high": 780.7167004732928
+      },
+      "second": {
+        "ns": 717.3198777029422,
+        "low": 655.8333333333333,
+        "high": 852.804565506416
+      },
+      "ns": 708.8336685584077,
+      "nsPerRecord": 88.60420856980096,
+      "wireBytes": 32,
+      "allocationCalls": 1,
+      "allocationBytes": 32,
+      "allocationBytesPerBatch": 256,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/allocate/protobuf_fixed/1",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 71.13852165079788,
+        "low": 69.66319717203456,
+        "high": 81.11764737733446
+      },
+      "second": {
+        "ns": 71.67716479705581,
+        "low": 68.97510022374621,
+        "high": 84.33963352219483
+      },
+      "ns": 71.40784322392685,
+      "nsPerRecord": 71.40784322392685,
+      "wireBytes": 20,
+      "allocationCalls": 1,
+      "allocationBytes": 20,
+      "allocationBytesPerBatch": 20,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/allocate/protobuf_fixed/256",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 95232.40740740742,
+        "low": 90690.90909090909,
+        "high": 98279.25925925926
+      },
+      "second": {
+        "ns": 18259.378966897762,
+        "low": 17342.285149286985,
+        "high": 20124.242424242424
+      },
+      "ns": 56745.893187152586,
+      "nsPerRecord": 221.6636452623148,
+      "wireBytes": 20,
+      "allocationCalls": 1,
+      "allocationBytes": 20,
+      "allocationBytesPerBatch": 5120,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/allocate/protobuf_fixed/64",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 4748.3451035781545,
+        "low": 4648.537617554859,
+        "high": 5222.324561403509
+      },
+      "second": {
+        "ns": 4519.9047619047615,
+        "low": 4406.216931216931,
+        "high": 5217.699672461577
+      },
+      "ns": 4634.124932741458,
+      "nsPerRecord": 72.40820207408528,
+      "wireBytes": 20,
+      "allocationCalls": 1,
+      "allocationBytes": 20,
+      "allocationBytesPerBatch": 1280,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/allocate/protobuf_fixed/8",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 576.3061650992686,
+        "low": 555.5555555555555,
+        "high": 655.5721003134796
+      },
+      "second": {
+        "ns": 559.009507051089,
+        "low": 546.8687412190236,
+        "high": 650.0925925925926
+      },
+      "ns": 567.6578360751788,
+      "nsPerRecord": 70.95722950939735,
+      "wireBytes": 20,
+      "allocationCalls": 1,
+      "allocationBytes": 20,
+      "allocationBytesPerBatch": 160,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/allocate/qsl_auto_compact_group_trusted/1",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_group_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 63.34625555956245,
+        "low": 62.32892002816273,
+        "high": 68.60116642003557
+      },
+      "second": {
+        "ns": 60.286039772126465,
+        "low": 58.98513960852044,
+        "high": 70.58970928342178
+      },
+      "ns": 61.816147665844454,
+      "nsPerRecord": 61.816147665844454,
+      "wireBytes": 6,
+      "allocationCalls": 1,
+      "allocationBytes": 6,
+      "allocationBytesPerBatch": 6,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/allocate/qsl_auto_pointing_trusted/64",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto_pointing_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 3977.5,
+        "low": 3848.5,
+        "high": 4449.428571428572
+      },
+      "second": {
+        "ns": 3820.5395299145302,
+        "low": 3773.5119047619046,
+        "high": 4341.309374627044
+      },
+      "ns": 3899.019764957265,
+      "nsPerRecord": 60.92218382745727,
+      "wireBytes": 16,
+      "allocationCalls": 1,
+      "allocationBytes": 16,
+      "allocationBytesPerBatch": 1024,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/allocate/qsl_auto_pointing_trusted/8",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto_pointing_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 482.2941292356186,
+        "low": 465.1559827388402,
+        "high": 584.6970297680996
+      },
+      "second": {
+        "ns": 499.53549107646484,
+        "low": 467.5807043286867,
+        "high": 552.6812523604602
+      },
+      "ns": 490.9148101560417,
+      "nsPerRecord": 61.364351269505214,
+      "wireBytes": 16,
+      "allocationCalls": 1,
+      "allocationBytes": 16,
+      "allocationBytesPerBatch": 128,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/allocate/qsl_auto_trusted/256",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 101806.07142857142,
+        "low": 99375,
+        "high": 111750.96153846153
+      },
+      "second": {
+        "ns": 15143.849206349207,
+        "low": 14892.105263157895,
+        "high": 17052.04081632653
+      },
+      "ns": 58474.96031746031,
+      "nsPerRecord": 228.41781374007934,
+      "wireBytes": 16,
+      "allocationCalls": 1,
+      "allocationBytes": 16,
+      "allocationBytesPerBatch": 4096,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/buffer/bincode_u16_fixint/1",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 9.946900170820086,
+        "low": 9.588619599578504,
+        "high": 11.084053318117965
+      },
+      "second": {
+        "ns": 9.880169462302028,
+        "low": 9.73986388251518,
+        "high": 11.196631002212456
+      },
+      "ns": 9.913534816561057,
+      "nsPerRecord": 9.913534816561057,
+      "wireBytes": 8,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/buffer/bincode_u16_fixint/256",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 1804.917571795142,
+        "low": 1682.4354193971167,
+        "high": 1971.1708909967347
+      },
+      "second": {
+        "ns": 1612.3925264550264,
+        "low": 1584.196397043987,
+        "high": 1853.6114211309523
+      },
+      "ns": 1708.6550491250841,
+      "nsPerRecord": 6.67443378564486,
+      "wireBytes": 8,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/buffer/bincode_u16_fixint/64",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 420.69853922388484,
+        "low": 404.95391705069125,
+        "high": 476.10972765267945
+      },
+      "second": {
+        "ns": 457.2784577723378,
+        "low": 434.8476343223737,
+        "high": 492.88045695634435
+      },
+      "ns": 438.9884984981113,
+      "nsPerRecord": 6.859195289032989,
+      "wireBytes": 8,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/buffer/bincode_u16_fixint/8",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 57.080495356037154,
+        "low": 53.5,
+        "high": 64.2311901504788
+      },
+      "second": {
+        "ns": 54.38131787918335,
+        "low": 52.13657678780774,
+        "high": 60.82800741216957
+      },
+      "ns": 55.73090661761025,
+      "nsPerRecord": 6.9663633272012815,
+      "wireBytes": 8,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/buffer/capnp_u16/256",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "capnp_u16",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 7626.297920727746,
+        "low": 7123.789173789174,
+        "high": 8149.955908289241
+      },
+      "second": {
+        "ns": 6992.767042404723,
+        "low": 6677.629392212726,
+        "high": 8040.505050505051
+      },
+      "ns": 7309.532481566234,
+      "nsPerRecord": 28.552861256118103,
+      "wireBytes": 24,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/buffer/capnp_u16/8",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "capnp_u16",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 265.8600783080528,
+        "low": 245.72520177942974,
+        "high": 288.5955733644809
+      },
+      "second": {
+        "ns": 222.34927765082043,
+        "low": 212.773552632445,
+        "high": 260.2135767458348
+      },
+      "ns": 244.1046779794366,
+      "nsPerRecord": 30.513084747429573,
+      "wireBytes": 24,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/buffer/capnp/1",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 32.623533186652,
+        "low": 32.236890355702236,
+        "high": 35.81078107810781
+      },
+      "second": {
+        "ns": 29.250570489969192,
+        "low": 28.33423218280601,
+        "high": 33.11361457334612
+      },
+      "ns": 30.937051838310595,
+      "nsPerRecord": 30.937051838310595,
+      "wireBytes": 32,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/buffer/capnp/64",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 1843.6417566351777,
+        "low": 1764.99874029216,
+        "high": 2022.8852582146917
+      },
+      "second": {
+        "ns": 1957.8685832317485,
+        "low": 1712.3831775700935,
+        "high": 2119.387552197256
+      },
+      "ns": 1900.755169933463,
+      "nsPerRecord": 29.69929953021036,
+      "wireBytes": 32,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/buffer/protobuf_fixed/1",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 12.092311359993507,
+        "low": 11.145309203396275,
+        "high": 13.307224348104684
+      },
+      "second": {
+        "ns": 11.952294830007684,
+        "low": 11.477411848029545,
+        "high": 12.75271395889092
+      },
+      "ns": 12.022303095000595,
+      "nsPerRecord": 12.022303095000595,
+      "wireBytes": 20,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/buffer/protobuf_fixed/256",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 2405.722154222766,
+        "low": 2247.0193798449613,
+        "high": 2634.906520747834
+      },
+      "second": {
+        "ns": 2166.3290342875116,
+        "low": 2055.110105580694,
+        "high": 2397.5851393188855
+      },
+      "ns": 2286.025594255139,
+      "nsPerRecord": 8.929787477559136,
+      "wireBytes": 20,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/buffer/protobuf_fixed/64",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 542.8187837514054,
+        "low": 522.3684193557955,
+        "high": 608.3745466534784
+      },
+      "second": {
+        "ns": 590.1458951533136,
+        "low": 560.2563293137193,
+        "high": 619.8782690057592
+      },
+      "ns": 566.4823394523595,
+      "nsPerRecord": 8.851286553943117,
+      "wireBytes": 20,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/buffer/protobuf_fixed/8",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 67.46622192911255,
+        "low": 66.55970982142857,
+        "high": 77.14874751984127
+      },
+      "second": {
+        "ns": 70.07920899192813,
+        "low": 67.35748094141772,
+        "high": 82.68854904886237
+      },
+      "ns": 68.77271546052035,
+      "nsPerRecord": 8.596589432565043,
+      "wireBytes": 20,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/buffer/qsl_auto_trusted/1",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 10.16565018950515,
+        "low": 9.505303856448894,
+        "high": 11.959932477144058
+      },
+      "second": {
+        "ns": 9.656825624894825,
+        "low": 9.262209881816887,
+        "high": 11.445131369599267
+      },
+      "ns": 9.911237907199988,
+      "nsPerRecord": 9.911237907199988,
+      "wireBytes": 16,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/buffer/qsl_auto_trusted/256",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 1706.0205085434445,
+        "low": 1659.1415465268676,
+        "high": 1959.7116387839544
+      },
+      "second": {
+        "ns": 1815.1997041420118,
+        "low": 1698.4615384615386,
+        "high": 2036.180441898527
+      },
+      "ns": 1760.6101063427282,
+      "nsPerRecord": 6.877383227901282,
+      "wireBytes": 16,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/buffer/qsl_auto_trusted/64",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 441.4059491918373,
+        "low": 427.9243870484746,
+        "high": 517.3663058981458
+      },
+      "second": {
+        "ns": 446.48312006682613,
+        "low": 429.2380605176814,
+        "high": 499.64906341683593
+      },
+      "ns": 443.9445346293317,
+      "nsPerRecord": 6.936633353583308,
+      "wireBytes": 16,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/buffer/qsl_auto_trusted/8",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 59.60268734432303,
+        "low": 53.61524163568773,
+        "high": 65.58331511043079
+      },
+      "second": {
+        "ns": 58.4935453518179,
+        "low": 57.200247985120896,
+        "high": 63.42112576693674
+      },
+      "ns": 59.048116348070465,
+      "nsPerRecord": 7.381014543508808,
+      "wireBytes": 16,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/owned/bincode_u16_fixint/1",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 13.547535947563322,
+        "low": 13.150515926424406,
+        "high": 15.711491714975208
+      },
+      "second": {
+        "ns": 13.816415257494235,
+        "low": 13.218831667947732,
+        "high": 16.298616448885472
+      },
+      "ns": 13.681975602528778,
+      "nsPerRecord": 13.681975602528778,
+      "wireBytes": 8,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/owned/bincode_u16_fixint/256",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 3006.2528935185187,
+        "low": 2924.423076923077,
+        "high": 3324.1805555555557
+      },
+      "second": {
+        "ns": 3339.486584107327,
+        "low": 3168.530701754386,
+        "high": 3697.5901902466794
+      },
+      "ns": 3172.869738812923,
+      "nsPerRecord": 12.39402241723798,
+      "wireBytes": 8,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/owned/bincode_u16_fixint/64",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 799.9112576064908,
+        "low": 753.49915302725,
+        "high": 851.8376001448441
+      },
+      "second": {
+        "ns": 782.7886117409927,
+        "low": 740.0450715265531,
+        "high": 903.835390946502
+      },
+      "ns": 791.3499346737417,
+      "nsPerRecord": 12.364842729277214,
+      "wireBytes": 8,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/owned/bincode_u16_fixint/8",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 98.76889718445881,
+        "low": 94.68928757150286,
+        "high": 110.79544936183412
+      },
+      "second": {
+        "ns": 101.92977574408442,
+        "low": 96.01782417502346,
+        "high": 114.69648416708591
+      },
+      "ns": 100.34933646427162,
+      "nsPerRecord": 12.543667058033952,
+      "wireBytes": 8,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/owned/capnp/1",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 57.144915616892675,
+        "low": 53.263974514102266,
+        "high": 62.536040011768165
+      },
+      "second": {
+        "ns": 60.66406926406927,
+        "low": 57.67896634615385,
+        "high": 62.62998405103668
+      },
+      "ns": 58.90449244048097,
+      "nsPerRecord": 58.90449244048097,
+      "wireBytes": 32,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/owned/capnp/256",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 14043.121693121693,
+        "low": 12949.009794372294,
+        "high": 15427.248677248677
+      },
+      "second": {
+        "ns": 15081.308740601504,
+        "low": 13772.108843537415,
+        "high": 16208
+      },
+      "ns": 14562.215216861598,
+      "nsPerRecord": 56.883653190865616,
+      "wireBytes": 32,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/owned/capnp/64",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 3405.775496904529,
+        "low": 3260.9806397306397,
+        "high": 3878.2625865429854
+      },
+      "second": {
+        "ns": 3320.8333333333335,
+        "low": 3244.1975308641977,
+        "high": 3861.9341563786006
+      },
+      "ns": 3363.3044151189315,
+      "nsPerRecord": 52.551631486233305,
+      "wireBytes": 32,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/owned/capnp/8",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 438.57142857142856,
+        "low": 416.5243271221532,
+        "high": 490.031746031746
+      },
+      "second": {
+        "ns": 456.56488382501755,
+        "low": 415.3194130925508,
+        "high": 493.2352727007937
+      },
+      "ns": 447.56815619822305,
+      "nsPerRecord": 55.94601952477788,
+      "wireBytes": 32,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/owned/protobuf_fixed/1",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 28.615964797275407,
+        "low": 28.05516939553084,
+        "high": 31.617835812112922
+      },
+      "second": {
+        "ns": 27.852014806844963,
+        "low": 26.91746080541039,
+        "high": 31.574775621899544
+      },
+      "ns": 28.233989802060186,
+      "nsPerRecord": 28.233989802060186,
+      "wireBytes": 20,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/owned/protobuf_fixed/256",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 6387.897435897436,
+        "low": 6028.333333333333,
+        "high": 7155.2830188679245
+      },
+      "second": {
+        "ns": 6423.235294117647,
+        "low": 6291.159802043423,
+        "high": 7268.758620689655
+      },
+      "ns": 6405.566365007541,
+      "nsPerRecord": 25.021743613310708,
+      "wireBytes": 20,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/owned/protobuf_fixed/64",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 1621.5653153153153,
+        "low": 1587.7377377377377,
+        "high": 1876.7008387698042
+      },
+      "second": {
+        "ns": 1659.942897214987,
+        "low": 1589.5582706766918,
+        "high": 1904.9404761904761
+      },
+      "ns": 1640.7541062651512,
+      "nsPerRecord": 25.636782910392988,
+      "wireBytes": 20,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/owned/protobuf_fixed/8",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 225.15267688996502,
+        "low": 206.31711804218543,
+        "high": 245.41761148904007
+      },
+      "second": {
+        "ns": 216.9450084602369,
+        "low": 213.48350253807106,
+        "high": 231.92258883248732
+      },
+      "ns": 221.04884267510096,
+      "nsPerRecord": 27.63110533438762,
+      "wireBytes": 20,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "fixed/owned/qsl_auto_compact_group_trusted/1",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto_compact_group_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 14.757917337627482,
+        "low": 14.27536231884058,
+        "high": 16.51490293502453
+      },
+      "second": {
+        "ns": 13.781732956435805,
+        "low": 13.24823795818694,
+        "high": 15.768768260836517
+      },
+      "ns": 14.269825147031643,
+      "nsPerRecord": 14.269825147031643,
+      "wireBytes": 6,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/owned/qsl_auto_pointing_trusted/256",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto_pointing_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 3068.7472951829286,
+        "low": 2956.3758172523044,
+        "high": 3460.2633486416203
+      },
+      "second": {
+        "ns": 3359.2104578563994,
+        "low": 3100.2276048106105,
+        "high": 3535.427419354839
+      },
+      "ns": 3213.978876519664,
+      "nsPerRecord": 12.554604986404938,
+      "wireBytes": 16,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/owned/qsl_auto_pointing_trusted/64",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto_pointing_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 791.9555890538034,
+        "low": 779.7767857142857,
+        "high": 867.4988454433498
+      },
+      "second": {
+        "ns": 765.7427865014861,
+        "low": 741.8171077504726,
+        "high": 880.4347826086956
+      },
+      "ns": 778.8491877776447,
+      "nsPerRecord": 12.169518559025699,
+      "wireBytes": 16,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "fixed/owned/qsl_auto_pointing_trusted/8",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto_pointing_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 100.52874489631623,
+        "low": 94.31534553346816,
+        "high": 113.38929699347497
+      },
+      "second": {
+        "ns": 108.51443100604727,
+        "low": 103.8227658664712,
+        "high": 114.8587004895416
+      },
+      "ns": 104.52158795118174,
+      "nsPerRecord": 13.065198493897718,
+      "wireBytes": 16,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/allocate/bincode_fixint/1",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 88.77390301255602,
+        "low": 87.07834524732294,
+        "high": 106.85127131490604
+      },
+      "second": {
+        "ns": 94.64654509597051,
+        "low": 89.73468801495054,
+        "high": 101.99996132938526
+      },
+      "ns": 91.71022405426326,
+      "nsPerRecord": 91.71022405426326,
+      "wireBytes": 39.359375,
+      "allocationCalls": 1,
+      "allocationBytes": 39.359375,
+      "allocationBytesPerBatch": 39.359375,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/allocate/bincode_fixint/256",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 22759.903381642514,
+        "low": 22071.39023081052,
+        "high": 25834.087607532714
+      },
+      "second": {
+        "ns": 22949.4212962963,
+        "low": 21876.543209876545,
+        "high": 26545.048772771526
+      },
+      "ns": 22854.662338969407,
+      "nsPerRecord": 89.27602476159925,
+      "wireBytes": 39.359375,
+      "allocationCalls": 1,
+      "allocationBytes": 39.359375,
+      "allocationBytesPerBatch": 10076,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/allocate/bincode_fixint/64",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 5873.442906574394,
+        "low": 5483.655024509804,
+        "high": 6615.205293578971
+      },
+      "second": {
+        "ns": 5902.3828125,
+        "low": 5517.932869873885,
+        "high": 6914.236111111111
+      },
+      "ns": 5887.912859537197,
+      "nsPerRecord": 91.9986384302687,
+      "wireBytes": 39.359375,
+      "allocationCalls": 1,
+      "allocationBytes": 39.359375,
+      "allocationBytesPerBatch": 2519,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/allocate/bincode_fixint/8",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 743.0669453396727,
+        "low": 731.8870523415978,
+        "high": 806.1353130690572
+      },
+      "second": {
+        "ns": 725.5022321428571,
+        "low": 695.13671875,
+        "high": 818.7326388888889
+      },
+      "ns": 734.2845887412649,
+      "nsPerRecord": 91.78557359265811,
+      "wireBytes": 39.359375,
+      "allocationCalls": 1,
+      "allocationBytes": 39.359375,
+      "allocationBytesPerBatch": 314.875,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/allocate/capnp/1",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 96.82598449019889,
+        "low": 94.4971098265896,
+        "high": 107.93790368943937
+      },
+      "second": {
+        "ns": 111.1988989300028,
+        "low": 102.96973239177854,
+        "high": 120.13446042809828
+      },
+      "ns": 104.01244171010084,
+      "nsPerRecord": 104.01244171010084,
+      "wireBytes": 96,
+      "allocationCalls": 1,
+      "allocationBytes": 96,
+      "allocationBytesPerBatch": 96,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/allocate/capnp/256",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 23045.370370370372,
+        "low": 21858.636977058028,
+        "high": 25845.319022492276
+      },
+      "second": {
+        "ns": 22357.138694638696,
+        "low": 21973.403004807693,
+        "high": 26234.821428571428
+      },
+      "ns": 22701.254532504536,
+      "nsPerRecord": 88.67677551759584,
+      "wireBytes": 96,
+      "allocationCalls": 1,
+      "allocationBytes": 96,
+      "allocationBytesPerBatch": 24576,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/allocate/capnp/64",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 24320.223214285714,
+        "low": 23147.67220250169,
+        "high": 27176.530612244896
+      },
+      "second": {
+        "ns": 6589.560006848143,
+        "low": 6073.333333333333,
+        "high": 6874.55808080808
+      },
+      "ns": 15454.891610566929,
+      "nsPerRecord": 241.48268141510826,
+      "wireBytes": 96,
+      "allocationCalls": 1,
+      "allocationBytes": 96,
+      "allocationBytesPerBatch": 6144,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/allocate/capnp/8",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 800.472239563405,
+        "low": 770.424719637318,
+        "high": 847.348011749315
+      },
+      "second": {
+        "ns": 804.3382352941176,
+        "low": 746.1725490196078,
+        "high": 864.296218487395
+      },
+      "ns": 802.4052374287612,
+      "nsPerRecord": 100.30065467859515,
+      "wireBytes": 96,
+      "allocationCalls": 1,
+      "allocationBytes": 96,
+      "allocationBytesPerBatch": 768,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/allocate/protobuf/1",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 114.03850727156316,
+        "low": 107.77534903058995,
+        "high": 127.65059944748918
+      },
+      "second": {
+        "ns": 110.94724850309305,
+        "low": 108.6275726460855,
+        "high": 130.09433165913984
+      },
+      "ns": 112.4928778873281,
+      "nsPerRecord": 112.4928778873281,
+      "wireBytes": 23.9296875,
+      "allocationCalls": 1,
+      "allocationBytes": 23.9296875,
+      "allocationBytesPerBatch": 23.9296875,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/allocate/protobuf/256",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 28737.857142857145,
+        "low": 28308.67288961039,
+        "high": 32097.380952380954
+      },
+      "second": {
+        "ns": 30390.85827216262,
+        "low": 27953.38345864662,
+        "high": 34509.72037530267
+      },
+      "ns": 29564.35770750988,
+      "nsPerRecord": 115.48577229496047,
+      "wireBytes": 23.9296875,
+      "allocationCalls": 1,
+      "allocationBytes": 23.9296875,
+      "allocationBytesPerBatch": 6126,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/allocate/protobuf/64",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 7329.489681050656,
+        "low": 7044.322344322344,
+        "high": 7939.860268692251
+      },
+      "second": {
+        "ns": 7595.37037037037,
+        "low": 7183.670033670033,
+        "high": 8201.0582010582
+      },
+      "ns": 7462.430025710513,
+      "nsPerRecord": 116.60046915172677,
+      "wireBytes": 23.9296875,
+      "allocationCalls": 1,
+      "allocationBytes": 23.9296875,
+      "allocationBytesPerBatch": 1531.5,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/allocate/protobuf/8",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 862.7339101272751,
+        "low": 844.0756455303153,
+        "high": 968.326773234798
+      },
+      "second": {
+        "ns": 908.9952505732067,
+        "low": 855.4912810194501,
+        "high": 1021.0700987534402
+      },
+      "ns": 885.8645803502409,
+      "nsPerRecord": 110.73307254378011,
+      "wireBytes": 23.9296875,
+      "allocationCalls": 1,
+      "allocationBytes": 23.9296875,
+      "allocationBytesPerBatch": 191.4375,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_bounded_aligned_bitmap_trusted/64",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 5321.505102040816,
+        "low": 5076.616541353384,
+        "high": 6140.509031198686
+      },
+      "second": {
+        "ns": 5390.571428571428,
+        "low": 5261.428571428572,
+        "high": 5743.714285714285
+      },
+      "ns": 5356.038265306122,
+      "nsPerRecord": 83.68809789540816,
+      "wireBytes": 27.26953125,
+      "allocationCalls": 1,
+      "allocationBytes": 27.26953125,
+      "allocationBytesPerBatch": 1745.25,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_bounded_aligned_bitmap_trusted/8",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 705.9553323245007,
+        "low": 678.2044583768721,
+        "high": 798.5454760513205
+      },
+      "second": {
+        "ns": 652.7842693638542,
+        "low": 630.6411361603466,
+        "high": 724.9881267385847
+      },
+      "ns": 679.3698008441775,
+      "nsPerRecord": 84.92122510552218,
+      "wireBytes": 27.26953125,
+      "allocationCalls": 1,
+      "allocationBytes": 27.26953125,
+      "allocationBytesPerBatch": 218.15625,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_compact_bitmap_trusted/1",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 83.36650372439479,
+        "low": 80.86340530474608,
+        "high": 96.8342644320298
+      },
+      "second": {
+        "ns": 88.6090573012939,
+        "low": 84.6413789388027,
+        "high": 100.64499558237134
+      },
+      "ns": 85.98778051284435,
+      "nsPerRecord": 85.98778051284435,
+      "wireBytes": 31.359375,
+      "allocationCalls": 1,
+      "allocationBytes": 31.359375,
+      "allocationBytesPerBatch": 31.359375,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_compact_bitmap_trusted/256",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 21701.437908496733,
+        "low": 21051.709401709402,
+        "high": 24121.713210536742
+      },
+      "second": {
+        "ns": 21799.86111111111,
+        "low": 20950.115276118417,
+        "high": 24863.881559814632
+      },
+      "ns": 21750.649509803923,
+      "nsPerRecord": 84.96347464767157,
+      "wireBytes": 31.359375,
+      "allocationCalls": 1,
+      "allocationBytes": 31.359375,
+      "allocationBytesPerBatch": 8028,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/buffer/bincode_fixint/1",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 27.030204352091847,
+        "low": 25.6247917856463,
+        "high": 29.20503617436197
+      },
+      "second": {
+        "ns": 25.411174105139622,
+        "low": 23.94142450721398,
+        "high": 28.265458136242952
+      },
+      "ns": 26.220689228615733,
+      "nsPerRecord": 26.220689228615733,
+      "wireBytes": 39.359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/buffer/bincode_fixint/256",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 5867.177419354839,
+        "low": 5646.639784946237,
+        "high": 6412.96625880608
+      },
+      "second": {
+        "ns": 6317.660098522168,
+        "low": 6141.379310344828,
+        "high": 6568.620689655172
+      },
+      "ns": 6092.418758938504,
+      "nsPerRecord": 23.79851077710353,
+      "wireBytes": 39.359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "heartbeat/buffer/bincode_fixint/64",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 1491.1407227942661,
+        "low": 1395.543835003579,
+        "high": 1729.3889872730242
+      },
+      "second": {
+        "ns": 1524.3380731922398,
+        "low": 1484.8229166666665,
+        "high": 1637.5
+      },
+      "ns": 1507.739397993253,
+      "nsPerRecord": 23.55842809364458,
+      "wireBytes": 39.359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/buffer/bincode_fixint/8",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 204.58682198762284,
+        "low": 184.3550106609808,
+        "high": 227.9802287264974
+      },
+      "second": {
+        "ns": 199.24560080442433,
+        "low": 182.8050154973232,
+        "high": 216.72205128205127
+      },
+      "ns": 201.91621139602358,
+      "nsPerRecord": 25.239526424502948,
+      "wireBytes": 39.359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/buffer/capnp/1",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 42.55477332668785,
+        "low": 38.6611426079372,
+        "high": 47.631234650079186
+      },
+      "second": {
+        "ns": 38.91647289472485,
+        "low": 36.65529231367298,
+        "high": 45.52260832631435
+      },
+      "ns": 40.73562311070635,
+      "nsPerRecord": 40.73562311070635,
+      "wireBytes": 96,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/buffer/capnp/256",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 10045.37037037037,
+        "low": 9834.343434343435,
+        "high": 11160.429878165956
+      },
+      "second": {
+        "ns": 9943.783068783068,
+        "low": 9774.194304388422,
+        "high": 10854.179610136454
+      },
+      "ns": 9994.576719576718,
+      "nsPerRecord": 39.04131531084656,
+      "wireBytes": 96,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/buffer/capnp/64",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 2434.037794657356,
+        "low": 2360.6164383561645,
+        "high": 2830.821917808219
+      },
+      "second": {
+        "ns": 2544.5444626295694,
+        "low": 2305.9765635940057,
+        "high": 2767.9029304029305
+      },
+      "ns": 2489.291128643463,
+      "nsPerRecord": 38.895173885054106,
+      "wireBytes": 96,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/buffer/capnp/8",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 308.06451612903226,
+        "low": 299.2966286684453,
+        "high": 350.77461799660443
+      },
+      "second": {
+        "ns": 298.2183821687954,
+        "low": 292.4793388429752,
+        "high": 340.21748586341886
+      },
+      "ns": 303.1414491489138,
+      "nsPerRecord": 37.892681143614226,
+      "wireBytes": 96,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/buffer/protobuf/1",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 55.37125115603118,
+        "low": 53.547647358586715,
+        "high": 64.97764682567438
+      },
+      "second": {
+        "ns": 61.985798795794054,
+        "low": 57.82630669086114,
+        "high": 65.65864554226238
+      },
+      "ns": 58.678524975912616,
+      "nsPerRecord": 58.678524975912616,
+      "wireBytes": 23.9296875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/buffer/protobuf/256",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 13815.079365079366,
+        "low": 13066.117216117216,
+        "high": 15789.285944700461
+      },
+      "second": {
+        "ns": 13746.926900584796,
+        "low": 12938.133333333333,
+        "high": 15333.23163841808
+      },
+      "ns": 13781.00313283208,
+      "nsPerRecord": 53.83204348762531,
+      "wireBytes": 23.9296875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/buffer/protobuf/64",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 3623.287780073097,
+        "low": 3338.672854010025,
+        "high": 4006.307977736549
+      },
+      "second": {
+        "ns": 3588.3572567783094,
+        "low": 3447.785490371697,
+        "high": 3905.423197492163
+      },
+      "ns": 3605.8225184257035,
+      "nsPerRecord": 56.34097685040162,
+      "wireBytes": 23.9296875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/buffer/protobuf/8",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 432.2806553911205,
+        "low": 412.88586413586415,
+        "high": 486.9624125874126
+      },
+      "second": {
+        "ns": 413.9476962221656,
+        "low": 405.03219042123027,
+        "high": 468.7952658540894
+      },
+      "ns": 423.11417580664306,
+      "nsPerRecord": 52.88927197583038,
+      "wireBytes": 23.9296875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_bitmap_trusted/256",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 6884.478021978022,
+        "low": 6546.689895470383,
+        "high": 7898.496240601504
+      },
+      "second": {
+        "ns": 6899.506906421106,
+        "low": 6686.363636363636,
+        "high": 7813.721804511279
+      },
+      "ns": 6891.992464199564,
+      "nsPerRecord": 26.921845563279547,
+      "wireBytes": 31.359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_bounded_aligned_bitmap_trusted/1",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 28.41483099787095,
+        "low": 27.559569365783968,
+        "high": 29.967052251414465
+      },
+      "second": {
+        "ns": 29.764199484043843,
+        "low": 27.567471891062517,
+        "high": 32.56588793144189
+      },
+      "ns": 29.089515240957397,
+      "nsPerRecord": 29.089515240957397,
+      "wireBytes": 27.26953125,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_bounded_aligned_bitmap_trusted/64",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 1519.163492063492,
+        "low": 1478.251633986928,
+        "high": 1772.736111111111
+      },
+      "second": {
+        "ns": 1524.3968482110774,
+        "low": 1487.179349576044,
+        "high": 1762.6992130126928
+      },
+      "ns": 1521.7801701372846,
+      "nsPerRecord": 23.77781515839507,
+      "wireBytes": 27.26953125,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_bounded_aligned_bitmap_trusted/8",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 207.24175912097292,
+        "low": 202.140356680781,
+        "high": 240.33415807623004
+      },
+      "second": {
+        "ns": 234.65664953209438,
+        "low": 224.6175938065805,
+        "high": 246.1692641223872
+      },
+      "ns": 220.94920432653365,
+      "nsPerRecord": 27.618650540816706,
+      "wireBytes": 27.26953125,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "unresolved"
+    },
+    {
+      "id": "heartbeat/owned/bincode_fixint/1",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 95.61599717849718,
+        "low": 92.52291084187635,
+        "high": 107.42080897434516
+      },
+      "second": {
+        "ns": 107.05426356589147,
+        "low": 102.07579672695952,
+        "high": 116.58824062740831
+      },
+      "ns": 101.33513037219433,
+      "nsPerRecord": 101.33513037219433,
+      "wireBytes": 39.359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/owned/bincode_fixint/256",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 25284.14351851852,
+        "low": 22970.58823529412,
+        "high": 27427.394636015328
+      },
+      "second": {
+        "ns": 25231.88888888889,
+        "low": 22818.594351119897,
+        "high": 27211.246063877643
+      },
+      "ns": 25258.016203703704,
+      "nsPerRecord": 98.6641257957176,
+      "wireBytes": 39.359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/owned/bincode_fixint/64",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 5732.287894996709,
+        "low": 5624.242424242424,
+        "high": 6826.630512152778
+      },
+      "second": {
+        "ns": 6014.389204545454,
+        "low": 5646.306818181818,
+        "high": 6676.7578125
+      },
+      "ns": 5873.3385497710815,
+      "nsPerRecord": 91.77091484017315,
+      "wireBytes": 39.359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/owned/bincode_fixint/8",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 735.1896582572911,
+        "low": 710.9963420210333,
+        "high": 845.0102880658436
+      },
+      "second": {
+        "ns": 800.175,
+        "low": 734.070515970516,
+        "high": 905.1144673123487
+      },
+      "ns": 767.6823291286455,
+      "nsPerRecord": 95.96029114108069,
+      "wireBytes": 39.359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/owned/capnp/1",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 138.42519685039372,
+        "low": 136.32796373014347,
+        "high": 161.8140596170927
+      },
+      "second": {
+        "ns": 156.16598451105494,
+        "low": 148.8767731839063,
+        "high": 165.7397375707235
+      },
+      "ns": 147.29559068072433,
+      "nsPerRecord": 147.29559068072433,
+      "wireBytes": 96,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/owned/capnp/256",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 39408.52393617021,
+        "low": 35112.24137931035,
+        "high": 42458.845914880396
+      },
+      "second": {
+        "ns": 37858.17307692308,
+        "low": 34504.166666666664,
+        "high": 40931.782945736435
+      },
+      "ns": 38633.348506546645,
+      "nsPerRecord": 150.91151760369783,
+      "wireBytes": 96,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/owned/capnp/64",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 8827.283990519285,
+        "low": 8503.741496598639,
+        "high": 10549.78544609333
+      },
+      "second": {
+        "ns": 9267.466666666667,
+        "low": 8669.186046511628,
+        "high": 10718.456416464891
+      },
+      "ns": 9047.375328592976,
+      "nsPerRecord": 141.36523950926525,
+      "wireBytes": 96,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/owned/capnp/8",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 1192.1629043418093,
+        "low": 1077.3285062900345,
+        "high": 1345.655487804878
+      },
+      "second": {
+        "ns": 1151.8040343190946,
+        "low": 1092.704571602058,
+        "high": 1259.709897541649
+      },
+      "ns": 1171.983469330452,
+      "nsPerRecord": 146.4979336663065,
+      "wireBytes": 96,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/owned/protobuf/1",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 115.53482065820288,
+        "low": 114.09367681498829,
+        "high": 134.72039649256575
+      },
+      "second": {
+        "ns": 124.69150450878026,
+        "low": 117.9827047097909,
+        "high": 134.88146855115716
+      },
+      "ns": 120.11316258349157,
+      "nsPerRecord": 120.11316258349157,
+      "wireBytes": 23.9296875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/owned/protobuf/256",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 29317.261904761905,
+        "low": 27952.38775510204,
+        "high": 31956.462585034013
+      },
+      "second": {
+        "ns": 28663.58225108225,
+        "low": 27792.646660482376,
+        "high": 32223.511904761905
+      },
+      "ns": 28990.422077922078,
+      "nsPerRecord": 113.24383624188312,
+      "wireBytes": 23.9296875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/owned/protobuf/64",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 7717.729442970822,
+        "low": 7460.8,
+        "high": 8337.75
+      },
+      "second": {
+        "ns": 7499.215719063545,
+        "low": 7047.963800904978,
+        "high": 8477.708006279436
+      },
+      "ns": 7608.472581017184,
+      "nsPerRecord": 118.8823840783935,
+      "wireBytes": 23.9296875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/owned/protobuf/8",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 905.1347797501644,
+        "low": 887.7564102564103,
+        "high": 1018.2517482517483
+      },
+      "second": {
+        "ns": 929.3235982100481,
+        "low": 887.5850340136055,
+        "high": 1053.0742349201414
+      },
+      "ns": 917.2291889801063,
+      "nsPerRecord": 114.65364862251329,
+      "wireBytes": 23.9296875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_bitmap_trusted/8",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 578.8693002921299,
+        "low": 546.9316687712355,
+        "high": 660.3193634530492
+      },
+      "second": {
+        "ns": 547.0066015089163,
+        "low": 537.2770919067216,
+        "high": 628.2561728395061
+      },
+      "ns": 562.9379509005231,
+      "nsPerRecord": 70.36724386256539,
+      "wireBytes": 31.359375,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_bounded_compact_bitmap_trusted/1",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 83.04974582425564,
+        "low": 75.4763197586727,
+        "high": 88.02804253904952
+      },
+      "second": {
+        "ns": 72.86093627065303,
+        "low": 69.05982166273276,
+        "high": 81.44154941174318
+      },
+      "ns": 77.95534104745434,
+      "nsPerRecord": 77.95534104745434,
+      "wireBytes": 27.26953125,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_bounded_compact_bitmap_trusted/64",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 4570.782520325203,
+        "low": 4530.487804878048,
+        "high": 4912.947831978321
+      },
+      "second": {
+        "ns": 4458.391405342625,
+        "low": 4209.073170731707,
+        "high": 4965.177119628339
+      },
+      "ns": 4514.586962833914,
+      "nsPerRecord": 70.54042129427991,
+      "wireBytes": 27.26953125,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_trusted/256",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 18144.200680272108,
+        "low": 17262.15277777778,
+        "high": 20536.5
+      },
+      "second": {
+        "ns": 18587.57575757576,
+        "low": 17319.834710743802,
+        "high": 20924.19167754096
+      },
+      "ns": 18365.888218923934,
+      "nsPerRecord": 71.74175085517162,
+      "wireBytes": 30.44921875,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "text_128/view/bincode_fixint/1",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 42.27049713756953,
+        "low": 39.12124713317859,
+        "high": 46.73667673347366
+      },
+      "second": {
+        "ns": 39.40325916417059,
+        "low": 38.344371182946276,
+        "high": 46.08146036857335
+      },
+      "ns": 40.836878150870064,
+      "nsPerRecord": 40.836878150870064,
+      "wireBytes": 140,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_128/view/bincode_fixint/256",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 9802.232142857143,
+        "low": 9302.140377365304,
+        "high": 10895.762711864407
+      },
+      "second": {
+        "ns": 9443.010620915033,
+        "low": 9288.103448275862,
+        "high": 10895.98133116883
+      },
+      "ns": 9622.621381886089,
+      "nsPerRecord": 37.588364772992534,
+      "wireBytes": 140,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_128/view/bincode_fixint/64",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 2488.6735716672238,
+        "low": 2448.4931506849316,
+        "high": 2684.3410486537555
+      },
+      "second": {
+        "ns": 2542.866666666667,
+        "low": 2352.9298245614036,
+        "high": 2738.1739130434785
+      },
+      "ns": 2515.7701191669453,
+      "nsPerRecord": 39.30890811198352,
+      "wireBytes": 140,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_128/view/bincode_fixint/8",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 328.836085380588,
+        "low": 318.20113307024303,
+        "high": 358.3490105599432
+      },
+      "second": {
+        "ns": 325.0754726080247,
+        "low": 315.58364927148375,
+        "high": 348.04731845111394
+      },
+      "ns": 326.95577899430634,
+      "nsPerRecord": 40.86947237428829,
+      "wireBytes": 140,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_128/view/capnp/1",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 106.24863258284789,
+        "low": 100.80784766301211,
+        "high": 120.28707724944856
+      },
+      "second": {
+        "ns": 103.48810265354429,
+        "low": 100.07854072861235,
+        "high": 115.71019238641016
+      },
+      "ns": 104.86836761819609,
+      "nsPerRecord": 104.86836761819609,
+      "wireBytes": 168,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_128/view/capnp/256",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 25423.575498575497,
+        "low": 24939.02413003663,
+        "high": 28869.321033553304
+      },
+      "second": {
+        "ns": 27397.321428571428,
+        "low": 26844.841269841272,
+        "high": 30647.78361344538
+      },
+      "ns": 26410.448463573463,
+      "nsPerRecord": 103.16581431083384,
+      "wireBytes": 168,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_128/view/capnp/64",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 6800.668896321071,
+        "low": 6632.820512820513,
+        "high": 7747.467166979362
+      },
+      "second": {
+        "ns": 6694.918909592822,
+        "low": 6281.666666666667,
+        "high": 7870.790816326531
+      },
+      "ns": 6747.793902956946,
+      "nsPerRecord": 105.43427973370228,
+      "wireBytes": 168,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_128/view/capnp/8",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 920.0155512655513,
+        "low": 883.989829573163,
+        "high": 988.8503724335625
+      },
+      "second": {
+        "ns": 864.470059446136,
+        "low": 844.33014354067,
+        "high": 951.3914991751951
+      },
+      "ns": 892.2428053558436,
+      "nsPerRecord": 111.53035066948046,
+      "wireBytes": 168,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_128/view/protobuf/1",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 79.70818210930828,
+        "low": 78.08954495547151,
+        "high": 88.50393734601529
+      },
+      "second": {
+        "ns": 78.40942078217259,
+        "low": 75.28510968242173,
+        "high": 83.6330416248818
+      },
+      "ns": 79.05880144574044,
+      "nsPerRecord": 79.05880144574044,
+      "wireBytes": 134,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_128/view/protobuf/256",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 19620.384615384617,
+        "low": 19307.098214285714,
+        "high": 21022.325925925925
+      },
+      "second": {
+        "ns": 19454.915223665223,
+        "low": 17732.328596342384,
+        "high": 20569.201101928375
+      },
+      "ns": 19537.64991952492,
+      "nsPerRecord": 76.31894499814422,
+      "wireBytes": 134,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_128/view/protobuf/64",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 4740.8536585365855,
+        "low": 4517.020148462354,
+        "high": 5296.09756097561
+      },
+      "second": {
+        "ns": 4921.8,
+        "low": 4443.045131845842,
+        "high": 5331.458333333334
+      },
+      "ns": 4831.326829268293,
+      "nsPerRecord": 75.48948170731708,
+      "wireBytes": 134,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_128/view/protobuf/8",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 620.2626958036125,
+        "low": 579.6947398796274,
+        "high": 678.8240698208543
+      },
+      "second": {
+        "ns": 571.2307532730961,
+        "low": 557.494485080692,
+        "high": 667.745796523226
+      },
+      "ns": 595.7467245383543,
+      "nsPerRecord": 74.46834056729429,
+      "wireBytes": 134,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_128/view/qsl_auto_lifetime_aligned_trusted/8",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_aligned_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 54.63179113780238,
+        "low": 51.08199683758753,
+        "high": 62.2628818111086
+      },
+      "second": {
+        "ns": 50.726437608682616,
+        "low": 49.920911104080986,
+        "high": 56.38506857146029
+      },
+      "ns": 52.6791143732425,
+      "nsPerRecord": 6.584889296655312,
+      "wireBytes": 134,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "text_128/view/qsl_auto_lifetime_trusted/1",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 10.30545313668911,
+        "low": 9.403809700590045,
+        "high": 11.745144842553938
+      },
+      "second": {
+        "ns": 10.172702014298794,
+        "low": 9.995803076488748,
+        "high": 10.943057865442885
+      },
+      "ns": 10.239077575493951,
+      "nsPerRecord": 10.239077575493951,
+      "wireBytes": 136,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "text_128/view/qsl_auto_lifetime_trusted/256",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 1715.4364463176576,
+        "low": 1650.7878151260504,
+        "high": 1925.177775655717
+      },
+      "second": {
+        "ns": 1706.2619437619437,
+        "low": 1634.3456564386797,
+        "high": 1861.6145557322027
+      },
+      "ns": 1710.8491950398006,
+      "nsPerRecord": 6.683004668124221,
+      "wireBytes": 136,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "text_128/view/qsl_auto_lifetime_trusted/64",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 381.3765671997379,
+        "low": 369.7802197802198,
+        "high": 447.2832722832723
+      },
+      "second": {
+        "ns": 396.83149245361227,
+        "low": 383.7781266352695,
+        "high": 468.1921253349825
+      },
+      "ns": 389.10402982667506,
+      "nsPerRecord": 6.079750466041798,
+      "wireBytes": 136,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "text_2048/view/bincode_fixint/1",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 1,
+      "first": {
+        "ns": 122.17536813922356,
+        "low": 117.23244449698885,
+        "high": 145.54365610590511
+      },
+      "second": {
+        "ns": 124.09122807017545,
+        "low": 120.93817878028403,
+        "high": 142.81700925483705
+      },
+      "ns": 123.1332981046995,
+      "nsPerRecord": 123.1332981046995,
+      "wireBytes": 2060,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_2048/view/bincode_fixint/64",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 64,
+      "first": {
+        "ns": 7472.569444444444,
+        "low": 7279.605263157895,
+        "high": 8455.088896952104
+      },
+      "second": {
+        "ns": 7527.683181225554,
+        "low": 7311.272727272727,
+        "high": 8760.350877192983
+      },
+      "ns": 7500.126312834999,
+      "nsPerRecord": 117.18947363804686,
+      "wireBytes": 2060,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_2048/view/bincode_fixint/8",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "batch": 8,
+      "first": {
+        "ns": 950.2388735227559,
+        "low": 919.5303550973654,
+        "high": 1113.276581338459
+      },
+      "second": {
+        "ns": 944.0619034633215,
+        "low": 916.9689119170985,
+        "high": 1131.9029078164613
+      },
+      "ns": 947.1503884930387,
+      "nsPerRecord": 118.39379856162984,
+      "wireBytes": 2060,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_2048/view/bincode_varint/256",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "batch": 256,
+      "first": {
+        "ns": 34854.16666666667,
+        "low": 33546.9921957672,
+        "high": 37323.48143341158
+      },
+      "second": {
+        "ns": 30797.5,
+        "low": 29986.1704728776,
+        "high": 36565.900383141765
+      },
+      "ns": 32825.833333333336,
+      "nsPerRecord": 128.22591145833334,
+      "wireBytes": 2054,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_2048/view/capnp/1",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 1,
+      "first": {
+        "ns": 200.98031370038413,
+        "low": 199.3544600938967,
+        "high": 235.40884194053208
+      },
+      "second": {
+        "ns": 197.98597678916826,
+        "low": 191.96611505122144,
+        "high": 230.4784035664377
+      },
+      "ns": 199.4831452447762,
+      "nsPerRecord": 199.4831452447762,
+      "wireBytes": 2088,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_2048/view/capnp/256",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 256,
+      "first": {
+        "ns": 55209.7181372549,
+        "low": 51380.434782608696,
+        "high": 58489.65517241379
+      },
+      "second": {
+        "ns": 51166.10105580694,
+        "low": 48222.916666666664,
+        "high": 58107.692307692305
+      },
+      "ns": 53187.909596530924,
+      "nsPerRecord": 207.76527186144892,
+      "wireBytes": 2088,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_2048/view/capnp/64",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 64,
+      "first": {
+        "ns": 13109.666666666668,
+        "low": 12141.159420289856,
+        "high": 15020.8
+      },
+      "second": {
+        "ns": 12351.379142300195,
+        "low": 11955.66091954023,
+        "high": 14005.12207425343
+      },
+      "ns": 12730.52290448343,
+      "nsPerRecord": 198.9144203825536,
+      "wireBytes": 2088,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_2048/view/capnp/8",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "batch": 8,
+      "first": {
+        "ns": 1700.8758758758759,
+        "low": 1580.800415800416,
+        "high": 1899.2655699177437
+      },
+      "second": {
+        "ns": 1569.657582461786,
+        "low": 1543.3923303834808,
+        "high": 1812.1537804688712
+      },
+      "ns": 1635.2667291688308,
+      "nsPerRecord": 204.40834114610385,
+      "wireBytes": 2088,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_2048/view/protobuf/1",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 1,
+      "first": {
+        "ns": 159.01023327464787,
+        "low": 152.56450203653273,
+        "high": 185.3131017654627
+      },
+      "second": {
+        "ns": 172.58089133089135,
+        "low": 161.70852956567242,
+        "high": 192.25536368393512
+      },
+      "ns": 165.7955623027696,
+      "nsPerRecord": 165.7955623027696,
+      "wireBytes": 2054,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_2048/view/protobuf/256",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 256,
+      "first": {
+        "ns": 44453.6917562724,
+        "low": 40571.94534808068,
+        "high": 48124.82577290144
+      },
+      "second": {
+        "ns": 41204.51612903226,
+        "low": 38156.32653061225,
+        "high": 45837.28956228956
+      },
+      "ns": 42829.10394265233,
+      "nsPerRecord": 167.30118727598565,
+      "wireBytes": 2054,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_2048/view/protobuf/64",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 64,
+      "first": {
+        "ns": 10200.831024930747,
+        "low": 9516.643552061973,
+        "high": 11602.402745995423
+      },
+      "second": {
+        "ns": 10895.921052631578,
+        "low": 10454.066985645934,
+        "high": 11643.71469458652
+      },
+      "ns": 10548.376038781164,
+      "nsPerRecord": 164.81837560595568,
+      "wireBytes": 2054,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_2048/view/protobuf/8",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "batch": 8,
+      "first": {
+        "ns": 1228.675399142534,
+        "low": 1182.4314000638572,
+        "high": 1406.9280816775936
+      },
+      "second": {
+        "ns": 1252.5744047619048,
+        "low": 1198.6681547619048,
+        "high": 1453.566237709659
+      },
+      "ns": 1240.6249019522193,
+      "nsPerRecord": 155.0781127440274,
+      "wireBytes": 2054,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "behind"
+    },
+    {
+      "id": "text_2048/view/qsl_auto_lifetime_aligned_trusted/256",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_aligned_trusted",
+      "family": "QSL",
+      "batch": 256,
+      "first": {
+        "ns": 1815.116362078812,
+        "low": 1763.1427544048904,
+        "high": 2103.67004938065
+      },
+      "second": {
+        "ns": 1925.340071192474,
+        "low": 1879.2490118577075,
+        "high": 2168.496683861459
+      },
+      "ns": 1870.228216635643,
+      "nsPerRecord": 7.305578971232981,
+      "wireBytes": 2054,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "text_2048/view/qsl_auto_lifetime_trusted/1",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_trusted",
+      "family": "QSL",
+      "batch": 1,
+      "first": {
+        "ns": 10.777096969057169,
+        "low": 10.069762122598354,
+        "high": 12.111588720344514
+      },
+      "second": {
+        "ns": 10.18767375255117,
+        "low": 9.855041466142573,
+        "high": 12.243691056291997
+      },
+      "ns": 10.48238536080417,
+      "nsPerRecord": 10.48238536080417,
+      "wireBytes": 2056,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "text_2048/view/qsl_auto_lifetime_trusted/64",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_trusted",
+      "family": "QSL",
+      "batch": 64,
+      "first": {
+        "ns": 500.9466170080695,
+        "low": 478.15243415802075,
+        "high": 578.6254655493482
+      },
+      "second": {
+        "ns": 470.1617989853284,
+        "low": 432.68137620926086,
+        "high": 514.2515262515262
+      },
+      "ns": 485.55420799669895,
+      "nsPerRecord": 7.586784499948421,
+      "wireBytes": 2056,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    },
+    {
+      "id": "text_2048/view/qsl_auto_lifetime_trusted/8",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_trusted",
+      "family": "QSL",
+      "batch": 8,
+      "first": {
+        "ns": 59.84143785818151,
+        "low": 58.06994391290003,
+        "high": 70.80690510949924
+      },
+      "second": {
+        "ns": 60.005993856297295,
+        "low": 56.27950101146325,
+        "high": 68.87280333576452
+      },
+      "ns": 59.9237158572394,
+      "nsPerRecord": 7.490464482154925,
+      "wireBytes": 2056,
+      "allocationCalls": 0,
+      "allocationBytes": 0,
+      "allocationBytesPerBatch": 0,
+      "outcome": "lead"
+    }
+  ],
+  "runs": [
+    {
+      "name": "tune",
+      "exitCode": 0,
+      "seconds": 190.0951078,
+      "processCpuSeconds": 171.703125,
+      "backgroundLogicalCores": 1.3871345930555294,
+      "warmup": 0.065,
+      "measurement": 0.135,
+      "sampleSize": 24,
+      "reverse": false
+    },
+    {
+      "name": "confirm-1",
+      "exitCode": 0,
+      "seconds": 146.6704097,
+      "processCpuSeconds": 131.71875,
+      "backgroundLogicalCores": 1.3719110106228878,
+      "warmup": 0.18,
+      "measurement": 0.37,
+      "sampleSize": 60,
+      "reverse": false
+    },
+    {
+      "name": "confirm-2",
+      "exitCode": 0,
+      "seconds": 147.6010996,
+      "processCpuSeconds": 132.3125,
+      "backgroundLogicalCores": 1.3624136306908652,
+      "warmup": 0.18,
+      "measurement": 0.37,
+      "sampleSize": 60,
+      "reverse": true
+    }
+  ],
+  "environment": {
+    "startedAt": "2026-11-24T19:44:45.5036275+05:00",
+    "rustflags": "-C target-cpu=native",
+    "affinityCore": 2,
+    "executableSha256": "7198D1B2323BD1AF532BC75BC4A358ECE8D7354BC1DBC7C75816C8B60E0B7330",
+    "sources": {
+      "optimized-batch/Cargo.lock": "39DB8A4B14AC77677F4051B4180B318C518048B30C15709A6E9BDF21B3F9BF51",
+      "optimized-batch/src/main.rs": "6AB782912279AE5600381A907D8FA180729B7B105198601F8E587DADE7D1BBF7",
+      "optimized-batch/Cargo.toml": "66EBAA0ED05C318F437968C3B70A19E313340739B28FD847629D8518219505A7",
+      "tools/optimized-report.mjs": "BD95663DB93674B696D6A22311E63D86C323F769E31A48306EA0FADE5E3A7343",
+      "tools/run-optimized-batch.ps1": "5D44A35AC397D873C6AB8722E508878BD3F96F675960F7DB46B62E7E474E29D8"
+    }
+  }
+}

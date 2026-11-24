@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="@@LANG@@">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QSL 0.4.0 · Benchmarks</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0e15;--panel:#111722;--line:#2d374a;--text:#eff5ff;--muted:#a9b7cf;--cyan:#67e8d2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,sans-serif}
+a{color:var(--cyan);text-underline-offset:4px}
+header,main{max-width:1180px;margin:auto;padding:28px clamp(20px,5vw,60px)}
+header{border-bottom:1px solid var(--line);padding-top:46px;padding-bottom:30px}
+h1,h2,h3,p{margin:0}
+h1{font-size:clamp(30px,5vw,52px);line-height:1.15;letter-spacing:-.035em}
+h2{font-size:clamp(22px,4vw,30px);line-height:1.3}
+h3{font-size:1.12rem}
+p{color:var(--muted)}
+.intro{max-width:63ch;margin-top:12px}
+.links,.controls{display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px}
+.links{margin-top:22px;font-size:.9rem}
+.results{display:grid;gap:16px;margin-top:18px}
+.controls{margin:18px 0 9px}
+fieldset{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;border:0}
+legend{padding:0;margin-bottom:4px;color:var(--muted);font-size:.84rem}
+button,select{font:inherit;font-size:.88rem;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 11px;cursor:pointer}
+button[aria-pressed=true]{background:#14302e;border-color:#459d91;color:#a1ffed}
+button:focus-visible,select:focus-visible,a:focus-visible,.table:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+label{display:grid;gap:4px;color:var(--muted);font-size:.84rem}
+[hidden]{display:none!important}
+article{border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden}
+article h3{padding:14px 17px 0}
+article p{padding:2px 17px 11px;font-size:.84rem}
+.table{overflow:auto}
+table{width:100%;text-align:left;border-collapse:collapse;font-size:.87rem;font-variant-numeric:tabular-nums}
+th,td{padding:8px 12px;border-top:1px solid var(--line)}
+th:first-child,td:first-child{padding-left:17px}
+td:first-child,th:first-child{white-space:nowrap}
+th{color:var(--muted);font-size:.76rem;font-weight:550}
+td:nth-child(n+3),th:nth-child(n+3){text-align:right;white-space:nowrap}
+td:last-child,th:last-child{padding-right:17px}
+code{font-size:.82em;color:#dce6f8;overflow-wrap:anywhere}
+.qsl td:first-child{color:var(--cyan);font-weight:700}
+.bar{display:block;background:#61789c;height:4px;border-radius:2px;margin:4px 0 0 auto;min-width:3px}
+.qsl .bar{background:var(--cyan)}
+.note{border-top:1px solid var(--line);margin-top:28px;padding-top:14px;font-size:.87rem;max-width:84ch}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">QSL 0.4.0</h1>
+  <p class="intro" id="intro"></p>
+  <nav class="links" aria-label="Resources">
+    <a href="OPTIMIZED.md" id="method"></a>
+    <a href="results/optimized/confirmed.csv" id="raw">CSV</a>
+    <a href="HISTORY.md" id="history"></a>
+  </nav>
+</header>
+<main>
+  <h2 id="comparison"></h2>
+  <div class="controls">
+    <fieldset id="scope"><legend id="scope-title"></legend></fieldset>
+    <label id="size-label" hidden><span id="size-title"></span><select id="size"></select></label>
+  </div>
+  <fieldset id="operations"><legend id="operations-title"></legend></fieldset>
+  <p class="intro" id="description"></p>
+  <div class="results" id="results" aria-live="polite"></div>
+  <p class="note" id="note"></p>
+</main>
+<script id="data" type="application/json">@@PAYLOAD@@</script>
+<script>
+'use strict';
+const {summary, batchesSummary, workloadNames, operations, index} = JSON.parse(document.querySelector('#data').textContent);
+const t = (en, ru) => index === 0 ? en : ru;
+const get = id => document.getElementById(id);
+const set = (id, en, ru) => { get(id).textContent = t(en, ru); };
+const state = {batch: null, operation: 'allocate'};
+const format = new Intl.NumberFormat(document.documentElement.lang, {maximumFractionDigits: 2});
+const n = value => format.format(value);
+const descriptions = {
+  allocate:t('Write into a newly allocated output vector.','Запись в новый выделенный буфер.'),
+  buffer:t('Write into a warmed 32 KiB caller buffer.','Запись в прогретый буфер вызывающей стороны объёмом 32 КиБ.'),
+  owned:t('Read the entire record into an owned value.','Чтение всей записи с созданием собственного объекта.'),
+  view:t('Read the ID and borrow UTF-8 bytes directly from the frame.','Чтение ID и заимствование байтов UTF-8 внутри исходного кадра.'),
+};
+const outcomes = {
+  lead:t('QSL leads in both passes','QSL быстрее в обоих проходах'),
+  behind:t('A competitor leads in both passes','Конкурент быстрее в обоих проходах'),
+  unresolved:t('Lead inconclusive across both passes','Двух проходов недостаточно для вывода о лидерстве'),
+};
+set('title','QSL 0.4.0 benchmarks','Бенчмарки QSL 0.4.0');
+document.title=get('title').textContent;
+set('intro','QSL, Protobuf, Cap’n Proto and Bincode on the same warmed workloads. One configuration per codec and operation, chosen before two confirmation passes.','QSL, Protobuf, Cap’n Proto и Bincode на одних и тех же прогретых данных. Для каждой операции конфигурация кодека выбрана до двух контрольных проходов.');
+set('method','Method and results','Методика и результаты');
+set('history','Previous runs','Предыдущие замеры');
+set('comparison','Compare codecs','Сравнение кодеков');
+set('scope-title','Run','Серия');
+set('size-title','Messages per batch','Сообщений в пачке');
+set('operations-title','Operation','Операция');
+set('note','Trusted QSL profiles use immutable, prevalidated data. The fastest encoder and decoder can use different formats. A lead requires separated 99% median intervals in both passes. Shorter bars indicate lower latency.','Профили QSL с trusted используют неизменяемые предварительно проверенные данные. Самые быстрые запись и чтение могут использовать разные форматы. Лидерство требует разделения 99% интервалов медианы в обоих проходах. Чем короче полоса, тем меньше задержка.');
+
+function button(parent, label, value, action) {
+  const node = document.createElement('button');
+  node.type = 'button';
+  node.textContent = label;
+  node.dataset.value = value;
+  node.addEventListener('click', action);
+  get(parent).append(node);
+}
+button('scope',t('Single record','Одна запись'),'single',()=>{state.batch=null;render();});
+if(batchesSummary) {
+  button('scope',t('Batch','Пачка'),'batch',()=>{state.batch=Number(get('size').value);render();});
+  for(const size of [1,8,64,256]) get('size').add(new Option(size,size));
+  get('size').value='8';
+}
+get('size').addEventListener('change', event=>{state.batch=Number(event.target.value);render();});
+for(const [operation,label] of Object.entries(operations)) {
+  button('operations',label[index],operation,()=>{state.operation=operation;render();});
+}
+function render() {
+  const isBatch=state.batch!==null;
+  for(const node of document.querySelectorAll('#scope button')) {
+    node.setAttribute('aria-pressed',node.dataset.value===(isBatch?'batch':'single'));
+  }
+  for(const node of document.querySelectorAll('#operations button')) {
+    node.setAttribute('aria-pressed',node.dataset.value===state.operation);
+  }
+  get('size-label').hidden=!isBatch;
+  get('raw').href=isBatch?'results/optimized-batch/confirmed.csv':'results/optimized/confirmed.csv';
+  get('description').textContent=descriptions[state.operation];
+  const rows=(isBatch?batchesSummary:summary).rows.filter(row=>row.batch===state.batch&&row.operation===state.operation);
+  const tableHead=[t('Codec','Кодек'),t('Selected profile','Выбранный профиль'),t('ns / message','нс / сообщение')];
+  tableHead.push(...(isBatch?[t('ns / batch','нс / пачка'),t('Messages / s','Сообщений / с'),t('Requested B / batch','Запрошено, Б / пачка')]:
+    [t('Wire B','Кадр, Б'),t('Allocations','Аллокаций'),t('Requested B','Запрошено, Б')]));
+  get('results').innerHTML=Object.entries(workloadNames).map(([workload,title])=>{
+    const items=rows.filter(row=>row.workload===workload).sort((a,b)=>a.ns-b.ns);
+    if(!items.length)return '';
+    const max=Math.max(...items.map(row=>row.ns));
+    const qsl=items.find(row=>row.family==='QSL');
+    const body=items.map(row=>{
+      const extra=isBatch?[n(row.ns),n(1e9/row.nsPerRecord),n(row.allocationBytesPerBatch)]:[n(row.wireBytes),n(row.allocationCalls),n(row.allocationBytes)];
+      return `<tr class="${row.family==='QSL'?'qsl':''}"><td>${row.family}</td><td><code>${row.profile}</code></td><td>${n(row.nsPerRecord)}<span class="bar" aria-hidden="true" style="width:${row.ns/max*100}%"></span></td>${extra.map(value=>`<td>${value}</td>`).join('')}</tr>`;
+    }).join('');
+    return `<article><h3 id="workload-${workload}">${title[index]}</h3><p>${outcomes[qsl.outcome]}</p><div class="table" tabindex="0" role="region" aria-labelledby="workload-${workload}"><table><thead><tr>${tableHead.map(head=>`<th scope="col">${head}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div></article>`;
+  }).join('');
+}
+render();
+</script>
+</body>
+</html>

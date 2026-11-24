@@ -9,5 +9,10 @@ realistic/target/
 realistic/build-artifacts.jsonl
 qsl-features/target/
 qsl-features/build-artifacts.jsonl
+realistic-hot/target/
+realistic-hot/build-artifacts.jsonl
+optimized/target/
+optimized/build-artifacts.jsonl
+optimized-batch/target/
 build-artifacts.jsonl
 dyn/build-artifacts.jsonl

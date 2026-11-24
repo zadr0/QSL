@@ -1,0 +1,2046 @@
+{
+  "candidates": [
+    {
+      "id": "api/allocate/bincode_fixint",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 187.00303123577794
+    },
+    {
+      "id": "api/allocate/bincode_varint",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 257.1246169560776
+    },
+    {
+      "id": "api/allocate/capnp",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 113.84755190697709
+    },
+    {
+      "id": "api/allocate/capnp_packed",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "capnp_packed",
+      "family": "Cap’n Proto",
+      "tune_ns": 623.4647089726355
+    },
+    {
+      "id": "api/allocate/protobuf",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 467.111372598906
+    },
+    {
+      "id": "api/allocate/qsl_auto",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto",
+      "family": "QSL",
+      "tune_ns": 335.9045036454298
+    },
+    {
+      "id": "api/allocate/qsl_auto_bitmap",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_bitmap",
+      "family": "QSL",
+      "tune_ns": 205.41698387893842
+    },
+    {
+      "id": "api/allocate/qsl_auto_bitmap_trusted",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 151.10170846000557
+    },
+    {
+      "id": "api/allocate/qsl_auto_bounded_aligned_bitmap",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap",
+      "family": "QSL",
+      "tune_ns": 181.7145735235552
+    },
+    {
+      "id": "api/allocate/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 150.0042695816765
+    },
+    {
+      "id": "api/allocate/qsl_auto_bounded_compact_bitmap",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 196.85103270771373
+    },
+    {
+      "id": "api/allocate/qsl_auto_bounded_compact_bitmap_trusted",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 145.73825396825396
+    },
+    {
+      "id": "api/allocate/qsl_auto_compact_bitmap",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 179.64908505483294
+    },
+    {
+      "id": "api/allocate/qsl_auto_compact_bitmap_trusted",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 146.74578812107367
+    },
+    {
+      "id": "api/allocate/qsl_auto_trusted",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 235.19469928644241
+    },
+    {
+      "id": "api/buffer/bincode_fixint",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 65.78101426416129
+    },
+    {
+      "id": "api/buffer/bincode_varint",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 111.44049679991608
+    },
+    {
+      "id": "api/buffer/capnp",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 66.8068871746296
+    },
+    {
+      "id": "api/buffer/capnp_packed",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "capnp_packed",
+      "family": "Cap’n Proto",
+      "tune_ns": 329.297134551495
+    },
+    {
+      "id": "api/buffer/protobuf",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 297.35226428520286
+    },
+    {
+      "id": "api/buffer/qsl_auto",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto",
+      "family": "QSL",
+      "tune_ns": 157.73822039986683
+    },
+    {
+      "id": "api/buffer/qsl_auto_bitmap",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_bitmap",
+      "family": "QSL",
+      "tune_ns": 95.11708088031511
+    },
+    {
+      "id": "api/buffer/qsl_auto_bitmap_trusted",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 52.181974264689
+    },
+    {
+      "id": "api/buffer/qsl_auto_bounded_aligned_bitmap",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap",
+      "family": "QSL",
+      "tune_ns": 105.4526730545357
+    },
+    {
+      "id": "api/buffer/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 62.637220602526725
+    },
+    {
+      "id": "api/buffer/qsl_auto_bounded_compact_bitmap",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 108.06279755157561
+    },
+    {
+      "id": "api/buffer/qsl_auto_bounded_compact_bitmap_trusted",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 74.32547593489167
+    },
+    {
+      "id": "api/buffer/qsl_auto_compact_bitmap",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 89.09433751743376
+    },
+    {
+      "id": "api/buffer/qsl_auto_compact_bitmap_trusted",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 67.22009403790157
+    },
+    {
+      "id": "api/buffer/qsl_auto_trusted",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 107.19396804938697
+    },
+    {
+      "id": "api/owned/bincode_fixint",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 450.4774156660949
+    },
+    {
+      "id": "api/owned/bincode_varint",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 542.0513852307092
+    },
+    {
+      "id": "api/owned/capnp",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 673.0335355077689
+    },
+    {
+      "id": "api/owned/capnp_packed",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "capnp_packed",
+      "family": "Cap’n Proto",
+      "tune_ns": 1170.5659670164919
+    },
+    {
+      "id": "api/owned/protobuf",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 737.9153455240412
+    },
+    {
+      "id": "api/owned/qsl_auto",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto",
+      "family": "QSL",
+      "tune_ns": 1026.6384325804243
+    },
+    {
+      "id": "api/owned/qsl_auto_bitmap",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_bitmap",
+      "family": "QSL",
+      "tune_ns": 871.8979183534575
+    },
+    {
+      "id": "api/owned/qsl_auto_bitmap_trusted",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 347.74513807360523
+    },
+    {
+      "id": "api/owned/qsl_auto_bounded_aligned_bitmap",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_aligned_bitmap",
+      "family": "QSL",
+      "tune_ns": 966.6373303997066
+    },
+    {
+      "id": "api/owned/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 329.1952309985097
+    },
+    {
+      "id": "api/owned/qsl_auto_bounded_compact_bitmap",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 818.3547961036817
+    },
+    {
+      "id": "api/owned/qsl_auto_bounded_compact_bitmap_trusted",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 402.1741563360881
+    },
+    {
+      "id": "api/owned/qsl_auto_compact_bitmap",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 766.8117375535774
+    },
+    {
+      "id": "api/owned/qsl_auto_compact_bitmap_trusted",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 378.0883310088331
+    },
+    {
+      "id": "api/owned/qsl_auto_trusted",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 392.8202176527486
+    },
+    {
+      "id": "event/allocate/bincode_fixint",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 225.22605711979008
+    },
+    {
+      "id": "event/allocate/bincode_varint",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 303.65918523944055
+    },
+    {
+      "id": "event/allocate/capnp",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 173.94388543258583
+    },
+    {
+      "id": "event/allocate/capnp_packed",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "capnp_packed",
+      "family": "Cap’n Proto",
+      "tune_ns": 848.509306366853
+    },
+    {
+      "id": "event/allocate/protobuf",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 488.49123418088936
+    },
+    {
+      "id": "event/allocate/qsl_auto",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto",
+      "family": "QSL",
+      "tune_ns": 346.1140533383772
+    },
+    {
+      "id": "event/allocate/qsl_auto_bitmap",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_bitmap",
+      "family": "QSL",
+      "tune_ns": 237.5650757244794
+    },
+    {
+      "id": "event/allocate/qsl_auto_bitmap_trusted",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 147.34679103531562
+    },
+    {
+      "id": "event/allocate/qsl_auto_bounded_aligned_bitmap",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap",
+      "family": "QSL",
+      "tune_ns": 202.39193558842481
+    },
+    {
+      "id": "event/allocate/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 145.19159307604508
+    },
+    {
+      "id": "event/allocate/qsl_auto_bounded_compact_bitmap",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 211.38456464126963
+    },
+    {
+      "id": "event/allocate/qsl_auto_bounded_compact_bitmap_trusted",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 155.19416564532335
+    },
+    {
+      "id": "event/allocate/qsl_auto_compact_bitmap",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 213.28412507176847
+    },
+    {
+      "id": "event/allocate/qsl_auto_compact_bitmap_trusted",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 146.2978929783909
+    },
+    {
+      "id": "event/allocate/qsl_auto_trusted",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 282.5392250569811
+    },
+    {
+      "id": "event/buffer/bincode_fixint",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 69.80116514690982
+    },
+    {
+      "id": "event/buffer/bincode_varint",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 104.81923720018958
+    },
+    {
+      "id": "event/buffer/capnp",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 62.175441297208536
+    },
+    {
+      "id": "event/buffer/capnp_packed",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "capnp_packed",
+      "family": "Cap’n Proto",
+      "tune_ns": 348.2304690963909
+    },
+    {
+      "id": "event/buffer/protobuf",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 301.5312953651301
+    },
+    {
+      "id": "event/buffer/qsl_auto",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto",
+      "family": "QSL",
+      "tune_ns": 220.38847195732095
+    },
+    {
+      "id": "event/buffer/qsl_auto_bitmap",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_bitmap",
+      "family": "QSL",
+      "tune_ns": 98.15640146085056
+    },
+    {
+      "id": "event/buffer/qsl_auto_bitmap_trusted",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 67.21335182658882
+    },
+    {
+      "id": "event/buffer/qsl_auto_bounded_aligned_bitmap",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap",
+      "family": "QSL",
+      "tune_ns": 115.49736495388669
+    },
+    {
+      "id": "event/buffer/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 55.94126299945266
+    },
+    {
+      "id": "event/buffer/qsl_auto_bounded_compact_bitmap",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 115.14850594698304
+    },
+    {
+      "id": "event/buffer/qsl_auto_bounded_compact_bitmap_trusted",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 76.39683413200956
+    },
+    {
+      "id": "event/buffer/qsl_auto_compact_bitmap",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 108.42194008297231
+    },
+    {
+      "id": "event/buffer/qsl_auto_compact_bitmap_trusted",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 67.41266421661808
+    },
+    {
+      "id": "event/buffer/qsl_auto_trusted",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 134.38958245530102
+    },
+    {
+      "id": "event/owned/bincode_fixint",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 401.11829501915713
+    },
+    {
+      "id": "event/owned/bincode_varint",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 505.7828345011305
+    },
+    {
+      "id": "event/owned/capnp",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 598.7202210787116
+    },
+    {
+      "id": "event/owned/capnp_packed",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "capnp_packed",
+      "family": "Cap’n Proto",
+      "tune_ns": 977.747314413981
+    },
+    {
+      "id": "event/owned/protobuf",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 865.5168292216485
+    },
+    {
+      "id": "event/owned/qsl_auto",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto",
+      "family": "QSL",
+      "tune_ns": 1172.9884161861721
+    },
+    {
+      "id": "event/owned/qsl_auto_bitmap",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_bitmap",
+      "family": "QSL",
+      "tune_ns": 1010.2341389728097
+    },
+    {
+      "id": "event/owned/qsl_auto_bitmap_trusted",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 322.9723459539718
+    },
+    {
+      "id": "event/owned/qsl_auto_bounded_aligned_bitmap",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_aligned_bitmap",
+      "family": "QSL",
+      "tune_ns": 860.4322272703829
+    },
+    {
+      "id": "event/owned/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 325.7100803711255
+    },
+    {
+      "id": "event/owned/qsl_auto_bounded_compact_bitmap",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 861.4033920851347
+    },
+    {
+      "id": "event/owned/qsl_auto_bounded_compact_bitmap_trusted",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 423.58888693511517
+    },
+    {
+      "id": "event/owned/qsl_auto_compact_bitmap",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 833.1211142993783
+    },
+    {
+      "id": "event/owned/qsl_auto_compact_bitmap_trusted",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 402.67117716651876
+    },
+    {
+      "id": "event/owned/qsl_auto_trusted",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 465.2020801605289
+    },
+    {
+      "id": "fixed/allocate/bincode_fixint",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 68.79244779264263
+    },
+    {
+      "id": "fixed/allocate/bincode_u16_fixint",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "tune_ns": 67.10791976032304
+    },
+    {
+      "id": "fixed/allocate/bincode_varint",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 95.62644230816025
+    },
+    {
+      "id": "fixed/allocate/capnp",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 498.3782709545759
+    },
+    {
+      "id": "fixed/allocate/capnp_packed",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "capnp_packed",
+      "family": "Cap’n Proto",
+      "tune_ns": 233.39021845546262
+    },
+    {
+      "id": "fixed/allocate/capnp_u16",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "capnp_u16",
+      "family": "Cap’n Proto",
+      "tune_ns": 89.70847464122167
+    },
+    {
+      "id": "fixed/allocate/protobuf",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 97.31164831107722
+    },
+    {
+      "id": "fixed/allocate/protobuf_fixed",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "tune_ns": 84.96724699310906
+    },
+    {
+      "id": "fixed/allocate/qsl_auto",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto",
+      "family": "QSL",
+      "tune_ns": 82.166152474976
+    },
+    {
+      "id": "fixed/allocate/qsl_auto_compact",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact",
+      "family": "QSL",
+      "tune_ns": 64.55423024571961
+    },
+    {
+      "id": "fixed/allocate/qsl_auto_compact_group",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_group",
+      "family": "QSL",
+      "tune_ns": 73.4673114645367
+    },
+    {
+      "id": "fixed/allocate/qsl_auto_compact_group_trusted",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_group_trusted",
+      "family": "QSL",
+      "tune_ns": 72.83151814401815
+    },
+    {
+      "id": "fixed/allocate/qsl_auto_compact_trusted",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_trusted",
+      "family": "QSL",
+      "tune_ns": 83.1331114534531
+    },
+    {
+      "id": "fixed/allocate/qsl_auto_pointing",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto_pointing",
+      "family": "QSL",
+      "tune_ns": 86.30044490693922
+    },
+    {
+      "id": "fixed/allocate/qsl_auto_pointing_trusted",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto_pointing_trusted",
+      "family": "QSL",
+      "tune_ns": 75.08093597978747
+    },
+    {
+      "id": "fixed/allocate/qsl_auto_trusted",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 64.8027164428257
+    },
+    {
+      "id": "fixed/buffer/bincode_fixint",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 11.079092682270648
+    },
+    {
+      "id": "fixed/buffer/bincode_u16_fixint",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "tune_ns": 9.05323419977392
+    },
+    {
+      "id": "fixed/buffer/bincode_varint",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 16.057226003129706
+    },
+    {
+      "id": "fixed/buffer/capnp",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 32.45919268761479
+    },
+    {
+      "id": "fixed/buffer/capnp_packed",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "capnp_packed",
+      "family": "Cap’n Proto",
+      "tune_ns": 83.53649944121763
+    },
+    {
+      "id": "fixed/buffer/capnp_u16",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "capnp_u16",
+      "family": "Cap’n Proto",
+      "tune_ns": 32.6614264574893
+    },
+    {
+      "id": "fixed/buffer/protobuf",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 29.438419160301798
+    },
+    {
+      "id": "fixed/buffer/protobuf_fixed",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "tune_ns": 11.20578210293578
+    },
+    {
+      "id": "fixed/buffer/qsl_auto",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto",
+      "family": "QSL",
+      "tune_ns": 10.910823540250401
+    },
+    {
+      "id": "fixed/buffer/qsl_auto_compact",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto_compact",
+      "family": "QSL",
+      "tune_ns": 11.225079256742386
+    },
+    {
+      "id": "fixed/buffer/qsl_auto_compact_group",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto_compact_group",
+      "family": "QSL",
+      "tune_ns": 10.227402073906816
+    },
+    {
+      "id": "fixed/buffer/qsl_auto_compact_group_trusted",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto_compact_group_trusted",
+      "family": "QSL",
+      "tune_ns": 10.309686522934744
+    },
+    {
+      "id": "fixed/buffer/qsl_auto_compact_trusted",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto_compact_trusted",
+      "family": "QSL",
+      "tune_ns": 10.886883884729361
+    },
+    {
+      "id": "fixed/buffer/qsl_auto_pointing",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto_pointing",
+      "family": "QSL",
+      "tune_ns": 10.435342336800508
+    },
+    {
+      "id": "fixed/buffer/qsl_auto_pointing_trusted",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto_pointing_trusted",
+      "family": "QSL",
+      "tune_ns": 10.04447362187381
+    },
+    {
+      "id": "fixed/buffer/qsl_auto_trusted",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 10.240198891710872
+    },
+    {
+      "id": "fixed/owned/bincode_fixint",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 15.896086620519235
+    },
+    {
+      "id": "fixed/owned/bincode_u16_fixint",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "tune_ns": 15.410521470866298
+    },
+    {
+      "id": "fixed/owned/bincode_varint",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 37.272890389898066
+    },
+    {
+      "id": "fixed/owned/capnp",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 71.32725797366115
+    },
+    {
+      "id": "fixed/owned/capnp_packed",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "capnp_packed",
+      "family": "Cap’n Proto",
+      "tune_ns": 236.82836524416393
+    },
+    {
+      "id": "fixed/owned/capnp_u16",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "capnp_u16",
+      "family": "Cap’n Proto",
+      "tune_ns": 73.79120757710292
+    },
+    {
+      "id": "fixed/owned/protobuf",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 56.7512135332739
+    },
+    {
+      "id": "fixed/owned/protobuf_fixed",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "tune_ns": 36.73547494566381
+    },
+    {
+      "id": "fixed/owned/qsl_auto",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto",
+      "family": "QSL",
+      "tune_ns": 21.14312441976108
+    },
+    {
+      "id": "fixed/owned/qsl_auto_compact",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto_compact",
+      "family": "QSL",
+      "tune_ns": 62.71304922560085
+    },
+    {
+      "id": "fixed/owned/qsl_auto_compact_group",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto_compact_group",
+      "family": "QSL",
+      "tune_ns": 65.69363413591509
+    },
+    {
+      "id": "fixed/owned/qsl_auto_compact_group_trusted",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto_compact_group_trusted",
+      "family": "QSL",
+      "tune_ns": 15.848060968057283
+    },
+    {
+      "id": "fixed/owned/qsl_auto_compact_trusted",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto_compact_trusted",
+      "family": "QSL",
+      "tune_ns": 15.179398164717334
+    },
+    {
+      "id": "fixed/owned/qsl_auto_pointing",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto_pointing",
+      "family": "QSL",
+      "tune_ns": 20.92800608885073
+    },
+    {
+      "id": "fixed/owned/qsl_auto_pointing_trusted",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto_pointing_trusted",
+      "family": "QSL",
+      "tune_ns": 14.99126346744735
+    },
+    {
+      "id": "fixed/owned/qsl_auto_trusted",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 13.897584023720349
+    },
+    {
+      "id": "heartbeat/allocate/bincode_fixint",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 121.38786302118558
+    },
+    {
+      "id": "heartbeat/allocate/bincode_varint",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 138.5714447999444
+    },
+    {
+      "id": "heartbeat/allocate/capnp",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 133.16631774004875
+    },
+    {
+      "id": "heartbeat/allocate/capnp_packed",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "capnp_packed",
+      "family": "Cap’n Proto",
+      "tune_ns": 333.44337160751564
+    },
+    {
+      "id": "heartbeat/allocate/protobuf",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 151.7128976649428
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto",
+      "family": "QSL",
+      "tune_ns": 196.6272408105439
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_bitmap",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_bitmap",
+      "family": "QSL",
+      "tune_ns": 135.34805712989723
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 113.89701977445253
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_bounded_aligned_bitmap",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap",
+      "family": "QSL",
+      "tune_ns": 130.3110748917535
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 115.18849566192625
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_bounded_compact_bitmap",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 134.3590991356459
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_bounded_compact_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 118.00262907775326
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_compact_bitmap",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 127.45846162412377
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_compact_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 113.05409955356839
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_trusted",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 158.5451779346448
+    },
+    {
+      "id": "heartbeat/buffer/bincode_fixint",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 30.102469143624706
+    },
+    {
+      "id": "heartbeat/buffer/bincode_varint",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 34.74332269089076
+    },
+    {
+      "id": "heartbeat/buffer/capnp",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 53.18495684340321
+    },
+    {
+      "id": "heartbeat/buffer/capnp_packed",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "capnp_packed",
+      "family": "Cap’n Proto",
+      "tune_ns": 156.903400569886
+    },
+    {
+      "id": "heartbeat/buffer/protobuf",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 76.83372557409785
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto",
+      "family": "QSL",
+      "tune_ns": 100.30415221426843
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_bitmap",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_bitmap",
+      "family": "QSL",
+      "tune_ns": 60.68517456149851
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 36.65859516694694
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_bounded_aligned_bitmap",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap",
+      "family": "QSL",
+      "tune_ns": 50.52565120114313
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 33.484916028088065
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_bounded_compact_bitmap",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 56.56202509631849
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_bounded_compact_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 40.14205435280196
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_compact_bitmap",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 55.898528281463896
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_compact_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 38.92015866063173
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_trusted",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 65.58040325282157
+    },
+    {
+      "id": "heartbeat/owned/bincode_fixint",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 116.20834547161262
+    },
+    {
+      "id": "heartbeat/owned/bincode_varint",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 136.22292295037016
+    },
+    {
+      "id": "heartbeat/owned/capnp",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 174.24825043972908
+    },
+    {
+      "id": "heartbeat/owned/capnp_packed",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "capnp_packed",
+      "family": "Cap’n Proto",
+      "tune_ns": 469.50059945921123
+    },
+    {
+      "id": "heartbeat/owned/protobuf",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 149.1164579537932
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto",
+      "family": "QSL",
+      "tune_ns": 255.98228193146417
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_bitmap",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_bitmap",
+      "family": "QSL",
+      "tune_ns": 199.346012208878
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 88.8283251521537
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_bounded_aligned_bitmap",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_aligned_bitmap",
+      "family": "QSL",
+      "tune_ns": 220.25533342921523
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 92.28999703176017
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_bounded_compact_bitmap",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 190.59064286310343
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_bounded_compact_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 89.59155431604117
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_compact_bitmap",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_compact_bitmap",
+      "family": "QSL",
+      "tune_ns": 198.6173664020601
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_compact_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 88.50150372761394
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_trusted",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 100.9291635151443
+    },
+    {
+      "id": "text_128/view/bincode_fixint",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 41.66909363791078
+    },
+    {
+      "id": "text_128/view/bincode_varint",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 44.063076543676864
+    },
+    {
+      "id": "text_128/view/capnp",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 118.98860367365089
+    },
+    {
+      "id": "text_128/view/protobuf",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 82.30134520651762
+    },
+    {
+      "id": "text_128/view/qsl_auto_lifetime",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime",
+      "family": "QSL",
+      "tune_ns": 60.861409179774284
+    },
+    {
+      "id": "text_128/view/qsl_auto_lifetime_aligned",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_aligned",
+      "family": "QSL",
+      "tune_ns": 79.65385351741156
+    },
+    {
+      "id": "text_128/view/qsl_auto_lifetime_aligned_trusted",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_aligned_trusted",
+      "family": "QSL",
+      "tune_ns": 8.155132747434777
+    },
+    {
+      "id": "text_128/view/qsl_auto_lifetime_trusted",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_trusted",
+      "family": "QSL",
+      "tune_ns": 8.161018216763487
+    },
+    {
+      "id": "text_2048/view/bincode_fixint",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 146.74140868857154
+    },
+    {
+      "id": "text_2048/view/bincode_varint",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 137.5053383875727
+    },
+    {
+      "id": "text_2048/view/capnp",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 246.597876610191
+    },
+    {
+      "id": "text_2048/view/protobuf",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 174.62813291363926
+    },
+    {
+      "id": "text_2048/view/qsl_auto_lifetime",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime",
+      "family": "QSL",
+      "tune_ns": 155.46859029508872
+    },
+    {
+      "id": "text_2048/view/qsl_auto_lifetime_aligned",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_aligned",
+      "family": "QSL",
+      "tune_ns": 173.07715213520902
+    },
+    {
+      "id": "text_2048/view/qsl_auto_lifetime_aligned_trusted",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_aligned_trusted",
+      "family": "QSL",
+      "tune_ns": 9.82592523364486
+    },
+    {
+      "id": "text_2048/view/qsl_auto_lifetime_trusted",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_trusted",
+      "family": "QSL",
+      "tune_ns": 9.621551060063727
+    }
+  ],
+  "picked": [
+    {
+      "id": "api/allocate/bincode_fixint",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 187.00303123577794
+    },
+    {
+      "id": "api/allocate/capnp",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 113.84755190697709
+    },
+    {
+      "id": "api/allocate/protobuf",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 467.111372598906
+    },
+    {
+      "id": "api/allocate/qsl_auto_bounded_compact_bitmap_trusted",
+      "workload": "api",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 145.73825396825396
+    },
+    {
+      "id": "api/buffer/bincode_fixint",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 65.78101426416129
+    },
+    {
+      "id": "api/buffer/capnp",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 66.8068871746296
+    },
+    {
+      "id": "api/buffer/protobuf",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 297.35226428520286
+    },
+    {
+      "id": "api/buffer/qsl_auto_bitmap_trusted",
+      "workload": "api",
+      "operation": "buffer",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 52.181974264689
+    },
+    {
+      "id": "api/owned/bincode_fixint",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 450.4774156660949
+    },
+    {
+      "id": "api/owned/capnp",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 673.0335355077689
+    },
+    {
+      "id": "api/owned/protobuf",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 737.9153455240412
+    },
+    {
+      "id": "api/owned/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "api",
+      "operation": "owned",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 329.1952309985097
+    },
+    {
+      "id": "event/allocate/bincode_fixint",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 225.22605711979008
+    },
+    {
+      "id": "event/allocate/capnp",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 173.94388543258583
+    },
+    {
+      "id": "event/allocate/protobuf",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 488.49123418088936
+    },
+    {
+      "id": "event/allocate/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "event",
+      "operation": "allocate",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 145.19159307604508
+    },
+    {
+      "id": "event/buffer/bincode_fixint",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 69.80116514690982
+    },
+    {
+      "id": "event/buffer/capnp",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 62.175441297208536
+    },
+    {
+      "id": "event/buffer/protobuf",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 301.5312953651301
+    },
+    {
+      "id": "event/buffer/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "event",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 55.94126299945266
+    },
+    {
+      "id": "event/owned/bincode_fixint",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 401.11829501915713
+    },
+    {
+      "id": "event/owned/capnp",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 598.7202210787116
+    },
+    {
+      "id": "event/owned/protobuf",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 865.5168292216485
+    },
+    {
+      "id": "event/owned/qsl_auto_bitmap_trusted",
+      "workload": "event",
+      "operation": "owned",
+      "profile": "qsl_auto_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 322.9723459539718
+    },
+    {
+      "id": "fixed/allocate/bincode_u16_fixint",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "tune_ns": 67.10791976032304
+    },
+    {
+      "id": "fixed/allocate/capnp_u16",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "capnp_u16",
+      "family": "Cap’n Proto",
+      "tune_ns": 89.70847464122167
+    },
+    {
+      "id": "fixed/allocate/protobuf_fixed",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "tune_ns": 84.96724699310906
+    },
+    {
+      "id": "fixed/allocate/qsl_auto_compact",
+      "workload": "fixed",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact",
+      "family": "QSL",
+      "tune_ns": 64.55423024571961
+    },
+    {
+      "id": "fixed/buffer/bincode_u16_fixint",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "tune_ns": 9.05323419977392
+    },
+    {
+      "id": "fixed/buffer/capnp",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 32.45919268761479
+    },
+    {
+      "id": "fixed/buffer/protobuf_fixed",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "tune_ns": 11.20578210293578
+    },
+    {
+      "id": "fixed/buffer/qsl_auto_pointing_trusted",
+      "workload": "fixed",
+      "operation": "buffer",
+      "profile": "qsl_auto_pointing_trusted",
+      "family": "QSL",
+      "tune_ns": 10.04447362187381
+    },
+    {
+      "id": "fixed/owned/bincode_u16_fixint",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "bincode_u16_fixint",
+      "family": "Bincode",
+      "tune_ns": 15.410521470866298
+    },
+    {
+      "id": "fixed/owned/capnp",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 71.32725797366115
+    },
+    {
+      "id": "fixed/owned/protobuf_fixed",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "protobuf_fixed",
+      "family": "Protobuf",
+      "tune_ns": 36.73547494566381
+    },
+    {
+      "id": "fixed/owned/qsl_auto_trusted",
+      "workload": "fixed",
+      "operation": "owned",
+      "profile": "qsl_auto_trusted",
+      "family": "QSL",
+      "tune_ns": 13.897584023720349
+    },
+    {
+      "id": "heartbeat/allocate/bincode_fixint",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 121.38786302118558
+    },
+    {
+      "id": "heartbeat/allocate/capnp",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 133.16631774004875
+    },
+    {
+      "id": "heartbeat/allocate/protobuf",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 151.7128976649428
+    },
+    {
+      "id": "heartbeat/allocate/qsl_auto_compact_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "allocate",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 113.05409955356839
+    },
+    {
+      "id": "heartbeat/buffer/bincode_fixint",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 30.102469143624706
+    },
+    {
+      "id": "heartbeat/buffer/capnp",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 53.18495684340321
+    },
+    {
+      "id": "heartbeat/buffer/protobuf",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 76.83372557409785
+    },
+    {
+      "id": "heartbeat/buffer/qsl_auto_bounded_aligned_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "buffer",
+      "profile": "qsl_auto_bounded_aligned_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 33.484916028088065
+    },
+    {
+      "id": "heartbeat/owned/bincode_fixint",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 116.20834547161262
+    },
+    {
+      "id": "heartbeat/owned/capnp",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 174.24825043972908
+    },
+    {
+      "id": "heartbeat/owned/protobuf",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 149.1164579537932
+    },
+    {
+      "id": "heartbeat/owned/qsl_auto_compact_bitmap_trusted",
+      "workload": "heartbeat",
+      "operation": "owned",
+      "profile": "qsl_auto_compact_bitmap_trusted",
+      "family": "QSL",
+      "tune_ns": 88.50150372761394
+    },
+    {
+      "id": "text_128/view/bincode_fixint",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "bincode_fixint",
+      "family": "Bincode",
+      "tune_ns": 41.66909363791078
+    },
+    {
+      "id": "text_128/view/capnp",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 118.98860367365089
+    },
+    {
+      "id": "text_128/view/protobuf",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 82.30134520651762
+    },
+    {
+      "id": "text_128/view/qsl_auto_lifetime_aligned_trusted",
+      "workload": "text_128",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_aligned_trusted",
+      "family": "QSL",
+      "tune_ns": 8.155132747434777
+    },
+    {
+      "id": "text_2048/view/bincode_varint",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "bincode_varint",
+      "family": "Bincode",
+      "tune_ns": 137.5053383875727
+    },
+    {
+      "id": "text_2048/view/capnp",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "capnp",
+      "family": "Cap’n Proto",
+      "tune_ns": 246.597876610191
+    },
+    {
+      "id": "text_2048/view/protobuf",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "protobuf",
+      "family": "Protobuf",
+      "tune_ns": 174.62813291363926
+    },
+    {
+      "id": "text_2048/view/qsl_auto_lifetime_trusted",
+      "workload": "text_2048",
+      "operation": "view",
+      "profile": "qsl_auto_lifetime_trusted",
+      "family": "QSL",
+      "tune_ns": 9.621551060063727
+    }
+  ]
+}

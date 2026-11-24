@@ -1,0 +1,35 @@
+[
+  {
+    "name": "tune",
+    "exitCode": 0,
+    "seconds": 190.0951078,
+    "processCpuSeconds": 171.703125,
+    "backgroundLogicalCores": 1.3871345930555294,
+    "warmup": 0.065,
+    "measurement": 0.135,
+    "sampleSize": 24,
+    "reverse": false
+  },
+  {
+    "name": "confirm-1",
+    "exitCode": 0,
+    "seconds": 146.6704097,
+    "processCpuSeconds": 131.71875,
+    "backgroundLogicalCores": 1.3719110106228878,
+    "warmup": 0.18,
+    "measurement": 0.37,
+    "sampleSize": 60,
+    "reverse": false
+  },
+  {
+    "name": "confirm-2",
+    "exitCode": 0,
+    "seconds": 147.6010996,
+    "processCpuSeconds": 132.3125,
+    "backgroundLogicalCores": 1.3624136306908652,
+    "warmup": 0.18,
+    "measurement": 0.37,
+    "sampleSize": 60,
+    "reverse": true
+  }
+]
