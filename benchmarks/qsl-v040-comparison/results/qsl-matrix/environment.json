@@ -1,0 +1,16 @@
+﻿{
+    "startedAt":  "2026-11-24T20:35:03.7009221+05:00",
+    "cpu":  "Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz",
+    "rust":  "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "os":  "10.0.26200",
+    "rustflags":  "-C target-cpu=native",
+    "affinityCore":  2,
+    "executableSha256":  "E7BCF9BFE5D26DDF7D1A93F49E29173401F6610008C105848DD65C28C42F9988",
+    "sources":  {
+                    "tools/run-qsl-matrix.ps1":  "2EC07C2179464D2616C630B728086645536439C0BC0F347F384BF6DB93C3005C",
+                    "qsl-all-features/Cargo.lock":  "BADC87366C181C26BC3E0B4F825BB3A3D8D0A717C33D8DF86C3282B4BA0B5DC0",
+                    "qsl-all-features/Cargo.toml":  "90210F47442FC8EE2A09E6D960A1150612B224788E2C7B8EB607CF99D08F8C64",
+                    "qsl-all-features/src/main.rs":  "23FCA657086F19F143FF10989AD91E14DF95DBBE5F4202B4D9DEF390783A6108",
+                    "qsl-all-features/build.rs":  "D3817D907A7EDE634C47B00AD64CA88BF87B18F981E1D8499500C39F21687E72"
+                }
+}

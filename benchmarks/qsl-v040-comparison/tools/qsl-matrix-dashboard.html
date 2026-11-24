@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QSL All Features and Safety QSL</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0e15;--panel:#111722;--line:#2d374a;--ink:#eff5ff;--muted:#a9b7cf;--active:#67e8d2}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);background:var(--bg);font:16px/1.55 system-ui,sans-serif}
+header,main{max-width:1080px;margin:auto;padding:24px clamp(16px,5vw,50px)}
+nav{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+a{color:var(--active);text-underline-offset:4px}
+nav a{padding:6px 11px;border-radius:7px;border:1px solid var(--line);text-decoration:none}
+nav a[aria-current=page]{background:#173630;border-color:#3e887e}
+h1,h2,p{margin:0}h1{font-size:clamp(34px,6vw,58px);letter-spacing:-.04em;line-height:1.12}
+h2{font-size:1.32rem;margin-top:24px}
+p{color:var(--muted);max-width:72ch;margin-top:9px}
+label{margin:16px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+select{padding:6px 12px;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;font:inherit}
+.scroll{overflow:auto;margin-top:10px;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numeric:tabular-nums}
+th,td{padding:7px 12px;text-align:left}
+th{color:var(--muted);font-size:.78rem}
+th.number,td.number{text-align:right;white-space:nowrap}
+td{border-top:1px solid var(--line)}
+th:first-child,td:first-child{white-space:nowrap}
+code{font-size:.85em}
+.number strong{color:var(--active)}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--panel);padding:16px;border:1px solid var(--line);border-radius:8px}
+summary{cursor:pointer;margin-top:18px}
+a:focus-visible,select:focus-visible,summary:focus-visible,.scroll:focus-visible{outline:2px solid var(--active);outline-offset:3px}
+</style>
+</head>
+<body>
+<header>
+  <nav aria-label="Benchmarks">
+    <a href="#features" id="features-link">QSL All Features</a>
+    <a href="#safety" id="safety-link">Safety QSL</a>
+    <a href="dashboard.html">Four-codec comparison</a>
+  </nav>
+  <h1 id="title"></h1>
+  <p id="description"></p>
+  <p><a id="method"></a> · <a id="csv">CSV</a></p>
+</header>
+<main>
+  <label for="workload">Workload <select id="workload"></select></label>
+  <div class="scroll" tabindex="0" role="region" aria-label="Confirmed benchmark results" aria-live="polite">
+    <table id="results"></table>
+  </div>
+  <div id="additional"></div>
+  <details id="matrix">
+    <summary>Inspect a schema and its generation plan</summary>
+    <label for="profile">Profile <select id="profile"></select></label>
+    <p id="plan"></p>
+    <pre id="schema"></pre>
+    <div id="calibration"></div>
+  </details>
+</main>
+<script id="data" type="application/json">@@DATA@@</script>
+<script>
+'use strict';
+const data=JSON.parse(document.getElementById('data').textContent);
+const lookup=id=>document.getElementById(id);
+const workload=lookup('workload');
+const selector=lookup('profile');
+const number=value=>Number.isFinite(value)?value.toLocaleString('en-US',{maximumFractionDigits:2}):'—';
+const code=value=>'<code>'+value+'</code>';
+const display=value=>value.replaceAll('_',' ');
+const view=()=>location.hash==='#safety'?'safety':'features';
+function table(headers,rows,firstNumeric){
+  return '<thead><tr>'+headers.map((value,i)=>'<th scope="col" class="'+(i>=firstNumeric?'number':'')+'">'+value+'</th>').join('')+'</tr></thead><tbody>'+
+    rows.map(row=>'<tr>'+row.map((value,i)=>'<td class="'+(i>=firstNumeric?'number':'')+'">'+value+'</td>').join('')+'</tr>').join('')+'</tbody>';
+}
+function schema(){
+  const row=data.profiles[Number(selector.value)];
+  lookup('schema').textContent=row.schema;
+  lookup('plan').textContent=row.status==='rejected'?row.reason:
+    [row.route,'Stack limit '+row.stack_limit+' B',row.cpu,row.quant_active?'active QPS':'',
+      row.emits_pext?'BMI2 PEXT code emitted':''].filter(Boolean).join(' · ');
+  const cases=data.tuning.filter(item=>item.group===row.group&&item.profile===row.profile);
+  lookup('calibration').innerHTML=cases.length?'<p>Calibration results for this profile</p>'+
+    '<div class="scroll" tabindex="0" role="region" aria-label="Calibration results"><table>'+
+    table(['Workload','Operation','ns / record','Frame B','Object B'],cases.map(item=>[
+      display(item.workload),data.captions[item.operation]??display(item.operation),number(item.ns),number(item.mean_wire_bytes),
+      number(item.object_bytes)]),2)+'</table></div>':'';
+}
+function render(){
+  const safety=view()==='safety';
+  const selected=workload.value;
+  const rows=(safety?data.safety:data.winners).filter(row=>selected==='all'||row.workload===selected);
+  if(safety){
+    const times=['checked_read','trusted_read','validate','validate_then_trusted','checked_write','trusted_write','validate_values'];
+    lookup('results').innerHTML=table(['Workload','Profile',...times.map(op=>data.captions[op]+' (ns)'),'Read ratio'],
+      rows.map(row=>[display(row.workload),code(row.profile),...times.map(op=>number(row[op])),'<strong>'+number(row.readRatio)+'×</strong>']),2);
+    lookup('additional').replaceChildren();
+  }else{
+    lookup('results').innerHTML=table(['Workload','Operation','Selected profile','ns / record','Frame B','Object B'],
+      rows.map(row=>[display(row.workload),data.captions[row.operation],code(row.profile),'<strong>'+number(row.ns)+'</strong>',number(row.mean_wire_bytes),number(row.object_bytes)]),3);
+    const extra=data.extras.filter(row=>selected==='all'||row.workload===selected);
+    lookup('additional').innerHTML=extra.length?'<h2>Native, cache and slot paths</h2><div class="scroll" tabindex="0" role="region" aria-label="Native, cache and slot paths"><table>'+
+      table(['Workload','Operation','Profile','ns / record'],extra.map(row=>[display(row.workload),data.captions[row.operation]??display(row.operation),code(row.profile),number(row.ns)]),3)+'</table></div>':'';
+  }
+}
+function switchSection(){
+  const safety=view()==='safety';
+  lookup('title').textContent=safety?'Safety QSL':'QSL All Features';
+  lookup('description').textContent=safety?
+    'Same schema and frame for every checked/trusted pair. Trusted paths receive previously validated inputs.':
+    'Fastest calibration candidate for each operation. Times come from two later passes on a separate set of records.';
+  lookup('method').textContent=safety?'Safety methodology':'Feature sweep and methodology';
+  lookup('method').href=safety?'QSL-SAFETY.md':'QSL-ALL-FEATURES.md';
+  lookup('csv').href='results/qsl-matrix/'+(safety?'safety.csv':'confirmed.csv');
+  for(const name of ['features','safety']){
+    const link=lookup(name+'-link');
+    if(name===view())link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');
+  }
+  workload.replaceChildren(new Option('All workloads','all'));
+  for(const name of [...new Set((safety?data.safety:data.winners).map(row=>row.workload))]){
+    workload.add(new Option(display(name),name));
+  }
+  render();
+}
+for(const [i,row] of data.profiles.entries())selector.add(new Option(row.group+' / '+row.profile,i));
+selector.addEventListener('change',schema);
+workload.addEventListener('change',render);
+window.addEventListener('hashchange',switchSection);
+switchSection();
+schema();
+</script>
+</body>
+</html>

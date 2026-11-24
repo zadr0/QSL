@@ -5,9 +5,9 @@ import {fileURLToPath} from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const port = Number(process.argv[2] ?? '7360');
-const reports = new Set(['dashboard.html','dashboard.en.html','historical-dashboard.html','report.html','README.md','OPTIMIZED.md','HISTORY.md','RESULTS.md','SAME-STRUCTURES.md',
+const reports = new Set(['dashboard.html','dashboard.en.html','historical-dashboard.html','report.html','qsl-matrix.html','README.md','OPTIMIZED.md','HISTORY.md','QSL-ALL-FEATURES.md','QSL-SAFETY.md','RESULTS.md','SAME-STRUCTURES.md',
   'REALISTIC.md','QSL-FEATURES.md','QSL-ONLY.md','DYN.md','LAYOUT.md','K6.md']);
-const data = /^results\/(?:optimized(?:-batch)?|realistic|qsl-features|released|dyn|layout|k6)\/[a-z0-9_./-]+\.(?:csv|json|svg|qsl|gz)$/i;
+const data = /^results\/(?:optimized(?:-batch)?|qsl-matrix|realistic|qsl-features|released|dyn|layout|k6)\/[a-z0-9_./-]+\.(?:csv|json|svg|qsl|gz)$/i;
 const mime = {'.html':'text/html; charset=utf-8','.md':'text/plain; charset=utf-8',
   '.csv':'text/csv; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml','.qsl':'text/plain; charset=utf-8'};
 await fs.access(path.join(root,'dashboard.html'));

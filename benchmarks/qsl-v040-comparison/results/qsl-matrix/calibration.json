@@ -1,0 +1,5326 @@
+{
+  "picked": [
+    {
+      "workload": "arrays",
+      "profile": "inline",
+      "operation": "checked_read",
+      "id": "arrays/inline/checked_read",
+      "ns": 114.08677298311444
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline",
+      "operation": "checked_write",
+      "id": "arrays/inline/checked_write",
+      "ns": 7.3982860081892206
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline",
+      "operation": "trusted_read",
+      "id": "arrays/inline/trusted_read",
+      "ns": 21.71190557901839
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline_shifted",
+      "operation": "trusted_write",
+      "id": "arrays/inline_shifted/trusted_write",
+      "ns": 6.627657225445129
+    },
+    {
+      "workload": "domain",
+      "profile": "compact",
+      "operation": "checked_read",
+      "id": "domain/compact/checked_read",
+      "ns": 4.564763884303412
+    },
+    {
+      "workload": "domain",
+      "profile": "auto",
+      "operation": "checked_write",
+      "id": "domain/auto/checked_write",
+      "ns": 3.612113389049515
+    },
+    {
+      "workload": "domain",
+      "profile": "auto",
+      "operation": "trusted_read",
+      "id": "domain/auto/trusted_read",
+      "ns": 6.515674422035946
+    },
+    {
+      "workload": "domain",
+      "profile": "auto",
+      "operation": "trusted_write",
+      "id": "domain/auto/trusted_write",
+      "ns": 2.927177184537406
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_64",
+      "operation": "checked_read",
+      "id": "dyn/line_64/checked_read",
+      "ns": 35.081544787402734
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_16",
+      "operation": "checked_write",
+      "id": "dyn/line_16/checked_write",
+      "ns": 5.162517463683954
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_64",
+      "operation": "trusted_read",
+      "id": "dyn/line_64/trusted_read",
+      "ns": 7.584130848781428
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_16",
+      "operation": "trusted_write",
+      "id": "dyn/line_16/trusted_write",
+      "ns": 4.131867545427863
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_always",
+      "operation": "checked_read",
+      "id": "fixed/inline_always/checked_read",
+      "ns": 3.9520104085870846
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift1_bm0_point1_group1/checked_write",
+      "ns": 2.9610245752406845
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift0_bm0_point1_group1/trusted_read",
+      "ns": 2.3631083542716356
+    },
+    {
+      "workload": "fixed",
+      "profile": "auto",
+      "operation": "trusted_write",
+      "id": "fixed/auto/trusted_write",
+      "ns": 2.691551119657654
+    },
+    {
+      "workload": "layout",
+      "profile": "auto",
+      "operation": "checked_read",
+      "id": "layout/auto/checked_read",
+      "ns": 3.600691627158099
+    },
+    {
+      "workload": "layout",
+      "profile": "auto_wire_v1",
+      "operation": "checked_write",
+      "id": "layout/auto_wire_v1/checked_write",
+      "ns": 3.325424901674187
+    },
+    {
+      "workload": "layout",
+      "profile": "declared",
+      "operation": "trusted_read",
+      "id": "layout/declared/trusted_read",
+      "ns": 3.0516033933897972
+    },
+    {
+      "workload": "layout",
+      "profile": "auto_wire_v1",
+      "operation": "trusted_write",
+      "id": "layout/auto_wire_v1/trusted_write",
+      "ns": 3.2321167952587437
+    },
+    {
+      "workload": "native_region",
+      "profile": "fields",
+      "operation": "checked_read",
+      "id": "native_region/fields/checked_read",
+      "ns": 4.559875494381542
+    },
+    {
+      "workload": "native_region",
+      "profile": "fields",
+      "operation": "checked_write",
+      "id": "native_region/fields/checked_write",
+      "ns": 4.919473438789053
+    },
+    {
+      "workload": "native_region",
+      "profile": "named_region",
+      "operation": "trusted_read",
+      "id": "native_region/named_region/trusted_read",
+      "ns": 2.8208882477309016
+    },
+    {
+      "workload": "native_region",
+      "profile": "fields",
+      "operation": "trusted_write",
+      "id": "native_region/fields/trusted_write",
+      "ns": 4.848204761572456
+    },
+    {
+      "workload": "native",
+      "profile": "transmute_copy",
+      "operation": "checked_read",
+      "id": "native/transmute_copy/checked_read",
+      "ns": 3.220935180336081
+    },
+    {
+      "workload": "native",
+      "profile": "transmute_copy",
+      "operation": "checked_write",
+      "id": "native/transmute_copy/checked_write",
+      "ns": 4.442916143720265
+    },
+    {
+      "workload": "native",
+      "profile": "transmute_copy",
+      "operation": "trusted_read",
+      "id": "native/transmute_copy/trusted_read",
+      "ns": 2.5352926438932606
+    },
+    {
+      "workload": "native",
+      "profile": "fields",
+      "operation": "trusted_write",
+      "id": "native/fields/trusted_write",
+      "ns": 4.259866714418852
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "checked_read",
+      "id": "noise_1024/qsl_lz_inline/checked_read",
+      "ns": 102.16396996615904
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "stack_string",
+      "operation": "checked_write",
+      "id": "noise_1024/stack_string/checked_write",
+      "ns": 17.459583474564717
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "stack_string",
+      "operation": "trusted_read",
+      "id": "noise_1024/stack_string/trusted_read",
+      "ns": 26.98604427333975
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "stack_string",
+      "operation": "trusted_write",
+      "id": "noise_1024/stack_string/trusted_write",
+      "ns": 17.846922343142587
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_default",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_default/checked_read",
+      "ns": 76.65789473684211
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift1_bm0_point0_group0/checked_write",
+      "ns": 7.508590535155772
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift0_bm0_point1_group1/trusted_read",
+      "ns": 18.207994988460015
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift0_bm0_point1_group1/trusted_write",
+      "ns": 7.028053060087871
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "shifted_stack_string",
+      "operation": "checked_read",
+      "id": "periodic_1024/shifted_stack_string/checked_read",
+      "ns": 693.3406916850626
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "stack_string",
+      "operation": "checked_write",
+      "id": "periodic_1024/stack_string/checked_write",
+      "ns": 17.69229306870461
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "stack_string",
+      "operation": "trusted_read",
+      "id": "periodic_1024/stack_string/trusted_read",
+      "ns": 27.825407502997354
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "heap_string",
+      "operation": "trusted_write",
+      "id": "periodic_1024/heap_string/trusted_write",
+      "ns": 18.015299304587543
+    },
+    {
+      "workload": "presence",
+      "profile": "wire_and_object_bitmap",
+      "operation": "checked_read",
+      "id": "presence/wire_and_object_bitmap/checked_read",
+      "ns": 23.71815613764766
+    },
+    {
+      "workload": "presence",
+      "profile": "bitmap_ot",
+      "operation": "checked_write",
+      "id": "presence/bitmap_ot/checked_write",
+      "ns": 5.238316623186634
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_ot_object_bitmap",
+      "operation": "trusted_read",
+      "id": "presence/ps_ot_object_bitmap/trusted_read",
+      "ns": 4.209399967276103
+    },
+    {
+      "workload": "presence",
+      "profile": "compact_bitmap",
+      "operation": "trusted_write",
+      "id": "presence/compact_bitmap/trusted_write",
+      "ns": 3.8854157301496235
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q16",
+      "operation": "checked_read",
+      "id": "quantized_fixed/qps_q16/checked_read",
+      "ns": 50.74723974763407
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q16",
+      "operation": "checked_write",
+      "id": "quantized_fixed/qps_q16/checked_write",
+      "ns": 5.597482634355251
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q8",
+      "operation": "trusted_read",
+      "id": "quantized_fixed/qps_q8/trusted_read",
+      "ns": 5.356087302878295
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q16",
+      "operation": "trusted_write",
+      "id": "quantized_fixed/qps_q16/trusted_write",
+      "ns": 4.550320782335171
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q8_ot",
+      "operation": "checked_read",
+      "id": "quantized_optional/qps_q8_ot/checked_read",
+      "ns": 49.08740546829552
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q8_ot",
+      "operation": "checked_write",
+      "id": "quantized_optional/qps_q8_ot/checked_write",
+      "ns": 11.202319907797209
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q16_ot",
+      "operation": "trusted_read",
+      "id": "quantized_optional/qps_q16_ot/trusted_read",
+      "ns": 8.860598220235996
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q8_ot",
+      "operation": "trusted_write",
+      "id": "quantized_optional/qps_q8_ot/trusted_write",
+      "ns": 10.03393493180436
+    }
+  ],
+  "candidates": [
+    {
+      "workload": "arrays",
+      "profile": "heap",
+      "operation": "checked_read",
+      "id": "arrays/heap/checked_read",
+      "ns": 270.9385521885522
+    },
+    {
+      "workload": "arrays",
+      "profile": "heap",
+      "operation": "checked_write",
+      "id": "arrays/heap/checked_write",
+      "ns": 8.743972182824724
+    },
+    {
+      "workload": "arrays",
+      "profile": "heap",
+      "operation": "trusted_read",
+      "id": "arrays/heap/trusted_read",
+      "ns": 54.377697841726615
+    },
+    {
+      "workload": "arrays",
+      "profile": "heap",
+      "operation": "trusted_write",
+      "id": "arrays/heap/trusted_write",
+      "ns": 9.62467261252322
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline_shifted_bitmap",
+      "operation": "checked_read",
+      "id": "arrays/inline_shifted_bitmap/checked_read",
+      "ns": 147.1327517754292
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline_shifted_bitmap",
+      "operation": "checked_write",
+      "id": "arrays/inline_shifted_bitmap/checked_write",
+      "ns": 8.186354755241062
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline_shifted_bitmap",
+      "operation": "trusted_read",
+      "id": "arrays/inline_shifted_bitmap/trusted_read",
+      "ns": 32.933091062507785
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline_shifted_bitmap",
+      "operation": "trusted_write",
+      "id": "arrays/inline_shifted_bitmap/trusted_write",
+      "ns": 6.641980322169264
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline_shifted",
+      "operation": "checked_read",
+      "id": "arrays/inline_shifted/checked_read",
+      "ns": 132.25809502193977
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline_shifted",
+      "operation": "checked_write",
+      "id": "arrays/inline_shifted/checked_write",
+      "ns": 7.4791238247912375
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline_shifted",
+      "operation": "trusted_read",
+      "id": "arrays/inline_shifted/trusted_read",
+      "ns": 22.096860309673588
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline_shifted",
+      "operation": "trusted_write",
+      "id": "arrays/inline_shifted/trusted_write",
+      "ns": 6.627657225445129
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline",
+      "operation": "checked_read",
+      "id": "arrays/inline/checked_read",
+      "ns": 114.08677298311444
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline",
+      "operation": "checked_write",
+      "id": "arrays/inline/checked_write",
+      "ns": 7.3982860081892206
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline",
+      "operation": "trusted_read",
+      "id": "arrays/inline/trusted_read",
+      "ns": 21.71190557901839
+    },
+    {
+      "workload": "arrays",
+      "profile": "inline",
+      "operation": "trusted_write",
+      "id": "arrays/inline/trusted_write",
+      "ns": 6.712541027173277
+    },
+    {
+      "workload": "domain",
+      "profile": "aligned",
+      "operation": "checked_read",
+      "id": "domain/aligned/checked_read",
+      "ns": 4.833194902461913
+    },
+    {
+      "workload": "domain",
+      "profile": "aligned",
+      "operation": "checked_write",
+      "id": "domain/aligned/checked_write",
+      "ns": 4.7374518390047875
+    },
+    {
+      "workload": "domain",
+      "profile": "aligned",
+      "operation": "trusted_read",
+      "id": "domain/aligned/trusted_read",
+      "ns": 7.643559336802998
+    },
+    {
+      "workload": "domain",
+      "profile": "aligned",
+      "operation": "trusted_write",
+      "id": "domain/aligned/trusted_write",
+      "ns": 3.619252810885831
+    },
+    {
+      "workload": "domain",
+      "profile": "aligned",
+      "operation": "validate",
+      "id": "domain/aligned/validate",
+      "ns": 3.3859740289404856
+    },
+    {
+      "workload": "domain",
+      "profile": "aligned",
+      "operation": "validate_then_trusted",
+      "id": "domain/aligned/validate_then_trusted",
+      "ns": 7.754991637587496
+    },
+    {
+      "workload": "domain",
+      "profile": "aligned",
+      "operation": "validate_values",
+      "id": "domain/aligned/validate_values",
+      "ns": 2.3978835586821017
+    },
+    {
+      "workload": "domain",
+      "profile": "auto",
+      "operation": "checked_read",
+      "id": "domain/auto/checked_read",
+      "ns": 4.894109823415116
+    },
+    {
+      "workload": "domain",
+      "profile": "auto",
+      "operation": "checked_write",
+      "id": "domain/auto/checked_write",
+      "ns": 3.612113389049515
+    },
+    {
+      "workload": "domain",
+      "profile": "auto",
+      "operation": "trusted_read",
+      "id": "domain/auto/trusted_read",
+      "ns": 6.515674422035946
+    },
+    {
+      "workload": "domain",
+      "profile": "auto",
+      "operation": "trusted_write",
+      "id": "domain/auto/trusted_write",
+      "ns": 2.927177184537406
+    },
+    {
+      "workload": "domain",
+      "profile": "auto",
+      "operation": "validate",
+      "id": "domain/auto/validate",
+      "ns": 4.778660036861605
+    },
+    {
+      "workload": "domain",
+      "profile": "auto",
+      "operation": "validate_then_trusted",
+      "id": "domain/auto/validate_then_trusted",
+      "ns": 8.245616337673248
+    },
+    {
+      "workload": "domain",
+      "profile": "auto",
+      "operation": "validate_values",
+      "id": "domain/auto/validate_values",
+      "ns": 2.3611200027617594
+    },
+    {
+      "workload": "domain",
+      "profile": "compact",
+      "operation": "checked_read",
+      "id": "domain/compact/checked_read",
+      "ns": 4.564763884303412
+    },
+    {
+      "workload": "domain",
+      "profile": "compact",
+      "operation": "checked_write",
+      "id": "domain/compact/checked_write",
+      "ns": 4.792394987295941
+    },
+    {
+      "workload": "domain",
+      "profile": "compact",
+      "operation": "trusted_read",
+      "id": "domain/compact/trusted_read",
+      "ns": 7.1897196096143965
+    },
+    {
+      "workload": "domain",
+      "profile": "compact",
+      "operation": "trusted_write",
+      "id": "domain/compact/trusted_write",
+      "ns": 3.1911173712619676
+    },
+    {
+      "workload": "domain",
+      "profile": "compact",
+      "operation": "validate",
+      "id": "domain/compact/validate",
+      "ns": 3.0854388473965786
+    },
+    {
+      "workload": "domain",
+      "profile": "compact",
+      "operation": "validate_then_trusted",
+      "id": "domain/compact/validate_then_trusted",
+      "ns": 8.239139338847343
+    },
+    {
+      "workload": "domain",
+      "profile": "compact",
+      "operation": "validate_values",
+      "id": "domain/compact/validate_values",
+      "ns": 2.5113234536083526
+    },
+    {
+      "workload": "domain",
+      "profile": "defaults",
+      "operation": "checked_read",
+      "id": "domain/defaults/checked_read",
+      "ns": 4.772017056496464
+    },
+    {
+      "workload": "domain",
+      "profile": "defaults",
+      "operation": "checked_write",
+      "id": "domain/defaults/checked_write",
+      "ns": 3.770472638851545
+    },
+    {
+      "workload": "domain",
+      "profile": "defaults",
+      "operation": "trusted_read",
+      "id": "domain/defaults/trusted_read",
+      "ns": 6.857687095985961
+    },
+    {
+      "workload": "domain",
+      "profile": "defaults",
+      "operation": "trusted_write",
+      "id": "domain/defaults/trusted_write",
+      "ns": 2.947420315478891
+    },
+    {
+      "workload": "domain",
+      "profile": "defaults",
+      "operation": "validate",
+      "id": "domain/defaults/validate",
+      "ns": 4.650579539433641
+    },
+    {
+      "workload": "domain",
+      "profile": "defaults",
+      "operation": "validate_then_trusted",
+      "id": "domain/defaults/validate_then_trusted",
+      "ns": 8.160234200843338
+    },
+    {
+      "workload": "domain",
+      "profile": "defaults",
+      "operation": "validate_values",
+      "id": "domain/defaults/validate_values",
+      "ns": 2.421079328847358
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_32",
+      "operation": "checked_read",
+      "id": "dyn/index_dynamic_32/checked_read",
+      "ns": 113.46153846153845
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_32",
+      "operation": "checked_write",
+      "id": "dyn/index_dynamic_32/checked_write",
+      "ns": 9.375021788269613
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_32",
+      "operation": "trusted_read",
+      "id": "dyn/index_dynamic_32/trusted_read",
+      "ns": 46.054184207169286
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_32",
+      "operation": "trusted_write",
+      "id": "dyn/index_dynamic_32/trusted_write",
+      "ns": 7.2751010803742915
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_32",
+      "operation": "validate",
+      "id": "dyn/index_dynamic_32/validate",
+      "ns": 112.28563927540037
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_32",
+      "operation": "validate_then_trusted",
+      "id": "dyn/index_dynamic_32/validate_then_trusted",
+      "ns": 156.52294438758105
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_32",
+      "operation": "validate_values",
+      "id": "dyn/index_dynamic_32/validate_values",
+      "ns": 1.7684365883364168
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_64",
+      "operation": "checked_read",
+      "id": "dyn/index_dynamic_64/checked_read",
+      "ns": 105.11900880339093
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_64",
+      "operation": "checked_write",
+      "id": "dyn/index_dynamic_64/checked_write",
+      "ns": 8.767602564407358
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_64",
+      "operation": "trusted_read",
+      "id": "dyn/index_dynamic_64/trusted_read",
+      "ns": 44.643434003810576
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_64",
+      "operation": "trusted_write",
+      "id": "dyn/index_dynamic_64/trusted_write",
+      "ns": 6.877944267801327
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_64",
+      "operation": "validate",
+      "id": "dyn/index_dynamic_64/validate",
+      "ns": 101.16935483870968
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_64",
+      "operation": "validate_then_trusted",
+      "id": "dyn/index_dynamic_64/validate_then_trusted",
+      "ns": 159.60447567004945
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_dynamic_64",
+      "operation": "validate_values",
+      "id": "dyn/index_dynamic_64/validate_values",
+      "ns": 1.860475454668089
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_32",
+      "operation": "checked_read",
+      "id": "dyn/index_strict_32/checked_read",
+      "ns": 100.9585793242055
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_32",
+      "operation": "checked_write",
+      "id": "dyn/index_strict_32/checked_write",
+      "ns": 10.74687453383819
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_32",
+      "operation": "trusted_read",
+      "id": "dyn/index_strict_32/trusted_read",
+      "ns": 39.345683711880895
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_32",
+      "operation": "trusted_write",
+      "id": "dyn/index_strict_32/trusted_write",
+      "ns": 9.688928580180189
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_32",
+      "operation": "validate",
+      "id": "dyn/index_strict_32/validate",
+      "ns": 95.5979453421105
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_32",
+      "operation": "validate_then_trusted",
+      "id": "dyn/index_strict_32/validate_then_trusted",
+      "ns": 133.1653263165697
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_32",
+      "operation": "validate_values",
+      "id": "dyn/index_strict_32/validate_values",
+      "ns": 1.8824104148511975
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_64",
+      "operation": "checked_read",
+      "id": "dyn/index_strict_64/checked_read",
+      "ns": 78.89546351084812
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_64",
+      "operation": "checked_write",
+      "id": "dyn/index_strict_64/checked_write",
+      "ns": 12.186148057595034
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_64",
+      "operation": "trusted_read",
+      "id": "dyn/index_strict_64/trusted_read",
+      "ns": 36.01890717110663
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_64",
+      "operation": "trusted_write",
+      "id": "dyn/index_strict_64/trusted_write",
+      "ns": 9.67113595066351
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_64",
+      "operation": "validate",
+      "id": "dyn/index_strict_64/validate",
+      "ns": 73.14645039962389
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_64",
+      "operation": "validate_then_trusted",
+      "id": "dyn/index_strict_64/validate_then_trusted",
+      "ns": 109.65500146886016
+    },
+    {
+      "workload": "dyn",
+      "profile": "index_strict_64",
+      "operation": "validate_values",
+      "id": "dyn/index_strict_64/validate_values",
+      "ns": 1.8018811391096259
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_16",
+      "operation": "checked_read",
+      "id": "dyn/line_16/checked_read",
+      "ns": 45.96330237255584
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_16",
+      "operation": "checked_write",
+      "id": "dyn/line_16/checked_write",
+      "ns": 5.162517463683954
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_16",
+      "operation": "trusted_read",
+      "id": "dyn/line_16/trusted_read",
+      "ns": 8.135011151662612
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_16",
+      "operation": "trusted_write",
+      "id": "dyn/line_16/trusted_write",
+      "ns": 4.131867545427863
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_16",
+      "operation": "validate",
+      "id": "dyn/line_16/validate",
+      "ns": 45.14143969990022
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_16",
+      "operation": "validate_then_trusted",
+      "id": "dyn/line_16/validate_then_trusted",
+      "ns": 49.19118222811793
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_16",
+      "operation": "validate_values",
+      "id": "dyn/line_16/validate_values",
+      "ns": 1.7706158513374781
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_32",
+      "operation": "checked_read",
+      "id": "dyn/line_32/checked_read",
+      "ns": 46.35817495476698
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_32",
+      "operation": "checked_write",
+      "id": "dyn/line_32/checked_write",
+      "ns": 5.440679010271403
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_32",
+      "operation": "trusted_read",
+      "id": "dyn/line_32/trusted_read",
+      "ns": 8.252958196042469
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_32",
+      "operation": "trusted_write",
+      "id": "dyn/line_32/trusted_write",
+      "ns": 4.321482490948201
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_32",
+      "operation": "validate",
+      "id": "dyn/line_32/validate",
+      "ns": 44.961341894902375
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_32",
+      "operation": "validate_then_trusted",
+      "id": "dyn/line_32/validate_then_trusted",
+      "ns": 50.23914997431946
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_32",
+      "operation": "validate_values",
+      "id": "dyn/line_32/validate_values",
+      "ns": 1.8303684513529073
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_64",
+      "operation": "checked_read",
+      "id": "dyn/line_64/checked_read",
+      "ns": 35.081544787402734
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_64",
+      "operation": "checked_write",
+      "id": "dyn/line_64/checked_write",
+      "ns": 5.941548105989427
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_64",
+      "operation": "trusted_read",
+      "id": "dyn/line_64/trusted_read",
+      "ns": 7.584130848781428
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_64",
+      "operation": "trusted_write",
+      "id": "dyn/line_64/trusted_write",
+      "ns": 4.779940600002069
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_64",
+      "operation": "validate",
+      "id": "dyn/line_64/validate",
+      "ns": 33.92388705821541
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_64",
+      "operation": "validate_then_trusted",
+      "id": "dyn/line_64/validate_then_trusted",
+      "ns": 38.694606768931095
+    },
+    {
+      "workload": "dyn",
+      "profile": "line_64",
+      "operation": "validate_values",
+      "id": "dyn/line_64/validate_values",
+      "ns": 1.81396577543273
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_default",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_default/checked_read",
+      "ns": 4.708991149384045
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_default",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_default/checked_write",
+      "ns": 3.0863875833838694
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_default",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_default/trusted_read",
+      "ns": 2.7844912662310572
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_default",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_default/trusted_write",
+      "ns": 2.755456780313377
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point0_group0",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift0_bm0_point0_group0/checked_read",
+      "ns": 4.423454967907807
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point0_group0",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift0_bm0_point0_group0/checked_write",
+      "ns": 3.0687893223720426
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point0_group0",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift0_bm0_point0_group0/trusted_read",
+      "ns": 2.7171187960193315
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point0_group0",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift0_bm0_point0_group0/trusted_write",
+      "ns": 2.866345671839041
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point0_group1",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift0_bm0_point0_group1/checked_read",
+      "ns": 4.632585130630433
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point0_group1",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift0_bm0_point0_group1/checked_write",
+      "ns": 3.0310413371451403
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point0_group1",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift0_bm0_point0_group1/trusted_read",
+      "ns": 2.7259968367895175
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point0_group1",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift0_bm0_point0_group1/trusted_write",
+      "ns": 2.887559162760776
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point1_group0",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift0_bm0_point1_group0/checked_read",
+      "ns": 4.460745440126884
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point1_group0",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift0_bm0_point1_group0/checked_write",
+      "ns": 3.0440373481306935
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point1_group0",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift0_bm0_point1_group0/trusted_read",
+      "ns": 2.4706454075409034
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point1_group0",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift0_bm0_point1_group0/trusted_write",
+      "ns": 2.757505330547424
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift0_bm0_point1_group1/checked_read",
+      "ns": 4.41664408397215
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift0_bm0_point1_group1/checked_write",
+      "ns": 2.997823297683513
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift0_bm0_point1_group1/trusted_read",
+      "ns": 2.3631083542716356
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift0_bm0_point1_group1/trusted_write",
+      "ns": 2.7979314379721023
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point0_group0",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift0_bm1_point0_group0/checked_read",
+      "ns": 4.279657375221684
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point0_group0",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift0_bm1_point0_group0/checked_write",
+      "ns": 2.9916494840188834
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point0_group0",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift0_bm1_point0_group0/trusted_read",
+      "ns": 2.823610105195391
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point0_group0",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift0_bm1_point0_group0/trusted_write",
+      "ns": 2.7365595818211617
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point0_group1",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift0_bm1_point0_group1/checked_read",
+      "ns": 4.259453923074849
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point0_group1",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift0_bm1_point0_group1/checked_write",
+      "ns": 3.0667274237491773
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point0_group1",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift0_bm1_point0_group1/trusted_read",
+      "ns": 2.812473732873834
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point0_group1",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift0_bm1_point0_group1/trusted_write",
+      "ns": 2.8370092300007066
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point1_group0",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift0_bm1_point1_group0/checked_read",
+      "ns": 4.696114007920682
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point1_group0",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift0_bm1_point1_group0/checked_write",
+      "ns": 3.050851157208622
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point1_group0",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift0_bm1_point1_group0/trusted_read",
+      "ns": 2.4529236868186324
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point1_group0",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift0_bm1_point1_group0/trusted_write",
+      "ns": 2.8215842449005395
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point1_group1",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift0_bm1_point1_group1/checked_read",
+      "ns": 4.871536929441783
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point1_group1",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift0_bm1_point1_group1/checked_write",
+      "ns": 3.087480591463855
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point1_group1",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift0_bm1_point1_group1/trusted_read",
+      "ns": 2.4589432457774327
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift0_bm1_point1_group1",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift0_bm1_point1_group1/trusted_write",
+      "ns": 2.841641362385837
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift1_bm0_point0_group0/checked_read",
+      "ns": 4.441984840971878
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift1_bm0_point0_group0/checked_write",
+      "ns": 3.0823485450044377
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift1_bm0_point0_group0/trusted_read",
+      "ns": 2.723081583673854
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift1_bm0_point0_group0/trusted_write",
+      "ns": 2.8158784700670942
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point0_group1",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift1_bm0_point0_group1/checked_read",
+      "ns": 5.18794980027364
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point0_group1",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift1_bm0_point0_group1/checked_write",
+      "ns": 3.1638527228085964
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point0_group1",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift1_bm0_point0_group1/trusted_read",
+      "ns": 2.7174978269391374
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point0_group1",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift1_bm0_point0_group1/trusted_write",
+      "ns": 2.9015483785220626
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point1_group0",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift1_bm0_point1_group0/checked_read",
+      "ns": 4.426062880585757
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point1_group0",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift1_bm0_point1_group0/checked_write",
+      "ns": 3.1149181859725945
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point1_group0",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift1_bm0_point1_group0/trusted_read",
+      "ns": 2.642993084586507
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point1_group0",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift1_bm0_point1_group0/trusted_write",
+      "ns": 2.6915886927554586
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift1_bm0_point1_group1/checked_read",
+      "ns": 4.774313638891179
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift1_bm0_point1_group1/checked_write",
+      "ns": 2.9610245752406845
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift1_bm0_point1_group1/trusted_read",
+      "ns": 2.504239387485124
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift1_bm0_point1_group1/trusted_write",
+      "ns": 2.885961983714739
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point0_group0",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift1_bm1_point0_group0/checked_read",
+      "ns": 4.255091358964599
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point0_group0",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift1_bm1_point0_group0/checked_write",
+      "ns": 3.1093241210916815
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point0_group0",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift1_bm1_point0_group0/trusted_read",
+      "ns": 2.8637281860978367
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point0_group0",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift1_bm1_point0_group0/trusted_write",
+      "ns": 2.718828463873236
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point0_group1",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift1_bm1_point0_group1/checked_read",
+      "ns": 4.160436477809375
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point0_group1",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift1_bm1_point0_group1/checked_write",
+      "ns": 3.314916081999131
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point0_group1",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift1_bm1_point0_group1/trusted_read",
+      "ns": 2.8401440336281905
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point0_group1",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift1_bm1_point0_group1/trusted_write",
+      "ns": 2.841063455607845
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point1_group0",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift1_bm1_point1_group0/checked_read",
+      "ns": 4.6999125597663305
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point1_group0",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift1_bm1_point1_group0/checked_write",
+      "ns": 3.0403352085431683
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point1_group0",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift1_bm1_point1_group0/trusted_read",
+      "ns": 2.542325888353974
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point1_group0",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift1_bm1_point1_group0/trusted_write",
+      "ns": 2.7844420833761756
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point1_group1",
+      "operation": "checked_read",
+      "id": "fixed/aggressive_shift1_bm1_point1_group1/checked_read",
+      "ns": 4.862961876708194
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point1_group1",
+      "operation": "checked_write",
+      "id": "fixed/aggressive_shift1_bm1_point1_group1/checked_write",
+      "ns": 3.231586932630494
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point1_group1",
+      "operation": "trusted_read",
+      "id": "fixed/aggressive_shift1_bm1_point1_group1/trusted_read",
+      "ns": 2.457104100005526
+    },
+    {
+      "workload": "fixed",
+      "profile": "aggressive_shift1_bm1_point1_group1",
+      "operation": "trusted_write",
+      "id": "fixed/aggressive_shift1_bm1_point1_group1/trusted_write",
+      "ns": 2.699044796254517
+    },
+    {
+      "workload": "fixed",
+      "profile": "aligned",
+      "operation": "checked_read",
+      "id": "fixed/aligned/checked_read",
+      "ns": 80.37221012520413
+    },
+    {
+      "workload": "fixed",
+      "profile": "aligned",
+      "operation": "checked_write",
+      "id": "fixed/aligned/checked_write",
+      "ns": 3.304959903727449
+    },
+    {
+      "workload": "fixed",
+      "profile": "aligned",
+      "operation": "trusted_read",
+      "id": "fixed/aligned/trusted_read",
+      "ns": 2.7414426499087963
+    },
+    {
+      "workload": "fixed",
+      "profile": "aligned",
+      "operation": "trusted_write",
+      "id": "fixed/aligned/trusted_write",
+      "ns": 3.395738871236868
+    },
+    {
+      "workload": "fixed",
+      "profile": "auto",
+      "operation": "checked_read",
+      "id": "fixed/auto/checked_read",
+      "ns": 4.563027240939197
+    },
+    {
+      "workload": "fixed",
+      "profile": "auto",
+      "operation": "checked_write",
+      "id": "fixed/auto/checked_write",
+      "ns": 3.1050820383371462
+    },
+    {
+      "workload": "fixed",
+      "profile": "auto",
+      "operation": "trusted_read",
+      "id": "fixed/auto/trusted_read",
+      "ns": 2.7401621357346704
+    },
+    {
+      "workload": "fixed",
+      "profile": "auto",
+      "operation": "trusted_write",
+      "id": "fixed/auto/trusted_write",
+      "ns": 2.691551119657654
+    },
+    {
+      "workload": "fixed",
+      "profile": "auto",
+      "operation": "validate",
+      "id": "fixed/auto/validate",
+      "ns": 3.7356384689009525
+    },
+    {
+      "workload": "fixed",
+      "profile": "auto",
+      "operation": "validate_then_trusted",
+      "id": "fixed/auto/validate_then_trusted",
+      "ns": 4.480656208061456
+    },
+    {
+      "workload": "fixed",
+      "profile": "auto",
+      "operation": "validate_values",
+      "id": "fixed/auto/validate_values",
+      "ns": 2.242592048308662
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact_group_native",
+      "operation": "checked_read",
+      "id": "fixed/compact_group_native/checked_read",
+      "ns": 50.798513625103226
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact_group_native",
+      "operation": "checked_write",
+      "id": "fixed/compact_group_native/checked_write",
+      "ns": 3.7916985295039427
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact_group_native",
+      "operation": "trusted_read",
+      "id": "fixed/compact_group_native/trusted_read",
+      "ns": 3.4231542806179682
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact_group_native",
+      "operation": "trusted_write",
+      "id": "fixed/compact_group_native/trusted_write",
+      "ns": 3.283828649656674
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact_group_native",
+      "operation": "validate",
+      "id": "fixed/compact_group_native/validate",
+      "ns": 45.96370433465834
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact_group_native",
+      "operation": "validate_then_trusted",
+      "id": "fixed/compact_group_native/validate_then_trusted",
+      "ns": 46.16761189454323
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact_group_native",
+      "operation": "validate_values",
+      "id": "fixed/compact_group_native/validate_values",
+      "ns": 2.336620033262987
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact_group_portable",
+      "operation": "checked_read",
+      "id": "fixed/compact_group_portable/checked_read",
+      "ns": 52.0193838108231
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact_group_portable",
+      "operation": "checked_write",
+      "id": "fixed/compact_group_portable/checked_write",
+      "ns": 4.308807966786965
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact_group_portable",
+      "operation": "trusted_read",
+      "id": "fixed/compact_group_portable/trusted_read",
+      "ns": 3.384595394994901
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact_group_portable",
+      "operation": "trusted_write",
+      "id": "fixed/compact_group_portable/trusted_write",
+      "ns": 3.4851643467531987
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact",
+      "operation": "checked_read",
+      "id": "fixed/compact/checked_read",
+      "ns": 51.26069397948882
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact",
+      "operation": "checked_write",
+      "id": "fixed/compact/checked_write",
+      "ns": 4.402052882385458
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact",
+      "operation": "trusted_read",
+      "id": "fixed/compact/trusted_read",
+      "ns": 3.4785374929399646
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact",
+      "operation": "trusted_write",
+      "id": "fixed/compact/trusted_write",
+      "ns": 3.539406807630531
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact",
+      "operation": "validate",
+      "id": "fixed/compact/validate",
+      "ns": 43.751017014241455
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact",
+      "operation": "validate_then_trusted",
+      "id": "fixed/compact/validate_then_trusted",
+      "ns": 45.79923399357978
+    },
+    {
+      "workload": "fixed",
+      "profile": "compact",
+      "operation": "validate_values",
+      "id": "fixed/compact/validate_values",
+      "ns": 2.1267609962323877
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_always",
+      "operation": "checked_read",
+      "id": "fixed/inline_always/checked_read",
+      "ns": 3.9520104085870846
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_always",
+      "operation": "checked_write",
+      "id": "fixed/inline_always/checked_write",
+      "ns": 4.276342533987876
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_always",
+      "operation": "trusted_read",
+      "id": "fixed/inline_always/trusted_read",
+      "ns": 3.3650212121877656
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_always",
+      "operation": "trusted_write",
+      "id": "fixed/inline_always/trusted_write",
+      "ns": 3.5260755936766195
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_hint",
+      "operation": "checked_read",
+      "id": "fixed/inline_hint/checked_read",
+      "ns": 52.991149043780624
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_hint",
+      "operation": "checked_write",
+      "id": "fixed/inline_hint/checked_write",
+      "ns": 4.300730168756937
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_hint",
+      "operation": "trusted_read",
+      "id": "fixed/inline_hint/trusted_read",
+      "ns": 3.4063511265111734
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_hint",
+      "operation": "trusted_write",
+      "id": "fixed/inline_hint/trusted_write",
+      "ns": 3.5152810946372153
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_never",
+      "operation": "checked_read",
+      "id": "fixed/inline_never/checked_read",
+      "ns": 52.04951527448991
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_never",
+      "operation": "checked_write",
+      "id": "fixed/inline_never/checked_write",
+      "ns": 8.410550711002518
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_never",
+      "operation": "trusted_read",
+      "id": "fixed/inline_never/trusted_read",
+      "ns": 4.882522553385863
+    },
+    {
+      "workload": "fixed",
+      "profile": "inline_never",
+      "operation": "trusted_write",
+      "id": "fixed/inline_never/trusted_write",
+      "ns": 4.410590000416764
+    },
+    {
+      "workload": "fixed",
+      "profile": "loyal_cache_32",
+      "operation": "cached_write",
+      "id": "fixed/loyal_cache_32/cached_write",
+      "ns": 3.150777569440244
+    },
+    {
+      "workload": "fixed",
+      "profile": "loyal_cache_32",
+      "operation": "checked_read",
+      "id": "fixed/loyal_cache_32/checked_read",
+      "ns": 4.605012257281895
+    },
+    {
+      "workload": "fixed",
+      "profile": "loyal_cache_32",
+      "operation": "checked_write",
+      "id": "fixed/loyal_cache_32/checked_write",
+      "ns": 3.1555152606727352
+    },
+    {
+      "workload": "fixed",
+      "profile": "loyal_cache_32",
+      "operation": "trusted_read",
+      "id": "fixed/loyal_cache_32/trusted_read",
+      "ns": 2.7250626432297897
+    },
+    {
+      "workload": "fixed",
+      "profile": "loyal_cache_32",
+      "operation": "trusted_write",
+      "id": "fixed/loyal_cache_32/trusted_write",
+      "ns": 2.714439800128649
+    },
+    {
+      "workload": "fixed",
+      "profile": "rt_slots_1",
+      "operation": "checked_read",
+      "id": "fixed/rt_slots_1/checked_read",
+      "ns": 4.351012933862567
+    },
+    {
+      "workload": "fixed",
+      "profile": "rt_slots_1",
+      "operation": "checked_write",
+      "id": "fixed/rt_slots_1/checked_write",
+      "ns": 3.148877491774724
+    },
+    {
+      "workload": "fixed",
+      "profile": "rt_slots_1",
+      "operation": "rt_lease_write",
+      "id": "fixed/rt_slots_1/rt_lease_write",
+      "ns": 17.419697817571347
+    },
+    {
+      "workload": "fixed",
+      "profile": "rt_slots_1",
+      "operation": "trusted_read",
+      "id": "fixed/rt_slots_1/trusted_read",
+      "ns": 2.788635697573303
+    },
+    {
+      "workload": "fixed",
+      "profile": "rt_slots_1",
+      "operation": "trusted_write",
+      "id": "fixed/rt_slots_1/trusted_write",
+      "ns": 2.7804611827799883
+    },
+    {
+      "workload": "fixed",
+      "profile": "rt_slots_16",
+      "operation": "checked_read",
+      "id": "fixed/rt_slots_16/checked_read",
+      "ns": 4.327014413744683
+    },
+    {
+      "workload": "fixed",
+      "profile": "rt_slots_16",
+      "operation": "checked_write",
+      "id": "fixed/rt_slots_16/checked_write",
+      "ns": 3.157863233959878
+    },
+    {
+      "workload": "fixed",
+      "profile": "rt_slots_16",
+      "operation": "rt_lease_write",
+      "id": "fixed/rt_slots_16/rt_lease_write",
+      "ns": 18.58789686049548
+    },
+    {
+      "workload": "fixed",
+      "profile": "rt_slots_16",
+      "operation": "trusted_read",
+      "id": "fixed/rt_slots_16/trusted_read",
+      "ns": 2.810406984065623
+    },
+    {
+      "workload": "fixed",
+      "profile": "rt_slots_16",
+      "operation": "trusted_write",
+      "id": "fixed/rt_slots_16/trusted_write",
+      "ns": 2.7101040191532775
+    },
+    {
+      "workload": "layout",
+      "profile": "auto_wire_v1",
+      "operation": "checked_read",
+      "id": "layout/auto_wire_v1/checked_read",
+      "ns": 3.931937839210992
+    },
+    {
+      "workload": "layout",
+      "profile": "auto_wire_v1",
+      "operation": "checked_write",
+      "id": "layout/auto_wire_v1/checked_write",
+      "ns": 3.325424901674187
+    },
+    {
+      "workload": "layout",
+      "profile": "auto_wire_v1",
+      "operation": "trusted_read",
+      "id": "layout/auto_wire_v1/trusted_read",
+      "ns": 3.097374349413501
+    },
+    {
+      "workload": "layout",
+      "profile": "auto_wire_v1",
+      "operation": "trusted_write",
+      "id": "layout/auto_wire_v1/trusted_write",
+      "ns": 3.2321167952587437
+    },
+    {
+      "workload": "layout",
+      "profile": "auto",
+      "operation": "checked_read",
+      "id": "layout/auto/checked_read",
+      "ns": 3.600691627158099
+    },
+    {
+      "workload": "layout",
+      "profile": "auto",
+      "operation": "checked_write",
+      "id": "layout/auto/checked_write",
+      "ns": 3.609898608008249
+    },
+    {
+      "workload": "layout",
+      "profile": "auto",
+      "operation": "trusted_read",
+      "id": "layout/auto/trusted_read",
+      "ns": 3.318781807763009
+    },
+    {
+      "workload": "layout",
+      "profile": "auto",
+      "operation": "trusted_write",
+      "id": "layout/auto/trusted_write",
+      "ns": 3.3385846871980016
+    },
+    {
+      "workload": "layout",
+      "profile": "declared",
+      "operation": "checked_read",
+      "id": "layout/declared/checked_read",
+      "ns": 3.660160736674154
+    },
+    {
+      "workload": "layout",
+      "profile": "declared",
+      "operation": "checked_write",
+      "id": "layout/declared/checked_write",
+      "ns": 3.8158031980630827
+    },
+    {
+      "workload": "layout",
+      "profile": "declared",
+      "operation": "trusted_read",
+      "id": "layout/declared/trusted_read",
+      "ns": 3.0516033933897972
+    },
+    {
+      "workload": "layout",
+      "profile": "declared",
+      "operation": "trusted_write",
+      "id": "layout/declared/trusted_write",
+      "ns": 3.387494256242153
+    },
+    {
+      "workload": "native_region",
+      "profile": "fields",
+      "operation": "checked_read",
+      "id": "native_region/fields/checked_read",
+      "ns": 4.559875494381542
+    },
+    {
+      "workload": "native_region",
+      "profile": "fields",
+      "operation": "checked_write",
+      "id": "native_region/fields/checked_write",
+      "ns": 4.919473438789053
+    },
+    {
+      "workload": "native_region",
+      "profile": "fields",
+      "operation": "trusted_read",
+      "id": "native_region/fields/trusted_read",
+      "ns": 3.1811229172190156
+    },
+    {
+      "workload": "native_region",
+      "profile": "fields",
+      "operation": "trusted_write",
+      "id": "native_region/fields/trusted_write",
+      "ns": 4.848204761572456
+    },
+    {
+      "workload": "native_region",
+      "profile": "named_region",
+      "operation": "checked_read",
+      "id": "native_region/named_region/checked_read",
+      "ns": 42.98378236361899
+    },
+    {
+      "workload": "native_region",
+      "profile": "named_region",
+      "operation": "checked_write",
+      "id": "native_region/named_region/checked_write",
+      "ns": 4.955733250665597
+    },
+    {
+      "workload": "native_region",
+      "profile": "named_region",
+      "operation": "trusted_read",
+      "id": "native_region/named_region/trusted_read",
+      "ns": 2.8208882477309016
+    },
+    {
+      "workload": "native_region",
+      "profile": "named_region",
+      "operation": "trusted_write",
+      "id": "native_region/named_region/trusted_write",
+      "ns": 5.2073371933903685
+    },
+    {
+      "workload": "native",
+      "profile": "fields",
+      "operation": "checked_read",
+      "id": "native/fields/checked_read",
+      "ns": 4.5342298884178724
+    },
+    {
+      "workload": "native",
+      "profile": "fields",
+      "operation": "checked_write",
+      "id": "native/fields/checked_write",
+      "ns": 4.473604528577785
+    },
+    {
+      "workload": "native",
+      "profile": "fields",
+      "operation": "trusted_read",
+      "id": "native/fields/trusted_read",
+      "ns": 2.9743936177057195
+    },
+    {
+      "workload": "native",
+      "profile": "fields",
+      "operation": "trusted_write",
+      "id": "native/fields/trusted_write",
+      "ns": 4.259866714418852
+    },
+    {
+      "workload": "native",
+      "profile": "transmute_copy",
+      "operation": "checked_read",
+      "id": "native/transmute_copy/checked_read",
+      "ns": 3.220935180336081
+    },
+    {
+      "workload": "native",
+      "profile": "transmute_copy",
+      "operation": "checked_write",
+      "id": "native/transmute_copy/checked_write",
+      "ns": 4.442916143720265
+    },
+    {
+      "workload": "native",
+      "profile": "transmute_copy",
+      "operation": "transmute_copy_read",
+      "id": "native/transmute_copy/transmute_copy_read",
+      "ns": 3.092678118972885
+    },
+    {
+      "workload": "native",
+      "profile": "transmute_copy",
+      "operation": "trusted_read",
+      "id": "native/transmute_copy/trusted_read",
+      "ns": 2.5352926438932606
+    },
+    {
+      "workload": "native",
+      "profile": "transmute_copy",
+      "operation": "trusted_write",
+      "id": "native/transmute_copy/trusted_write",
+      "ns": 4.327891032951017
+    },
+    {
+      "workload": "native",
+      "profile": "transmute_overlay",
+      "operation": "checked_read",
+      "id": "native/transmute_overlay/checked_read",
+      "ns": 3.563714426772931
+    },
+    {
+      "workload": "native",
+      "profile": "transmute_overlay",
+      "operation": "checked_write",
+      "id": "native/transmute_overlay/checked_write",
+      "ns": 4.516875529533758
+    },
+    {
+      "workload": "native",
+      "profile": "transmute_overlay",
+      "operation": "trusted_read",
+      "id": "native/transmute_overlay/trusted_read",
+      "ns": 2.6134906626191494
+    },
+    {
+      "workload": "native",
+      "profile": "transmute_overlay",
+      "operation": "trusted_write",
+      "id": "native/transmute_overlay/trusted_write",
+      "ns": 4.421881842151848
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "heap_string",
+      "operation": "checked_read",
+      "id": "noise_1024/heap_string/checked_read",
+      "ns": 150.55912776069331
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "heap_string",
+      "operation": "checked_write",
+      "id": "noise_1024/heap_string/checked_write",
+      "ns": 18.09855603333864
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "heap_string",
+      "operation": "trusted_read",
+      "id": "noise_1024/heap_string/trusted_read",
+      "ns": 62.947312020003565
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "heap_string",
+      "operation": "trusted_write",
+      "id": "noise_1024/heap_string/trusted_write",
+      "ns": 19.758822498444957
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "qsl_lz_heap",
+      "operation": "checked_read",
+      "id": "noise_1024/qsl_lz_heap/checked_read",
+      "ns": 133.00404254570407
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "qsl_lz_heap",
+      "operation": "checked_write",
+      "id": "noise_1024/qsl_lz_heap/checked_write",
+      "ns": 20.72702793672164
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "qsl_lz_heap",
+      "operation": "trusted_read",
+      "id": "noise_1024/qsl_lz_heap/trusted_read",
+      "ns": 59.69352193521935
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "qsl_lz_heap",
+      "operation": "trusted_write",
+      "id": "noise_1024/qsl_lz_heap/trusted_write",
+      "ns": 23.620122319892097
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "checked_read",
+      "id": "noise_1024/qsl_lz_inline/checked_read",
+      "ns": 102.16396996615904
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "checked_write",
+      "id": "noise_1024/qsl_lz_inline/checked_write",
+      "ns": 19.969153469439675
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "trusted_read",
+      "id": "noise_1024/qsl_lz_inline/trusted_read",
+      "ns": 37.80247503717867
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "trusted_write",
+      "id": "noise_1024/qsl_lz_inline/trusted_write",
+      "ns": 21.49908612450728
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "validate",
+      "id": "noise_1024/qsl_lz_inline/validate",
+      "ns": 74.22558684616563
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "validate_then_trusted",
+      "id": "noise_1024/qsl_lz_inline/validate_then_trusted",
+      "ns": 102.17367601246107
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "validate_values",
+      "id": "noise_1024/qsl_lz_inline/validate_values",
+      "ns": 2.72167999169349
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "shifted_stack_string",
+      "operation": "checked_read",
+      "id": "noise_1024/shifted_stack_string/checked_read",
+      "ns": 118.39977709190671
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "shifted_stack_string",
+      "operation": "checked_write",
+      "id": "noise_1024/shifted_stack_string/checked_write",
+      "ns": 18.145154595815093
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "shifted_stack_string",
+      "operation": "trusted_read",
+      "id": "noise_1024/shifted_stack_string/trusted_read",
+      "ns": 29.90632036419771
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "shifted_stack_string",
+      "operation": "trusted_write",
+      "id": "noise_1024/shifted_stack_string/trusted_write",
+      "ns": 18.125696164379974
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "stack_string",
+      "operation": "checked_read",
+      "id": "noise_1024/stack_string/checked_read",
+      "ns": 107.51692661105066
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "stack_string",
+      "operation": "checked_write",
+      "id": "noise_1024/stack_string/checked_write",
+      "ns": 17.459583474564717
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "stack_string",
+      "operation": "trusted_read",
+      "id": "noise_1024/stack_string/trusted_read",
+      "ns": 26.98604427333975
+    },
+    {
+      "workload": "noise_1024",
+      "profile": "stack_string",
+      "operation": "trusted_write",
+      "id": "noise_1024/stack_string/trusted_write",
+      "ns": 17.846922343142587
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_default",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_default/checked_read",
+      "ns": 76.65789473684211
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_default",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_default/checked_write",
+      "ns": 8.412354179094585
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_default",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_default/trusted_read",
+      "ns": 20.228233242700085
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_default",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_default/trusted_write",
+      "ns": 7.391608391608392
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point0_group0",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift0_bm0_point0_group0/checked_read",
+      "ns": 78.19708575453424
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point0_group0",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift0_bm0_point0_group0/checked_write",
+      "ns": 7.568391690392961
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point0_group0",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift0_bm0_point0_group0/trusted_read",
+      "ns": 19.590322245518596
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point0_group0",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift0_bm0_point0_group0/trusted_write",
+      "ns": 7.098975111948748
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point0_group1",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift0_bm0_point0_group1/checked_read",
+      "ns": 82.17079530638853
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point0_group1",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift0_bm0_point0_group1/checked_write",
+      "ns": 7.743631531161755
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point0_group1",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift0_bm0_point0_group1/trusted_read",
+      "ns": 19.343663454082197
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point0_group1",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift0_bm0_point0_group1/trusted_write",
+      "ns": 7.2233564985377035
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point1_group0",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift0_bm0_point1_group0/checked_read",
+      "ns": 77.99715598337345
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point1_group0",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift0_bm0_point1_group0/checked_write",
+      "ns": 7.7202681461744325
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point1_group0",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift0_bm0_point1_group0/trusted_read",
+      "ns": 18.2935270146423
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point1_group0",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift0_bm0_point1_group0/trusted_write",
+      "ns": 7.0769416481097345
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift0_bm0_point1_group1/checked_read",
+      "ns": 77.58457298582084
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift0_bm0_point1_group1/checked_write",
+      "ns": 7.99260238428379
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift0_bm0_point1_group1/trusted_read",
+      "ns": 18.207994988460015
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift0_bm0_point1_group1/trusted_write",
+      "ns": 7.028053060087871
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point0_group0",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift0_bm1_point0_group0/checked_read",
+      "ns": 117.04926967516894
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point0_group0",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift0_bm1_point0_group0/checked_write",
+      "ns": 8.899463224991614
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point0_group0",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift0_bm1_point0_group0/trusted_read",
+      "ns": 20.43501335342053
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point0_group0",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift0_bm1_point0_group0/trusted_write",
+      "ns": 8.522249381383519
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point0_group1",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift0_bm1_point0_group1/checked_read",
+      "ns": 121.73970026782152
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point0_group1",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift0_bm1_point0_group1/checked_write",
+      "ns": 8.35859819963317
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point0_group1",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift0_bm1_point0_group1/trusted_read",
+      "ns": 19.6506294753592
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point0_group1",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift0_bm1_point0_group1/trusted_write",
+      "ns": 8.32478686145646
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point1_group0",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift0_bm1_point1_group0/checked_read",
+      "ns": 113.71924303616967
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point1_group0",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift0_bm1_point1_group0/checked_write",
+      "ns": 8.872568712128821
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point1_group0",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift0_bm1_point1_group0/trusted_read",
+      "ns": 21.003222307299644
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point1_group0",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift0_bm1_point1_group0/trusted_write",
+      "ns": 8.272136661425797
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point1_group1",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift0_bm1_point1_group1/checked_read",
+      "ns": 114.12082838675636
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point1_group1",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift0_bm1_point1_group1/checked_write",
+      "ns": 8.393214782493262
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point1_group1",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift0_bm1_point1_group1/trusted_read",
+      "ns": 19.55629657415242
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift0_bm1_point1_group1",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift0_bm1_point1_group1/trusted_write",
+      "ns": 8.182148579074582
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift1_bm0_point0_group0/checked_read",
+      "ns": 88.06130790190736
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift1_bm0_point0_group0/checked_write",
+      "ns": 7.508590535155772
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift1_bm0_point0_group0/trusted_read",
+      "ns": 20.543077557609593
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift1_bm0_point0_group0/trusted_write",
+      "ns": 7.4526153640077695
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point0_group1",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift1_bm0_point0_group1/checked_read",
+      "ns": 92.14089500534513
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point0_group1",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift1_bm0_point0_group1/checked_write",
+      "ns": 7.758266453558231
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point0_group1",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift1_bm0_point0_group1/trusted_read",
+      "ns": 19.80487311344781
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point0_group1",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift1_bm0_point0_group1/trusted_write",
+      "ns": 7.73856902803573
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point1_group0",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift1_bm0_point1_group0/checked_read",
+      "ns": 94.11477987421384
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point1_group0",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift1_bm0_point1_group0/checked_write",
+      "ns": 8.174463962887117
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point1_group0",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift1_bm0_point1_group0/trusted_read",
+      "ns": 20.29319243520193
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point1_group0",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift1_bm0_point1_group0/trusted_write",
+      "ns": 7.808744029811578
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift1_bm0_point1_group1/checked_read",
+      "ns": 92.81521023695214
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift1_bm0_point1_group1/checked_write",
+      "ns": 7.759064123307255
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift1_bm0_point1_group1/trusted_read",
+      "ns": 20.595877996727854
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift1_bm0_point1_group1/trusted_write",
+      "ns": 8.184662605881794
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point0_group0",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift1_bm1_point0_group0/checked_read",
+      "ns": 141.13943488943488
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point0_group0",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift1_bm1_point0_group0/checked_write",
+      "ns": 8.741123847250268
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point0_group0",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift1_bm1_point0_group0/trusted_read",
+      "ns": 19.654536689597666
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point0_group0",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift1_bm1_point0_group0/trusted_write",
+      "ns": 8.795544930841887
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point0_group1",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift1_bm1_point0_group1/checked_read",
+      "ns": 145.14608968155216
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point0_group1",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift1_bm1_point0_group1/checked_write",
+      "ns": 8.864642488912164
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point0_group1",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift1_bm1_point0_group1/trusted_read",
+      "ns": 20.030261334361175
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point0_group1",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift1_bm1_point0_group1/trusted_write",
+      "ns": 8.386073450046071
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point1_group0",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift1_bm1_point1_group0/checked_read",
+      "ns": 143.97384622298117
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point1_group0",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift1_bm1_point1_group0/checked_write",
+      "ns": 9.243340128531782
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point1_group0",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift1_bm1_point1_group0/trusted_read",
+      "ns": 20.380851792993013
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point1_group0",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift1_bm1_point1_group0/trusted_write",
+      "ns": 8.816343907902704
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point1_group1",
+      "operation": "checked_read",
+      "id": "optional_text/aggressive_shift1_bm1_point1_group1/checked_read",
+      "ns": 143.4630911903639
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point1_group1",
+      "operation": "checked_write",
+      "id": "optional_text/aggressive_shift1_bm1_point1_group1/checked_write",
+      "ns": 8.622468973971204
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point1_group1",
+      "operation": "trusted_read",
+      "id": "optional_text/aggressive_shift1_bm1_point1_group1/trusted_read",
+      "ns": 18.99463762335273
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aggressive_shift1_bm1_point1_group1",
+      "operation": "trusted_write",
+      "id": "optional_text/aggressive_shift1_bm1_point1_group1/trusted_write",
+      "ns": 9.104596329753992
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aligned",
+      "operation": "checked_read",
+      "id": "optional_text/aligned/checked_read",
+      "ns": 105.4284866347374
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aligned",
+      "operation": "checked_write",
+      "id": "optional_text/aligned/checked_write",
+      "ns": 10.282091097308488
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aligned",
+      "operation": "trusted_read",
+      "id": "optional_text/aligned/trusted_read",
+      "ns": 49.375341903719914
+    },
+    {
+      "workload": "optional_text",
+      "profile": "aligned",
+      "operation": "trusted_write",
+      "id": "optional_text/aligned/trusted_write",
+      "ns": 7.661124181913724
+    },
+    {
+      "workload": "optional_text",
+      "profile": "auto",
+      "operation": "checked_read",
+      "id": "optional_text/auto/checked_read",
+      "ns": 101.15633004379397
+    },
+    {
+      "workload": "optional_text",
+      "profile": "auto",
+      "operation": "checked_write",
+      "id": "optional_text/auto/checked_write",
+      "ns": 7.513311569281262
+    },
+    {
+      "workload": "optional_text",
+      "profile": "auto",
+      "operation": "trusted_read",
+      "id": "optional_text/auto/trusted_read",
+      "ns": 43.40658505386922
+    },
+    {
+      "workload": "optional_text",
+      "profile": "auto",
+      "operation": "trusted_write",
+      "id": "optional_text/auto/trusted_write",
+      "ns": 7.306531547058238
+    },
+    {
+      "workload": "optional_text",
+      "profile": "compact",
+      "operation": "checked_read",
+      "id": "optional_text/compact/checked_read",
+      "ns": 90.50909482294693
+    },
+    {
+      "workload": "optional_text",
+      "profile": "compact",
+      "operation": "checked_write",
+      "id": "optional_text/compact/checked_write",
+      "ns": 11.988927184605945
+    },
+    {
+      "workload": "optional_text",
+      "profile": "compact",
+      "operation": "trusted_read",
+      "id": "optional_text/compact/trusted_read",
+      "ns": 43.62073863636364
+    },
+    {
+      "workload": "optional_text",
+      "profile": "compact",
+      "operation": "trusted_write",
+      "id": "optional_text/compact/trusted_write",
+      "ns": 10.114044453071921
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "heap_string",
+      "operation": "checked_read",
+      "id": "periodic_1024/heap_string/checked_read",
+      "ns": 709.7508182874037
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "heap_string",
+      "operation": "checked_write",
+      "id": "periodic_1024/heap_string/checked_write",
+      "ns": 17.697440398951734
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "heap_string",
+      "operation": "trusted_read",
+      "id": "periodic_1024/heap_string/trusted_read",
+      "ns": 58.97309459977021
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "heap_string",
+      "operation": "trusted_write",
+      "id": "periodic_1024/heap_string/trusted_write",
+      "ns": 18.015299304587543
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "qsl_lz_heap",
+      "operation": "checked_read",
+      "id": "periodic_1024/qsl_lz_heap/checked_read",
+      "ns": 1603.2475943745376
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "qsl_lz_heap",
+      "operation": "checked_write",
+      "id": "periodic_1024/qsl_lz_heap/checked_write",
+      "ns": 70.0689712220571
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "qsl_lz_heap",
+      "operation": "trusted_read",
+      "id": "periodic_1024/qsl_lz_heap/trusted_read",
+      "ns": 140.78453453453454
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "qsl_lz_heap",
+      "operation": "trusted_write",
+      "id": "periodic_1024/qsl_lz_heap/trusted_write",
+      "ns": 70.1191962543894
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "checked_read",
+      "id": "periodic_1024/qsl_lz_inline/checked_read",
+      "ns": 1905.5059523809523
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "checked_write",
+      "id": "periodic_1024/qsl_lz_inline/checked_write",
+      "ns": 78.95024451689389
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "trusted_read",
+      "id": "periodic_1024/qsl_lz_inline/trusted_read",
+      "ns": 120.66227244193345
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "trusted_write",
+      "id": "periodic_1024/qsl_lz_inline/trusted_write",
+      "ns": 73.48722415795586
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "validate",
+      "id": "periodic_1024/qsl_lz_inline/validate",
+      "ns": 1963.1856378915204
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "validate_then_trusted",
+      "id": "periodic_1024/qsl_lz_inline/validate_then_trusted",
+      "ns": 1998.6503067484664
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "qsl_lz_inline",
+      "operation": "validate_values",
+      "id": "periodic_1024/qsl_lz_inline/validate_values",
+      "ns": 2.579537559841853
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "shifted_stack_string",
+      "operation": "checked_read",
+      "id": "periodic_1024/shifted_stack_string/checked_read",
+      "ns": 693.3406916850626
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "shifted_stack_string",
+      "operation": "checked_write",
+      "id": "periodic_1024/shifted_stack_string/checked_write",
+      "ns": 19.237891544573337
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "shifted_stack_string",
+      "operation": "trusted_read",
+      "id": "periodic_1024/shifted_stack_string/trusted_read",
+      "ns": 29.980560093644442
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "shifted_stack_string",
+      "operation": "trusted_write",
+      "id": "periodic_1024/shifted_stack_string/trusted_write",
+      "ns": 18.12144561301003
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "stack_string",
+      "operation": "checked_read",
+      "id": "periodic_1024/stack_string/checked_read",
+      "ns": 718.0506288294099
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "stack_string",
+      "operation": "checked_write",
+      "id": "periodic_1024/stack_string/checked_write",
+      "ns": 17.69229306870461
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "stack_string",
+      "operation": "trusted_read",
+      "id": "periodic_1024/stack_string/trusted_read",
+      "ns": 27.825407502997354
+    },
+    {
+      "workload": "periodic_1024",
+      "profile": "stack_string",
+      "operation": "trusted_write",
+      "id": "periodic_1024/stack_string/trusted_write",
+      "ns": 20.09964958388086
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_default",
+      "operation": "checked_read",
+      "id": "presence/aggressive_default/checked_read",
+      "ns": 57.02344175904052
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_default",
+      "operation": "checked_write",
+      "id": "presence/aggressive_default/checked_write",
+      "ns": 10.920118193220079
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_default",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_default/trusted_read",
+      "ns": 7.204816312097407
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_default",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_default/trusted_write",
+      "ns": 9.866139446178762
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point0_group0",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift0_bm0_point0_group0/checked_read",
+      "ns": 62.38108817155241
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point0_group0",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift0_bm0_point0_group0/checked_write",
+      "ns": 11.058266686564878
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point0_group0",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift0_bm0_point0_group0/trusted_read",
+      "ns": 7.41392232830589
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point0_group0",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift0_bm0_point0_group0/trusted_write",
+      "ns": 9.615886200393243
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point0_group1",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift0_bm0_point0_group1/checked_read",
+      "ns": 45.37007998732874
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point0_group1",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift0_bm0_point0_group1/checked_write",
+      "ns": 12.213201024771617
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point0_group1",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift0_bm0_point0_group1/trusted_read",
+      "ns": 7.41256461869253
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point0_group1",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift0_bm0_point0_group1/trusted_write",
+      "ns": 9.571800583885176
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point1_group0",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift0_bm0_point1_group0/checked_read",
+      "ns": 56.880736406652005
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point1_group0",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift0_bm0_point1_group0/checked_write",
+      "ns": 11.680360274559208
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point1_group0",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift0_bm0_point1_group0/trusted_read",
+      "ns": 7.873051177856053
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point1_group0",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift0_bm0_point1_group0/trusted_write",
+      "ns": 10.10160484083136
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift0_bm0_point1_group1/checked_read",
+      "ns": 42.47852874090498
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift0_bm0_point1_group1/checked_write",
+      "ns": 10.76677076716776
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift0_bm0_point1_group1/trusted_read",
+      "ns": 7.114117401943762
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm0_point1_group1",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift0_bm0_point1_group1/trusted_write",
+      "ns": 10.296031891309212
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point0_group0",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift0_bm1_point0_group0/checked_read",
+      "ns": 54.83745438496399
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point0_group0",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift0_bm1_point0_group0/checked_write",
+      "ns": 10.813859658143095
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point0_group0",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift0_bm1_point0_group0/trusted_read",
+      "ns": 6.3850803556962905
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point0_group0",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift0_bm1_point0_group0/trusted_write",
+      "ns": 9.130438361926059
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point0_group1",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift0_bm1_point0_group1/checked_read",
+      "ns": 43.538631664983896
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point0_group1",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift0_bm1_point0_group1/checked_write",
+      "ns": 11.499346416932278
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point0_group1",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift0_bm1_point0_group1/trusted_read",
+      "ns": 6.479684452426472
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point0_group1",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift0_bm1_point0_group1/trusted_write",
+      "ns": 9.426883591952327
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point1_group0",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift0_bm1_point1_group0/checked_read",
+      "ns": 60.19463823190215
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point1_group0",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift0_bm1_point1_group0/checked_write",
+      "ns": 11.541466913995286
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point1_group0",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift0_bm1_point1_group0/trusted_read",
+      "ns": 6.108050415444277
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point1_group0",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift0_bm1_point1_group0/trusted_write",
+      "ns": 9.170840619226855
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point1_group1",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift0_bm1_point1_group1/checked_read",
+      "ns": 45.79610480875414
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point1_group1",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift0_bm1_point1_group1/checked_write",
+      "ns": 10.52172966153924
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point1_group1",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift0_bm1_point1_group1/trusted_read",
+      "ns": 6.161539406220257
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift0_bm1_point1_group1",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift0_bm1_point1_group1/trusted_write",
+      "ns": 9.798360896266953
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift1_bm0_point0_group0/checked_read",
+      "ns": 60.56660034174199
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift1_bm0_point0_group0/checked_write",
+      "ns": 11.18671890913884
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift1_bm0_point0_group0/trusted_read",
+      "ns": 7.299661134494929
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point0_group0",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift1_bm0_point0_group0/trusted_write",
+      "ns": 10.337432432046146
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point0_group1",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift1_bm0_point0_group1/checked_read",
+      "ns": 44.683716501156304
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point0_group1",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift1_bm0_point0_group1/checked_write",
+      "ns": 11.229715307577717
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point0_group1",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift1_bm0_point0_group1/trusted_read",
+      "ns": 7.079810304849904
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point0_group1",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift1_bm0_point0_group1/trusted_write",
+      "ns": 10.00813941585152
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point1_group0",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift1_bm0_point1_group0/checked_read",
+      "ns": 57.532120395327944
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point1_group0",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift1_bm0_point1_group0/checked_write",
+      "ns": 11.010471811488378
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point1_group0",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift1_bm0_point1_group0/trusted_read",
+      "ns": 7.191947285234651
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point1_group0",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift1_bm0_point1_group0/trusted_write",
+      "ns": 10.131826363665585
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift1_bm0_point1_group1/checked_read",
+      "ns": 45.07154882154882
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift1_bm0_point1_group1/checked_write",
+      "ns": 11.208031505116708
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift1_bm0_point1_group1/trusted_read",
+      "ns": 7.189056979798895
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm0_point1_group1",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift1_bm0_point1_group1/trusted_write",
+      "ns": 9.985257475083056
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point0_group0",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift1_bm1_point0_group0/checked_read",
+      "ns": 57.78990781174187
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point0_group0",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift1_bm1_point0_group0/checked_write",
+      "ns": 10.669388839377529
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point0_group0",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift1_bm1_point0_group0/trusted_read",
+      "ns": 6.518796789458406
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point0_group0",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift1_bm1_point0_group0/trusted_write",
+      "ns": 9.677949807731228
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point0_group1",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift1_bm1_point0_group1/checked_read",
+      "ns": 43.057572237549
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point0_group1",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift1_bm1_point0_group1/checked_write",
+      "ns": 12.820685075364468
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point0_group1",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift1_bm1_point0_group1/trusted_read",
+      "ns": 6.277874030146345
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point0_group1",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift1_bm1_point0_group1/trusted_write",
+      "ns": 9.175983727413383
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point1_group0",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift1_bm1_point1_group0/checked_read",
+      "ns": 59.924803347059445
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point1_group0",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift1_bm1_point1_group0/checked_write",
+      "ns": 11.661509417282733
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point1_group0",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift1_bm1_point1_group0/trusted_read",
+      "ns": 6.174229524944662
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point1_group0",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift1_bm1_point1_group0/trusted_write",
+      "ns": 9.174523391725902
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point1_group1",
+      "operation": "checked_read",
+      "id": "presence/aggressive_shift1_bm1_point1_group1/checked_read",
+      "ns": 43.0641653349077
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point1_group1",
+      "operation": "checked_write",
+      "id": "presence/aggressive_shift1_bm1_point1_group1/checked_write",
+      "ns": 11.453224173273073
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point1_group1",
+      "operation": "trusted_read",
+      "id": "presence/aggressive_shift1_bm1_point1_group1/trusted_read",
+      "ns": 6.351971910730288
+    },
+    {
+      "workload": "presence",
+      "profile": "aggressive_shift1_bm1_point1_group1",
+      "operation": "trusted_write",
+      "id": "presence/aggressive_shift1_bm1_point1_group1/trusted_write",
+      "ns": 9.506247359208064
+    },
+    {
+      "workload": "presence",
+      "profile": "aligned",
+      "operation": "checked_read",
+      "id": "presence/aligned/checked_read",
+      "ns": 58.372252607312404
+    },
+    {
+      "workload": "presence",
+      "profile": "aligned",
+      "operation": "checked_write",
+      "id": "presence/aligned/checked_write",
+      "ns": 16.057448015486116
+    },
+    {
+      "workload": "presence",
+      "profile": "aligned",
+      "operation": "trusted_read",
+      "id": "presence/aligned/trusted_read",
+      "ns": 7.8247009646740056
+    },
+    {
+      "workload": "presence",
+      "profile": "aligned",
+      "operation": "trusted_write",
+      "id": "presence/aligned/trusted_write",
+      "ns": 14.21859186600626
+    },
+    {
+      "workload": "presence",
+      "profile": "auto",
+      "operation": "checked_read",
+      "id": "presence/auto/checked_read",
+      "ns": 60.17720234605032
+    },
+    {
+      "workload": "presence",
+      "profile": "auto",
+      "operation": "checked_write",
+      "id": "presence/auto/checked_write",
+      "ns": 11.461226111052545
+    },
+    {
+      "workload": "presence",
+      "profile": "auto",
+      "operation": "trusted_read",
+      "id": "presence/auto/trusted_read",
+      "ns": 7.637164101730848
+    },
+    {
+      "workload": "presence",
+      "profile": "auto",
+      "operation": "trusted_write",
+      "id": "presence/auto/trusted_write",
+      "ns": 9.950482169152245
+    },
+    {
+      "workload": "presence",
+      "profile": "auto",
+      "operation": "validate",
+      "id": "presence/auto/validate",
+      "ns": 50.480305466237944
+    },
+    {
+      "workload": "presence",
+      "profile": "auto",
+      "operation": "validate_then_trusted",
+      "id": "presence/auto/validate_then_trusted",
+      "ns": 52.11956348319985
+    },
+    {
+      "workload": "presence",
+      "profile": "auto",
+      "operation": "validate_values",
+      "id": "presence/auto/validate_values",
+      "ns": 2.1297467097890843
+    },
+    {
+      "workload": "presence",
+      "profile": "bitmap_ot",
+      "operation": "checked_read",
+      "id": "presence/bitmap_ot/checked_read",
+      "ns": 27.922176129980123
+    },
+    {
+      "workload": "presence",
+      "profile": "bitmap_ot",
+      "operation": "checked_write",
+      "id": "presence/bitmap_ot/checked_write",
+      "ns": 5.238316623186634
+    },
+    {
+      "workload": "presence",
+      "profile": "bitmap_ot",
+      "operation": "trusted_read",
+      "id": "presence/bitmap_ot/trusted_read",
+      "ns": 8.905416237124179
+    },
+    {
+      "workload": "presence",
+      "profile": "bitmap_ot",
+      "operation": "trusted_write",
+      "id": "presence/bitmap_ot/trusted_write",
+      "ns": 4.070546039790591
+    },
+    {
+      "workload": "presence",
+      "profile": "bitmap",
+      "operation": "checked_read",
+      "id": "presence/bitmap/checked_read",
+      "ns": 25.463488157593545
+    },
+    {
+      "workload": "presence",
+      "profile": "bitmap",
+      "operation": "checked_write",
+      "id": "presence/bitmap/checked_write",
+      "ns": 5.805309271553552
+    },
+    {
+      "workload": "presence",
+      "profile": "bitmap",
+      "operation": "trusted_read",
+      "id": "presence/bitmap/trusted_read",
+      "ns": 5.96829905249469
+    },
+    {
+      "workload": "presence",
+      "profile": "bitmap",
+      "operation": "trusted_write",
+      "id": "presence/bitmap/trusted_write",
+      "ns": 4.280509277933627
+    },
+    {
+      "workload": "presence",
+      "profile": "bitmap",
+      "operation": "validate",
+      "id": "presence/bitmap/validate",
+      "ns": 20.91305523629234
+    },
+    {
+      "workload": "presence",
+      "profile": "bitmap",
+      "operation": "validate_then_trusted",
+      "id": "presence/bitmap/validate_then_trusted",
+      "ns": 24.384230131843314
+    },
+    {
+      "workload": "presence",
+      "profile": "bitmap",
+      "operation": "validate_values",
+      "id": "presence/bitmap/validate_values",
+      "ns": 2.064888625543437
+    },
+    {
+      "workload": "presence",
+      "profile": "compact_bitmap",
+      "operation": "checked_read",
+      "id": "presence/compact_bitmap/checked_read",
+      "ns": 29.941289647172
+    },
+    {
+      "workload": "presence",
+      "profile": "compact_bitmap",
+      "operation": "checked_write",
+      "id": "presence/compact_bitmap/checked_write",
+      "ns": 5.537657144340949
+    },
+    {
+      "workload": "presence",
+      "profile": "compact_bitmap",
+      "operation": "trusted_read",
+      "id": "presence/compact_bitmap/trusted_read",
+      "ns": 7.067075995491852
+    },
+    {
+      "workload": "presence",
+      "profile": "compact_bitmap",
+      "operation": "trusted_write",
+      "id": "presence/compact_bitmap/trusted_write",
+      "ns": 3.8854157301496235
+    },
+    {
+      "workload": "presence",
+      "profile": "compact_object_bitmap",
+      "operation": "checked_read",
+      "id": "presence/compact_object_bitmap/checked_read",
+      "ns": 46.50878935111301
+    },
+    {
+      "workload": "presence",
+      "profile": "compact_object_bitmap",
+      "operation": "checked_write",
+      "id": "presence/compact_object_bitmap/checked_write",
+      "ns": 12.429249043367346
+    },
+    {
+      "workload": "presence",
+      "profile": "compact_object_bitmap",
+      "operation": "trusted_read",
+      "id": "presence/compact_object_bitmap/trusted_read",
+      "ns": 7.023731891623326
+    },
+    {
+      "workload": "presence",
+      "profile": "compact_object_bitmap",
+      "operation": "trusted_write",
+      "id": "presence/compact_object_bitmap/trusted_write",
+      "ns": 10.079144275575821
+    },
+    {
+      "workload": "presence",
+      "profile": "compact",
+      "operation": "checked_read",
+      "id": "presence/compact/checked_read",
+      "ns": 48.46720066627474
+    },
+    {
+      "workload": "presence",
+      "profile": "compact",
+      "operation": "checked_write",
+      "id": "presence/compact/checked_write",
+      "ns": 12.340838263730157
+    },
+    {
+      "workload": "presence",
+      "profile": "compact",
+      "operation": "trusted_read",
+      "id": "presence/compact/trusted_read",
+      "ns": 7.976063472354536
+    },
+    {
+      "workload": "presence",
+      "profile": "compact",
+      "operation": "trusted_write",
+      "id": "presence/compact/trusted_write",
+      "ns": 9.92972756292744
+    },
+    {
+      "workload": "presence",
+      "profile": "ot_legacy",
+      "operation": "checked_read",
+      "id": "presence/ot_legacy/checked_read",
+      "ns": 56.00509177185663
+    },
+    {
+      "workload": "presence",
+      "profile": "ot_legacy",
+      "operation": "checked_write",
+      "id": "presence/ot_legacy/checked_write",
+      "ns": 6.572807695960707
+    },
+    {
+      "workload": "presence",
+      "profile": "ot_legacy",
+      "operation": "trusted_read",
+      "id": "presence/ot_legacy/trusted_read",
+      "ns": 5.321855282588267
+    },
+    {
+      "workload": "presence",
+      "profile": "ot_legacy",
+      "operation": "trusted_write",
+      "id": "presence/ot_legacy/trusted_write",
+      "ns": 5.091509549131111
+    },
+    {
+      "workload": "presence",
+      "profile": "ot_static",
+      "operation": "checked_read",
+      "id": "presence/ot_static/checked_read",
+      "ns": 53.443075117370896
+    },
+    {
+      "workload": "presence",
+      "profile": "ot_static",
+      "operation": "checked_write",
+      "id": "presence/ot_static/checked_write",
+      "ns": 11.044808781953463
+    },
+    {
+      "workload": "presence",
+      "profile": "ot_static",
+      "operation": "trusted_read",
+      "id": "presence/ot_static/trusted_read",
+      "ns": 9.33712758935485
+    },
+    {
+      "workload": "presence",
+      "profile": "ot_static",
+      "operation": "trusted_write",
+      "id": "presence/ot_static/trusted_write",
+      "ns": 10.413901146868534
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_bitmap",
+      "operation": "checked_read",
+      "id": "presence/ps_bitmap/checked_read",
+      "ns": 24.563373253493015
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_bitmap",
+      "operation": "checked_write",
+      "id": "presence/ps_bitmap/checked_write",
+      "ns": 5.253911209742418
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_bitmap",
+      "operation": "trusted_read",
+      "id": "presence/ps_bitmap/trusted_read",
+      "ns": 6.0072891890096
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_bitmap",
+      "operation": "trusted_write",
+      "id": "presence/ps_bitmap/trusted_write",
+      "ns": 4.129361799816346
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_ot_object_bitmap",
+      "operation": "checked_read",
+      "id": "presence/ps_ot_object_bitmap/checked_read",
+      "ns": 32.70689021830394
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_ot_object_bitmap",
+      "operation": "checked_write",
+      "id": "presence/ps_ot_object_bitmap/checked_write",
+      "ns": 9.609286062774435
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_ot_object_bitmap",
+      "operation": "trusted_read",
+      "id": "presence/ps_ot_object_bitmap/trusted_read",
+      "ns": 4.209399967276103
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_ot_object_bitmap",
+      "operation": "trusted_write",
+      "id": "presence/ps_ot_object_bitmap/trusted_write",
+      "ns": 7.288398262449519
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_ot",
+      "operation": "checked_read",
+      "id": "presence/ps_ot/checked_read",
+      "ns": 34.71855760773967
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_ot",
+      "operation": "checked_write",
+      "id": "presence/ps_ot/checked_write",
+      "ns": 10.195877372168354
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_ot",
+      "operation": "trusted_read",
+      "id": "presence/ps_ot/trusted_read",
+      "ns": 4.231640611292416
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_ot",
+      "operation": "trusted_write",
+      "id": "presence/ps_ot/trusted_write",
+      "ns": 7.384760027820465
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_ot",
+      "operation": "validate",
+      "id": "presence/ps_ot/validate",
+      "ns": 26.147925309303368
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_ot",
+      "operation": "validate_then_trusted",
+      "id": "presence/ps_ot/validate_then_trusted",
+      "ns": 29.34534610675339
+    },
+    {
+      "workload": "presence",
+      "profile": "ps_ot",
+      "operation": "validate_values",
+      "id": "presence/ps_ot/validate_values",
+      "ns": 2.084130982367758
+    },
+    {
+      "workload": "presence",
+      "profile": "ps",
+      "operation": "checked_read",
+      "id": "presence/ps/checked_read",
+      "ns": 39.70289570230608
+    },
+    {
+      "workload": "presence",
+      "profile": "ps",
+      "operation": "checked_write",
+      "id": "presence/ps/checked_write",
+      "ns": 9.726640744668316
+    },
+    {
+      "workload": "presence",
+      "profile": "ps",
+      "operation": "trusted_read",
+      "id": "presence/ps/trusted_read",
+      "ns": 5.6620450394125506
+    },
+    {
+      "workload": "presence",
+      "profile": "ps",
+      "operation": "trusted_write",
+      "id": "presence/ps/trusted_write",
+      "ns": 7.128845236309018
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q1",
+      "operation": "checked_read",
+      "id": "presence/state_bits_q1/checked_read",
+      "ns": 39.93286837900946
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q1",
+      "operation": "checked_write",
+      "id": "presence/state_bits_q1/checked_write",
+      "ns": 9.457664029409415
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q1",
+      "operation": "trusted_read",
+      "id": "presence/state_bits_q1/trusted_read",
+      "ns": 6.6049245133649315
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q1",
+      "operation": "trusted_write",
+      "id": "presence/state_bits_q1/trusted_write",
+      "ns": 7.247123043437992
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q16",
+      "operation": "checked_read",
+      "id": "presence/state_bits_q16/checked_read",
+      "ns": 38.30965080140602
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q16",
+      "operation": "checked_write",
+      "id": "presence/state_bits_q16/checked_write",
+      "ns": 9.475017000833589
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q16",
+      "operation": "trusted_read",
+      "id": "presence/state_bits_q16/trusted_read",
+      "ns": 5.871481287555788
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q16",
+      "operation": "trusted_write",
+      "id": "presence/state_bits_q16/trusted_write",
+      "ns": 7.244427386277079
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q2",
+      "operation": "checked_read",
+      "id": "presence/state_bits_q2/checked_read",
+      "ns": 38.164743053950076
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q2",
+      "operation": "checked_write",
+      "id": "presence/state_bits_q2/checked_write",
+      "ns": 9.932024564266733
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q2",
+      "operation": "trusted_read",
+      "id": "presence/state_bits_q2/trusted_read",
+      "ns": 6.717279385106229
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q2",
+      "operation": "trusted_write",
+      "id": "presence/state_bits_q2/trusted_write",
+      "ns": 7.476152373780163
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q4",
+      "operation": "checked_read",
+      "id": "presence/state_bits_q4/checked_read",
+      "ns": 39.87536130536131
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q4",
+      "operation": "checked_write",
+      "id": "presence/state_bits_q4/checked_write",
+      "ns": 10.012383074747891
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q4",
+      "operation": "trusted_read",
+      "id": "presence/state_bits_q4/trusted_read",
+      "ns": 6.5209590346141635
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q4",
+      "operation": "trusted_write",
+      "id": "presence/state_bits_q4/trusted_write",
+      "ns": 7.523079297795667
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q8",
+      "operation": "checked_read",
+      "id": "presence/state_bits_q8/checked_read",
+      "ns": 40.11783363145181
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q8",
+      "operation": "checked_write",
+      "id": "presence/state_bits_q8/checked_write",
+      "ns": 9.51127939164466
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q8",
+      "operation": "trusted_read",
+      "id": "presence/state_bits_q8/trusted_read",
+      "ns": 5.973078011044288
+    },
+    {
+      "workload": "presence",
+      "profile": "state_bits_q8",
+      "operation": "trusted_write",
+      "id": "presence/state_bits_q8/trusted_write",
+      "ns": 7.971749367976967
+    },
+    {
+      "workload": "presence",
+      "profile": "wire_and_object_bitmap",
+      "operation": "checked_read",
+      "id": "presence/wire_and_object_bitmap/checked_read",
+      "ns": 23.71815613764766
+    },
+    {
+      "workload": "presence",
+      "profile": "wire_and_object_bitmap",
+      "operation": "checked_write",
+      "id": "presence/wire_and_object_bitmap/checked_write",
+      "ns": 5.314250716048493
+    },
+    {
+      "workload": "presence",
+      "profile": "wire_and_object_bitmap",
+      "operation": "trusted_read",
+      "id": "presence/wire_and_object_bitmap/trusted_read",
+      "ns": 6.08372085407388
+    },
+    {
+      "workload": "presence",
+      "profile": "wire_and_object_bitmap",
+      "operation": "trusted_write",
+      "id": "presence/wire_and_object_bitmap/trusted_write",
+      "ns": 4.057223193909765
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q16",
+      "operation": "checked_read",
+      "id": "quantized_fixed/qps_q16/checked_read",
+      "ns": 50.74723974763407
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q16",
+      "operation": "checked_write",
+      "id": "quantized_fixed/qps_q16/checked_write",
+      "ns": 5.597482634355251
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q16",
+      "operation": "trusted_read",
+      "id": "quantized_fixed/qps_q16/trusted_read",
+      "ns": 5.415277726627403
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q16",
+      "operation": "trusted_write",
+      "id": "quantized_fixed/qps_q16/trusted_write",
+      "ns": 4.550320782335171
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q2",
+      "operation": "checked_read",
+      "id": "quantized_fixed/qps_q2/checked_read",
+      "ns": 50.81823266219239
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q2",
+      "operation": "checked_write",
+      "id": "quantized_fixed/qps_q2/checked_write",
+      "ns": 6.7766570771665915
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q2",
+      "operation": "trusted_read",
+      "id": "quantized_fixed/qps_q2/trusted_read",
+      "ns": 5.423307893325026
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q2",
+      "operation": "trusted_write",
+      "id": "quantized_fixed/qps_q2/trusted_write",
+      "ns": 4.887172795803691
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q4",
+      "operation": "checked_read",
+      "id": "quantized_fixed/qps_q4/checked_read",
+      "ns": 55.160314041639495
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q4",
+      "operation": "checked_write",
+      "id": "quantized_fixed/qps_q4/checked_write",
+      "ns": 6.5036423126848115
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q4",
+      "operation": "trusted_read",
+      "id": "quantized_fixed/qps_q4/trusted_read",
+      "ns": 5.66043392297253
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q4",
+      "operation": "trusted_write",
+      "id": "quantized_fixed/qps_q4/trusted_write",
+      "ns": 4.873573745266405
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q8",
+      "operation": "checked_read",
+      "id": "quantized_fixed/qps_q8/checked_read",
+      "ns": 53.59438245268571
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q8",
+      "operation": "checked_write",
+      "id": "quantized_fixed/qps_q8/checked_write",
+      "ns": 6.397228380890228
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q8",
+      "operation": "trusted_read",
+      "id": "quantized_fixed/qps_q8/trusted_read",
+      "ns": 5.356087302878295
+    },
+    {
+      "workload": "quantized_fixed",
+      "profile": "qps_q8",
+      "operation": "trusted_write",
+      "id": "quantized_fixed/qps_q8/trusted_write",
+      "ns": 5.246774313127466
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q16_ot",
+      "operation": "checked_read",
+      "id": "quantized_optional/qps_q16_ot/checked_read",
+      "ns": 51.419702662963566
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q16_ot",
+      "operation": "checked_write",
+      "id": "quantized_optional/qps_q16_ot/checked_write",
+      "ns": 11.28026510510648
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q16_ot",
+      "operation": "trusted_read",
+      "id": "quantized_optional/qps_q16_ot/trusted_read",
+      "ns": 8.860598220235996
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q16_ot",
+      "operation": "trusted_write",
+      "id": "quantized_optional/qps_q16_ot/trusted_write",
+      "ns": 10.848911257189812
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q2_ot",
+      "operation": "checked_read",
+      "id": "quantized_optional/qps_q2_ot/checked_read",
+      "ns": 50.21091909297485
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q2_ot",
+      "operation": "checked_write",
+      "id": "quantized_optional/qps_q2_ot/checked_write",
+      "ns": 11.220872533841451
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q2_ot",
+      "operation": "trusted_read",
+      "id": "quantized_optional/qps_q2_ot/trusted_read",
+      "ns": 9.43757261127843
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q2_ot",
+      "operation": "trusted_write",
+      "id": "quantized_optional/qps_q2_ot/trusted_write",
+      "ns": 10.09551693526359
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q4_ot",
+      "operation": "checked_read",
+      "id": "quantized_optional/qps_q4_ot/checked_read",
+      "ns": 54.07289038407625
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q4_ot",
+      "operation": "checked_write",
+      "id": "quantized_optional/qps_q4_ot/checked_write",
+      "ns": 11.526564812451266
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q4_ot",
+      "operation": "trusted_read",
+      "id": "quantized_optional/qps_q4_ot/trusted_read",
+      "ns": 9.265044950786638
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q4_ot",
+      "operation": "trusted_write",
+      "id": "quantized_optional/qps_q4_ot/trusted_write",
+      "ns": 10.451324956121933
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q8_ot",
+      "operation": "checked_read",
+      "id": "quantized_optional/qps_q8_ot/checked_read",
+      "ns": 49.08740546829552
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q8_ot",
+      "operation": "checked_write",
+      "id": "quantized_optional/qps_q8_ot/checked_write",
+      "ns": 11.202319907797209
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q8_ot",
+      "operation": "trusted_read",
+      "id": "quantized_optional/qps_q8_ot/trusted_read",
+      "ns": 8.877718742843422
+    },
+    {
+      "workload": "quantized_optional",
+      "profile": "qps_q8_ot",
+      "operation": "trusted_write",
+      "id": "quantized_optional/qps_q8_ot/trusted_write",
+      "ns": 10.03393493180436
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed_aligned",
+      "operation": "checked_read",
+      "id": "text_1024/borrowed_aligned/checked_read",
+      "ns": 74.8141592920354
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed_aligned",
+      "operation": "checked_write",
+      "id": "text_1024/borrowed_aligned/checked_write",
+      "ns": 28.377712491740734
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_read",
+      "id": "text_1024/borrowed_aligned/trusted_read",
+      "ns": 2.978408158433799
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_write",
+      "id": "text_1024/borrowed_aligned/trusted_write",
+      "ns": 26.633357404079447
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed_aligned",
+      "operation": "validate",
+      "id": "text_1024/borrowed_aligned/validate",
+      "ns": 79.66297786720321
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed_aligned",
+      "operation": "validate_then_trusted",
+      "id": "text_1024/borrowed_aligned/validate_then_trusted",
+      "ns": 78.53501791232532
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed_aligned",
+      "operation": "validate_values",
+      "id": "text_1024/borrowed_aligned/validate_values",
+      "ns": 2.200693601700313
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed",
+      "operation": "checked_read",
+      "id": "text_1024/borrowed/checked_read",
+      "ns": 69.10495111296026
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed",
+      "operation": "checked_write",
+      "id": "text_1024/borrowed/checked_write",
+      "ns": 26.0011391350219
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed",
+      "operation": "trusted_read",
+      "id": "text_1024/borrowed/trusted_read",
+      "ns": 2.804466553434538
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed",
+      "operation": "trusted_write",
+      "id": "text_1024/borrowed/trusted_write",
+      "ns": 26.251623246032384
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed",
+      "operation": "validate",
+      "id": "text_1024/borrowed/validate",
+      "ns": 77.0492480581722
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed",
+      "operation": "validate_then_trusted",
+      "id": "text_1024/borrowed/validate_then_trusted",
+      "ns": 64.92965825383408
+    },
+    {
+      "workload": "text_1024",
+      "profile": "borrowed",
+      "operation": "validate_values",
+      "id": "text_1024/borrowed/validate_values",
+      "ns": 2.3644081158049293
+    },
+    {
+      "workload": "text_1024",
+      "profile": "owned",
+      "operation": "checked_read",
+      "id": "text_1024/owned/checked_read",
+      "ns": 145.6020912329082
+    },
+    {
+      "workload": "text_1024",
+      "profile": "owned",
+      "operation": "checked_write",
+      "id": "text_1024/owned/checked_write",
+      "ns": 25.037774640212035
+    },
+    {
+      "workload": "text_1024",
+      "profile": "owned",
+      "operation": "trusted_read",
+      "id": "text_1024/owned/trusted_read",
+      "ns": 76.60178691617989
+    },
+    {
+      "workload": "text_1024",
+      "profile": "owned",
+      "operation": "trusted_write",
+      "id": "text_1024/owned/trusted_write",
+      "ns": 23.809487511751403
+    },
+    {
+      "workload": "text_1024",
+      "profile": "owned",
+      "operation": "validate",
+      "id": "text_1024/owned/validate",
+      "ns": 72.21756355355792
+    },
+    {
+      "workload": "text_1024",
+      "profile": "owned",
+      "operation": "validate_then_trusted",
+      "id": "text_1024/owned/validate_then_trusted",
+      "ns": 129.12434976467674
+    },
+    {
+      "workload": "text_1024",
+      "profile": "owned",
+      "operation": "validate_values",
+      "id": "text_1024/owned/validate_values",
+      "ns": 1.8110041974950755
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed_aligned",
+      "operation": "checked_read",
+      "id": "text_256/borrowed_aligned/checked_read",
+      "ns": 46.53325398006249
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed_aligned",
+      "operation": "checked_write",
+      "id": "text_256/borrowed_aligned/checked_write",
+      "ns": 10.306589863139905
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_read",
+      "id": "text_256/borrowed_aligned/trusted_read",
+      "ns": 2.919346195069668
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_write",
+      "id": "text_256/borrowed_aligned/trusted_write",
+      "ns": 9.748057774373564
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed_aligned",
+      "operation": "validate",
+      "id": "text_256/borrowed_aligned/validate",
+      "ns": 46.92553614967408
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed_aligned",
+      "operation": "validate_then_trusted",
+      "id": "text_256/borrowed_aligned/validate_then_trusted",
+      "ns": 46.48806093042404
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed_aligned",
+      "operation": "validate_values",
+      "id": "text_256/borrowed_aligned/validate_values",
+      "ns": 2.009423541124006
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed",
+      "operation": "checked_read",
+      "id": "text_256/borrowed/checked_read",
+      "ns": 35.39515285958336
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed",
+      "operation": "checked_write",
+      "id": "text_256/borrowed/checked_write",
+      "ns": 9.31231506096002
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed",
+      "operation": "trusted_read",
+      "id": "text_256/borrowed/trusted_read",
+      "ns": 2.782304946247124
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed",
+      "operation": "trusted_write",
+      "id": "text_256/borrowed/trusted_write",
+      "ns": 9.96121049880302
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed",
+      "operation": "validate",
+      "id": "text_256/borrowed/validate",
+      "ns": 34.77264654374835
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed",
+      "operation": "validate_then_trusted",
+      "id": "text_256/borrowed/validate_then_trusted",
+      "ns": 34.539528166261434
+    },
+    {
+      "workload": "text_256",
+      "profile": "borrowed",
+      "operation": "validate_values",
+      "id": "text_256/borrowed/validate_values",
+      "ns": 2.4764526523412353
+    },
+    {
+      "workload": "text_256",
+      "profile": "owned",
+      "operation": "checked_read",
+      "id": "text_256/owned/checked_read",
+      "ns": 114.11448981401432
+    },
+    {
+      "workload": "text_256",
+      "profile": "owned",
+      "operation": "checked_write",
+      "id": "text_256/owned/checked_write",
+      "ns": 9.188495563259872
+    },
+    {
+      "workload": "text_256",
+      "profile": "owned",
+      "operation": "trusted_read",
+      "id": "text_256/owned/trusted_read",
+      "ns": 72.1883867553536
+    },
+    {
+      "workload": "text_256",
+      "profile": "owned",
+      "operation": "trusted_write",
+      "id": "text_256/owned/trusted_write",
+      "ns": 9.563161697716062
+    },
+    {
+      "workload": "text_256",
+      "profile": "owned",
+      "operation": "validate",
+      "id": "text_256/owned/validate",
+      "ns": 34.18574145435895
+    },
+    {
+      "workload": "text_256",
+      "profile": "owned",
+      "operation": "validate_then_trusted",
+      "id": "text_256/owned/validate_then_trusted",
+      "ns": 94.502465036724
+    },
+    {
+      "workload": "text_256",
+      "profile": "owned",
+      "operation": "validate_values",
+      "id": "text_256/owned/validate_values",
+      "ns": 1.8944520657006723
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed_aligned",
+      "operation": "checked_read",
+      "id": "text_32/borrowed_aligned/checked_read",
+      "ns": 39.448510643349834
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed_aligned",
+      "operation": "checked_write",
+      "id": "text_32/borrowed_aligned/checked_write",
+      "ns": 5.328579007801236
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_read",
+      "id": "text_32/borrowed_aligned/trusted_read",
+      "ns": 2.7669296431760473
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_write",
+      "id": "text_32/borrowed_aligned/trusted_write",
+      "ns": 6.092872643490926
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed_aligned",
+      "operation": "validate",
+      "id": "text_32/borrowed_aligned/validate",
+      "ns": 37.89155516854497
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed_aligned",
+      "operation": "validate_then_trusted",
+      "id": "text_32/borrowed_aligned/validate_then_trusted",
+      "ns": 38.71656219895354
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed_aligned",
+      "operation": "validate_values",
+      "id": "text_32/borrowed_aligned/validate_values",
+      "ns": 2.081340676725345
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed",
+      "operation": "checked_read",
+      "id": "text_32/borrowed/checked_read",
+      "ns": 25.873327203005168
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed",
+      "operation": "checked_write",
+      "id": "text_32/borrowed/checked_write",
+      "ns": 5.3829413909397505
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed",
+      "operation": "trusted_read",
+      "id": "text_32/borrowed/trusted_read",
+      "ns": 2.750796476491701
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed",
+      "operation": "trusted_write",
+      "id": "text_32/borrowed/trusted_write",
+      "ns": 5.337113142643338
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed",
+      "operation": "validate",
+      "id": "text_32/borrowed/validate",
+      "ns": 22.19279291838015
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed",
+      "operation": "validate_then_trusted",
+      "id": "text_32/borrowed/validate_then_trusted",
+      "ns": 24.423997664737684
+    },
+    {
+      "workload": "text_32",
+      "profile": "borrowed",
+      "operation": "validate_values",
+      "id": "text_32/borrowed/validate_values",
+      "ns": 2.459612464075079
+    },
+    {
+      "workload": "text_32",
+      "profile": "owned",
+      "operation": "checked_read",
+      "id": "text_32/owned/checked_read",
+      "ns": 93.6929850598595
+    },
+    {
+      "workload": "text_32",
+      "profile": "owned",
+      "operation": "checked_write",
+      "id": "text_32/owned/checked_write",
+      "ns": 5.019924903100775
+    },
+    {
+      "workload": "text_32",
+      "profile": "owned",
+      "operation": "trusted_read",
+      "id": "text_32/owned/trusted_read",
+      "ns": 52.28086633250372
+    },
+    {
+      "workload": "text_32",
+      "profile": "owned",
+      "operation": "trusted_write",
+      "id": "text_32/owned/trusted_write",
+      "ns": 4.936960160108612
+    },
+    {
+      "workload": "text_32",
+      "profile": "owned",
+      "operation": "validate",
+      "id": "text_32/owned/validate",
+      "ns": 24.25273920846321
+    },
+    {
+      "workload": "text_32",
+      "profile": "owned",
+      "operation": "validate_then_trusted",
+      "id": "text_32/owned/validate_then_trusted",
+      "ns": 73.95930335934133
+    },
+    {
+      "workload": "text_32",
+      "profile": "owned",
+      "operation": "validate_values",
+      "id": "text_32/owned/validate_values",
+      "ns": 1.9882831464399473
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed_aligned",
+      "operation": "checked_read",
+      "id": "text_4096/borrowed_aligned/checked_read",
+      "ns": 196.34737467554805
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed_aligned",
+      "operation": "checked_write",
+      "id": "text_4096/borrowed_aligned/checked_write",
+      "ns": 88.55073903369357
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_read",
+      "id": "text_4096/borrowed_aligned/trusted_read",
+      "ns": 2.8280991067458876
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_write",
+      "id": "text_4096/borrowed_aligned/trusted_write",
+      "ns": 92.03112004435819
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed_aligned",
+      "operation": "validate",
+      "id": "text_4096/borrowed_aligned/validate",
+      "ns": 223.3983799705449
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed_aligned",
+      "operation": "validate_then_trusted",
+      "id": "text_4096/borrowed_aligned/validate_then_trusted",
+      "ns": 227.2220354180677
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed_aligned",
+      "operation": "validate_values",
+      "id": "text_4096/borrowed_aligned/validate_values",
+      "ns": 2.0637812798861437
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed",
+      "operation": "checked_read",
+      "id": "text_4096/borrowed/checked_read",
+      "ns": 216.94211994421198
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed",
+      "operation": "checked_write",
+      "id": "text_4096/borrowed/checked_write",
+      "ns": 100.28912086787432
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed",
+      "operation": "trusted_read",
+      "id": "text_4096/borrowed/trusted_read",
+      "ns": 2.8560636153653762
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed",
+      "operation": "trusted_write",
+      "id": "text_4096/borrowed/trusted_write",
+      "ns": 95.3608044164038
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed",
+      "operation": "validate",
+      "id": "text_4096/borrowed/validate",
+      "ns": 232.59115361625823
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed",
+      "operation": "validate_then_trusted",
+      "id": "text_4096/borrowed/validate_then_trusted",
+      "ns": 212.78755074424896
+    },
+    {
+      "workload": "text_4096",
+      "profile": "borrowed",
+      "operation": "validate_values",
+      "id": "text_4096/borrowed/validate_values",
+      "ns": 2.3628989936407976
+    },
+    {
+      "workload": "text_4096",
+      "profile": "owned",
+      "operation": "checked_read",
+      "id": "text_4096/owned/checked_read",
+      "ns": 321.4407939767283
+    },
+    {
+      "workload": "text_4096",
+      "profile": "owned",
+      "operation": "checked_write",
+      "id": "text_4096/owned/checked_write",
+      "ns": 67.40496234833344
+    },
+    {
+      "workload": "text_4096",
+      "profile": "owned",
+      "operation": "trusted_read",
+      "id": "text_4096/owned/trusted_read",
+      "ns": 146.58444816053512
+    },
+    {
+      "workload": "text_4096",
+      "profile": "owned",
+      "operation": "trusted_write",
+      "id": "text_4096/owned/trusted_write",
+      "ns": 67.08129493736564
+    },
+    {
+      "workload": "text_4096",
+      "profile": "owned",
+      "operation": "validate",
+      "id": "text_4096/owned/validate",
+      "ns": 222.8108670285627
+    },
+    {
+      "workload": "text_4096",
+      "profile": "owned",
+      "operation": "validate_then_trusted",
+      "id": "text_4096/owned/validate_then_trusted",
+      "ns": 299.33698903290133
+    },
+    {
+      "workload": "text_4096",
+      "profile": "owned",
+      "operation": "validate_values",
+      "id": "text_4096/owned/validate_values",
+      "ns": 1.9698857141700492
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed_aligned",
+      "operation": "checked_read",
+      "id": "text_8192/borrowed_aligned/checked_read",
+      "ns": 386.88591149005276
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed_aligned",
+      "operation": "checked_write",
+      "id": "text_8192/borrowed_aligned/checked_write",
+      "ns": 213.68708129639688
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_read",
+      "id": "text_8192/borrowed_aligned/trusted_read",
+      "ns": 2.7597179370385967
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_write",
+      "id": "text_8192/borrowed_aligned/trusted_write",
+      "ns": 198.21006836544439
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed_aligned",
+      "operation": "validate",
+      "id": "text_8192/borrowed_aligned/validate",
+      "ns": 406.18375935162095
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed_aligned",
+      "operation": "validate_then_trusted",
+      "id": "text_8192/borrowed_aligned/validate_then_trusted",
+      "ns": 386.5781162920305
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed_aligned",
+      "operation": "validate_values",
+      "id": "text_8192/borrowed_aligned/validate_values",
+      "ns": 2.1611362423950884
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed",
+      "operation": "checked_read",
+      "id": "text_8192/borrowed/checked_read",
+      "ns": 362.83300507929926
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed",
+      "operation": "checked_write",
+      "id": "text_8192/borrowed/checked_write",
+      "ns": 206.98800572860722
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed",
+      "operation": "trusted_read",
+      "id": "text_8192/borrowed/trusted_read",
+      "ns": 2.672098602913075
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed",
+      "operation": "trusted_write",
+      "id": "text_8192/borrowed/trusted_write",
+      "ns": 198.18947822465492
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed",
+      "operation": "validate",
+      "id": "text_8192/borrowed/validate",
+      "ns": 387.764367816092
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed",
+      "operation": "validate_then_trusted",
+      "id": "text_8192/borrowed/validate_then_trusted",
+      "ns": 362.81574619776717
+    },
+    {
+      "workload": "text_8192",
+      "profile": "borrowed",
+      "operation": "validate_values",
+      "id": "text_8192/borrowed/validate_values",
+      "ns": 2.4589114470244424
+    },
+    {
+      "workload": "text_8192",
+      "profile": "owned",
+      "operation": "checked_read",
+      "id": "text_8192/owned/checked_read",
+      "ns": 629.1505167958655
+    },
+    {
+      "workload": "text_8192",
+      "profile": "owned",
+      "operation": "checked_write",
+      "id": "text_8192/owned/checked_write",
+      "ns": 197.69812604690117
+    },
+    {
+      "workload": "text_8192",
+      "profile": "owned",
+      "operation": "trusted_read",
+      "id": "text_8192/owned/trusted_read",
+      "ns": 300.33638088666555
+    },
+    {
+      "workload": "text_8192",
+      "profile": "owned",
+      "operation": "trusted_write",
+      "id": "text_8192/owned/trusted_write",
+      "ns": 194.61795027289267
+    },
+    {
+      "workload": "text_8192",
+      "profile": "owned",
+      "operation": "validate",
+      "id": "text_8192/owned/validate",
+      "ns": 352.32551487414185
+    },
+    {
+      "workload": "text_8192",
+      "profile": "owned",
+      "operation": "validate_then_trusted",
+      "id": "text_8192/owned/validate_then_trusted",
+      "ns": 557.9260651629072
+    },
+    {
+      "workload": "text_8192",
+      "profile": "owned",
+      "operation": "validate_values",
+      "id": "text_8192/owned/validate_values",
+      "ns": 1.8467351415350204
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed_aligned",
+      "operation": "checked_read",
+      "id": "utf8_1024/borrowed_aligned/checked_read",
+      "ns": 985.9341825902336
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed_aligned",
+      "operation": "checked_write",
+      "id": "utf8_1024/borrowed_aligned/checked_write",
+      "ns": 24.2723459930464
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_read",
+      "id": "utf8_1024/borrowed_aligned/trusted_read",
+      "ns": 2.7415619736902
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_write",
+      "id": "utf8_1024/borrowed_aligned/trusted_write",
+      "ns": 28.25408093843625
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed_aligned",
+      "operation": "validate",
+      "id": "utf8_1024/borrowed_aligned/validate",
+      "ns": 1003.5600490196078
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed_aligned",
+      "operation": "validate_then_trusted",
+      "id": "utf8_1024/borrowed_aligned/validate_then_trusted",
+      "ns": 978.3868339579599
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed_aligned",
+      "operation": "validate_values",
+      "id": "utf8_1024/borrowed_aligned/validate_values",
+      "ns": 2.132628910669661
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed",
+      "operation": "checked_read",
+      "id": "utf8_1024/borrowed/checked_read",
+      "ns": 918.7320916905444
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed",
+      "operation": "checked_write",
+      "id": "utf8_1024/borrowed/checked_write",
+      "ns": 25.954737559645537
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed",
+      "operation": "trusted_read",
+      "id": "utf8_1024/borrowed/trusted_read",
+      "ns": 2.6668413442409777
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed",
+      "operation": "trusted_write",
+      "id": "utf8_1024/borrowed/trusted_write",
+      "ns": 26.838502493027974
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed",
+      "operation": "validate",
+      "id": "utf8_1024/borrowed/validate",
+      "ns": 950.1695929768555
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed",
+      "operation": "validate_then_trusted",
+      "id": "utf8_1024/borrowed/validate_then_trusted",
+      "ns": 922.4867374005305
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "borrowed",
+      "operation": "validate_values",
+      "id": "utf8_1024/borrowed/validate_values",
+      "ns": 2.507097997576735
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "owned",
+      "operation": "checked_read",
+      "id": "utf8_1024/owned/checked_read",
+      "ns": 1031.5664408055713
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "owned",
+      "operation": "checked_write",
+      "id": "utf8_1024/owned/checked_write",
+      "ns": 23.787704621410477
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "owned",
+      "operation": "trusted_read",
+      "id": "utf8_1024/owned/trusted_read",
+      "ns": 70.31063122923588
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "owned",
+      "operation": "trusted_write",
+      "id": "utf8_1024/owned/trusted_write",
+      "ns": 23.71784188034188
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "owned",
+      "operation": "validate",
+      "id": "utf8_1024/owned/validate",
+      "ns": 900.1158897759465
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "owned",
+      "operation": "validate_then_trusted",
+      "id": "utf8_1024/owned/validate_then_trusted",
+      "ns": 980.6940335305719
+    },
+    {
+      "workload": "utf8_1024",
+      "profile": "owned",
+      "operation": "validate_values",
+      "id": "utf8_1024/owned/validate_values",
+      "ns": 1.8822797889558434
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed_aligned",
+      "operation": "checked_read",
+      "id": "utf8_8192/borrowed_aligned/checked_read",
+      "ns": 7590.817515817516
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed_aligned",
+      "operation": "checked_write",
+      "id": "utf8_8192/borrowed_aligned/checked_write",
+      "ns": 194.02550572787453
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_read",
+      "id": "utf8_8192/borrowed_aligned/trusted_read",
+      "ns": 2.807433706134085
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed_aligned",
+      "operation": "trusted_write",
+      "id": "utf8_8192/borrowed_aligned/trusted_write",
+      "ns": 211.9035894068724
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed_aligned",
+      "operation": "validate",
+      "id": "utf8_8192/borrowed_aligned/validate",
+      "ns": 7196.808943089431
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed_aligned",
+      "operation": "validate_then_trusted",
+      "id": "utf8_8192/borrowed_aligned/validate_then_trusted",
+      "ns": 7606.888209829386
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed_aligned",
+      "operation": "validate_values",
+      "id": "utf8_8192/borrowed_aligned/validate_values",
+      "ns": 2.174687874822811
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed",
+      "operation": "checked_read",
+      "id": "utf8_8192/borrowed/checked_read",
+      "ns": 7233.380681818182
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed",
+      "operation": "checked_write",
+      "id": "utf8_8192/borrowed/checked_write",
+      "ns": 194.49010859583984
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed",
+      "operation": "trusted_read",
+      "id": "utf8_8192/borrowed/trusted_read",
+      "ns": 2.749266719854955
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed",
+      "operation": "trusted_write",
+      "id": "utf8_8192/borrowed/trusted_write",
+      "ns": 212.3224589436307
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed",
+      "operation": "validate",
+      "id": "utf8_8192/borrowed/validate",
+      "ns": 7183.518518518518
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed",
+      "operation": "validate_then_trusted",
+      "id": "utf8_8192/borrowed/validate_then_trusted",
+      "ns": 7253.88456937799
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "borrowed",
+      "operation": "validate_values",
+      "id": "utf8_8192/borrowed/validate_values",
+      "ns": 2.4631915445735046
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "owned",
+      "operation": "checked_read",
+      "id": "utf8_8192/owned/checked_read",
+      "ns": 7155.31462585034
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "owned",
+      "operation": "checked_write",
+      "id": "utf8_8192/owned/checked_write",
+      "ns": 190.4848093083387
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "owned",
+      "operation": "trusted_read",
+      "id": "utf8_8192/owned/trusted_read",
+      "ns": 252.0442094778378
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "owned",
+      "operation": "trusted_write",
+      "id": "utf8_8192/owned/trusted_write",
+      "ns": 190.23795128692348
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "owned",
+      "operation": "validate",
+      "id": "utf8_8192/owned/validate",
+      "ns": 7277.399527186761
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "owned",
+      "operation": "validate_then_trusted",
+      "id": "utf8_8192/owned/validate_then_trusted",
+      "ns": 7485.583333333334
+    },
+    {
+      "workload": "utf8_8192",
+      "profile": "owned",
+      "operation": "validate_values",
+      "id": "utf8_8192/owned/validate_values",
+      "ns": 1.9211144273256076
+    }
+  ]
+}

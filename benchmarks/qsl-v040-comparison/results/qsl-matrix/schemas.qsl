@@ -1,0 +1,123 @@
+&P0[safety,auto] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P1[safety,auto,compact] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P2[safety,auto,compact,alignment] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P3[safety,auto,aggressive[shift=false,bitmap=false,pointing=false,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P4[safety,auto,aggressive[shift=false,bitmap=true,pointing=false,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P5[safety,auto,aggressive[shift=false,bitmap=false,pointing=true,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P6[safety,auto,aggressive[shift=false,bitmap=true,pointing=true,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P7[safety,auto,aggressive[shift=false,bitmap=false,pointing=false,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P8[safety,auto,aggressive[shift=false,bitmap=true,pointing=false,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P9[safety,auto,aggressive[shift=false,bitmap=false,pointing=true,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P10[safety,auto,aggressive[shift=false,bitmap=true,pointing=true,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P11[safety,auto,aggressive[shift=true,bitmap=false,pointing=false,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P12[safety,auto,aggressive[shift=true,bitmap=true,pointing=false,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P13[safety,auto,aggressive[shift=true,bitmap=false,pointing=true,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P14[safety,auto,aggressive[shift=true,bitmap=true,pointing=true,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P15[safety,auto,aggressive[shift=true,bitmap=false,pointing=false,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P16[safety,auto,aggressive[shift=true,bitmap=true,pointing=false,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P17[safety,auto,aggressive[shift=true,bitmap=false,pointing=true,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P18[safety,auto,aggressive[shift=true,bitmap=true,pointing=true,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P19[safety,auto,aggressive] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P20[safety,auto] { u8? a;u16? b;u32? c; }
+&P21[safety,auto,compact] { u8? a;u16? b;u32? c; }
+&P22[safety,auto,compact,alignment] { u8? a;u16? b;u32? c; }
+&P23[safety,auto,aggressive[shift=false,bitmap=false,pointing=false,group=false]] { u8? a;u16? b;u32? c; }
+&P24[safety,auto,aggressive[shift=false,bitmap=true,pointing=false,group=false]] { u8? a;u16? b;u32? c; }
+&P25[safety,auto,aggressive[shift=false,bitmap=false,pointing=true,group=false]] { u8? a;u16? b;u32? c; }
+&P26[safety,auto,aggressive[shift=false,bitmap=true,pointing=true,group=false]] { u8? a;u16? b;u32? c; }
+&P27[safety,auto,aggressive[shift=false,bitmap=false,pointing=false,group=true]] { u8? a;u16? b;u32? c; }
+&P28[safety,auto,aggressive[shift=false,bitmap=true,pointing=false,group=true]] { u8? a;u16? b;u32? c; }
+&P29[safety,auto,aggressive[shift=false,bitmap=false,pointing=true,group=true]] { u8? a;u16? b;u32? c; }
+&P30[safety,auto,aggressive[shift=false,bitmap=true,pointing=true,group=true]] { u8? a;u16? b;u32? c; }
+&P31[safety,auto,aggressive[shift=true,bitmap=false,pointing=false,group=false]] { u8? a;u16? b;u32? c; }
+&P32[safety,auto,aggressive[shift=true,bitmap=true,pointing=false,group=false]] { u8? a;u16? b;u32? c; }
+&P33[safety,auto,aggressive[shift=true,bitmap=false,pointing=true,group=false]] { u8? a;u16? b;u32? c; }
+&P34[safety,auto,aggressive[shift=true,bitmap=true,pointing=true,group=false]] { u8? a;u16? b;u32? c; }
+&P35[safety,auto,aggressive[shift=true,bitmap=false,pointing=false,group=true]] { u8? a;u16? b;u32? c; }
+&P36[safety,auto,aggressive[shift=true,bitmap=true,pointing=false,group=true]] { u8? a;u16? b;u32? c; }
+&P37[safety,auto,aggressive[shift=true,bitmap=false,pointing=true,group=true]] { u8? a;u16? b;u32? c; }
+&P38[safety,auto,aggressive[shift=true,bitmap=true,pointing=true,group=true]] { u8? a;u16? b;u32? c; }
+&P39[safety,auto,aggressive] { u8? a;u16? b;u32? c; }
+&P40[safety,auto] { u32 id;str?(0..1024) text; }
+&P41[safety,auto,compact] { u32 id;str?(0..1024) text; }
+&P42[safety,auto,compact,alignment] { u32 id;str?(0..1024) text; }
+&P43[safety,auto,aggressive[shift=false,bitmap=false,pointing=false,group=false]] { u32 id;str?(0..1024) text; }
+&P44[safety,auto,aggressive[shift=false,bitmap=true,pointing=false,group=false]] { u32 id;str?(0..1024) text; }
+&P45[safety,auto,aggressive[shift=false,bitmap=false,pointing=true,group=false]] { u32 id;str?(0..1024) text; }
+&P46[safety,auto,aggressive[shift=false,bitmap=true,pointing=true,group=false]] { u32 id;str?(0..1024) text; }
+&P47[safety,auto,aggressive[shift=false,bitmap=false,pointing=false,group=true]] { u32 id;str?(0..1024) text; }
+&P48[safety,auto,aggressive[shift=false,bitmap=true,pointing=false,group=true]] { u32 id;str?(0..1024) text; }
+&P49[safety,auto,aggressive[shift=false,bitmap=false,pointing=true,group=true]] { u32 id;str?(0..1024) text; }
+&P50[safety,auto,aggressive[shift=false,bitmap=true,pointing=true,group=true]] { u32 id;str?(0..1024) text; }
+&P51[safety,auto,aggressive[shift=true,bitmap=false,pointing=false,group=false]] { u32 id;str?(0..1024) text; }
+&P52[safety,auto,aggressive[shift=true,bitmap=true,pointing=false,group=false]] { u32 id;str?(0..1024) text; }
+&P53[safety,auto,aggressive[shift=true,bitmap=false,pointing=true,group=false]] { u32 id;str?(0..1024) text; }
+&P54[safety,auto,aggressive[shift=true,bitmap=true,pointing=true,group=false]] { u32 id;str?(0..1024) text; }
+&P55[safety,auto,aggressive[shift=true,bitmap=false,pointing=false,group=true]] { u32 id;str?(0..1024) text; }
+&P56[safety,auto,aggressive[shift=true,bitmap=true,pointing=false,group=true]] { u32 id;str?(0..1024) text; }
+&P57[safety,auto,aggressive[shift=true,bitmap=false,pointing=true,group=true]] { u32 id;str?(0..1024) text; }
+&P58[safety,auto,aggressive[shift=true,bitmap=true,pointing=true,group=true]] { u32 id;str?(0..1024) text; }
+&P59[safety,auto,aggressive] { u32 id;str?(0..1024) text; }
+&P60[safety,auto,compact,aggressive[shift=false,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P61[safety,auto,compact,aggressive[shift=false,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P62[safety,auto,compact,inline=hint] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P63[safety,auto,compact,inline=always] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P64[safety,auto,compact,inline=never] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P65[safety,auto,loyal_cache,cache=32] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P66[safety,auto,slots=1] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P67[safety,auto,slots=16] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P68[safety,auto,predict_seq] { u8? a;u16? b;u32? c; }
+&P69[safety,auto,opt_table=static] { u8? a;u16? b;u32? c; }
+&P70[safety,auto,opt_table=legacy] { u8? a;u16? b;u32? c; }
+&P71[safety,auto,predict_seq,opt_table=static] { u8? a;u16? b;u32? c; }
+&P72[safety,auto,optionals=bitmap] { u8? a;u16? b;u32? c; }
+&P73[safety,auto,optionals=bitmap,opt_table=static] { u8? a;u16? b;u32? c; }
+&P74[safety,auto,compact,optionals=bitmap] { u8? a;u16? b;u32? c; }
+&P75[safety,auto,predict_seq,optionals=bitmap] { u8? a;u16? b;u32? c; }
+&P76[safety,auto,predict_seq,opt_table=static,aggressive[bitmap=true]] { u8? a;u16? b;u32? c; }
+&P77[safety,auto,optionals=bitmap,aggressive[bitmap=true]] { u8? a;u16? b;u32? c; }
+&P78[safety,auto,compact,aggressive[bitmap=true]] { u8? a;u16? b;u32? c; }
+&P79[safety,auto,dyn[type=line,width=16,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }
+&P80[safety,auto,dyn[type=line,width=32,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }
+&P81[safety,auto,dyn[type=line,width=64,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }
+&P82[safety,auto,dyn[type=index(dynamic),width=32,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }
+&P83[safety,auto,dyn[type=index(dynamic),width=64,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }
+&P84[safety,auto,dyn[type=index(strict),width=32,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }
+&P85[safety,auto,dyn[type=index(strict),width=64,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }
+&P86[safety,auto,state_bits=Q1] { u8? a;u16? b;u32? c; }
+&P87[safety,auto,state_bits=Q2] { u8? a;u16? b;u32? c; }
+&P88[safety,auto,qps=Q2] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P89[safety,auto,qps=Q2,opt_table=static] { u8? a;u16? b;u32? c; }
+&P90[safety,auto,state_bits=Q4] { u8? a;u16? b;u32? c; }
+&P91[safety,auto,qps=Q4] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P92[safety,auto,qps=Q4,opt_table=static] { u8? a;u16? b;u32? c; }
+&P93[safety,auto,state_bits=Q8] { u8? a;u16? b;u32? c; }
+&P94[safety,auto,qps=Q8] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P95[safety,auto,qps=Q8,opt_table=static] { u8? a;u16? b;u32? c; }
+&P96[safety,auto,state_bits=Q16] { u8? a;u16? b;u32? c; }
+&P97[safety,auto,qps=Q16] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }
+&P98[safety,auto,qps=Q16,opt_table=static] { u8? a;u16? b;u32? c; }
+&P99[safety] { u8 flags;u64 stamp;u16 zone; }
+&P100[safety,auto] { u8 flags;u64 stamp;u16 zone; }
+&P101[safety,auto[wire=1]] { u8 flags;u64 stamp;u16 zone; }
+&P102[safety,auto] { u64 stamp;u32 id;u16(0..4095) zone;u8 code;u8 flags; }
+&P103[safety,auto,transmutate] { u64 stamp;u32 id;u16(0..4095) zone;u8 code;u8 flags; }
+&P104[safety,auto,transmutate,lifetime] { u64 stamp;u32 id;u16(0..4095) zone;u8 code;u8 flags; }
+&P105[safety,auto] { #region(aggressive_transmutate="Prefix");u64 stamp;u32 id;u16(0..4095) zone;u8 code;u8 flags;#end_region;u64 suffix; }
+&P106[safety,auto] { u64 stamp;u32 id;u16(0..4095) zone;u8 code;u8 flags;u64 suffix; }
+&P107[safety,auto] { u32 id;str?(0..1024) text; }
+&P108[safety,auto,aggressive[shift=false]] { u32 id;str?(0..1024) text; }
+&P109[safety,auto,aggressive[shift=true]] { u32 id;str?(0..1024) text; }
+&P110[safety,auto] { u32 id;str?(0..1024) text|decompress=true|; }
+&P111[safety,auto] { u32 id;str?(0..1024) text|decompress=true|; }
+&P112[safety,auto] { u32 id;vec<u16>?(0..32) items; }
+&P113[safety,auto,aggressive[shift=false]] { u32 id;vec<u16>?(0..32) items; }
+&P114[safety,auto,aggressive[shift=true]] { u32 id;vec<u16>?(0..32) items; }
+&P115[safety,auto,aggressive[shift=true,bitmap=true]] { u32 id;vec<u16>?(0..32) items; }
+&P116[safety,auto] { u32(0..4092) a|step=4|;u8 b|values=[1,3,7,15]|; }
+&P117[safety,auto,compact] { u32(0..4092) a|step=4|;u8 b|values=[1,3,7,15]|; }
+&P118[safety,auto,compact,alignment] { u32(0..4092) a|step=4|;u8 b|values=[1,3,7,15]|; }
+&P119[safety,auto] { u32 id;str(0..8192) text; }
+&P120[safety,auto,lifetime] { u32 id;str(0..8192) text; }
+&P121[safety,auto,lifetime,compact,alignment] { u32 id;str(0..8192) text; }
+&P122[safety,auto] { u32(0..4092) a|step=4||default=4|;u8 b|values=[1,3,7,15]||default=3|; }

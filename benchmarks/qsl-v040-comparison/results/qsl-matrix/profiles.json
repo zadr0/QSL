@@ -1,0 +1,3737 @@
+[
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "auto",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P0[safety,auto] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "compact",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P1[safety,auto,compact] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aligned",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P2[safety,auto,compact,alignment] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift0_bm0_point0_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P3[safety,auto,aggressive[shift=false,bitmap=false,pointing=false,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift0_bm1_point0_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P4[safety,auto,aggressive[shift=false,bitmap=true,pointing=false,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift0_bm0_point1_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P5[safety,auto,aggressive[shift=false,bitmap=false,pointing=true,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift0_bm1_point1_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P6[safety,auto,aggressive[shift=false,bitmap=true,pointing=true,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift0_bm0_point0_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P7[safety,auto,aggressive[shift=false,bitmap=false,pointing=false,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift0_bm1_point0_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P8[safety,auto,aggressive[shift=false,bitmap=true,pointing=false,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift0_bm0_point1_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P9[safety,auto,aggressive[shift=false,bitmap=false,pointing=true,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift0_bm1_point1_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P10[safety,auto,aggressive[shift=false,bitmap=true,pointing=true,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift1_bm0_point0_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P11[safety,auto,aggressive[shift=true,bitmap=false,pointing=false,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift1_bm1_point0_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P12[safety,auto,aggressive[shift=true,bitmap=true,pointing=false,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift1_bm0_point1_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P13[safety,auto,aggressive[shift=true,bitmap=false,pointing=true,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift1_bm1_point1_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P14[safety,auto,aggressive[shift=true,bitmap=true,pointing=true,group=false]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift1_bm0_point0_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P15[safety,auto,aggressive[shift=true,bitmap=false,pointing=false,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift1_bm1_point0_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P16[safety,auto,aggressive[shift=true,bitmap=true,pointing=false,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift1_bm0_point1_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P17[safety,auto,aggressive[shift=true,bitmap=false,pointing=true,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_shift1_bm1_point1_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P18[safety,auto,aggressive[shift=true,bitmap=true,pointing=true,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "aggressive_default",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P19[safety,auto,aggressive] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "auto",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P20[safety,auto] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "compact",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P21[safety,auto,compact] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aligned",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P22[safety,auto,compact,alignment] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift0_bm0_point0_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P23[safety,auto,aggressive[shift=false,bitmap=false,pointing=false,group=false]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift0_bm1_point0_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P24[safety,auto,aggressive[shift=false,bitmap=true,pointing=false,group=false]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift0_bm0_point1_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P25[safety,auto,aggressive[shift=false,bitmap=false,pointing=true,group=false]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift0_bm1_point1_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P26[safety,auto,aggressive[shift=false,bitmap=true,pointing=true,group=false]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift0_bm0_point0_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P27[safety,auto,aggressive[shift=false,bitmap=false,pointing=false,group=true]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift0_bm1_point0_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P28[safety,auto,aggressive[shift=false,bitmap=true,pointing=false,group=true]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift0_bm0_point1_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P29[safety,auto,aggressive[shift=false,bitmap=false,pointing=true,group=true]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift0_bm1_point1_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P30[safety,auto,aggressive[shift=false,bitmap=true,pointing=true,group=true]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift1_bm0_point0_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P31[safety,auto,aggressive[shift=true,bitmap=false,pointing=false,group=false]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift1_bm1_point0_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P32[safety,auto,aggressive[shift=true,bitmap=true,pointing=false,group=false]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift1_bm0_point1_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P33[safety,auto,aggressive[shift=true,bitmap=false,pointing=true,group=false]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift1_bm1_point1_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P34[safety,auto,aggressive[shift=true,bitmap=true,pointing=true,group=false]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift1_bm0_point0_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P35[safety,auto,aggressive[shift=true,bitmap=false,pointing=false,group=true]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift1_bm1_point0_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P36[safety,auto,aggressive[shift=true,bitmap=true,pointing=false,group=true]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift1_bm0_point1_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P37[safety,auto,aggressive[shift=true,bitmap=false,pointing=true,group=true]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_shift1_bm1_point1_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P38[safety,auto,aggressive[shift=true,bitmap=true,pointing=true,group=true]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "aggressive_default",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P39[safety,auto,aggressive] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "auto",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P40[safety,auto] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "compact",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P41[safety,auto,compact] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aligned",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P42[safety,auto,compact,alignment] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift0_bm0_point0_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P43[safety,auto,aggressive[shift=false,bitmap=false,pointing=false,group=false]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift0_bm1_point0_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P44[safety,auto,aggressive[shift=false,bitmap=true,pointing=false,group=false]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift0_bm0_point1_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P45[safety,auto,aggressive[shift=false,bitmap=false,pointing=true,group=false]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift0_bm1_point1_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P46[safety,auto,aggressive[shift=false,bitmap=true,pointing=true,group=false]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift0_bm0_point0_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P47[safety,auto,aggressive[shift=false,bitmap=false,pointing=false,group=true]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift0_bm1_point0_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P48[safety,auto,aggressive[shift=false,bitmap=true,pointing=false,group=true]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift0_bm0_point1_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P49[safety,auto,aggressive[shift=false,bitmap=false,pointing=true,group=true]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift0_bm1_point1_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P50[safety,auto,aggressive[shift=false,bitmap=true,pointing=true,group=true]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": true,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift1_bm0_point0_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P51[safety,auto,aggressive[shift=true,bitmap=false,pointing=false,group=false]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": true,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift1_bm1_point0_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P52[safety,auto,aggressive[shift=true,bitmap=true,pointing=false,group=false]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": true,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift1_bm0_point1_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P53[safety,auto,aggressive[shift=true,bitmap=false,pointing=true,group=false]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": true,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift1_bm1_point1_group0",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P54[safety,auto,aggressive[shift=true,bitmap=true,pointing=true,group=false]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": true,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift1_bm0_point0_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P55[safety,auto,aggressive[shift=true,bitmap=false,pointing=false,group=true]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": true,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift1_bm1_point0_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P56[safety,auto,aggressive[shift=true,bitmap=true,pointing=false,group=true]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": true,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift1_bm0_point1_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P57[safety,auto,aggressive[shift=true,bitmap=false,pointing=true,group=true]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": true,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_shift1_bm1_point1_group1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P58[safety,auto,aggressive[shift=true,bitmap=true,pointing=true,group=true]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "optional_text",
+    "profile": "aggressive_default",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P59[safety,auto,aggressive] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": true,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "compact_group_native",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P60[safety,auto,compact,aggressive[shift=false,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "Portable",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "compact_group_portable",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P61[safety,auto,compact,aggressive[shift=false,group=true]] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "inline_hint",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P62[safety,auto,compact,inline=hint] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "inline_always",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P63[safety,auto,compact,inline=always] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "inline_never",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P64[safety,auto,compact,inline=never] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "cache",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "loyal_cache_32",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P65[safety,auto,loyal_cache,cache=32] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "slots",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "rt_slots_1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": true,
+    "schema": "&P66[safety,auto,slots=1] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "slots",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "fixed",
+    "profile": "rt_slots_16",
+    "quant_active": false,
+    "route": "owned",
+    "rt": true,
+    "schema": "&P67[safety,auto,slots=16] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "ps",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P68[safety,auto,predict_seq] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "ot_static",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P69[safety,auto,opt_table=static] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "ot_legacy",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P70[safety,auto,opt_table=legacy] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "ps_ot",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P71[safety,auto,predict_seq,opt_table=static] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "bitmap",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P72[safety,auto,optionals=bitmap] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "bitmap_ot",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P73[safety,auto,optionals=bitmap,opt_table=static] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "compact_bitmap",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P74[safety,auto,compact,optionals=bitmap] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "ps_bitmap",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P75[safety,auto,predict_seq,optionals=bitmap] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "ps_ot_object_bitmap",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P76[safety,auto,predict_seq,opt_table=static,aggressive[bitmap=true]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "wire_and_object_bitmap",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P77[safety,auto,optionals=bitmap,aggressive[bitmap=true]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "compact_object_bitmap",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P78[safety,auto,compact,aggressive[bitmap=true]] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "dyn",
+    "profile": "line_16",
+    "quant_active": false,
+    "route": "dynamic",
+    "rt": false,
+    "schema": "&P79[safety,auto,dyn[type=line,width=16,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "dyn",
+    "profile": "line_32",
+    "quant_active": false,
+    "route": "dynamic",
+    "rt": false,
+    "schema": "&P80[safety,auto,dyn[type=line,width=32,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "dyn",
+    "profile": "line_64",
+    "quant_active": false,
+    "route": "dynamic",
+    "rt": false,
+    "schema": "&P81[safety,auto,dyn[type=line,width=64,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "dyn",
+    "profile": "index_dynamic_32",
+    "quant_active": false,
+    "route": "dynamic",
+    "rt": false,
+    "schema": "&P82[safety,auto,dyn[type=index(dynamic),width=32,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "dyn",
+    "profile": "index_dynamic_64",
+    "quant_active": false,
+    "route": "dynamic",
+    "rt": false,
+    "schema": "&P83[safety,auto,dyn[type=index(dynamic),width=64,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "dyn",
+    "profile": "index_strict_32",
+    "quant_active": false,
+    "route": "dynamic",
+    "rt": false,
+    "schema": "&P84[safety,auto,dyn[type=index(strict),width=32,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "dyn",
+    "profile": "index_strict_64",
+    "quant_active": false,
+    "route": "dynamic",
+    "rt": false,
+    "schema": "&P85[safety,auto,dyn[type=index(strict),width=64,revision=1]] { u8? a=1;u16? b=2;u32? c=3; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "state_bits_q1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P86[safety,auto,state_bits=Q1] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "state_bits_q2",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P87[safety,auto,state_bits=Q2] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "quantized",
+    "profile": "qps_q2",
+    "quant_active": true,
+    "route": "quantized",
+    "rt": false,
+    "schema": "&P88[safety,auto,qps=Q2] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "quantized",
+    "profile": "qps_q2_ot",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P89[safety,auto,qps=Q2,opt_table=static] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "state_bits_q4",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P90[safety,auto,state_bits=Q4] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "quantized",
+    "profile": "qps_q4",
+    "quant_active": true,
+    "route": "quantized",
+    "rt": false,
+    "schema": "&P91[safety,auto,qps=Q4] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "quantized",
+    "profile": "qps_q4_ot",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P92[safety,auto,qps=Q4,opt_table=static] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "state_bits_q8",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P93[safety,auto,state_bits=Q8] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "quantized",
+    "profile": "qps_q8",
+    "quant_active": true,
+    "route": "quantized",
+    "rt": false,
+    "schema": "&P94[safety,auto,qps=Q8] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "quantized",
+    "profile": "qps_q8_ot",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P95[safety,auto,qps=Q8,opt_table=static] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "presence",
+    "profile": "state_bits_q16",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P96[safety,auto,state_bits=Q16] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "d",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "quantized",
+    "profile": "qps_q16",
+    "quant_active": true,
+    "route": "quantized",
+    "rt": false,
+    "schema": "&P97[safety,auto,qps=Q16] { u32(0..4095) a;u32(0..4095) b;u32(0..4095) c;u32(0..4095) d; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "c",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "quantized",
+    "profile": "qps_q16_ot",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P98[safety,auto,qps=Q16,opt_table=static] { u8? a;u16? b;u32? c; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "flags",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "stamp",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "zone",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "layout",
+    "profile": "declared",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P99[safety] { u8 flags;u64 stamp;u16 zone; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "flags",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "stamp",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "zone",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "layout",
+    "profile": "auto",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P100[safety,auto] { u8 flags;u64 stamp;u16 zone; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "flags",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "stamp",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "zone",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "layout",
+    "profile": "auto_wire_v1",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P101[safety,auto[wire=1]] { u8 flags;u64 stamp;u16 zone; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "stamp",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "zone",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "code",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "flags",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "native",
+    "profile": "fields",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P102[safety,auto] { u64 stamp;u32 id;u16(0..4095) zone;u8 code;u8 flags; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "copy",
+    "fields": [
+      {
+        "name": "stamp",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "zone",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "code",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "flags",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "native",
+    "profile": "transmute_copy",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P103[safety,auto,transmutate] { u64 stamp;u32 id;u16(0..4095) zone;u8 code;u8 flags; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "overlay",
+    "fields": [
+      {
+        "name": "stamp",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "zone",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "code",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "flags",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "native",
+    "profile": "transmute_overlay",
+    "quant_active": false,
+    "route": "overlay",
+    "rt": false,
+    "schema": "&P104[safety,auto,transmutate,lifetime] { u64 stamp;u32 id;u16(0..4095) zone;u8 code;u8 flags; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "stamp",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "zone",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "code",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "flags",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "native_region",
+    "profile": "named_region",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P105[safety,auto] { #region(aggressive_transmutate=\"Prefix\");u64 stamp;u32 id;u16(0..4095) zone;u8 code;u8 flags;#end_region;u64 suffix; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "stamp",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "zone",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "code",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "flags",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "suffix",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "native_region",
+    "profile": "fields",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P106[safety,auto] { u64 stamp;u32 id;u16(0..4095) zone;u8 code;u8 flags;u64 suffix; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "string_storage",
+    "profile": "heap_string",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P107[safety,auto] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 0,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "string_storage",
+    "profile": "stack_string",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P108[safety,auto,aggressive[shift=false]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": true,
+        "storage": "StackString(1024)"
+      }
+    ],
+    "group": "string_storage",
+    "profile": "shifted_stack_string",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P109[safety,auto,aggressive[shift=true]] { u32 id;str?(0..1024) text; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "string_storage",
+    "profile": "qsl_lz_inline",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P110[safety,auto] { u32 id;str?(0..1024) text|decompress=true|; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "HeapInlineString(1024)"
+      }
+    ],
+    "group": "string_storage",
+    "profile": "qsl_lz_heap",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P111[safety,auto] { u32 id;str?(0..1024) text|decompress=true|; }",
+    "stack_limit": 0,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "items",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "arrays",
+    "profile": "heap",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P112[safety,auto] { u32 id;vec<u16>?(0..32) items; }",
+    "stack_limit": 0,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "items",
+        "shifted_length": false,
+        "storage": "StackArray(32)"
+      }
+    ],
+    "group": "arrays",
+    "profile": "inline",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P113[safety,auto,aggressive[shift=false]] { u32 id;vec<u16>?(0..32) items; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "items",
+        "shifted_length": true,
+        "storage": "StackArray(32)"
+      }
+    ],
+    "group": "arrays",
+    "profile": "inline_shifted",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P114[safety,auto,aggressive[shift=true]] { u32 id;vec<u16>?(0..32) items; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "items",
+        "shifted_length": true,
+        "storage": "StackArray(32)"
+      }
+    ],
+    "group": "arrays",
+    "profile": "inline_shifted_bitmap",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P115[safety,auto,aggressive[shift=true,bitmap=true]] { u32 id;vec<u16>?(0..32) items; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "domain",
+    "profile": "auto",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P116[safety,auto] { u32(0..4092) a|step=4|;u8 b|values=[1,3,7,15]|; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "domain",
+    "profile": "compact",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P117[safety,auto,compact] { u32(0..4092) a|step=4|;u8 b|values=[1,3,7,15]|; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "domain",
+    "profile": "aligned",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P118[safety,auto,compact,alignment] { u32(0..4092) a|step=4|;u8 b|values=[1,3,7,15]|; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "safety_text",
+    "profile": "owned",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P119[safety,auto] { u32 id;str(0..8192) text; }",
+    "stack_limit": 0,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "safety_text",
+    "profile": "borrowed",
+    "quant_active": false,
+    "route": "borrowed",
+    "rt": false,
+    "schema": "&P120[safety,auto,lifetime] { u32 id;str(0..8192) text; }",
+    "stack_limit": 0,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "id",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "text",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "safety_text",
+    "profile": "borrowed_aligned",
+    "quant_active": false,
+    "route": "borrowed",
+    "rt": false,
+    "schema": "&P121[safety,auto,lifetime,compact,alignment] { u32 id;str(0..8192) text; }",
+    "stack_limit": 0,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "emits_pext": false,
+    "extra": "none",
+    "fields": [
+      {
+        "name": "a",
+        "shifted_length": false,
+        "storage": "Default"
+      },
+      {
+        "name": "b",
+        "shifted_length": false,
+        "storage": "Default"
+      }
+    ],
+    "group": "domain",
+    "profile": "defaults",
+    "quant_active": false,
+    "route": "owned",
+    "rt": false,
+    "schema": "&P122[safety,auto] { u32(0..4092) a|step=4||default=4|;u8 b|values=[1,3,7,15]||default=3|; }",
+    "stack_limit": 4096,
+    "status": "measured"
+  },
+  {
+    "cpu": "KabyLake",
+    "group": "safety_text",
+    "profile": "borrowed_field",
+    "reason": "QSL at byte 52: unsupported field modifier `borrow`",
+    "rt": false,
+    "schema": "&P123[safety,auto] { u32 id;str(0..8192) text|borrow=true|; }",
+    "stack_limit": 0,
+    "status": "rejected"
+  }
+]

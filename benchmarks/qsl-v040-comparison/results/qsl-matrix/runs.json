@@ -1,0 +1,29 @@
+﻿[
+    {
+        "phase":  "tune",
+        "exitCode":  0,
+        "seconds":  130.95147559999998,
+        "backgroundLogicalCores":  1.5701188097188576,
+        "sampleSize":  24,
+        "warmup":  "0.05",
+        "measurement":  "0.105"
+    },
+    {
+        "phase":  "confirm-1",
+        "exitCode":  0,
+        "seconds":  198.80531879999998,
+        "backgroundLogicalCores":  1.3555975344458442,
+        "sampleSize":  60,
+        "warmup":  "0.20",
+        "measurement":  "0.40"
+    },
+    {
+        "phase":  "confirm-2",
+        "exitCode":  0,
+        "seconds":  199.01910429999998,
+        "backgroundLogicalCores":  1.7494394632344852,
+        "sampleSize":  60,
+        "warmup":  "0.20",
+        "measurement":  "0.40"
+    }
+]

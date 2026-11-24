@@ -1,0 +1,18 @@
+[package]
+name = "qsl-all-features-bench"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+qsl = { version = "=0.4.0", default-features = false, features = ["alloc"] }
+criterion = { version = "=0.8.2", default-features = false, features = ["cargo_bench_support"] }
+serde_json = "=1.0.154"
+
+[build-dependencies]
+qsl-interpreter = "=0.4.0"
+serde_json = "=1.0.154"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1

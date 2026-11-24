@@ -6,6 +6,8 @@ QSL, Protobuf through Prost, Cap’n Proto and Bincode encode and decode the sam
 |---|---|
 | [Results and method](OPTIMIZED.md) | Fresh output allocations, ready output buffers, owned decoding, zero-copy views and batches of 1, 8, 64 and 256 records |
 | [Interactive dashboard](dashboard.html) | Confirmed latency, selected codec profiles, frame sizes and allocation counts. Download the HTML file to open it in a browser. |
+| [QSL All Features](QSL-ALL-FEATURES.md) | QSL-only feature and attribute sweep with the fastest confirmed profiles for each operation |
+| [Safety QSL](QSL-SAFETY.md) | Paired checked and trusted paths on identical frames, plus separate validation timings |
 | [Historical benchmark series](HISTORY.md) | Earlier Dyn, k6, TCP, layout, transmutation, StackString and QSL-LZ measurements |
 
 All measured QSL schemas use automatic layout. The timed trusted QSL paths require immutable, prevalidated fixtures. Other codecs retain their normal parsing checks. Read the results as performance of the selected paths on valid data. [Validation details](OPTIMIZED.md#configuration-and-validation)
